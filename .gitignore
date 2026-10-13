@@ -1,0 +1,29 @@
+# Unity (generated)
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+*.csproj
+*.sln
+*.slnx
+*.pidb
+*.userprefs
+/.vscode/
+
+# Web prototype
+proto/node_modules/
+proto/dist/
+
+# Blender renders (regenerate with the scripts in art/blender)
+art/blender/out/
+art/blender/out_lowpoly/
+
+# Local tool settings
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db

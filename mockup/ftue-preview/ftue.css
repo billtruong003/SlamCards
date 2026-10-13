@@ -1,0 +1,22 @@
+.tut{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:560px;height:300px;background:#fffbf0;border:4px solid #2a1418;border-radius:18px;box-shadow:0 6px 0 #2a1418;box-sizing:border-box;display:flex;overflow:hidden}
+.tut .art{position:relative;width:250px;flex:none;border-right:3px solid #2a1418;background:repeating-linear-gradient(0deg,#e7c38c 0 18px,#e2bb81 18px 20px)}
+.tut .txt{flex:1;padding:14px 16px 12px;display:flex;flex-direction:column;gap:6px}
+.tut .step{font-weight:800;font-size:12px;color:#d63c6e;letter-spacing:.04em}
+.tut h2{margin:0;font-weight:800;font-size:25px;line-height:1.05}
+.tut p{margin:0;font-weight:600;font-size:14px;line-height:1.3}
+.tut b{color:#d63c6e}
+.tut .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between}
+.pips{display:flex;gap:5px}.pips i{width:9px;height:9px;border-radius:50%;border:2px solid #2a1418;box-sizing:border-box}.pips i.on{background:#2a1418}
+.tut .btn{min-height:36px;font-size:15px;padding:2px 14px}
+.skip{font-weight:700;font-size:12px;color:#6a5a52;text-decoration:underline}
+.v{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;border:3px solid #2a1418;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;box-sizing:border-box}
+.v.ok{background:#7fd8b4}.v.no{background:#fffbf0}.v.bad{background:#ff6f9c;color:#fff}
+.cell{position:absolute;width:113px;height:118px;border:3px solid #2a1418;border-radius:12px;box-sizing:border-box;background:repeating-linear-gradient(0deg,#e7c38c 0 14px,#e2bb81 14px 16px);overflow:hidden}
+.cap{position:absolute;left:0;right:0;bottom:0;background:#fffbf0;border-top:3px solid #2a1418;font-weight:800;font-size:11px;line-height:1.15;text-align:center;padding:3px 4px}
+.lbl{position:absolute;transform:translate(-50%,-50%);font-weight:800;font-size:10px;background:#fffbf0;border:2px solid #2a1418;border-radius:6px;padding:0 4px;white-space:nowrap}
+.bubble{position:absolute;background:#fffbf0;border:3px solid #2a1418;border-radius:14px;padding:6px 12px;font-weight:700;font-size:14px;line-height:1.25;box-shadow:0 4px 0 #2a1418;max-width:220px}
+.bubble b{color:#d63c6e}
+.pulse{position:absolute;border-radius:50%;transform:translate(-50%,-50%);border:4px solid #fff;box-shadow:0 0 0 3px #d63c6e,0 0 0 10px rgba(214,60,110,.25)}
+.tip{position:absolute;left:50%;transform:translateX(-50%);background:#2a1418;color:#fffbf0;border-radius:12px;padding:5px 14px;font-weight:700;font-size:14px;white-space:nowrap}
+.tip b{color:#ffb0c8}
+.qbtn{position:absolute;width:34px;height:34px;border-radius:50%;background:#fffbf0;border:3px solid #2a1418;box-shadow:0 3px 0 #2a1418;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center;box-sizing:border-box}

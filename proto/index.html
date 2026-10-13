@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dép Lào Tuổi Thơ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+<div id="stage"></div>
+<div id="labels"></div>
+
+<div id="hud" hidden>
+  <div id="players" class="players"></div>
+  <div class="wind" id="wind"><span id="wind-arrow">➜</span><span id="wind-text">GIÓ 0</span><span class="bars" id="wind-bars"></span></div>
+</div>
+<div id="banner" hidden></div>
+<div id="hint" hidden></div>
+<div id="toggle" hidden>
+  <button id="type-flat" class="sel">Đập bằng · Q</button>
+  <button id="type-tilt">Đập nghiêng · E</button>
+</div>
+
+<div id="overlay"></div>
+<div id="toast" hidden></div>
+<div class="credit">Card art: Dani Maccari</div>
+<div id="netstat"><span id="ping"></span><span id="fps"></span></div>
+<div id="corner">
+  <button id="info" aria-label="Thông tin">Info</button>
+  <button id="settings" aria-label="Chỉnh âm thanh">Âm thanh</button>
+</div>
+<div id="sound-panel" class="panel-box" hidden></div>
+<div id="info-panel" class="panel-box" hidden>
+  <h2>Dép Lào Tuổi Thơ</h2>
+  <p>Một trò của <b>BillTheDev</b></p>
+  <p>Portfolio <a href="https://www.billthedev.com" target="_blank" rel="noopener">www.billthedev.com</a></p>
+  <p>Liên hệ <a href="mailto:truongbill003@gmail.com">truongbill003@gmail.com</a></p>
+  <p class="muted">Card art: Dani Maccari</p>
+  <button class="btn" id="close-info">Đóng</button>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

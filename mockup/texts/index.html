@@ -1,0 +1,192 @@
+<title>Chữ Dép Lào</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky toolbar, section chips, then one card per text slot (info left, input right). Game palette: cream table, ink outline, pink accent. */
+:root{
+  --bg:#f6eedb; --card:#fffaf0; --ink:#2a1418; --muted:#7a6559; --line:#e3d3b6;
+  --accent:#d63c6e; --accent-soft:#fbe0e9; --ok:#1f7a52; --ok-soft:#d9f2e6; --warn:#b3261e;
+  --display:"Baloo 2",system-ui,sans-serif; --body:"Be Vietnam Pro",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1c1315; --card:#271b1e; --ink:#f4e7dc; --muted:#b59f93; --line:#3d2d30;
+  --accent:#ff7aa5; --accent-soft:#4a2230; --ok:#7fd8b4; --ok-soft:#1f3a30; --warn:#ff8a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1c1315; --card:#271b1e; --ink:#f4e7dc; --muted:#b59f93; --line:#3d2d30;
+  --accent:#ff7aa5; --accent-soft:#4a2230; --ok:#7fd8b4; --ok-soft:#1f3a30; --warn:#ff8a80; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:0 64px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:2px solid var(--ink);padding-block:12px 10px}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+h1{font:800 30px/1 var(--display);margin:0;flex:1 1 220px}
+.progress{font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.progress b{color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button{font:700 14px var(--body);color:var(--ink);background:var(--card);border:2px solid var(--ink);border-radius:10px;padding:7px 12px;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+button:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button.pri{background:var(--accent);color:#fff;border-color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips a{font:600 13px var(--body);color:var(--ink);text-decoration:none;border:1.5px solid var(--line);border-radius:999px;padding:2px 10px;background:var(--card);font-variant-numeric:tabular-nums}
+.chips a span{color:var(--muted)}
+.chips a.done{border-color:var(--ok);background:var(--ok-soft)}
+.toolrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-top:8px;font-size:13px;color:var(--muted)}
+.toolrow label{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--ink);font-weight:600}
+.toolrow input{accent-color:var(--accent);width:16px;height:16px}
+.vars code{font:600 12px ui-monospace,Consolas,monospace;background:var(--accent-soft);color:var(--ink);padding:1px 5px;border-radius:5px}
+.toast{min-height:20px;font-weight:700;color:var(--ok)}
+section{margin-top:28px;scroll-margin-top:170px}
+h2{font:800 22px/1.1 var(--display);margin:0 0 10px;display:flex;align-items:baseline;gap:10px;text-wrap:balance}
+h2 .k{font-size:15px;color:#fff;background:var(--ink);border-radius:6px;padding:1px 8px}
+:root[data-theme="dark"] h2 .k{color:var(--bg)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) h2 .k{color:var(--bg)}}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:8px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+.row.filled{border-color:var(--ok)}
+.info{min-width:0;display:flex;flex-direction:column;gap:3px}
+.where{font-weight:700}
+.where .id{font:700 12px ui-monospace,Consolas,monospace;color:var(--accent);margin-right:6px}
+.need{font-size:13px;color:var(--muted)}
+.cur{font-size:13px;color:var(--muted)}
+.cur q{color:var(--ink);quotes:"“" "”"}
+.edit{min-width:0;display:flex;flex-direction:column;gap:4px}
+textarea{width:100%;min-height:42px;resize:vertical;font:500 15px/1.4 var(--body);color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:9px;padding:8px 10px}
+textarea:focus{border-color:var(--ink);outline:none}
+.meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.meta .over{color:var(--warn);font-weight:700}
+.meta button{font-size:12px;padding:1px 8px;box-shadow:none;border-width:1.5px}
+.hide-filled .row.filled{display:none}
+.empty-note{display:none;color:var(--muted);font-size:13px}
+.hide-filled section.all-done .empty-note{display:block}
+#md-fallback{width:100%;min-height:160px;margin-top:8px;font:12px ui-monospace,Consolas,monospace}
+@media (max-width:680px){.row{grid-template-columns:minmax(0,1fr)} h1{font-size:26px}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="top">
+      <h1>Chữ trong Dép Lào</h1>
+      <div class="progress"><b id="count">0</b> / <span id="total">0</span> ô đã điền</div>
+      <div class="actions">
+        <button id="copy-changed" type="button">Copy chỗ đã sửa</button>
+        <button id="copy-all" class="pri" type="button">Copy cả bảng (md)</button>
+      </div>
+    </div>
+    <nav class="chips" id="chips" aria-label="Các màn"></nav>
+    <div class="toolrow">
+      <label><input type="checkbox" id="hide-filled"> Ẩn ô đã điền</label>
+      <span class="vars">Biến: <code>{tên}</code> <code>{TÊN}</code> <code>{màu}</code> <code>{s}</code> <code>{n}</code> <code>{MÃ}</code></span>
+      <span class="toast" id="toast" role="status"></span>
+    </div>
+    <textarea id="md-fallback" hidden readonly aria-label="Bảng md để copy tay"></textarea>
+  </header>
+  <main id="sections"></main>
+</div>
+
+<script>
+const DATA = [{"key": "A", "title": "Menu & vào phòng", "rows": [{"id": "A1", "where": "Tên game (logo, tab trình duyệt)", "need": "tên game", "max": "20", "current": "Dép Lào Tuổi Thơ"}, {"id": "A2", "where": "Dòng dưới logo", "need": "game là gì, mấy người", "max": "40", "current": "Đập bài bằng dép · online 2–4 người"}, {"id": "A3", "where": "Nhãn ô nhập tên", "need": "nhập tên", "max": "15", "current": "Tên của m"}, {"id": "A4", "where": "Chữ mờ trong ô tên", "need": "ví dụ tên", "max": "15", "current": "Ví dụ: Tèo"}, {"id": "A5", "where": "Tên khi để trống", "need": "tên mặc định", "max": "12", "current": "Người chơi"}, {"id": "A6", "where": "Nút tạo phòng", "need": "", "max": "12", "current": "Tạo phòng"}, {"id": "A7", "where": "Chữ mờ ô mã phòng", "need": "", "max": "10", "current": "Mã phòng"}, {"id": "A8", "where": "Nút vào phòng", "need": "", "max": "12", "current": "Vào phòng"}, {"id": "A9", "where": "Mở link mời: dòng phụ", "need": "báo là được mời vào phòng `{MÃ}`", "max": "40", "current": "M được mời vào phòng {MÃ}"}, {"id": "A10", "where": "Lỗi: sai mã", "need": "", "max": "30", "current": "Không tìm thấy phòng."}, {"id": "A11", "where": "Lỗi: phòng đang đánh", "need": "", "max": "30", "current": "Phòng này đang đánh rồi."}, {"id": "A12", "where": "Lỗi: phòng đủ người", "need": "", "max": "30", "current": "Phòng đã đủ 4 người."}]}, {"key": "B", "title": "Phòng chờ", "rows": [{"id": "B1", "where": "Tiêu đề", "need": "phòng `{MÃ}`", "max": "15", "current": "Phòng {MÃ}"}, {"id": "B2", "where": "Dòng phụ", "need": "rủ gửi link cho bạn", "max": "45", "current": "Gửi link này cho bạn bè (2–4 người):"}, {"id": "B3", "where": "Nút copy / sau khi copy", "need": "", "max": "10 / 10", "current": "Sao chép / Đã chép"}, {"id": "B4", "where": "Ô người chơi, dòng nhỏ", "need": "màu bài của người đó, đánh dấu là mình", "max": "20", "current": "Bài {màu} · bạn"}, {"id": "B5", "where": "Ô trống", "need": "đang chờ người vào", "max": "12 / 8", "current": "Đang chờ… / Trống"}, {"id": "B6", "where": "Tiêu đề chọn dép", "need": "", "max": "20", "current": "Chọn dép của m"}, {"id": "B7", "where": "Tên 3 loại dép", "need": "", "max": "12 mỗi cái", "current": "Dép lào · Dép tổ ong · Dép lê"}, {"id": "B8", "where": "Nút bắt đầu khi thiếu người", "need": "", "max": "25", "current": "Cần ít nhất 2 người"}, {"id": "B9", "where": "Nút bắt đầu", "need": "bắt đầu, có số người `{n}`", "max": "20", "current": "Bắt đầu ({n} người)"}, {"id": "B10", "where": "Tên 4 màu bài", "need": "", "max": "5 mỗi cái", "current": "ĐEN · ĐỎ · XANH · LỤC"}]}, {"key": "C", "title": "Đầu round, tù xì, chọn lượt", "rows": [{"id": "C1", "where": "Tiêu đề màn round", "need": "round mấy", "max": "10", "current": "ROUND {n}"}, {"id": "C2", "where": "Dòng phụ màn round", "need": "m cầm bài màu gì + thắng mấy round là thắng trận", "max": "50", "current": "Bạn cầm bài {màu} · Thắng 2 round để thắng trận"}, {"id": "C3", "where": "Tiêu đề tù xì", "need": "", "max": "10", "current": "TÙ XÌ!"}, {"id": "C4", "where": "3 nút", "need": "", "max": "5 mỗi cái", "current": "Búa · Kéo · Bao"}, {"id": "C5", "where": "Sau khi chọn", "need": "đang chờ đối thủ", "max": "30", "current": "Đã chọn, chờ đối thủ…"}, {"id": "C6", "where": "Trạng thái đối thủ", "need": "`{tên}` đã chọn / đang chọn", "max": "25", "current": "{tên} đã chọn / đang chọn…"}, {"id": "C7", "where": "Người khác xem tù xì", "need": "", "max": "20", "current": "Đang tù xì…"}, {"id": "C8", "where": "Kết quả hòa", "need": "ra lại", "max": "15", "current": "HÒA — RA LẠI!"}, {"id": "C9", "where": "Kết quả thắng / thua", "need": "", "max": "15", "current": "BẠN THẮNG! / {TÊN} THẮNG"}, {"id": "C10", "where": "Hỏi người thắng tù xì", "need": "đi trước hay nhường", "max": "30", "current": "Bạn đi trước hay nhường?"}, {"id": "C11", "where": "2 nút", "need": "", "max": "15 mỗi cái", "current": "Đập trước · Nhường đối thủ"}, {"id": "C12", "where": "Giải thích dưới 2 nút", "need": "ưu/nhược của đi trước", "max": "80", "current": "Đi trước thì tiến được trước, nhưng cũng bước vào tầm đánh của địch trước."}, {"id": "C13", "where": "Người thua tù xì chờ", "need": "`{tên}` đang chọn", "max": "25", "current": "{tên} đang chọn lượt…"}, {"id": "C14", "where": "Tiêu đề thứ tự (3–4 người)", "need": "", "max": "15", "current": "THỨ TỰ ĐẬP"}, {"id": "C15", "where": "Dòng phụ thứ tự", "need": "màu bài của m + ai trụ cuối thắng", "max": "55", "current": "Bạn cầm bài {màu} · còn trụ lại cuối cùng thì thắng round"}]}, {"key": "D", "title": "Trong trận", "rows": [{"id": "D1", "where": "Chip người chơi, đánh dấu mình", "need": "", "max": "6", "current": "(bạn)"}, {"id": "D2", "where": "Ô gió", "need": "gió cấp `{n}`", "max": "8", "current": "GIÓ {n}"}, {"id": "D3", "where": "2 nút kiểu đập", "need": "", "max": "15 mỗi cái", "current": "Đập bằng · Đập nghiêng"}, {"id": "D4", "where": "Banner lượt mình", "need": "+ `{s}`", "max": "22", "current": "LƯỢT CỦA BẠN · {s}"}, {"id": "D5", "where": "Banner bắt buộc đập", "need": "+ `{s}`", "max": "22", "current": "BẮT BUỘC ĐẬP · {s}"}, {"id": "D6", "where": "Banner lượt người khác", "need": "`{TÊN}` + `{s}`", "max": "25", "current": "LƯỢT CỦA {TÊN} · {s}"}, {"id": "D7", "where": "Banner sau khi mình đập", "need": "đang bay / đang chờ người khác xem lại", "max": "22 / 25", "current": "BÀI ĐANG BAY… / MỌI NGƯỜI ĐANG XEM LẠI…"}, {"id": "D8", "where": "Banner khi người khác đập", "need": "", "max": "18", "current": "{TÊN} ĐẬP!"}, {"id": "D9", "where": "Hướng dẫn dưới đáy (PC)", "need": "click để đập, sát = mạnh, chỗ trống = bỏ lượt, Q/E", "max": "90", "current": "Click để đập · Đập càng sát bài càng mạnh · Đập chỗ trống = bỏ lượt · Q/E đổi kiểu"}, {"id": "D10", "where": "Hướng dẫn dưới đáy (điện thoại)", "need": "kéo ngắm, thả đập, chỗ trống = bỏ lượt", "max": "70", "current": "Chạm và kéo để ngắm, thả tay để đập · Đập chỗ trống = bỏ lượt"}, {"id": "D11", "where": "Hướng dẫn khi bắt buộc", "need": "vừa bỏ lượt nên phải đập trong vòng hồng", "max": "70", "current": "Vừa bỏ lượt → lượt này phải đập trong vòng hồng sát bài mình"}, {"id": "D12", "where": "Hướng dẫn lúc chờ bài dừng", "need": "", "max": "25", "current": "Chờ bài đứng yên"}, {"id": "D13", "where": "Hướng dẫn khi xem người khác", "need": "đang xem cú đập / đang ngắm", "max": "30", "current": "Xem cú đập của {tên} / {tên} đang ngắm…"}, {"id": "D14", "where": "Hướng dẫn khi mình bị loại", "need": "", "max": "45", "current": "Bạn đã bị loại, xem tiếp round này nhé"}, {"id": "D15", "where": "Nhãn dưới lá bài", "need": "ngửa / úp / rớt + chủ bài", "max": "8 mỗi cái", "current": "▲ NGỬA · ▼ ÚP · RỚT"}, {"id": "D16", "where": "Chữ nổ khi đập", "need": "", "max": "6", "current": "BỐP!"}]}, {"key": "E", "title": "Thông báo nhỏ (hiện vài giây)", "rows": [{"id": "E1", "where": "`{tên}` hết giờ", "need": "", "max": "30", "current": "{tên} hết giờ, mất lượt"}, {"id": "E2", "where": "`{tên}` bỏ lượt", "need": "", "max": "25", "current": "{tên} bỏ lượt"}, {"id": "E3", "where": "3–4 người: `{tên}` đập rớt bài, bị loại", "need": "", "max": "35", "current": "{tên} đập rớt bài → bị loại!"}, {"id": "E4", "where": "3–4 người: `{tên}` ăn `{tên}`", "need": "", "max": "30", "current": "{tên} ăn {tên}!"}, {"id": "E5", "where": "`{tên}` rời trận", "need": "", "max": "25", "current": "{tên} rời trận"}, {"id": "E6", "where": "Mạng mình rớt", "need": "", "max": "30", "current": "Mất kết nối, đang thử lại…"}, {"id": "E7", "where": "Người khác rớt mạng (chờ 60s)", "need": "", "max": "50", "current": "{tên} mất kết nối, chờ tối đa 60 giây…"}, {"id": "E8", "where": "Mạng lag", "need": "", "max": "20", "current": "Mạng chập chờn…"}]}, {"key": "F", "title": "Hết round, hết trận", "rows": [{"id": "F1", "where": "Tiêu đề hết round, 3 kiểu", "need": "rớt bàn / ăn / có người rời", "max": "12 mỗi cái", "current": "RỚT BÀN! · ĂN! · RỜI TRẬN"}, {"id": "F2", "where": "Giải thích: rớt bàn", "need": "`{tên}` làm rớt nên bị loại", "max": "45", "current": "{tên} đập làm rớt bài → bị loại"}, {"id": "F3", "where": "Giải thích: ăn", "need": "`{tên}` ngửa đè lên `{tên}` úp", "max": "45", "current": "{tên} ngửa đè lên {tên} úp"}, {"id": "F4", "where": "Đuôi giải thích", "need": "`{tên}` thắng round", "max": "25", "current": "→ {tên} thắng round"}, {"id": "F5", "where": "Tiêu đề hết trận", "need": "thắng / người khác thắng", "max": "15", "current": "BẠN THẮNG! / {TÊN} THẮNG"}, {"id": "F6", "where": "Khi mọi người bỏ đi", "need": "", "max": "35", "current": "Những người khác đã rời trận."}, {"id": "F7", "where": "Nút tái đấu / sau khi bấm", "need": "", "max": "12 / 20", "current": "Tái đấu / Chờ mọi người…"}, {"id": "F8", "where": "Nút về menu", "need": "", "max": "10", "current": "Về menu"}, {"id": "F9", "where": "Đang chờ ai bấm tái đấu", "need": "", "max": "40", "current": "Đang chờ: {tên}, {tên}"}]}, {"key": "G", "title": "Âm thanh", "rows": [{"id": "G1", "where": "Nút góc + tiêu đề panel", "need": "", "max": "10", "current": "Âm thanh"}, {"id": "G2", "where": "3 thanh trượt", "need": "", "max": "12 mỗi cái", "current": "Nhạc nền · Meme · Tiếng đập"}, {"id": "G3", "where": "Ô tick", "need": "", "max": "15", "current": "Hiện meme"}]}, {"key": "H", "title": "Chữ trong meme", "rows": [{"id": "H1", "where": "Thắng trận", "need": "", "max": "20", "current": "PERFECT VICTORY"}, {"id": "H2", "where": "Cú đập đẹp, dòng 1 / dòng 2", "need": "", "max": "15 / 20", "current": "TRÌNH LÀ GÌ… / …LÀ TRÌNH HALAND!"}, {"id": "H3", "where": "Vỗ tay", "need": "", "max": "10", "current": "VỖ TAY!"}]}, {"key": "I", "title": "FTUE (chưa có trong game, theo mockup)", "rows": [{"id": "I1", "where": "Popup mời: tiêu đề", "need": "hỏi có phải lần đầu chơi", "max": "30", "current": ""}, {"id": "I2", "where": "Popup mời: dòng phụ", "need": "có hướng dẫn ngắn, mất bao lâu", "max": "70", "current": ""}, {"id": "I3", "where": "Popup mời: 2 nút", "need": "xem / bỏ qua", "max": "15 mỗi cái", "current": ""}, {"id": "I4", "where": "Nút chung các bước", "need": "tiếp / bỏ qua / nút cuối vào chơi", "max": "10 mỗi cái", "current": ""}, {"id": "I5", "where": "Bước 1 tiêu đề + nội dung", "need": "mục tiêu: lật bài mình ngửa, đè lên bài úp của địch; thắng 2 round", "max": "45 + 160", "current": ""}, {"id": "I6", "where": "Bước 2 tiêu đề + nội dung", "need": "cách đập: trong vòng đen, sát = mạnh, xa = nhẹ, không đập lên bài, tay hơi run", "max": "45 + 160", "current": ""}, {"id": "I7", "where": "Bước 3 tiêu đề + nội dung", "need": "khi nào ăn: chỉ ngửa đè úp, phải đè hẳn; ăn được cả trong lượt địch; 3–4 người bị ăn là loại", "max": "45 + 160", "current": ""}, {"id": "I8", "where": "Bước 3, chú thích 4 ô hình", "need": "m ăn / m bị ăn / cả 2 úp / cả 2 ngửa", "max": "25 mỗi ô", "current": ""}, {"id": "I9", "where": "Bước 4 tiêu đề + nội dung", "need": "làm rớt bất kỳ lá nào = mình bị loại; mẹo đập ngoài bàn", "max": "45 + 160", "current": ""}, {"id": "I10", "where": "Bước 5 tiêu đề + nội dung", "need": "gió, đập bằng vs nghiêng, bỏ lượt và vòng hồng, 30 giây", "max": "45 + 180", "current": ""}, {"id": "I11", "where": "Ván đầu: bong bóng chỉ tay", "need": "bảo click sát bài mình", "max": "60", "current": ""}, {"id": "I12", "where": "Nhắc: bài mình vừa ngửa", "need": "giờ đè lên bài địch", "max": "50", "current": ""}, {"id": "I13", "where": "Nhắc: bài địch ngửa đang gần bài mình úp", "need": "cẩn thận bị ăn", "max": "50", "current": ""}, {"id": "I14", "where": "Nhắc: bài mình sát mép", "need": "đập mạnh dễ rớt", "max": "50", "current": ""}, {"id": "I15", "where": "Nhắc: lần đầu bắt buộc đập", "need": "giải thích vòng hồng", "max": "50", "current": ""}, {"id": "I16", "where": "Nhắc: lần đầu hết giờ", "need": "hết giờ là mất lượt", "max": "40", "current": ""}, {"id": "I17", "where": "Bảng luật nhanh (nút ?): tiêu đề + 6 ô", "need": "", "max": "15 + 25 mỗi ô", "current": ""}]}, {"key": "J", "title": "Góc dưới & Info", "rows": [{"id": "J1", "where": "Nút mở bảng thông tin (góc phải dưới)", "need": "nút xem thông tin", "max": "8", "current": "Info"}, {"id": "J2", "where": "Bảng Info: tiêu đề", "need": "tên game", "max": "25", "current": "Dép Lào Tuổi Thơ"}, {"id": "J3", "where": "Bảng Info: dòng tác giả", "need": "ai làm game", "max": "30", "current": "Made by BillTheDev"}, {"id": "J4", "where": "Bảng Info: nhãn portfolio", "need": "", "max": "12", "current": "Portfolio:"}, {"id": "J5", "where": "Bảng Info: nhãn liên hệ", "need": "", "max": "12", "current": "Contact:"}, {"id": "J6", "where": "Bảng Info: nút đóng (dùng chung với bảng Âm thanh)", "need": "", "max": "8", "current": "Xong"}, {"id": "J7", "where": "Nút copy link khi trình duyệt chặn copy", "need": "bảo người chơi tự copy (ô link đã được bôi đen sẵn)", "max": "18", "current": "Chép tay giúp t"}, {"id": "J8", "where": "Góc dưới: FPS khi bàn đứng yên / khi đang chạy", "need": "", "max": "8", "current": "fps – / {n} fps"}]}];
+const KEY = 'slam-texts-v1';
+let draft = {};
+try { draft = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(draft)); } catch {} };
+const limitOf = (max) => parseInt(max, 10) || 0;
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const total = DATA.reduce((n, s) => n + s.rows.length, 0);
+document.getElementById('total').textContent = total;
+
+const main = document.getElementById('sections');
+main.innerHTML = DATA.map((s) => `
+  <section id="sec-${s.key}">
+    <h2><span class="k">${s.key}</span>${esc(s.title)}</h2>
+    <p class="empty-note">Điền hết mục này rồi.</p>
+    <div class="list">${s.rows.map((r) => `
+      <div class="row" data-id="${r.id}">
+        <div class="info">
+          <div class="where"><span class="id">${r.id}</span>${esc(r.where)}</div>
+          ${r.need ? `<div class="need">Cần nói: ${esc(r.need)}</div>` : ''}
+          ${r.current ? `<div class="cur">Hiện tại: <q>${esc(r.current)}</q></div>` : '<div class="cur">Hiện tại: chưa có trong game</div>'}
+        </div>
+        <div class="edit">
+          <textarea id="t-${r.id}" rows="1" aria-label="${r.id}: ${esc(r.where)}" placeholder="Câu m muốn…">${esc(draft[r.id] || '')}</textarea>
+          <div class="meta"><span class="len"></span>${r.current ? `<button type="button" data-keep="${r.id}">Giữ câu cũ</button>` : ''}</div>
+        </div>
+      </div>`).join('')}</div>
+  </section>`).join('');
+
+const rowsById = Object.fromEntries(DATA.flatMap((s) => s.rows.map((r) => [r.id, r])));
+
+function refreshRow(id) {
+  const r = rowsById[id];
+  const el = main.querySelector(`.row[data-id="${id}"]`);
+  const text = (draft[id] || '').trim();
+  el.classList.toggle('filled', Boolean(text));
+  const limit = limitOf(r.max);
+  const len = el.querySelector('.len');
+  len.textContent = limit ? `${text.length} / ${r.max} ký tự` : `${text.length} ký tự`;
+  len.className = 'len' + (limit && text.length > limit ? ' over' : '');
+}
+function refreshTotals() {
+  let filled = 0;
+  const chips = DATA.map((s) => {
+    const done = s.rows.filter((r) => (draft[r.id] || '').trim()).length;
+    filled += done;
+    document.getElementById(`sec-${s.key}`).classList.toggle('all-done', done === s.rows.length);
+    return `<a href="#sec-${s.key}" class="${done === s.rows.length ? 'done' : ''}">${s.key} · ${esc(s.title)} <span>${done}/${s.rows.length}</span></a>`;
+  });
+  document.getElementById('chips').innerHTML = chips.join('');
+  document.getElementById('count').textContent = filled;
+}
+Object.keys(rowsById).forEach(refreshRow);
+refreshTotals();
+
+main.addEventListener('input', (e) => {
+  if (e.target.tagName !== 'TEXTAREA') return;
+  const id = e.target.id.slice(2);
+  draft[id] = e.target.value;
+  save();
+  refreshRow(id);
+  refreshTotals();
+});
+main.addEventListener('click', (e) => {
+  const id = e.target.dataset?.keep;
+  if (!id) return;
+  const area = document.getElementById(`t-${id}`);
+  area.value = rowsById[id].current;
+  area.dispatchEvent(new Event('input', { bubbles: true }));
+});
+document.getElementById('hide-filled').addEventListener('change', (e) => {
+  document.body.classList.toggle('hide-filled', e.target.checked);
+});
+
+const cell = (s) => (s || '').replace(/\|/g, '\\|').replace(/\n/g, '<br>');
+function buildMd(onlyChanged) {
+  const out = ['# Chữ trong game Dép Lào Tuổi Thơ', ''];
+  for (const s of DATA) {
+    const rows = s.rows.filter((r) => !onlyChanged || (draft[r.id] || '').trim());
+    if (!rows.length) continue;
+    out.push(`## ${s.key}. ${s.title}`, '', '| ID | Chỗ hiện | Cần nói gì | Dài | Hiện tại | Chữ của m |', '|---|---|---|---|---|---|');
+    for (const r of rows) out.push(`| ${r.id} | ${cell(r.where)} | ${cell(r.need)} | ${cell(r.max)} | ${cell(r.current)} | ${cell((draft[r.id] || '').trim())} |`);
+    out.push('');
+  }
+  return out.join('\n');
+}
+async function copyMd(onlyChanged) {
+  const md = buildMd(onlyChanged);
+  const toast = document.getElementById('toast');
+  const fallback = document.getElementById('md-fallback');
+  try {
+    await navigator.clipboard.writeText(md);
+    fallback.hidden = true;
+    toast.textContent = onlyChanged ? 'Đã copy các dòng đã sửa.' : 'Đã copy cả bảng.';
+  } catch {
+    fallback.hidden = false;
+    fallback.value = md;
+    fallback.select();
+    toast.textContent = 'Trình duyệt chặn copy. Bảng đã bôi đen bên dưới, bấm Ctrl+C.';
+  }
+  setTimeout(() => { toast.textContent = ''; }, 4000);
+}
+document.getElementById('copy-all').addEventListener('click', () => copyMd(false));
+document.getElementById('copy-changed').addEventListener('click', () => copyMd(true));
+</script>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duyệt Meme</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a1418;--cream:#fffbf0;--paper:#f6eedb;--pink:#d63c6e;--mint:#7fd8b4;--muted:#6a5a52}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#f3e6dc;--cream:#2a2224;--paper:#1c1718;--muted:#b9aaa2}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Baloo 2",system-ui,sans-serif}
+header{max-width:1100px;margin:0 auto;padding:24px 16px 8px}
+h1{margin:0;font-size:32px}
+header p{margin:4px 0;color:var(--muted)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+button{font:inherit;font-weight:800;color:var(--ink);background:var(--cream);border:3px solid var(--ink);border-radius:10px;padding:2px 14px;min-height:40px;cursor:pointer}
+button.pri{background:var(--pink);color:#fff}
+main{max-width:1100px;margin:0 auto;padding:8px 16px 48px;display:flex;flex-direction:column;gap:16px}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:14px;background:var(--cream);border:3px solid var(--ink);border-radius:16px;padding:14px}
+.row.ok{outline:4px solid var(--mint)}
+.row.no{opacity:.6}
+.info h2{margin:0;font-size:22px}
+.info p{margin:2px 0 8px;color:var(--muted)}
+.sounds{display:flex;flex-direction:column;gap:8px}
+.sound{display:flex;flex-direction:column;gap:2px}
+.sound label{font-weight:700;display:flex;gap:6px;align-items:center}
+audio{width:100%;height:36px}
+.images{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.img{display:flex;flex-direction:column;gap:4px;font-weight:700}
+.img img{width:100%;aspect-ratio:4/3;object-fit:contain;background:#000;border-radius:10px;border:2px solid var(--ink)}
+.img label{display:flex;gap:6px;align-items:center}
+.decide{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.decide textarea{flex:1 1 200px;min-height:40px;font:inherit;border:2px solid var(--ink);border-radius:8px;padding:4px 8px;background:transparent;color:var(--ink)}
+@media (max-width:760px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Duyệt meme cho Dép Lào Tuổi Thơ</h1>
+  <p>Mỗi tình huống: nghe âm thanh, xem ảnh, tick lựa chọn m thích, rồi bấm Duyệt hoặc Bỏ. Xong bấm "Chép kết quả" rồi dán lại cho t.</p>
+  <p>Âm thanh lấy từ myinstants.com, ảnh từ imgflip.com (nhúng trực tiếp, chưa tải gì về game). Chỉ dùng bản chơi nội bộ.</p>
+  <div class="bar"><button class="pri" id="copy">Chép kết quả</button><span id="copied"></span></div>
+</header>
+<main id="list"></main>
+<script>
+const S = (f) => `https://www.myinstants.com/media/sounds/${f}`;
+const I = (id, ext = 'jpg') => `https://i.imgflip.com/${id}.${ext}`;
+const CASES = [
+  { id: 'capture', title: 'Ăn bài', when: 'Lá ngửa của mình đè lên lá úp của đối thủ.',
+    sounds: [['Emotional Damage', S('emotional-damage-meme.mp3')], ['Vine boom', S('vine-boom-sound-effect_KT89XIq.mp3')]],
+    images: [['Emotional Damage', I('601ima')], ['Surprised Pikachu', I('2kbn1e')]] },
+  { id: 'matchWin', title: 'Thắng trận', when: 'Người thắng thấy khi trận kết thúc.',
+    sounds: [['MLG Airhorn', S('airhorn.mp3')], ['DJ Airhorn', S('dj-airhorn-sound-effect-kingbeatz_1.mp3')]],
+    images: [['Deal with it like a boss', I('astm6')], ['MLG', I('wayc4')]] },
+  { id: 'matchLose', title: 'Thua trận', when: 'Người thua thấy khi trận kết thúc.',
+    sounds: [['Sad Violin (meme)', S('tf_nemesis.mp3')], ['Sad Violin', S('sad-violin.mp3')]],
+    images: [['Crying cat', I('p0a19')], ['Sad Pablo Escobar', I('1c1uej')]] },
+  { id: 'fall', title: 'Đập làm rớt bàn', when: 'Người đập làm rớt bài, bị xử thua round.',
+    sounds: [['BRUH', S('movie_1.mp3')], ['Ối dồi ôi (VN)', S('y2mate-mp3cut_d1tt0z9.mp3')]],
+    images: [['Certified bruh moment', I('7dw5cj', 'png')], ['Unsettled Tom', I('2wifvo')]] },
+  { id: 'pass', title: 'Bỏ lượt / đập hụt', when: 'Đập vào chỗ trống, không lá nào nhúc nhích.',
+    sounds: [['Huh?', S('huh_37bAoRo.mp3')]],
+    images: [['Huh cat', I('8338y8')]] },
+  { id: 'forced', title: 'Bị bắt buộc đập', when: 'Vừa bỏ lượt nên lượt này phải đập sát bài mình.',
+    sounds: [['FBI OPEN UP', S('fbi-open-up-sfx.mp3')], ['FBI OPEN UP (nổ)', S('fbi-open-up_dwLhIFf.mp3')]],
+    images: [['FBI OPEN UP', I('2qu042')], ['FBI open up 2', I('40husm', 'png')]] },
+  { id: 'timeout', title: 'Hết giờ lượt', when: 'Hết 30 giây không đập, tự bỏ lượt.',
+    sounds: [['Snore mimimi', S('snore-mimimimimimi.mp3')]],
+    images: [['Sleeping Shaq', I('1nck6k')]] },
+  { id: 'firstFlip', title: 'Lật ngửa lần đầu', when: 'Bài mình lần đầu lật ngửa trong round (nhân vật thức dậy).',
+    sounds: [['Anime WOW', S('anime-wow-sound-effect-mp3cut.mp3')]],
+    images: [['Surprised Pikachu', I('2kbn1e')], ['Surprised Koala', I('ljk')]] },
+  { id: 'tie', title: 'Hòa 1–1, vào round quyết định', when: 'Trước round cuối khi tỉ số đang 1–1.',
+    sounds: [['To Be Continued (JoJo)', S('untitled_1071.mp3')]],
+    images: [['To be continued', I('196nkz')], ['To Be Continued 2', I('59zq4u', 'png')]] },
+  { id: 'skill', title: 'Cú hay', when: 'Ăn bài từ xa, hoặc lá lật 2 vòng trở lên mà vẫn ăn.',
+    sounds: [['Trình là gì? (VN)', S('trinh-la-gi.mp3')], ['Vine boom', S('vine-boom-sound-effect_KT89XIq.mp3')]],
+    images: [['Galaxy Brain', I('2n589r')], ['Big brain time', I('33hgx5', 'png')]] },
+];
+
+let picks = {};
+try { picks = JSON.parse(localStorage.getItem('meme-picks') || '{}'); } catch { picks = {}; }
+const save = () => { try { localStorage.setItem('meme-picks', JSON.stringify(picks)); } catch {} };
+
+const list = document.getElementById('list');
+for (const c of CASES) {
+  const p = picks[c.id] ??= { sound: 0, image: 0, verdict: '', note: '' };
+  const row = document.createElement('section');
+  row.className = `row ${p.verdict}`;
+  row.innerHTML = `
+    <div class="info">
+      <h2>${c.title}</h2>
+      <p>${c.when}</p>
+      <div class="sounds">${c.sounds.map(([name, url], i) => `
+        <div class="sound">
+          <label><input type="radio" name="s-${c.id}" value="${i}" ${p.sound === i ? 'checked' : ''}> ${name}</label>
+          <audio controls preload="none" src="${url}"></audio>
+        </div>`).join('')}
+      </div>
+      <div class="decide">
+        <button data-v="ok">Duyệt</button>
+        <button data-v="no">Bỏ</button>
+        <textarea placeholder="Ghi chú (đổi meme khác, đổi tình huống…)">${p.note}</textarea>
+      </div>
+    </div>
+    <div class="images">${c.images.map(([name, url], i) => `
+      <div class="img">
+        <img src="${url}" alt="${name}" loading="lazy" referrerpolicy="no-referrer">
+        <label><input type="radio" name="i-${c.id}" value="${i}" ${p.image === i ? 'checked' : ''}> ${name}</label>
+      </div>`).join('')}
+    </div>`;
+  row.querySelectorAll(`input[name="s-${c.id}"]`).forEach((r) => r.onchange = () => { p.sound = Number(r.value); save(); });
+  row.querySelectorAll(`input[name="i-${c.id}"]`).forEach((r) => r.onchange = () => { p.image = Number(r.value); save(); });
+  row.querySelectorAll('[data-v]').forEach((b) => b.onclick = () => {
+    p.verdict = p.verdict === b.dataset.v ? '' : b.dataset.v;
+    row.className = `row ${p.verdict}`;
+    save();
+  });
+  row.querySelector('textarea').oninput = (e) => { p.note = e.target.value; save(); };
+  list.appendChild(row);
+}
+
+document.getElementById('copy').onclick = async () => {
+  const lines = CASES.map((c) => {
+    const p = picks[c.id];
+    const verdict = p.verdict === 'ok' ? 'DUYỆT' : p.verdict === 'no' ? 'BỎ' : 'chưa chọn';
+    return `- ${c.title}: ${verdict} | âm thanh: ${c.sounds[p.sound][0]} | ảnh: ${c.images[p.image][0]}${p.note ? ` | ghi chú: ${p.note}` : ''}`;
+  });
+  const text = lines.join('\n');
+  try { await navigator.clipboard.writeText(text); document.getElementById('copied').textContent = 'Đã chép!'; }
+  catch { prompt('Chép đoạn này:', text); }
+};
+</script>
+</body>
+</html>
