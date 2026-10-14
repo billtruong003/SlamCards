@@ -1,0 +1,639 @@
+<meta charset="utf-8">
+<title>Dép Lào: Tủ đồ</title>
+<meta name="description" content="Mockup lá bài có pet bên trong (stencil buffer), chọn dép + màu, và phòng chờ có Sẵn sàng.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: game-style workbench — 3D stage on the left, customise panel on the right, notes below.
+   Single deliberate look (the game's cream paper + ink outline), so no dark variant. */
+:root{
+  color-scheme: light;
+  --paper:#f6eedb; --cream:#fffbf0; --ink:#2a1418; --muted:#6a5a52; --pink:#d63c6e; --mint:#7fd8b4; --wood:#e7c38c;
+  --c1:#ff5c9d; --c2:#2fa8ff; --c3:#ffc93c; --c4:#3ccf6e;
+  --display:"Baloo 2",system-ui,sans-serif; --body:"Be Vietnam Pro",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{background:var(--paper);color:var(--ink)}
+body{margin:0;font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:20px 56px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,5vw,48px);font-weight:800}
+h1 em{font-style:normal;color:var(--pink)}
+h2{font-size:28px;font-weight:800}
+h3{font-size:19px;font-weight:800}
+p{margin:0;max-width:70ch}
+.lede{color:var(--muted);font-size:16px}
+.sticker{background:var(--cream);border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+
+.bench{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:900px){.bench{grid-template-columns:1fr}}
+.stage{position:relative;overflow:hidden;aspect-ratio:4/3;background:radial-gradient(circle at 50% 40%,#fbe9c8,#e8c48c)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.stage .hint{position:absolute;left:12px;bottom:10px;font:700 13px var(--display);color:var(--muted);background:rgba(255,251,240,.85);border-radius:8px;padding:0 8px}
+.stage .side{position:absolute;right:12px;top:12px;font:800 14px var(--display);background:var(--ink);color:var(--cream);border-radius:10px;padding:2px 10px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px}
+.btn{background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:2px 14px;font:800 16px var(--display);box-shadow:0 4px 0 var(--ink);min-height:44px}
+.btn.pri{background:var(--pink);color:#fff}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.btn[disabled]{opacity:.5;box-shadow:none;cursor:default}
+
+.panel{padding:14px;display:flex;flex-direction:column;gap:12px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border:3px solid var(--ink);border-radius:999px;background:var(--cream);font:800 15px var(--display);padding:0 14px;min-height:40px}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--cream)}
+.pets{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px;max-height:430px;overflow:auto;padding:2px}
+.pet{border:3px solid var(--ink);border-radius:12px;background:#fff;display:flex;flex-direction:column;align-items:center;padding:2px 2px 4px;font:700 12px var(--display);min-height:44px}
+.pet img{width:64px;height:64px;object-fit:contain}
+.pet[aria-pressed="true"]{background:var(--mint);transform:translateY(-2px);box-shadow:0 3px 0 var(--ink)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.choice{border:3px solid var(--ink);border-radius:12px;background:#fff;font:800 15px var(--display);padding:4px 12px;min-height:44px}
+.choice[aria-pressed="true"]{background:var(--mint)}
+.slot{display:flex;flex-direction:column;gap:6px}
+.slot b{font:800 14px var(--display)}
+.swatches{display:flex;flex-wrap:wrap;gap:6px}
+.sw{width:36px;height:36px;border-radius:50%;border:3px solid var(--ink);padding:0}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 3px var(--cream),0 0 0 6px var(--ink)}
+.ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.way{border:3px solid var(--ink);border-radius:14px;padding:8px 10px;display:flex;gap:10px;align-items:center;font:800 15px var(--display);text-align:left;min-height:56px;color:var(--ink)}
+.way i{font-style:normal;font-size:22px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--cream);border:3px solid var(--ink);flex:none}
+.way small{display:block;font:600 12px var(--body)}
+.way[aria-pressed="true"]{box-shadow:0 0 0 3px var(--cream),0 0 0 6px var(--ink)}
+.note{font-size:13px;color:var(--muted)}
+
+/* lobby mockup */
+.lobbies{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:18px}
+.lob{padding:16px;display:flex;flex-direction:column;gap:10px}
+.lob .cap{font:800 13px var(--display);color:var(--pink);letter-spacing:.05em;text-transform:uppercase}
+.seats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.seat{border:3px solid var(--ink);border-radius:14px;padding:8px;display:flex;gap:8px;align-items:center;font:800 15px var(--display);color:#fff;min-width:0}
+.seat .av{width:40px;height:40px;border-radius:10px;background:var(--cream);border:2px solid var(--ink);flex:none;overflow:hidden}
+.seat .av img{width:100%;height:100%;object-fit:contain}
+.seat small{display:block;font:700 11px var(--body);opacity:.95}
+.seat .st{margin-left:auto;font-size:11px;border-radius:999px;padding:0 8px;border:2px solid var(--ink);background:var(--cream);color:var(--ink);white-space:nowrap}
+.seat .st.ok{background:var(--mint)}
+.seat.empty{background:transparent;color:var(--muted);border-style:dashed}
+.crown{font-size:13px}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.card-note{padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card-note ul,.todo ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.tag{display:inline-block;font:800 11px var(--display);border:2px solid var(--ink);border-radius:999px;padding:0 8px;margin-right:4px;background:var(--cream)}
+.todo{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.todo h3{margin-top:4px}
+.todo li b{font-weight:700}
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:800 18px var(--display);color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Tủ đồ: <em>pet trong lá bài</em> + dép tự chọn màu</h1>
+    <p class="lede">Mockup chạy thật bằng three.js, cùng kiểu toon + viền mực của game. Mặt ngửa là một ô cửa nhìn vào căn phòng 3D có pet (stencil buffer), mặt úp có ô tròn nhìn thấy pet đang ngủ. Kéo để xoay bài, bấm "Lật bài" để xem mặt kia.</p>
+  </header>
+
+  <section class="bench">
+    <div class="sticker" style="overflow:hidden">
+      <div class="stage" id="stage"><div class="loading" id="loading">Đang dựng bàn…</div><span class="side" id="side">MẶT NGỬA</span><span class="hint">Kéo để xoay · lá bài là ô cửa, pet ở bên trong</span></div>
+      <div class="actions">
+        <button class="btn pri" id="flip">Lật bài</button>
+        <button class="btn" id="win">Pet thắng (nhảy)</button>
+        <button class="btn" id="lose">Pet bị ăn</button>
+        <button class="btn" id="idle">Đứng yên</button>
+      </div>
+    </div>
+
+    <div class="sticker panel">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="pet">Pet</button>
+        <button role="tab" aria-selected="false" data-tab="dep">Dép</button>
+        <button role="tab" aria-selected="false" data-tab="way">Màu bài</button>
+      </div>
+      <div data-pane="pet">
+        <div class="pets" id="pets"></div>
+        <p class="note">24 pet của Kenney (Cube Pets, giấy phép CC0). Mỗi pet có sẵn 8 động tác: đứng, đi, chạy, ăn, nhảy, gật, lắc đầu.</p>
+      </div>
+      <div data-pane="dep" hidden>
+        <div class="row" id="depTypes"></div>
+        <div id="slots" style="display:flex;flex-direction:column;gap:12px;margin-top:10px"></div>
+        <p class="note">Tô lại màu ngay trong shader: mỗi phần của dép đọc ô màu nó đang dùng trên palette rồi thay bằng màu người chơi chọn. Màu phẳng nên các dải toon hiện rõ (sửa luôn ART-01), không cần xuất lại model.</p>
+      </div>
+      <div data-pane="way" hidden>
+        <div class="ways" id="ways"></div>
+        <p class="note">Mỗi màu đi kèm một hoa văn và một biểu tượng riêng, để người mù màu vẫn phân biệt được bài của ai.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <h2>Phòng chờ: chỉ chủ phòng bắt đầu, người khác bấm Sẵn sàng</h2>
+    <div class="lobbies" id="lobbies"></div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <h2>Ý tưởng đưa nhân vật vào lá bài</h2>
+    <div class="cols">
+      <div class="sticker card-note"><h3>Úp = pet ngủ, ngửa = pet thức</h3><p>Luật "ngửa ăn úp" thành câu chuyện: mặt úp là ô tròn thấy pet đang ngủ trong đêm, có chữ Z bay lên. Lật ngửa là pet tỉnh dậy trong căn phòng sáng. Người mới nhìn là hiểu bài nào đang "sống".</p></div>
+      <div class="sticker card-note"><h3>Pet phản ứng theo trận</h3><ul><li>Ăn được bài: pet của mình nhảy (<code>dance</code>), pet bị đè lắc đầu (<code>gesture-negative</code>).</li><li>Bài đang bay: pet chạy tại chỗ (<code>run</code>).</li><li>Tới lượt mình: pet gật đầu (<code>gesture-positive</code>).</li><li>Rớt bàn: pet ngã ngửa, sao bay quanh đầu.</li></ul></div>
+      <div class="sticker card-note"><h3>Dép là đồ của pet</h3><p>Chiếc dép người chơi chọn (đúng kiểu, đúng màu) nằm cạnh pet trong căn phòng của lá bài, và cũng là chiếc dép rơi xuống bàn khi đập. Một lựa chọn, thấy ở 3 chỗ: phòng chờ, lá bài, cú đập.</p></div>
+      <div class="sticker card-note"><h3>Ô cửa có chiều sâu</h3><p>Lá bài nằm trên bàn mà nhìn vào vẫn thấy căn phòng sâu bên trong, nhờ stencil buffer: viền bài vẽ bình thường, ô cửa chỉ ghi stencil, mọi thứ trong phòng chỉ vẽ ở pixel có đúng mã stencil của lá đó. Mỗi lá một mã (1–4), mặt úp một mã khác.</p></div>
+    </div>
+  </section>
+
+  <section class="sticker todo" id="todo">
+    <h2>Cần làm những gì</h2>
+    <h3>1. Lá bài stencil + pet trong game</h3>
+    <ol>
+      <li><b>Bật stencil cho renderer</b> (<code>new WebGLRenderer({ stencil: true })</code>; three.js mặc định tắt từ r163). Mỗi lá một cặp mã stencil (mặt ngửa / mặt úp), tối đa 4 lá = 8 mã.</li>
+      <li><b>Dựng lá bài mới</b>: viền + mặt sau vẽ bằng texture canvas (màu, hoa văn, biểu tượng, tên pet), ô cửa là lưới chỉ ghi stencil, căn phòng + pet + dép đạo cụ dùng vật liệu so stencil. Thay shader lá bài hiện tại trong <code>cards.js</code>; vật lý (Rapier) giữ nguyên hộp 1 × 1.478.</li>
+      <li><b>Bài nằm trên bàn</b>: căn phòng nằm "dưới" mặt bàn nên bị bàn che ở bước depth test. Cần vẽ ô cửa đặt lại depth (ghi depth xa nhất) rồi mới vẽ phòng, và vẽ các lá theo thứ tự từ thấp lên cao để lá đè lên vẫn che lá dưới. Đây là phần khó nhất, phải làm prototype riêng trước.</li>
+      <li><b>Pet</b>: nạp 24 file GLB (~150 KB/con, chung 1 texture), chỉ tải pet của người trong phòng. <code>AnimationMixer</code> cho mỗi lá; nối động tác với sự kiện trận (ăn, bị ăn, tới lượt, bài bay, rớt bàn).</li>
+      <li><b>Hiệu năng</b>: tối đa 4 pet có xương + 4 phòng nhỏ, vẫn dưới ~50 draw call. Đo lại bằng <code>qa/perf.mjs</code> trên hồ sơ điện thoại yếu.</li>
+      <li><b>Nhãn ▲NGỬA/▼ÚP</b> vẫn giữ trong tuần đầu, vì ngủ/thức là ý mới, cần test xem người mới có hiểu không.</li>
+    </ol>
+    <h3>2. Dép nhiều màu, kiểu toon</h3>
+    <ol>
+      <li><b>Shader tô lại màu</b> cho dép (đã chạy trong mockup này): đọc ô palette của từng phần → thay bằng màu người chọn, màu phẳng nên ra dải toon rõ. Dép lào 2 phần, dép lê 3 phần, tổ ong 1 phần.</li>
+      <li><b>Bảng màu dép</b>: chốt khoảng 8 màu mỗi phần (đề xuất ở tab Dép).</li>
+      <li><b>Ảnh dép ở phòng chờ</b>: thay ảnh JPG render Blender bằng xem trước 3D trực tiếp (như mockup) hoặc chụp lại bằng chính shader game (ART-02).</li>
+    </ol>
+    <h3>3. Phòng chờ: chủ phòng + Sẵn sàng</h3>
+    <ol>
+      <li><b>Server</b>: lưu <code>host</code> (người tạo phòng; rời phòng thì chuyển cho người vào sớm nhất còn lại), <code>ready</code> cho từng người. Chỉ host được <code>start</code>, và chỉ khi ≥ 2 người và mọi người khác đã sẵn sàng. Đổi pet/dép/màu thì tự bỏ sẵn sàng. Thêm test tự động cho các luật này.</li>
+      <li><b>Client</b>: host thấy "Chiến thôi! (2/3 sẵn sàng)" (khóa tới khi đủ), khách thấy nút "Sẵn sàng" / "Hủy sẵn sàng"; ô ghế có vương miện cho host và nhãn Sẵn sàng.</li>
+      <li><b>Lưu lựa chọn</b>: pet, kiểu dép, màu từng phần, màu bài nhớ trong localStorage; gửi lên server trong <code>join</code>/<code>pickLook</code>; server kiểm tra hợp lệ và trùng màu bài (mỗi màu bài một người).</li>
+      <li><b>Tái đấu</b>: host bấm tái đấu, khách bấm sẵn sàng; gộp với việc UX-03 (còn mỗi mình thì đổi thành "Tạo phòng mới").</li>
+    </ol>
+    <h3>4. Màu bài mới</h3>
+    <ol>
+      <li><b>Thay 4 màu ghế</b> (đen/hồng/xanh/lục) bằng 4 màu tươi (hồng dâu, xanh biển, vàng nắng, xanh lá mạ) + hoa văn + biểu tượng ♥ ◆ ★ ♣. Cập nhật CSS ghế, nhãn bài, chip HUD, dòng điểm (sửa luôn UX-02).</li>
+      <li><b>Cho người chơi chọn màu bài</b> thay vì gán theo thứ tự vào phòng (màu đã có người lấy thì mờ đi).</li>
+    </ol>
+    <h3>5. Chữ, FTUE, test</h3>
+    <ol>
+      <li><b>Chữ mới vào TEXTS.md</b>: tên 24 pet, tên màu, Sẵn sàng / Hủy sẵn sàng / Đợi chủ phòng / "Chiến thôi! ({n}/{m} sẵn sàng)", tab Tủ đồ.</li>
+      <li><b>Cập nhật hướng dẫn</b> bước 1 và bước 3 (hình lá bài mới, ý ngủ/thức).</li>
+      <li><b>Test</b>: test server cho host/ready/chuyển host; chạy lại <code>qa/devices.mjs</code> (WebKit có stencil không, iPhone SE), <code>qa/perf.mjs</code>.</li>
+      <li><b>Ghi công</b> Kenney trong bảng Info (không bắt buộc với CC0 nhưng nên).</li>
+    </ol>
+  </section>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+
+const PETS = [
+  ['cat', 'Mèo'], ['dog', 'Chó'], ['panda', 'Gấu trúc'], ['fox', 'Cáo'], ['pig', 'Heo'], ['bunny', 'Thỏ'],
+  ['chick', 'Gà con'], ['penguin', 'Cánh cụt'], ['tiger', 'Hổ'], ['lion', 'Sư tử'], ['monkey', 'Khỉ'], ['koala', 'Gấu túi'],
+  ['cow', 'Bò'], ['deer', 'Nai'], ['elephant', 'Voi'], ['giraffe', 'Hươu cao cổ'], ['bee', 'Ong'], ['crab', 'Cua'],
+  ['fish', 'Cá'], ['parrot', 'Vẹt'], ['beaver', 'Hải ly'], ['hog', 'Heo rừng'], ['polar', 'Gấu Bắc cực'], ['caterpillar', 'Sâu'],
+];
+const WAYS = [
+  { id: 'hong', name: 'Hồng dâu', color: '#ff5c9d', dark: '#c2306b', suit: '♥', pattern: 'stripes', room: '#ffd6e6', floor: '#ffb3cf', night: '#3a2350' },
+  { id: 'xanh', name: 'Xanh biển', color: '#2fa8ff', dark: '#1a6fb3', suit: '◆', pattern: 'dots', room: '#d3ecff', floor: '#a7d6ff', night: '#1d2a55' },
+  { id: 'vang', name: 'Vàng nắng', color: '#ffc93c', dark: '#c98e00', suit: '★', pattern: 'zigzag', room: '#fff2c4', floor: '#ffe08a', night: '#3b2f4f' },
+  { id: 'la', name: 'Xanh lá mạ', color: '#3ccf6e', dark: '#1f8f45', suit: '♣', pattern: 'checker', room: '#d6f7e0', floor: '#a9ebbd', night: '#1f3b3a' },
+];
+const SLIPPERS = {
+  dep_lao: { name: 'Dép lào', slots: [{ cell: [3, 8], label: 'Mặt đế', def: '#fffaf0' }, { cell: [1, 14], label: 'Quai + viền đế', def: '#4f8ff0' }] },
+  dep_le: { name: 'Dép lê', slots: [{ cell: [3, 8], label: 'Lót chân', def: '#fffaf0' }, { cell: [2, 12], label: 'Đế', def: '#d93a3a' }, { cell: [0, 15], label: 'Quai', def: '#7a3d1a' }] },
+  dep_to_ong: { name: 'Tổ ong', slots: [{ cell: [3, 12], label: 'Cả chiếc', def: '#6cc3e8' }] },
+};
+const DEP_COLORS = ['#fffaf0', '#2a1418', '#ff5c9d', '#ff8a3d', '#ffc93c', '#3ccf6e', '#2fa8ff', '#4f8ff0', '#9b6bff', '#d93a3a', '#7a3d1a', '#6cc3e8'];
+
+const CARD_W = 1, CARD_H = 1.478, THICK = 0.016;
+const WIN = { cx: 0, cy: 0.13, hw: 0.38, hh: 0.47, r: 0.07 };
+const PORT = { cx: 0, cy: 0.04, r: 0.3 };
+const REF_FRONT = 1, REF_BACK = 2;
+
+const state = { pet: 'cat', way: WAYS[0], dep: 'dep_lao', colors: {}, faceUp: true };
+for (const [k, s] of Object.entries(SLIPPERS)) state.colors[k] = s.slots.map((x) => x.def);
+
+// ---------- renderer, scene ----------
+const stageEl = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, stencil: true, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+stageEl.prepend(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, 4 / 3, 0.05, 50);
+camera.position.set(0.5, 0.1, 3.3);
+camera.lookAt(0.45, 0, 0);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xd9c3a0, 0.75));
+const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+sun.position.set(1.5, 2.5, 3);
+scene.add(sun);
+
+// three light bands, same idea as the game's toon gradient but on flat colours
+const gradient = new THREE.DataTexture(new Uint8Array([95, 175, 255]), 3, 1, THREE.RedFormat);
+gradient.minFilter = gradient.magFilter = THREE.NearestFilter;
+gradient.needsUpdate = true;
+const toon = (opts) => new THREE.MeshToonMaterial({ gradientMap: gradient, ...opts });
+const gated = (material, ref) => Object.assign(material, { stencilWrite: true, stencilRef: ref, stencilFunc: THREE.EqualStencilFunc, stencilFail: THREE.KeepStencilOp, stencilZFail: THREE.KeepStencilOp, stencilZPass: THREE.KeepStencilOp });
+function outline(thickness) {
+  const m = new THREE.MeshBasicMaterial({ color: 0x2a1418, side: THREE.BackSide });
+  m.onBeforeCompile = (s) => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>\n transformed += normalize(normal) * ${thickness.toFixed(4)};`); };
+  return m;
+}
+
+function roundRect(shape, cx, cy, hw, hh, r, hole = false) {
+  const p = hole ? new THREE.Path() : shape;
+  p.moveTo(cx - hw + r, cy - hh);
+  p.lineTo(cx + hw - r, cy - hh); p.quadraticCurveTo(cx + hw, cy - hh, cx + hw, cy - hh + r);
+  p.lineTo(cx + hw, cy + hh - r); p.quadraticCurveTo(cx + hw, cy + hh, cx + hw - r, cy + hh);
+  p.lineTo(cx - hw + r, cy + hh); p.quadraticCurveTo(cx - hw, cy + hh, cx - hw, cy + hh - r);
+  p.lineTo(cx - hw, cy - hh + r); p.quadraticCurveTo(cx - hw, cy - hh, cx - hw + r, cy - hh);
+  if (hole) shape.holes.push(p);
+  return p;
+}
+const outerShape = () => { const s = new THREE.Shape(); roundRect(s, 0, 0, CARD_W / 2, CARD_H / 2, 0.085); return s; };
+function planarUV(geo) {
+  const pos = geo.attributes.position, uv = new Float32Array(pos.count * 2);
+  for (let i = 0; i < pos.count; i++) { uv[i * 2] = pos.getX(i) / CARD_W + 0.5; uv[i * 2 + 1] = pos.getY(i) / CARD_H + 0.5; }
+  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  return geo;
+}
+
+// ---------- canvas art for the card faces ----------
+const S = 512, SH = Math.round(S * CARD_H);
+const px = (x) => (x / CARD_W + 0.5) * S, py = (y) => (0.5 - y / CARD_H) * SH;
+function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
+function patternFill(ctx, way, x, y, w, h) {
+  ctx.save(); rr(ctx, x, y, w, h, 34); ctx.clip();
+  ctx.fillStyle = way.color; ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = 'rgba(255,255,255,.28)'; ctx.strokeStyle = 'rgba(255,255,255,.28)'; ctx.lineWidth = 14;
+  if (way.pattern === 'stripes') for (let i = -h; i < w + h; i += 46) { ctx.beginPath(); ctx.moveTo(x + i, y); ctx.lineTo(x + i - h, y + h); ctx.stroke(); }
+  if (way.pattern === 'dots') for (let j = 0; j < h; j += 40) for (let i = (j / 40) % 2 ? 20 : 0; i < w; i += 40) { ctx.beginPath(); ctx.arc(x + i, y + j, 8, 0, 7); ctx.fill(); }
+  if (way.pattern === 'zigzag') for (let j = 10; j < h; j += 44) { ctx.beginPath(); for (let i = 0; i <= w; i += 24) ctx.lineTo(x + i, y + j + ((i / 24) % 2 ? 14 : -14)); ctx.stroke(); }
+  if (way.pattern === 'checker') for (let j = 0; j < h; j += 36) for (let i = ((j / 36) % 2) * 36; i < w; i += 72) ctx.fillRect(x + i, y + j, 36, 36);
+  ctx.restore();
+}
+function inkRim(ctx) { ctx.lineWidth = 14; ctx.strokeStyle = '#2a1418'; rr(ctx, 7, 7, S - 14, SH - 14, 40); ctx.stroke(); }
+function frontTexture(way, petName) {
+  const c = document.createElement('canvas'); c.width = S; c.height = SH; const g = c.getContext('2d');
+  patternFill(g, way, 0, 0, S, SH);
+  g.fillStyle = '#fffbf0'; rr(g, 26, 26, S - 52, SH - 52, 30); g.fill();
+  g.fillStyle = way.color; rr(g, 40, 40, S - 80, SH - 80, 24); g.fill();
+  // window rim (the hole itself is cut in the mesh)
+  g.lineWidth = 12; g.strokeStyle = '#2a1418';
+  rr(g, px(WIN.cx - WIN.hw) - 4, py(WIN.cy + WIN.hh) - 4, (WIN.hw * 2 / CARD_W) * S + 8, (WIN.hh * 2 / CARD_H) * SH + 8, 40); g.stroke();
+  // name plate
+  const ny = py(WIN.cy - WIN.hh) + 26, nh = 92;
+  g.fillStyle = '#fffbf0'; rr(g, 70, ny, S - 140, nh, 22); g.fill(); g.lineWidth = 8; g.stroke();
+  g.fillStyle = '#2a1418'; g.font = '800 54px "Baloo 2", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(petName.toUpperCase(), S / 2, ny + nh / 2 + 4);
+  // corner suits
+  g.font = '800 58px "Baloo 2", sans-serif'; g.fillStyle = '#fffbf0'; g.strokeStyle = '#2a1418'; g.lineWidth = 7;
+  for (const [x, y] of [[68, 78], [S - 68, SH - 70]]) { g.strokeText(way.suit, x, y); g.fillText(way.suit, x, y); }
+  inkRim(g);
+  return toTex(c);
+}
+function backTexture(way) {
+  const c = document.createElement('canvas'); c.width = S; c.height = SH; const g = c.getContext('2d');
+  patternFill(g, way, 0, 0, S, SH);
+  g.lineWidth = 10; g.strokeStyle = '#fffbf0'; rr(g, 34, 34, S - 68, SH - 68, 28); g.stroke();
+  // porthole ring
+  const cx = px(PORT.cx), cy = py(PORT.cy), r = (PORT.r / CARD_W) * S;
+  g.lineWidth = 26; g.strokeStyle = '#fffbf0'; g.beginPath(); g.arc(cx, cy, r + 10, 0, 7); g.stroke();
+  g.lineWidth = 9; g.strokeStyle = '#2a1418'; g.beginPath(); g.arc(cx, cy, r + 2, 0, 7); g.stroke(); g.beginPath(); g.arc(cx, cy, r + 24, 0, 7); g.stroke();
+  g.font = '800 70px "Baloo 2", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffbf0'; g.strokeStyle = '#2a1418'; g.lineWidth = 8;
+  g.strokeText(way.suit, S / 2, SH - 110); g.fillText(way.suit, S / 2, SH - 110);
+  g.font = '800 34px "Baloo 2", sans-serif'; g.strokeText('DÉP LÀO', S / 2, 120); g.fillText('DÉP LÀO', S / 2, 120);
+  inkRim(g);
+  return toTex(c);
+}
+function toTex(c) { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; }
+function roomTexture(way, night) {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = night ? way.night : way.room; g.fillRect(0, 0, 256, 256);
+  g.fillStyle = night ? 'rgba(255,255,220,.8)' : 'rgba(255,255,255,.55)';
+  for (let i = 0; i < 26; i++) { const x = (i * 97) % 256, y = (i * 53) % 256; g.beginPath(); g.arc(x, y, night ? 2.5 : 9, 0, 7); g.fill(); }
+  const t = toTex(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 2); return t;
+}
+
+// ---------- the card ----------
+const card = new THREE.Group();
+card.position.set(-0.05, 0, 0);
+scene.add(card);
+const cardParts = {};
+
+function buildCard() {
+  for (const k of Object.keys(cardParts)) { card.remove(cardParts[k]); }
+  const way = state.way;
+  const petName = PETS.find((p) => p[0] === state.pet)[1];
+
+  // front face: frame with a window hole
+  const fShape = outerShape(); roundRect(fShape, WIN.cx, WIN.cy, WIN.hw, WIN.hh, WIN.r, true);
+  const front = new THREE.Mesh(planarUV(new THREE.ShapeGeometry(fShape, 24)), toon({ map: frontTexture(way, petName) }));
+  front.position.z = THICK / 2;
+  // back face: frame with a round porthole, facing -z
+  const bShape = outerShape(); const hole = new THREE.Path(); hole.absarc(PORT.cx, PORT.cy, PORT.r, 0, Math.PI * 2, true); bShape.holes.push(hole);
+  const backGeo = planarUV(new THREE.ShapeGeometry(bShape, 48));
+  const back = new THREE.Mesh(backGeo, toon({ map: backTexture(way) }));
+  back.rotation.y = Math.PI; back.position.z = -THICK / 2;
+  // edges only (extrude caps hidden): ink-coloured rim
+  const edgeGeo = new THREE.ExtrudeGeometry(outerShape(), { depth: THICK, bevelEnabled: false, curveSegments: 24 });
+  edgeGeo.translate(0, 0, -THICK / 2);
+  const edge = new THREE.Mesh(edgeGeo, [new THREE.MeshBasicMaterial({ visible: false }), new THREE.MeshBasicMaterial({ color: 0x2a1418 })]);
+
+  // stencil masks: write the card's code where its window / porthole is visible
+  const maskMat = (ref) => new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false, stencilWrite: true, stencilRef: ref, stencilFunc: THREE.AlwaysStencilFunc, stencilZPass: THREE.ReplaceStencilOp });
+  const wShape = new THREE.Shape(); roundRect(wShape, WIN.cx, WIN.cy, WIN.hw, WIN.hh, WIN.r);
+  const frontMask = new THREE.Mesh(new THREE.ShapeGeometry(wShape, 24), maskMat(REF_FRONT));
+  frontMask.position.z = THICK / 2; frontMask.renderOrder = 1;
+  const pShape = new THREE.Shape(); pShape.absarc(PORT.cx, PORT.cy, PORT.r, 0, Math.PI * 2);
+  const backMask = new THREE.Mesh(new THREE.ShapeGeometry(pShape, 48), maskMat(REF_BACK));
+  backMask.rotation.y = Math.PI; backMask.position.z = -THICK / 2; backMask.renderOrder = 1;
+
+  // the room behind the front window (only drawn where stencil == REF_FRONT)
+  const room = new THREE.Group();
+  const roomMat = gated(toon({ map: roomTexture(way, false), side: THREE.BackSide }), REF_FRONT);
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.0), roomMat);
+  box.position.set(0, WIN.cy + 0.2, -0.5 - THICK); box.renderOrder = 2;
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.0), gated(toon({ color: way.floor }), REF_FRONT));
+  floor.rotation.x = -Math.PI / 2; floor.position.set(0, WIN.cy - WIN.hh + 0.06, -0.5); floor.renderOrder = 2;
+  room.add(box, floor);
+  // the night room behind the back porthole (stencil == REF_BACK)
+  const night = new THREE.Group();
+  const nbox = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.9), gated(toon({ map: roomTexture(way, true), side: THREE.BackSide }), REF_BACK));
+  nbox.position.set(0, PORT.cy, 0.45 + THICK); nbox.renderOrder = 2;
+  const nfloor = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.9), gated(toon({ color: way.night }), REF_BACK));
+  nfloor.rotation.x = -Math.PI / 2; nfloor.position.set(0, PORT.cy - 0.24, 0.45); nfloor.renderOrder = 2;
+  night.add(nbox, nfloor);
+
+  Object.assign(cardParts, { front, back, edge, frontMask, backMask, room, night });
+  for (const k of Object.keys(cardParts)) card.add(cardParts[k]);
+  placePet();
+  placeProp();
+}
+
+// ---------- pets ----------
+const loader = new GLTFLoader();
+const petCache = {};
+const loadPet = (id) => (petCache[id] ??= loader.loadAsync(`pets/animal-${id}.json`));
+let petAwake = null, petAsleep = null, mixers = [], zees = [];
+
+function preparePet(gltf, ref, height) {
+  const root = SkeletonUtils.clone(gltf.scene);
+  const bbox = new THREE.Box3().setFromObject(root);
+  const size = bbox.getSize(new THREE.Vector3());
+  const s = height / size.y;
+  root.scale.setScalar(s);
+  root.position.y = -bbox.min.y * s;
+  const meshes = [];
+  root.traverse((o) => { if (o.isMesh) meshes.push(o); });
+  for (const m of meshes) {
+    m.material = gated(toon({ map: m.material.map }), ref);
+    m.renderOrder = 3;
+    const o = new THREE.Mesh(m.geometry, gated(outline(0.035 / s * 0.6), ref));
+    o.renderOrder = 3;
+    if (m.isSkinnedMesh) { const so = new THREE.SkinnedMesh(m.geometry, o.material); so.bind(m.skeleton, m.bindMatrix); so.renderOrder = 3; m.parent.add(so); } else m.add(o);
+  }
+  const holder = new THREE.Group(); holder.add(root);
+  const mixer = new THREE.AnimationMixer(root);
+  const clip = (name) => gltf.animations.find((a) => a.name === name);
+  return { holder, mixer, clip };
+}
+
+async function placePet() {
+  const id = state.pet;
+  const gltf = await loadPet(id);
+  if (id !== state.pet) return;
+  for (const p of [petAwake, petAsleep]) p?.holder.parent?.remove(p.holder);
+  mixers = [];
+  petAwake = preparePet(gltf, REF_FRONT, 0.42);
+  petAwake.holder.position.set(-0.04, WIN.cy - WIN.hh + 0.06, -0.42);
+  petAwake.holder.rotation.y = 0.35;
+  cardParts.room.add(petAwake.holder);
+  play(petAwake, 'idle');
+  petAsleep = preparePet(gltf, REF_BACK, 0.34);
+  petAsleep.holder.position.set(0, PORT.cy - 0.24, 0.42);
+  petAsleep.holder.rotation.set(0, Math.PI - 0.5, 0);
+  petAsleep.holder.scale.y = 0.92;
+  cardParts.night.add(petAsleep.holder);
+  play(petAsleep, 'static');
+  mixers = [petAwake.mixer, petAsleep.mixer];
+  // floating Z's over the sleeping pet
+  zees = [];
+  for (let i = 0; i < 3; i++) {
+    const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+    g.font = '800 54px "Baloo 2", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineWidth = 8; g.strokeStyle = '#2a1418'; g.fillStyle = '#fffbf0';
+    g.strokeText('Z', 32, 34); g.fillText('Z', 32, 34);
+    const sp = new THREE.Sprite(gated(new THREE.SpriteMaterial({ map: toTex(c), transparent: true }), REF_BACK));
+    sp.renderOrder = 4; sp.scale.setScalar(0.09); sp.userData.phase = i / 3;
+    cardParts.night.add(sp); zees.push(sp);
+  }
+}
+function play(pet, name) {
+  const clip = pet.clip(name) || pet.clip('idle');
+  pet.mixer.stopAllAction();
+  const a = pet.mixer.clipAction(clip);
+  a.reset().play();
+  if (name === 'gesture-negative' || name === 'gesture-positive') { a.setLoop(THREE.LoopOnce); a.clampWhenFinished = true; }
+}
+
+// ---------- slippers with recolourable parts ----------
+const depCache = {};
+const loadDep = (id) => (depCache[id] ??= loader.loadAsync(`models/${id}.json`));
+function recolourMaterial(map, slots, ref) {
+  const m = toon({ map });
+  m.userData.uniforms = { slotColor: { value: slots.map((c) => new THREE.Color(c)) } };
+  m.onBeforeCompile = (shader) => {
+    shader.uniforms.slotColor = m.userData.uniforms.slotColor;
+    const cases = slots.map((_, i) => i).map((i) => `if (abs(cell.x - CELLX${i}) < 0.5 && abs(cell.y - CELLY${i}) < 0.5) c = slotColor[${i}];`).join('\n');
+    shader.fragmentShader = shader.fragmentShader
+      .replace('void main() {', `uniform vec3 slotColor[${slots.length}];\nvoid main() {`)
+      .replace('#include <map_fragment>', `
+        vec4 tex = texture2D(map, vMapUv);
+        vec2 cell = vec2(floor(vMapUv.x * 16.0), floor(vMapUv.y * 4.0));
+        vec3 c = tex.rgb;
+        ${cases}
+        diffuseColor.rgb *= c;`);
+    SLIPPERS[state.dep].slots.forEach((s, i) => {
+      shader.fragmentShader = shader.fragmentShader.replace(`CELLX${i}`, `${s.cell[1].toFixed(1)}`).replace(`CELLY${i}`, `${s.cell[0].toFixed(1)}`);
+    });
+  };
+  m.customProgramCacheKey = () => `${state.dep}-${slots.length}`;
+  if (ref) gated(m, ref);
+  return m;
+}
+async function makeSlipper(ref, height) {
+  const id = state.dep;
+  const gltf = await loadDep(id);
+  const root = gltf.scene.clone(true);
+  const mats = [];
+  const meshes = [];
+  root.traverse((o) => { if (o.isMesh) meshes.push(o); });
+  const s = height;
+  root.scale.setScalar(s);
+  for (const mesh of meshes) {
+    const slots = state.colors[id];
+    mesh.material = recolourMaterial(mesh.material.map, slots, ref);
+    mats.push(mesh.material);
+    const o = new THREE.Mesh(mesh.geometry, ref ? gated(outline(0.012), ref) : outline(0.012));
+    mesh.add(o);
+    if (ref) { mesh.renderOrder = 3; o.renderOrder = 3; }
+  }
+  return { root, mats };
+}
+let showSlipper = null, propSlipper = null;
+async function placeSlipper() {
+  const dep = state.dep;
+  const big = await makeSlipper(null, 0.72);
+  if (dep !== state.dep) return;
+  if (showSlipper) scene.remove(showSlipper.root);
+  showSlipper = big;
+  big.root.position.set(0.95, -0.45, 0.2);
+  big.root.rotation.set(0.8, -0.6, 0.1);
+  scene.add(big.root);
+  placeProp();
+}
+async function placeProp() {
+  if (!cardParts.room) return;
+  const dep = state.dep;
+  const prop = await makeSlipper(REF_FRONT, 0.32);
+  if (dep !== state.dep) return;
+  if (propSlipper) propSlipper.root.parent?.remove(propSlipper.root);
+  propSlipper = prop;
+  prop.root.position.set(0.2, WIN.cy - WIN.hh + 0.07, -0.25);
+  prop.root.rotation.set(0, -0.9, 0);
+  cardParts.room.add(prop.root);
+}
+function recolour() {
+  for (const s of [showSlipper, propSlipper]) s?.mats.forEach((m) => m.userData.uniforms.slotColor.value.forEach((c, i) => c.set(state.colors[state.dep][i])));
+}
+
+// ---------- interaction ----------
+let yaw = 0.35, pitch = -0.08, targetYaw = 0.35, dragging = false, lastX = 0, lastY = 0, idleT = 0;
+renderer.domElement.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; renderer.domElement.setPointerCapture(e.pointerId); });
+renderer.domElement.addEventListener('pointermove', (e) => {
+  if (!dragging) return;
+  targetYaw += (e.clientX - lastX) * 0.01; pitch = Math.max(-0.6, Math.min(0.6, pitch + (e.clientY - lastY) * 0.006));
+  lastX = e.clientX; lastY = e.clientY; idleT = 0;
+});
+addEventListener('pointerup', () => { dragging = false; });
+document.getElementById('flip').onclick = () => { state.faceUp = !state.faceUp; targetYaw = (state.faceUp ? 0 : Math.PI) + 0.35; };
+document.getElementById('win').onclick = () => petAwake && play(petAwake, 'dance');
+document.getElementById('lose').onclick = () => petAwake && play(petAwake, 'gesture-negative');
+document.getElementById('idle').onclick = () => petAwake && play(petAwake, 'idle');
+
+function resize() {
+  const w = stageEl.clientWidth, h = stageEl.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stageEl);
+
+const clock = new THREE.Clock();
+function frame() {
+  requestAnimationFrame(frame);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  idleT += dt;
+  const sway = dragging ? 0 : Math.sin(idleT * 0.8) * 0.18;
+  yaw += (targetYaw + sway - yaw) * Math.min(1, dt * 6);
+  card.rotation.set(pitch, yaw, 0);
+  const facing = Math.cos(yaw) > 0;
+  document.getElementById('side').textContent = facing ? 'MẶT NGỬA · pet thức' : 'MẶT ÚP · pet ngủ';
+  for (const m of mixers) m.update(dt);
+  zees.forEach((z) => {
+    const t = (idleT * 0.35 + z.userData.phase) % 1;
+    z.position.set(0.06 + t * 0.12, PORT.cy - 0.02 + t * 0.26, 0.3);
+    z.material.opacity = Math.sin(t * Math.PI);
+  });
+  if (showSlipper) showSlipper.root.rotation.y = -0.6 + Math.sin(idleT * 0.5) * 0.25;
+  renderer.render(scene, camera);
+}
+
+// ---------- panel ----------
+const $ = (id) => document.getElementById(id);
+document.querySelectorAll('[role=tab]').forEach((t) => t.onclick = () => {
+  document.querySelectorAll('[role=tab]').forEach((x) => x.setAttribute('aria-selected', String(x === t)));
+  document.querySelectorAll('[data-pane]').forEach((p) => { p.hidden = p.dataset.pane !== t.dataset.tab; });
+});
+
+async function petThumbs() {
+  const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+  r.setSize(128, 128); r.outputColorSpace = THREE.SRGBColorSpace;
+  const sc = new THREE.Scene();
+  sc.add(new THREE.HemisphereLight(0xffffff, 0xd9c3a0, 0.8));
+  const l = new THREE.DirectionalLight(0xffffff, 2.2); l.position.set(1.5, 2.5, 3); sc.add(l);
+  const cam = new THREE.PerspectiveCamera(30, 1, 0.01, 20);
+  const urls = {};
+  for (const [id] of PETS) {
+    const gltf = await loadPet(id);
+    const p = preparePet(gltf, 0, 1);
+    p.holder.traverse((o) => { if (o.material) { o.material.stencilWrite = false; } });
+    p.holder.rotation.y = 0.5;
+    sc.add(p.holder);
+    cam.position.set(0, 0.65, 2.7); cam.lookAt(0, 0.45, 0);
+    r.render(sc, cam);
+    urls[id] = r.domElement.toDataURL('image/png');
+    sc.remove(p.holder);
+  }
+  r.dispose();
+  return urls;
+}
+
+function renderPets(thumbs) {
+  $('pets').innerHTML = PETS.map(([id, name]) => `<button class="pet" aria-pressed="${id === state.pet}" data-pet="${id}"><img alt="" src="${thumbs[id]}">${name}</button>`).join('');
+  $('pets').querySelectorAll('[data-pet]').forEach((b) => b.onclick = () => {
+    state.pet = b.dataset.pet;
+    $('pets').querySelectorAll('[data-pet]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    buildCard();
+    renderLobbies(thumbs);
+  });
+}
+function renderDepPanel() {
+  $('depTypes').innerHTML = Object.entries(SLIPPERS).map(([id, s]) => `<button class="choice" aria-pressed="${id === state.dep}" data-dep="${id}">${s.name}</button>`).join('');
+  $('depTypes').querySelectorAll('[data-dep]').forEach((b) => b.onclick = () => { state.dep = b.dataset.dep; renderDepPanel(); placeSlipper(); });
+  const slots = SLIPPERS[state.dep].slots;
+  $('slots').innerHTML = slots.map((s, i) => `<div class="slot"><b>${s.label}</b><div class="swatches">${DEP_COLORS.map((c) => `<button class="sw" style="background:${c}" aria-label="${s.label} ${c}" aria-pressed="${state.colors[state.dep][i] === c}" data-slot="${i}" data-c="${c}"></button>`).join('')}</div></div>`).join('');
+  $('slots').querySelectorAll('[data-slot]').forEach((b) => b.onclick = () => {
+    state.colors[state.dep][Number(b.dataset.slot)] = b.dataset.c;
+    renderDepPanel();
+    recolour();
+  });
+}
+function renderWays() {
+  $('ways').innerHTML = WAYS.map((w) => `<button class="way" style="background:${w.color}" aria-pressed="${w === state.way}" data-way="${w.id}"><i>${w.suit}</i><span>${w.name}<small>hoa văn: ${({ stripes: 'sọc chéo', dots: 'chấm bi', zigzag: 'răng cưa', checker: 'ô cờ' })[w.pattern]}</small></span></button>`).join('');
+  $('ways').querySelectorAll('[data-way]').forEach((b) => b.onclick = () => { state.way = WAYS.find((w) => w.id === b.dataset.way); renderWays(); buildCard(); });
+}
+function renderLobbies(thumbs) {
+  const seat = (w, name, pet, extra, st) => `<div class="seat" style="background:${w.color}"><span class="av"><img alt="" src="${thumbs[pet]}"></span><span style="min-width:0">${extra}${name}<small>${w.suit} ${w.name}</small></span>${st}</div>`;
+  const empty = '<div class="seat empty">Đợi tí…</div>';
+  const me = state.pet;
+  $('lobbies').innerHTML = `
+    <div class="sticker lob"><span class="cap">Chủ phòng thấy</span>
+      <div class="seats">${seat(WAYS[0], 'Bill (m)', me, '<span class="crown">👑</span> ', '<span class="st">Chủ phòng</span>')}${seat(WAYS[1], 'Tèo', 'panda', '', '<span class="st ok">✓ Sẵn sàng</span>')}${seat(WAYS[2], 'Tí', 'chick', '', '<span class="st">Đang chọn…</span>')}${empty}</div>
+      <button class="btn pri" disabled>Chiến thôi! (1/2 sẵn sàng)</button>
+      <p class="note">Khóa tới khi mọi người sẵn sàng. Có người đổi pet/dép/màu thì tự bỏ sẵn sàng.</p></div>
+    <div class="sticker lob"><span class="cap">Khách thấy</span>
+      <div class="seats">${seat(WAYS[0], 'Bill', 'fox', '<span class="crown">👑</span> ', '<span class="st">Chủ phòng</span>')}${seat(WAYS[1], 'Tèo (m)', me, '', '<span class="st">Chưa sẵn sàng</span>')}${seat(WAYS[2], 'Tí', 'chick', '', '<span class="st ok">✓ Sẵn sàng</span>')}${empty}</div>
+      <button class="btn pri">Sẵn sàng!</button>
+      <p class="note">Bấm lại thành "Hủy sẵn sàng". Khi đủ, dòng dưới đổi thành "Đợi Bill bắt đầu…".</p></div>`;
+}
+
+// ---------- boot ----------
+await document.fonts.ready;
+resize();
+buildCard();
+await placeSlipper();
+frame();
+$('loading').remove();
+renderDepPanel();
+renderWays();
+const thumbs = await petThumbs();
+renderPets(thumbs);
+renderLobbies(thumbs);
+window.__ready = true;
+</script>

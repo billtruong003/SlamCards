@@ -53,6 +53,31 @@ Ký hiệu: **QA** = lỗi kỹ thuật, **UX** = code chạy đúng nhưng ngư
 - [ ] **UX-10 · Chưa có số liệu FTUE**, không biết người mới bỏ ở bước nào. Đề xuất gắn event: `room_join_success`, `ftue_invite_yes/no`, `ftue_step_n`, `ftue_skip`, `first_slam`, `first_flip`, `round_end`, `match_end`, `rematch`.
 - [ ] **TXT-01 · Duyệt chữ nháp I17–I24 và K1–K7 trong TEXTS.md.**
 
+## Tính năng mới: Tủ đồ (pet trong lá bài, dép tự chọn màu, chủ phòng + Sẵn sàng)
+
+Mockup chạy thật: `mockup/customize/index.html` (artifact https://claude.ai/artifact/FMn6afs8qBzdu4unpgC9ex). Pet: Kenney Cube Pets (CC0), 24 con, mỗi con 8 động tác, ~150 KB. Ảnh mockup: `qa/customize-shots.mjs` → `qa/out/customize/`.
+
+**A. Phòng chờ: chủ phòng + Sẵn sàng** (làm trước, ít rủi ro, gộp với QA-07)
+- [ ] Server: `host` = người tạo phòng (rời thì chuyển cho người vào sớm nhất còn lại); `ready` cho từng người; chỉ host `start`, khi ≥ 2 người và mọi khách đã sẵn sàng; đổi đồ thì tự bỏ sẵn sàng. Test tự động cho từng luật.
+- [ ] Client: host thấy "Chiến thôi! ({n}/{m} sẵn sàng)" (khóa tới khi đủ), khách thấy "Sẵn sàng" / "Hủy sẵn sàng", ô ghế có 👑 và nhãn trạng thái. Tái đấu theo cùng luật (gộp UX-03).
+
+**B. Dép nhiều màu, kiểu toon** (sửa luôn ART-01, ART-02)
+- [ ] Shader tô lại màu theo ô palette (đã chạy trong mockup): dép lào 2 phần, dép lê 3 phần, tổ ong 1 phần. Bảng 12 màu mỗi phần.
+- [ ] Phòng chờ: thay ảnh JPG bằng xem trước 3D trực tiếp (hoặc chụp lại bằng shader game).
+
+**C. Lá bài stencil + pet**
+- [ ] Renderer bật `stencil: true`; mỗi lá 1 cặp mã (ngửa/úp), tối đa 4 lá.
+- [ ] Lá mới: mặt trước/sau vẽ bằng canvas (màu, hoa văn, biểu tượng, tên pet), ô cửa chỉ ghi stencil, căn phòng + pet + dép đạo cụ so stencil. Thay `cards.js`; vật lý giữ hộp 1 × 1.478.
+- [ ] **Prototype riêng phần khó nhất**: bài nằm trên bàn thì căn phòng nằm dưới mặt bàn, bị bàn che ở depth test. Cần ô cửa đặt lại depth trước khi vẽ phòng, và vẽ các lá từ thấp lên cao để lá đè vẫn che lá dưới. Mockup hiện chỉ chứng minh lá đứng giữa không gian.
+- [ ] Pet: chỉ tải pet của người trong phòng; `AnimationMixer` mỗi lá; nối động tác với sự kiện (ăn → nhảy, bị ăn → lắc đầu, tới lượt → gật, bài bay → chạy, rớt bàn → ngã).
+- [ ] Ý "úp = pet ngủ, ngửa = pet thức": giữ nhãn ▲NGỬA/▼ÚP một thời gian, playtest xem người mới có hiểu không.
+- [ ] Đo lại `qa/perf.mjs` (mục tiêu dưới ~50 draw call với 4 lá) và `qa/devices.mjs` (WebKit có stencil, iPhone SE).
+
+**D. Màu bài mới + chọn đồ**
+- [ ] Thay 4 màu ghế bằng hồng dâu / xanh biển / vàng nắng / xanh lá mạ + hoa văn (sọc chéo, chấm bi, răng cưa, ô cờ) + biểu tượng ♥ ◆ ★ ♣. Cập nhật CSS ghế, nhãn bài, chip HUD, dòng điểm (gộp UX-02).
+- [ ] Người chơi tự chọn màu bài (màu đã có người lấy thì mờ). Lưu pet/dép/màu trong localStorage, gửi lên server (`pickLook`), server kiểm tra hợp lệ + trùng màu.
+- [ ] Chữ mới vào TEXTS.md: tên 24 pet, tên màu, Sẵn sàng / Hủy sẵn sàng / Đợi chủ phòng / tab Tủ đồ. Sửa FTUE bước 1 + 3 theo lá bài mới. Ghi công Kenney trong bảng Info.
+
 ## Hình ảnh & hiệu năng
 
 - [ ] **ART-01 · Dép trong game nhìn như tô màu mượt, không ra chất toon.** Đã kiểm tra: dép có dùng `MeshToonMaterial` (3 dải) + viền mực, nhưng texture `art/blender/palette.png` là các ô **chuyển màu** (mỗi ô sáng → tối). UV của dép trải dọc ô nên bóng đổ đã "vẽ sẵn" trong màu, che mất các dải toon. Ảnh: `qa/screens/art01-slippers-closeup.png`.
