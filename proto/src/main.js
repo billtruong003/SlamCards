@@ -173,9 +173,16 @@ async function tokenFor(code) {
   if (!shared) return null;
   return (await anotherTabHas(code)) ? null : shared;
 }
+// Only the last few rooms keep a token on the device; older ones are dead anyway (QA-04).
+const KEEP_TOKENS = 5;
 function saveToken(code, token) {
   tabStore.set(tokenKey(code), token);
   deviceStore.set(tokenKey(code), token);
+  let recent = [];
+  try { recent = JSON.parse(deviceStore.get('slam-rooms') || '[]'); } catch { /* bad value */ }
+  recent = [code, ...recent.filter((c) => c !== code)];
+  for (const old of recent.slice(KEEP_TOKENS)) deviceStore.remove(tokenKey(old));
+  deviceStore.set('slam-rooms', JSON.stringify(recent.slice(0, KEEP_TOKENS)));
 }
 function forgetToken(code) {
   tabStore.remove(tokenKey(code));
@@ -203,8 +210,17 @@ function joinRoom(code, token) {
 let pendingPeek = null;
 async function openRoom(code, typed = false) {
   const token = await tokenFor(code);
-  pendingPeek = { code, token, typed };
+  const peek = { code, token, typed };
+  pendingPeek = peek;
   send({ t: 'peek', code, token: token ?? undefined });
+  // A server from before `peek` never answers (client and server out of step during a deploy):
+  // after 5 s go ahead and join; the join itself still reports a missing or full room (QA-03).
+  setTimeout(() => {
+    if (pendingPeek !== peek) return;
+    pendingPeek = null;
+    if (token || playerName.get()) joinRoom(code, token);
+    else renderNamePrompt(code);
+  }, 5000);
 }
 
 function onPeek(msg) {
@@ -219,7 +235,7 @@ function onPeek(msg) {
   // a typed code that matches nothing is most likely a typo, not an expired room (QA-02)
   if (!msg.exists) refuse(t(typed ? 'error.typedNotFound' : 'error.roomGone', { code }));
   else if (msg.mine) joinRoom(code, token);
-  else if (msg.phase !== 'lobby') refuse(t('error.inMatch'));
+  else if (msg.phase !== 'lobby') refuse(t('error.inMatchWait', { code })); // UX-08: say when to come back
   else if (msg.full) refuse(t('error.full'));
   else if (playerName.get()) joinRoom(code, null);
   else renderNamePrompt(code);
@@ -537,9 +553,15 @@ function setOverlay(key, html, { clear = false } = {}) {
   return true;
 }
 
+// First visit: the name box starts with a random silly name, so a friend opening an invite link
+// can press one button and play (UX-07). It is only saved once they actually go.
+const randomName = () => {
+  const names = t('menu.randomNames').split('|').map((n) => n.trim()).filter(Boolean);
+  return names[Math.floor(Math.random() * names.length)] ?? '';
+};
 function nameField() {
   return `<label class="name-field">${t('menu.nameLabel')}
-    <input class="input name" id="name" maxlength="16" placeholder="${escapeHtml(t('menu.namePlaceholder'))}" value="${escapeHtml(playerName.get())}" autocomplete="nickname">
+    <input class="input name" id="name" maxlength="16" placeholder="${escapeHtml(t('menu.namePlaceholder'))}" value="${escapeHtml(playerName.get() || randomName())}" autocomplete="nickname">
   </label>`;
 }
 
@@ -789,18 +811,22 @@ function renderOverlay() {
       const iWon = winner === me;
       const present = s.seats.filter((seat) => s.players[seat]?.connected);
       const waitingFor = present.filter((seat) => !s.rematch[seat]);
+      // Alone at the table: a rematch would wait forever, so offer a fresh room instead (UX-03).
+      const alone = present.length < 2;
       if (setOverlay(`match-${JSON.stringify(s.rematch)}-${present.join()}`, `
         <div class="panel">
           <h1 class="stamp ${iWon ? '' : 'pink'}">${iWon ? t('match.youWin') : t('match.theyWin', { name: escapeHtml(nameOf(winner)).toUpperCase() })}</h1>
           ${scoreLine()}
           ${s.result?.matchReason === 'disconnect' ? `<p class="sub">${t('match.allLeft')}</p>` : ''}
           <div class="row">
-            <button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? t('match.rematchWaiting') : t('match.rematch')}</button>
+            ${alone ? `<button class="btn pri" id="new-room">${t('match.newRoom')}</button>`
+    : `<button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? t('match.rematchWaiting') : t('match.rematch')}</button>`}
             <button class="btn" id="menu">${t('match.menu')}</button>
           </div>
           ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">${t('match.waitingFor', { names: list(waitingFor.map(htmlName)) })}</p>` : ''}
         </div>`)) {
-        $('rematch').onclick = () => send({ t: 'rematch' });
+        if (alone) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), dep: playerDep.get() || undefined });
+        else $('rematch').onclick = () => send({ t: 'rematch' });
         $('menu').onclick = () => { location.href = location.pathname; };
       }
       break;
@@ -952,6 +978,9 @@ const LATE_SLAM_MS = 600;
 const turnMsLeft = () => state.remainingMs - (performance.now() - stateAt);
 const myTurnToAim = () => state && state.phase === 'turn' && state.turn === me && state.alive.includes(me)
   && !sim && !playback && !awaitingServer && turnMsLeft() > LATE_SLAM_MS;
+// A tap in that closed last half second used to do nothing at all; now it says why (UX-09).
+const tooLate = () => state && state.phase === 'turn' && state.turn === me && state.alive.includes(me)
+  && !sim && !playback && !awaitingServer && turnMsLeft() <= LATE_SLAM_MS;
 const cardPositions = () => Object.fromEntries(world.seats.map((s) => [s, world.cards[s].mesh.position]));
 
 function isValidAim(point) {
@@ -982,7 +1011,11 @@ canvas.addEventListener('pointermove', (e) => {
 // Mouse: click to slam. Touch/pen: press and drag to aim, lift the finger to slam.
 let touchAiming = false;
 canvas.addEventListener('pointerdown', (e) => {
-  if (!myTurnToAim()) return;
+  if (!myTurnToAim()) {
+    const late = tooLate() && world.pointerToGround(e.clientX, e.clientY);
+    if (late) popText(late, t('turn.tooLate'));
+    return;
+  }
   const point = world.pointerToGround(e.clientX, e.clientY);
   if (e.pointerType === 'mouse') {
     if (e.button === 0 && point && isValidAim(point)) slam(point);
@@ -1000,6 +1033,7 @@ canvas.addEventListener('pointerup', (e) => {
   pointer = null;
   pointerMoved = true;
   if (point && myTurnToAim() && isValidAim(point)) slam(point);
+  else if (point && tooLate()) popText(point, t('turn.tooLate'));
 });
 canvas.addEventListener('pointercancel', () => {
   touchAiming = false;

@@ -64,6 +64,8 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
   const disabled = new URLSearchParams(location.search).has('noftue');
   let seen = saved.get('slam-ftue') === 'seen';
   let matches = Number(saved.get('slam-ftue-matches')) || 0;
+  // the pointer is for a player who has never slammed; a reload mid-match must not bring it back (QA-05)
+  let slammedOnce = saved.get('slam-ftue-slammed') === '1';
   let page = -1;
   let resumeAt = null;
   let state = null;
@@ -279,7 +281,7 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
       tipUntil = now + TIP_MS;
     }
 
-    const showPointer = canAim && !pointerDone && matches === 0 && !disabled && state?.round === 1 && modal.hidden;
+    const showPointer = canAim && !pointerDone && !slammedOnce && matches === 0 && !disabled && state?.round === 1 && modal.hidden;
     point.hidden = !showPointer;
     if (!showPointer) return;
     // A slam pushes the card away from where the slipper lands, so the pointer sits behind the
@@ -301,7 +303,7 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
     const at = world.toScreen(target.x, 0, target.z);
     point.style.transform = `translate(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px)`;
     // near the top the bubble would cover the turn banner, so it hangs below the pulse instead
-    point.classList.toggle('below', at.y < 240);
+    point.classList.toggle('below', at.y < 280);
     // Keep the speech bubble (240 px wide, centred on the pulse) inside the screen.
     const centre = Math.min(Math.max(at.x, 128), innerWidth - 128);
     point.style.setProperty('--shift', `${(centre - at.x).toFixed(1)}px`);
@@ -309,6 +311,7 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
 
   function onSlam() {
     pointerDone = true;
+    if (!slammedOnce) { slammedOnce = true; saved.set('slam-ftue-slammed', '1'); }
     point.hidden = true;
   }
 

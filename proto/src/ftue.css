@@ -120,16 +120,25 @@
 /* Phone held upright, during a match: the slam-type buttons own the bottom edge, so the corner
    buttons and what they open move to the top right, under the wind. */
 @media (max-width:820px) and (orientation:portrait){
-  #hud:not([hidden]) ~ #corner{top:48px;bottom:auto;right:6px}
-  #hud:not([hidden]) ~ .panel-box{top:98px;bottom:auto;right:6px}
-  #hud:not([hidden]) ~ .ftue-bubble{top:98px;bottom:auto;right:6px}
-  #hud:not([hidden]) ~ .ftue-tip{top:136px}
+  /* below two rows of player chips (3-4 players wrap), so the corner row never sits on a name */
+  #hud:not([hidden]) ~ #corner{top:72px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .panel-box{top:122px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .ftue-bubble{top:122px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .ftue-tip{top:160px}
   /* the turn banner sits in the top band under the corner buttons, clear of the player's own card
      at the bottom where the first-turn pointer and its bubble go (UX-11) */
-  #hud:not([hidden]) ~ #banner{top:98px;bottom:auto}
-  #hud:not([hidden]) ~ #toast{top:136px}
+  #hud:not([hidden]) ~ #banner{top:122px;bottom:auto}
+  #hud:not([hidden]) ~ #toast{top:160px}
   /* memes: a small card in the top-left corner under the scores, not over the table (UX-05) */
-  .meme-card{top:176px;bottom:auto;left:8px;right:auto;width:min(130px,34vw);transform-origin:top left}
+  .meme-card{top:200px;bottom:auto;left:8px;right:auto;width:min(130px,34vw);transform-origin:top left}
+}
+/* Phone, during a match: the corner row shrinks to icons (the words are in the aria-labels),
+   so it fits beside the hint and the turn banner in both orientations. */
+@media (max-width:820px){
+  #hud:not([hidden]) ~ #corner #lang span{display:none}
+  #hud:not([hidden]) ~ #corner #info,#hud:not([hidden]) ~ #corner #settings{font-size:0;padding:0}
+  #hud:not([hidden]) ~ #corner #info::before{content:"i";font-size:19px;font-family:Georgia,serif;font-weight:700}
+  #hud:not([hidden]) ~ #corner #settings::before{content:"♪";font-size:18px}
 }
 /* Phone on its side: the tip goes under the turn banner instead of on top of it (UX-12). */
 @media (max-width:820px) and (orientation:landscape){

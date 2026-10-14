@@ -201,7 +201,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 }
 @media (max-width:820px) and (orientation:landscape){
   #banner{top:46px;bottom:auto}
-  #hint{bottom:8px;width:auto;max-width:60vw}
+  #hint{bottom:8px;width:auto;max-width:calc(100vw - 440px);white-space:normal}
   #toggle{left:8px;transform:none;bottom:8px;flex-direction:column}
   .meme-card{top:50px;bottom:auto}
 }

@@ -19,13 +19,15 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 | Code | Name | Shipped |
 |---|---|---|
 | vi | Tiếng Việt | yes |
-| en | English | no |
-| zh-Hans | 简体中文 | no |
-| zh-Hant | 繁體中文 | no |
-| id | Bahasa Indonesia | no |
-| th | ไทย | no |
-| pt-BR | Português | no |
-| es | Español | no |
+| en | English | yes |
+| zh-Hans | 简体中文 | yes |
+| zh-Hant | 繁體中文 | yes |
+| id | Bahasa Indonesia | yes |
+| th | ไทย | yes |
+| pt-BR | Português | yes |
+| es | Español | yes |
+| ja | 日本語 | yes |
+| ko | 한국어 | yes |
 
 ## menu
 
@@ -33,49 +35,53 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 |---|---|---|---|---|
 | `menu.title` | A1 | Game name: browser tab title | 20 | Dép Lào Tuổi Thơ |
 | `menu.logo` | A1 | Game logo on the menu, big stamp text; \n is the line break | 20 | DÉP LÀO\nTUỔI THƠ |
-| `menu.tagline` | A2 | Line under the logo: what the game is, how many players | 40 | Đập bài tuổi thơ, chiến online 2–4 đứa |
-| `menu.nameLabel` | A3 | Label above the player name field | 15 | Tên của m |
+| `menu.tagline` | A2 | Line under the logo: what the game is, how many players | 40 | Đập bài bằng dép · online 2–4 đứa |
+| `menu.nameLabel` | A3 | Label above the player name field | 15 | Tên m là gì? |
 | `menu.namePlaceholder` | A4 | Grey example text inside the name field | 15 | VD: Tí sún |
 | `menu.defaultName` | A5 | Name used when the player leaves it blank (server adds " 2", " 3" for duplicates) | 12 | Tí vô danh |
 | `menu.create` | A6 | Button: create a room | 12 | Tạo phòng |
 | `menu.codePlaceholder` | A7 | Grey text / screen-reader label of the 4-letter room code field | 10 | Mã phòng |
 | `menu.join` | A8 | Button: join a room (menu and invite screen) | 12 | Vào phòng |
+| `menu.randomNames` | Si Sandal|Bocil Gesit|Raja Cilok|Ucup Turbo|Mbak Bakso|Jago Tepok|Kancil Kece|Bang Geprek|Dedek Ompol|Mas Kerupuk | Not shown as one line: a \| separated list of silly nicknames; one is picked at random to prefill the name box on a first visit. Each name max 16 characters, kid-friendly, local flavour | 400 | Tí sún\|Tèo mũi\|Bé Bự\|Cu Tũn\|Mít ướt\|Tủn béo\|Bin lém\|Su hào\|Bống bang\|Cò hương |
 
 ## invite
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `invite.sub` | A9 | Invite-link screen: you were invited to room {code}. {code} is pre-escaped HTML markup; keep the placeholder. | 40 | Có đứa rủ m vào phòng {code} nè! |
+| `invite.sub` | A9 | Invite-link screen: you were invited to room {code}. {code} is pre-escaped HTML markup; keep the placeholder. | 40 | Vào phòng {code} chơi với tụi nó! |
 
 ## error
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `error.notFound` | A10 | Menu error: wrong room code | 30 | Không thấy phòng này đâu! |
-| `error.inMatch` | A11 | Menu error: that room is mid-match | 30 | Phòng đang đánh dở, tạo phòng mới đi! |
-| `error.full` | A12 | Menu error: room already has 4 players | 30 | Phòng đủ 4 đứa rồi, vào không được! |
-| `error.roomGone` | K1 | Menu error: invite link to a room that no longer exists | 100 | Phòng {code} không còn nữa rồi. Có thể nó hết hạn hoặc server vừa khởi động lại. Tạo phòng mới nhé! |
-| `error.otherTab` | K2 | Menu error: the same room was opened in another browser tab | 60 | Phòng này đang mở ở tab khác rồi. Chơi tiếp ở tab đó nhé! |
-| `error.reconnecting` | K5 | Menu error: pressed Create/Join while offline | 40 | Đang kết nối lại, đợi tí rồi bấm nhé! |
+| `error.notFound` | A10 | Menu error: wrong room code | 30 | Không tìm thấy phòng! |
+| `error.inMatch` | A11 | Menu error: that room is mid-match | 30 | Đang chơi rồi! Tạo phòng mới! |
+| `error.full` | A12 | Menu error: room already has 4 players | 30 | Đủ 4 đứa rồi! Phòng đầy! |
+| `error.inMatchWait` | Room {code} lagi main. Buka link-nya lagi pas udah selesai! | Menu error after opening an invite link (or typing a code) for a room whose match is already running. {code} = room code | 70 | Phòng {code} đang đánh dở. Đợi hết trận rồi bấm lại link nhé! |
+| `error.roomGone` | K1 | Menu error: invite link to a room that no longer exists | 100 | Phòng {code} không còn nữa. Có thể đã hết hạn hoặc server vừa khởi động lại. Tạo phòng mới nhé! |
+| `error.typedNotFound` | Room {code} nggak ada. Cek lagi kodenya! | Menu error after typing a room code that matches no room (likely a typo). {code} = the 4 letters typed | 45 | Không thấy phòng {code}. Xem lại mã nhé! |
+| `error.codeShort` | Kode room isinya 4 huruf! | Menu error when Join is pressed with fewer than 4 letters in the room code box | 40 | Mã phòng có 4 ký tự nhé! |
+| `error.otherTab` | K2 | Menu error: the same room was opened in another browser tab | 60 | Phòng đang mở ở tab khác. Qua tab đó chơi tiếp nhé! |
+| `error.reconnecting` | K5 | Menu error: pressed Create/Join while offline | 40 | Đang nối lại mạng, đợi tí rồi bấm lại nhé! |
 
 ## lobby
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
 | `lobby.title` | B1 | Lobby heading: room {code}. {code} is pre-escaped HTML markup; keep the placeholder. | 15 | Phòng {code} |
-| `lobby.sub` | B2 | Lobby subtitle: send the link to friends | 45 | Gửi link rủ thêm chiến hữu vào đập! |
+| `lobby.sub` | B2 | Lobby subtitle: send the link to friends | 45 | Gửi link kéo tụi bạn vào đập bài. |
 | `lobby.linkLabel` |  | Screen-reader label of the invite link field | 20 | Link mời |
 | `lobby.copy` | B3 | Button: copy invite link | 10 | Copy link |
-| `lobby.copied` | B3 | Copy button after copying | 10 | Đã copy! |
+| `lobby.copied` | B3 | Copy button after copying | 10 | Copy rồi! |
 | `lobby.copyManual` | J7 | Copy button when the browser blocks copying | 18 | Tự copy nhé! |
 | `lobby.seatCard` | B4 | Small line in a player slot: their card colour ({color} is seat.* in lower case) | 14 | Bài {color} |
 | `lobby.you` | B4 | Marks your own slot in the lobby and the turn order ("· m"); means "you" | 4 | m |
-| `lobby.waiting` | B5 | Empty player slot, big text | 12 | Đợi tí… |
-| `lobby.empty` | B5 | Empty player slot, small text | 8 | Còn trống |
-| `lobby.reading` | I20 | Tag under a player who is reading the tutorial (step {n} of {total}) | 25 | đang xem cách chơi {n}/{total} |
-| `lobby.depTitle` | B6 | Heading above the slipper picker | 20 | Chọn dép chiến |
-| `lobby.needMore` | B8 | Start button while alone in the room | 25 | Đợi thêm 1 đứa nữa! |
-| `lobby.start` | B9 | Start button with {n} players | 20 | Chiến thôi! ({n} đứa) |
+| `lobby.waiting` | B5 | Empty player slot, big text | 12 | Đợi người… |
+| `lobby.empty` | B5 | Empty player slot, small text | 8 | Trống |
+| `lobby.reading` | I20 | Tag under a player who is reading the tutorial (step {n} of {total}) | 25 | xem luật {n}/{total} |
+| `lobby.depTitle` | B6 | Heading above the slipper picker | 20 | Chọn dép đi chiến |
+| `lobby.needMore` | B8 | Start button while alone in the room | 25 | Cần thêm 1 đứa nữa! |
+| `lobby.start` | B9 | Start button with {n} players | 20 | Chiến! ({n} đứa) |
 
 ## dep
 
@@ -91,15 +97,15 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 |---|---|---|---|---|
 | `seat.black` | B10 | Card colour name: black (upper case; also used lower-cased in lobby.seatCard) | 5 | ĐEN |
 | `seat.pink` | B10 | Card colour name: red/pink seat | 5 | ĐỎ |
-| `seat.blue` | B10 | Card colour name: blue | 5 | XANH |
-| `seat.green` | B10 | Card colour name: green | 5 | LỤC |
+| `seat.blue` | B10 | Card colour name: blue | 5 | XANH DƯƠNG |
+| `seat.green` | B10 | Card colour name: green | 5 | XANH LÁ |
 
 ## round
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
 | `round.title` | C1 | Round intro heading: round {n} | 10 | VÁN {n} |
-| `round.sub` | C2 | Round intro: your card colour, win {n} rounds to win the match. {color} is pre-escaped HTML markup; keep the placeholder. | 50 | Bài m màu {color}. Thắng {n} ván là ăn cả trận! |
+| `round.sub` | C2 | Round intro: your card colour, win {n} rounds to win the match. {color} is pre-escaped HTML markup; keep the placeholder. | 50 | Bài m màu {color}. Thắng {n} ván là thắng trận! |
 
 ## rps
 
@@ -110,11 +116,11 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 | `rps.bua` | C4 | Rock | 5 | Búa |
 | `rps.keo` | C4 | Scissors | 5 | Kéo |
 | `rps.bao` | C4 | Paper | 5 | Bao |
-| `rps.locked` | C5 | After you picked: waiting for the opponent | 30 | Chốt rồi! Đợi đối thủ… |
+| `rps.locked` | C5 | After you picked: waiting for the opponent | 30 | Chốt rồi! Đợi đứa kia… |
 | `rps.oppLocked` | C6 | Opponent has picked. {name} is pre-escaped HTML markup; keep the placeholder. | 25 | {name} chốt rồi |
 | `rps.oppChoosing` | C6 | Opponent still picking. {name} is pre-escaped HTML markup; keep the placeholder. | 25 | {name} đang chọn… |
 | `rps.timer` |  | Seconds left, short unit | 5 | {secs}s |
-| `rps.draw` | C8 | RPS result: draw, play again | 15 | HÒA! LÀM LẠI! |
+| `rps.draw` | C8 | RPS result: draw, play again | 15 | HÒA! LẠI NÀO! |
 | `rps.youWin` | C9 | RPS result: you won | 15 | M THẮNG! |
 | `rps.theyWin` | C9 | RPS result: {name} won ({name} is upper-cased HTML) | 15 | {name} THẮNG! |
 | `rps.you` |  | Your side label on the RPS reveal ("you") | 6 | M |
@@ -123,18 +129,18 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `choose.title` | C10 | RPS winner: go first or let the other go first? | 30 | Đập trước hay nhường nó? |
+| `choose.title` | C10 | RPS winner: go first or let the other go first? | 30 | Đập trước hay nhường? |
 | `choose.first` | C11 | Button: go first | 15 | Đập trước |
 | `choose.yield` | C11 | Button: let the opponent go first | 15 | Nhường |
-| `choose.note` | C12 | Explains pros/cons of going first | 80 | Đập trước được lợi thế, nhưng cũng dễ ăn đòn trước đấy! |
-| `choose.wait` | C13 | RPS loser waits for {name} to choose | 25 | Đợi {name} chọn lượt… |
+| `choose.note` | C12 | Explains pros/cons of going first | 80 | Đập trước có lợi thế, nhưng cũng dễ bị ăn bài trước! |
+| `choose.wait` | C13 | RPS loser waits for {name} to choose | 25 | Đợi {name} chọn… |
 
 ## order
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
 | `order.title` | C14 | 3-4 players: turn order heading | 15 | THỨ TỰ ĐẬP |
-| `order.sub` | C15 | Turn order: your colour, last one standing wins. {color} is pre-escaped HTML markup; keep the placeholder. | 55 | M cầm bài {color}. Trụ lại cuối cùng là thắng ván! |
+| `order.sub` | C15 | Turn order: your colour, last one standing wins. {color} is pre-escaped HTML markup; keep the placeholder. | 55 | M cầm bài {color}. Còn lại cuối cùng là thắng ván! |
 
 ## hud
 
@@ -149,19 +155,20 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 |---|---|---|---|---|
 | `turn.flat` | D3 | Slam-type button: flat slam (PC adds " · Q") | 15 | Đập bằng |
 | `turn.tilt` | D3 | Slam-type button: tilted slam (PC adds " · E") | 15 | Đập nghiêng |
-| `turn.mine` | D4 | Banner: your turn, {secs} seconds left | 22 | TỚI M ĐẬP! · {secs}s |
+| `turn.mine` | D4 | Banner: your turn, {secs} seconds left | 22 | TỚI M! · {secs}s |
 | `turn.forced` | D5 | Banner: you must slam (passed last turn) | 22 | PHẢI ĐẬP! · {secs}s |
 | `turn.other` | D6 | Banner: {name}'s turn ({name} upper-cased) | 25 | TỚI {name} · {secs}s |
 | `turn.flying` | D7 | Banner right after your slam: cards flying | 22 | BÀI ĐANG BAY… |
-| `turn.waitReplay` | D7 | Banner: waiting for others to watch your slam replay | 25 | ĐỢI MỌI NGƯỜI XEM… |
+| `turn.waitReplay` | D7 | Banner: waiting for others to watch your slam replay | 25 | ĐỢI TỤI NÓ XEM XONG… |
 | `turn.otherSlams` | D8 | Banner while {name} slams ({name} upper-cased) | 18 | {name} ĐẬP! |
-| `turn.hintMouse` | D9 | Bottom hint on PC during your turn | 90 | Click để đập · Càng sát càng mạnh · Đập chỗ trống = bỏ lượt · Q/E đổi kiểu |
+| `turn.hintMouse` | D9 | Bottom hint on PC during your turn | 90 | Click để đập · Sát bài = mạnh hơn · Đập chỗ trống = bỏ lượt · Q/E đổi kiểu |
 | `turn.hintTouch` | D10 | Bottom hint on phones during your turn | 70 | Kéo để ngắm, thả để đập · Đập chỗ trống = bỏ lượt |
-| `turn.hintForced` | D11 | Bottom hint when forced to slam inside the pink ring | 70 | Bỏ lượt rồi à? Giờ phải đập trong vòng hồng! |
+| `turn.hintForced` | D11 | Bottom hint when forced to slam inside the pink ring | 70 | M vừa bỏ lượt. Giờ phải đập trong vòng hồng! |
 | `turn.hintSettle` | D12 | Bottom hint: wait for cards to stop | 25 | Đợi bài nằm yên đã! |
 | `turn.hintWatching` | D13 | Bottom hint: watching {name} slam | 30 | Đang xem {name} đập |
 | `turn.hintAiming` | D13 | Bottom hint: {name} is aiming | 30 | {name} đang ngắm… |
 | `turn.hintOut` | D14 | Bottom hint: you are eliminated, keep watching | 45 | M bị loại rồi! Ngồi hóng tiếp thôi. |
+| `turn.tooLate` | Telat! | Pop text where the player tapped in the last ~0.6 s of their turn, when a slam can no longer be sent | 10 | Hết giờ! |
 
 ## card
 
@@ -177,23 +184,23 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `toast.timeout` | E1 | Toast: {name} ran out of time | 30 | {name} hết giờ, mất lượt! |
-| `toast.pass` | E2 | Toast: {name} passed | 25 | {name} bỏ lượt rồi! |
-| `toast.fall` | E3 | Toast (3-4 players): {name} knocked a card off and is out | 35 | {name} đập rớt bài! Bị loại! |
+| `toast.timeout` | E1 | Toast: {name} ran out of time | 30 | {name} hết giờ! Mất lượt! |
+| `toast.pass` | E2 | Toast: {name} passed | 25 | {name} bỏ lượt! |
+| `toast.fall` | E3 | Toast (3-4 players): {name} knocked a card off and is out | 35 | {name} làm rớt bài! Bị loại! |
 | `toast.capture` | E4 | Toast (3-4 players): {by} captured {out} (names, comma list) | 30 | {by} ăn bài của {out}! |
-| `toast.left` | E5 | Toast: {out} left the match | 25 | {out} nghỉ chơi rồi. |
-| `toast.dropped` | E7 | Toast: other players lost connection; waiting up to 60 s | 50 | {names} rớt mạng! Đợi tối đa 60 giây… |
+| `toast.left` | E5 | Toast: {out} left the match | 25 | {out} rời trận rồi. |
+| `toast.dropped` | E7 | Toast: other players lost connection; waiting up to 60 s | 50 | {names} mất kết nối! Đợi tối đa 60 giây… |
 
 ## net
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `net.lost` | E6 | Toast: your connection dropped, reconnecting | 30 | Rớt mạng rồi! Đang kết nối lại… |
+| `net.lost` | E6 | Toast: your connection dropped, reconnecting | 30 | Mất kết nối! Đang nối lại… |
 | `net.lag` | E8 | Toast: network is slow | 20 | Mạng hơi lag… |
-| `net.failTitle` | K3 | Connection-failed card: heading | 25 | Không vào được server! |
-| `net.failBody` | K3 | Connection-failed card: explanation | 80 | Thử mấy lần rồi vẫn không được. Kiểm tra mạng, hoặc đợi tí rồi thử lại. |
+| `net.failTitle` | K3 | Connection-failed card: heading | 25 | Không nối được server! |
+| `net.failBody` | K3 | Connection-failed card: explanation | 80 | Vẫn chưa kết nối được. Kiểm tra mạng hoặc đợi một chút rồi thử lại nhé. |
 | `net.retry` | K4 | Connection-failed card: retry button | 10 | Thử lại |
-| `net.retryIn` | K4 | Connection-failed card: auto retry countdown | 30 | Tự thử lại sau {secs} giây… |
+| `net.retryIn` | K4 | Connection-failed card: auto retry countdown | 30 | Thử lại sau {secs} giây… |
 | `net.retrying` | K4 | Connection-failed card: retrying now | 30 | Đang thử lại… |
 | `net.fpsIdle` | J8 | Corner stats: frame rate when the table is idle | 8 | fps – |
 | `net.fps` | J8 | Corner stats: frames per second | 8 | {n} fps |
@@ -207,8 +214,8 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 | `result.fall` | F1 | Round end heading: a card fell off | 12 | RỚT BÀN! |
 | `result.left` | F1 | Round end heading: someone left | 12 | RỜI TRẬN |
 | `result.capture` | F1 | Round end heading: a capture | 12 | ĂN RỒI! |
-| `result.fallHow` | F2 | Round end: {name} knocked a card off, out. {name} is pre-escaped HTML markup; keep the placeholder. | 45 | {name} đập rớt bài, bị loại! |
-| `result.leftHow` |  | Round end: {out} left. {out} is pre-escaped HTML markup; keep the placeholder. | 45 | {out} nghỉ chơi rồi. |
+| `result.fallHow` | F2 | Round end: {name} knocked a card off, out. {name} is pre-escaped HTML markup; keep the placeholder. | 45 | {name} làm rớt bài, bị loại! |
+| `result.leftHow` |  | Round end: {out} left. {out} is pre-escaped HTML markup; keep the placeholder. | 45 | {out} rời trận rồi. |
 | `result.captureHow` | F3 | Round end: {by}'s face-up card lies on {out}'s face-down card. {by} and {out} are pre-escaped HTML. | 45 | Bài ngửa của {by} đè bài úp của {out}! |
 | `result.roundWinner` | F4 | Round end, after the explanation: {name} wins the round. {name} is pre-escaped HTML markup; keep the placeholder. | 25 | {name} thắng ván này! |
 
@@ -218,9 +225,10 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 |---|---|---|---|---|
 | `match.youWin` | F5 | Match end heading: you won | 15 | M THẮNG RỒI! |
 | `match.theyWin` | F5 | Match end heading: {name} won ({name} upper-cased HTML) | 15 | {name} THẮNG! |
-| `match.allLeft` | F6 | Match end: everyone else left | 35 | Mọi người nghỉ chơi hết rồi! |
+| `match.allLeft` | F6 | Match end: everyone else left | 35 | Tụi nó nghỉ chơi hết rồi! |
 | `match.rematch` | F7 | Button: rematch | 12 | Tái đấu |
 | `match.rematchWaiting` | F7 | Rematch button after pressing: waiting for the others | 20 | Đợi tụi nó… |
+| `match.newRoom` | Bikin room baru | Match-end button shown instead of Rematch when everyone else has left; makes a fresh room | 18 | Tạo phòng mới |
 | `match.menu` | F8 | Button: back to menu | 10 | Về menu |
 | `match.waitingFor` | F9 | Who has not pressed rematch yet. {names} is pre-escaped HTML markup; keep the placeholder. | 40 | Đang đợi: {names} |
 
@@ -233,7 +241,7 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 | `sound.music` | G2 | Volume slider: music (label column is 80 px) | 12 | Nhạc nền |
 | `sound.meme` | G2 | Volume slider: meme sounds | 12 | Meme |
 | `sound.sfx` | G2 | Volume slider: slipper sound effects | 12 | Tiếng dép |
-| `sound.memesOn` | G3 | Checkbox: show meme reactions | 15 | Bật meme |
+| `sound.memesOn` | G3 | Checkbox: show meme reactions | 15 | Hiện meme |
 
 ## meme
 
@@ -242,19 +250,19 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 | `meme.perfectVictory` | H1 | Caption on the match-win meme image (Mortal Kombat quote; often kept in English) | 20 | PERFECT VICTORY |
 | `meme.trinh1` | H2 | Skill-shot meme, line 1; plays with a Vietnamese voice clip ("what is skill…") | 15 | TRÌNH LÀ GÌ… |
 | `meme.trinh2` | H2 | Skill-shot meme, line 2 ("…is Haaland-level skill!") | 20 | …LÀ TRÌNH HALAND! |
-| `meme.clap` | H3 | Round-win meme: "let's clap!" | 10 | VỖ TAY NÀO! |
+| `meme.clap` | H3 | Round-win meme: "let's clap!" | 10 | VỖ TAY! |
 
 ## ftue
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `ftue.invite.title` | I1 | Lobby invite card: first time playing? | 30 | Lần đầu đập bài à? |
-| `ftue.invite.sub` | I2 | Lobby invite card: offers a 1-minute tutorial | 70 | Xem hướng dẫn nhanh 1 phút nhé. Không khó đâu! |
+| `ftue.invite.title` | I1 | Lobby invite card: first time playing? | 30 | Lần đầu chơi à? |
+| `ftue.invite.sub` | I2 | Lobby invite card: offers a 1-minute tutorial | 70 | Một phút là hiểu cách chơi. Xem thử nhé! |
 | `ftue.invite.yes` | I3 | Invite card button: show me how | 15 | Chỉ t chơi |
-| `ftue.invite.no` | I3 | Invite card button: I already know | 15 | Biết chơi rồi |
+| `ftue.invite.no` | I3 | Invite card button: I already know | 15 | T biết rồi |
 | `ftue.next` | I4 | Tutorial button: next | 10 | Tiếp |
 | `ftue.skip` | I4 | Tutorial button: skip | 10 | Bỏ qua |
-| `ftue.done` | I4 | Tutorial last-step button: play | 10 | Chiến thôi! |
+| `ftue.done` | I4 | Tutorial last-step button: play | 10 | Chiến! |
 | `ftue.step` |  | Tutorial step counter above the title | 20 | CÁCH CHƠI · {n}/{total} |
 | `ftue.step1.title` | I5 | Tutorial step 1 title: goal | 45 | LẬT BÀI, ĂN ĐỐI THỦ! |
 | `ftue.step1.p1` | I5 | Tutorial step 1, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 110 | Đập cho bài m <b>ngửa</b> lên, rồi đè lên bài <b>úp</b> của đối thủ để ăn. |
@@ -262,46 +270,46 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 | `ftue.step1.mineUp` |  | Step 1 picture label: your card, face up | 14 | bài m: NGỬA |
 | `ftue.step1.enemyDown` |  | Step 1 picture label: enemy card, face down | 14 | bài địch: ÚP |
 | `ftue.step1.eat` |  | Step 1 picture pop text: capture! | 6 | ĂN! |
-| `ftue.step2.title` | I6 | Tutorial step 2 title: aiming | 45 | NHẮM CHO CHUẨN! |
-| `ftue.step2.p1` | I6 | Tutorial step 2, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | Chọn điểm đập trong <b>vòng đen</b> quanh bài. Càng sát, lực càng mạnh. |
-| `ftue.step2.p2` | I6 | Tutorial step 2, paragraph 2 | 70 | Không đập lên lá bài được. Tay m sẽ hơi run đấy. |
+| `ftue.step2.title` | I6 | Tutorial step 2 title: aiming | 45 | NGẮM CHO CHUẨN! |
+| `ftue.step2.p1` | I6 | Tutorial step 2, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | Ngắm trong <b>vòng đen</b> quanh bài m. Đập càng sát bài, lực càng mạnh. |
+| `ftue.step2.p2` | I6 | Tutorial step 2, paragraph 2 | 70 | Không đập trực tiếp lên bài được. Tay m sẽ hơi run. |
 | `ftue.step2.touch` |  | Tutorial step 2, extra paragraph on phones | 40 | Kéo để ngắm, thả để đập. |
-| `ftue.step2.reach` |  | Step 2 picture label: black ring = your reach | 26 | vòng đen = tầm với của m |
-| `ftue.step2.dropHere` |  | Step 2 picture label: slipper lands here | 14 | dép rơi đây |
+| `ftue.step2.reach` |  | Step 2 picture label: black ring = your reach | 26 | vòng đen = tầm với |
+| `ftue.step2.dropHere` |  | Step 2 picture label: slipper lands here | 14 | đập xuống đây |
 | `ftue.step3.title` | I7 | Tutorial step 3 title: face up beats face down | 45 | NGỬA ĂN ÚP! |
 | `ftue.step3.p1` | I7 | Tutorial step 3, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 70 | Bài ngửa phải <b>đè hẳn</b> lên bài úp mới ăn được. |
-| `ftue.step3.p2` | I7 | Tutorial step 3, paragraph 2 | 80 | Địch tự đập bài nó lật úp nằm dưới bài m ngửa thì m vẫn ăn! |
-| `ftue.step3.p3` | I7 | Tutorial step 3, paragraph 3. May contain <b>…</b> for emphasis; keep tags balanced. | 50 | Chơi 3–4 người, bị ăn là <b>bị loại</b>! |
+| `ftue.step3.p2` | I7 | Tutorial step 3, paragraph 2 | 80 | Địch tự đập bài nó úp xuống dưới bài m đang ngửa, m vẫn ăn nhé! |
+| `ftue.step3.p3` | I7 | Tutorial step 3, paragraph 3. May contain <b>…</b> for emphasis; keep tags balanced. | 50 | Chơi 3–4 đứa, bị ăn bài là <b>bị loại</b>! |
 | `ftue.step3.win` | I8 | Step 3 picture caption: you capture | 25 | M ăn! |
 | `ftue.step3.lose` | I8 | Step 3 picture caption: you get captured | 25 | M bị ăn! |
 | `ftue.step3.bothDown` | I8 | Step 3 picture caption: both face down | 25 | Cả hai úp |
 | `ftue.step3.bothUp` | I8 | Step 3 picture caption: both face up | 25 | Cả hai ngửa |
 | `ftue.step4.title` | I9 | Tutorial step 4 title: do not knock cards off | 45 | ĐỪNG LÀM RỚT BÀI! |
-| `ftue.step4.p1` | I9 | Tutorial step 4, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 80 | Làm <b>bất kỳ lá bài nào</b> rớt khỏi bàn là m bị loại ngay! |
-| `ftue.step4.p2` | I9 | Tutorial step 4, paragraph 2 | 80 | Muốn chơi an toàn thì đừng đập quá mạnh gần mép bàn. |
+| `ftue.step4.p1` | I9 | Tutorial step 4, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 80 | Làm <b>bất kỳ lá nào</b> rớt khỏi bàn là m bị loại ngay! |
+| `ftue.step4.p2` | I9 | Tutorial step 4, paragraph 2 | 80 | Gần mép bàn thì nhẹ tay thôi. Đập mạnh dễ làm bài bay mất. |
 | `ftue.step4.slamHere` |  | Step 4 picture label: you slam here | 14 | m đập đây |
 | `ftue.step4.fall` |  | Step 4 picture label: card falls | 8 | RỚT! |
 | `ftue.step4.out` |  | Step 4 picture stamp: you are out | 14 | M BỊ LOẠI |
-| `ftue.step5.title` | I10 | Tutorial step 5 title: a few more tricks | 45 | CÒN VÀI CHIÊU NỮA! |
-| `ftue.step5.p1` | I10 | Tutorial step 5, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | <b>Gió</b> có thể làm bài bay lệch. M có thể đổi kiểu <b>đập bằng</b> hoặc <b>nghiêng</b>. |
-| `ftue.step5.p2` | I10 | Tutorial step 5, paragraph 2. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | Bỏ lượt thì lượt sau buộc phải đập trong <b>vòng hồng</b>. Mỗi lượt có 30 giây thôi! |
-| `ftue.pointer` | I11 | First-turn speech bubble pointing next to your card (bubble is 240 px wide). May contain <b>…</b> for emphasis; keep tags balanced. | 60 | Thử đập <b>sát bài m</b> xem nào! |
-| `ftue.confirm.title` | I21 | Start-confirm card: {name} is still reading the tutorial | 25 | {name} đang học luật |
-| `ftue.confirm.body` | I22 | Start-confirm card: they are at step {n}/{total}; they can finish during the match. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | Nó mới xem tới bước <b>{n}/{total}</b>. Bắt đầu luôn thì nó xem tiếp trong trận được. |
+| `ftue.step5.title` | I10 | Tutorial step 5 title: a few more tricks | 45 | THÊM VÀI CHIÊU NÀY! |
+| `ftue.step5.p1` | I10 | Tutorial step 5, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | <b>Gió</b> có thể đẩy bài bay lệch. M đổi được kiểu <b>đập bằng</b> và <b>đập nghiêng</b>. |
+| `ftue.step5.p2` | I10 | Tutorial step 5, paragraph 2. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | Bỏ lượt thì lượt sau phải đập trong <b>vòng hồng</b>. Mỗi lượt có 30 giây! |
+| `ftue.pointer` | I11 | First-turn speech bubble pointing next to your card (bubble is 240 px wide). May contain <b>…</b> for emphasis; keep tags balanced. | 60 | Thử đập <b>sát bài m</b> đi! |
+| `ftue.confirm.title` | I21 | Start-confirm card: {name} is still reading the tutorial | 25 | {name} đang xem luật |
+| `ftue.confirm.body` | I22 | Start-confirm card: they are at step {n}/{total}; they can finish during the match. May contain <b>…</b> for emphasis; keep tags balanced. | 90 | Đang ở bước <b>{n}/{total}</b>. Bắt đầu luôn thì vẫn xem tiếp trong trận được. |
 | `ftue.confirm.go` | I22 | Start-confirm button: start anyway | 15 | Bắt đầu luôn |
 | `ftue.confirm.wait` | I22 | Start-confirm button: wait | 15 | Đợi tí |
-| `ftue.stashed` | I23 | Bubble by the "?" button when the match starts mid-tutorial. May contain <b>…</b> for emphasis; keep tags balanced. | 60 | Hướng dẫn cất ở đây. Bấm <b>?</b> xem tiếp từ bước <b>{n}/{total}</b>. |
+| `ftue.stashed` | I23 | Bubble by the "?" button when the match starts mid-tutorial. May contain <b>…</b> for emphasis; keep tags balanced. | 60 | Bấm <b>?</b> để xem tiếp từ bước <b>{n}/{total}</b>. |
 
 ## tip
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
 | `tip.label` | I24 | Tag in front of in-match tips | 5 | MẸO |
-| `tip.flipped` | I12 | Tip: your card just turned face up | 50 | Ngửa rồi kìa! Giờ tìm cách đè bài địch! |
-| `tip.threat` | I13 | Tip: face-up enemy card near your face-down card | 50 | Bài địch đang ngửa sát bài m, coi chừng bị đè! |
-| `tip.edge` | I14 | Tip: your card is near the table edge | 50 | Sát mép rồi! Đập mạnh là bay luôn đấy! |
-| `tip.forced` | I15 | Tip: first forced slam, explains the pink ring | 50 | Bỏ lượt rồi nhé! Giờ phải đập trong vòng hồng. |
-| `tip.timeout` | I16 | Tip: first timeout | 40 | Hết giờ là mất lượt đấy! |
+| `tip.flipped` | I12 | Tip: your card just turned face up | 50 | Ngửa rồi! Tìm cách đè lên bài úp của địch! |
+| `tip.threat` | I13 | Tip: face-up enemy card near your face-down card | 50 | Bài địch đang ngửa ngay gần m. Coi chừng bị đè! |
+| `tip.edge` | I14 | Tip: your card is near the table edge | 50 | Sát mép bàn rồi! Nhẹ tay kẻo bài bay mất! |
+| `tip.forced` | I15 | Tip: first forced slam, explains the pink ring | 50 | M vừa bỏ lượt. Giờ phải đập trong vòng hồng. |
+| `tip.timeout` | I16 | Tip: first timeout | 40 | Hết giờ là mất lượt nhé! |
 
 ## rules
 
@@ -309,13 +317,13 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 |---|---|---|---|---|
 | `rules.title` | I17 | Quick-rules panel ("?" button) heading | 15 | NHỚ 6 ĐIỀU NÀY! |
 | `rules.r1` | I17a | Quick rule 1: your face-up on enemy face-down = capture | 35 | M ngửa đè địch úp = ăn |
-| `rules.r2` | I17b | Quick rule 2: enemy face-up on your face-down = captured | 35 | Địch ngửa đè m úp = bị ăn |
-| `rules.r3` | I17c | Quick rule 3: knock a card off = out | 35 | M đập làm rớt bài = bị loại |
-| `rules.r4` | I17d | Quick rule 4: same side or just touching = play on | 40 | Cùng mặt hoặc chỉ chạm = đánh tiếp |
-| `rules.r5` | I17e | Quick rule 5: just passed = must slam in the pink ring | 45 | Vừa bỏ lượt = phải đập trong vòng hồng |
+| `rules.r2` | I17b | Quick rule 2: enemy face-up on your face-down = captured | 35 | Địch ngửa đè m úp = thua |
+| `rules.r3` | I17c | Quick rule 3: knock a card off = out | 35 | Làm rớt bất kỳ bài nào = bị loại |
+| `rules.r4` | I17d | Quick rule 4: same side or just touching = play on | 40 | Cùng mặt hoặc chỉ chạm = chơi tiếp |
+| `rules.r5` | I17e | Quick rule 5: just passed = must slam in the pink ring | 45 | Vừa bỏ lượt = đập trong vòng hồng |
 | `rules.r6` | I17f | Quick rule 6: 30 s timeout = lose the turn | 35 | Hết 30 giây = mất lượt |
 | `rules.replay` | I18 | Quick-rules button: replay the tutorial | 20 | Xem lại hướng dẫn |
-| `rules.resume` | I18 | Quick-rules button: resume the tutorial at step {n} | 30 | Xem tiếp từ bước {n}/{total} |
+| `rules.resume` | I18 | Quick-rules button: resume the tutorial at step {n} | 30 | Xem tiếp bước {n}/{total} |
 
 ## corner
 
@@ -323,7 +331,7 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 |---|---|---|---|---|
 | `corner.help` | I19 | Screen-reader label of the "?" corner button | 15 | Luật chơi |
 | `corner.info` | J1 | Corner button that opens the info panel | 8 | Info |
-| `corner.infoAria` |  | Screen-reader label of the Info button | 20 | Thông tin |
+| `corner.infoAria` |  | Screen-reader label of the Info button | 20 | Thông tin game |
 | `corner.lang` |  | Screen-reader label of the language picker | 20 | Ngôn ngữ |
 
 ## info
@@ -334,7 +342,7 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 | `info.by` | J3 | Info panel: "a game by {name}". {name} is pre-escaped HTML markup; keep the placeholder. | 30 | Một trò của {name} |
 | `info.portfolio` | J4 | Info panel: label before the website link | 12 | Portfolio |
 | `info.contact` | J5 | Info panel: label before the email link | 12 | Liên hệ |
-| `info.cardArt` |  | Artist credit (corner and info panel) | 30 | Card art: {name} |
+| `info.cardArt` |  | Artist credit (corner and info panel) | 30 | Tranh bài: {name} |
 
 ## common
 
@@ -347,11 +355,11 @@ Placeholders in use: `{by}` `{code}` `{color}` `{names}` `{name}` `{n}` `{out}` 
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `fatal.title` | K6 | 3D failed: heading | 25 | Máy này không chạy được game! |
-| `fatal.body` | K6 | 3D failed: explanation ("hardware acceleration" setting) | 100 | Trình duyệt không bật được đồ họa 3D. Thử mở bằng Chrome, hoặc bật "tăng tốc phần cứng" trong cài đặt trình duyệt. |
+| `fatal.title` | K6 | 3D failed: heading | 25 | Máy chưa chạy được game! |
+| `fatal.body` | K6 | 3D failed: explanation ("hardware acceleration" setting) | 100 | Không bật được đồ họa 3D. Thử Chrome hoặc bật "tăng tốc phần cứng" trong cài đặt trình duyệt. |
 
 ## boot
 
 | Key | ID | Where | Max | Vietnamese |
 |---|---|---|---|---|
-| `boot.slow` | K7 | Browser too old / game took too long to load (static HTML copy stays Vietnamese if JS never runs) | 90 | Game tải lâu quá. Thử tải lại trang, hoặc mở bằng Chrome hay Safari bản mới nhé! |
+| `boot.slow` | K7 | Browser too old / game took too long to load (static HTML copy stays Vietnamese if JS never runs) | 90 | Tải lâu quá? Thử tải lại trang hoặc dùng Chrome, Safari bản mới nhé! |

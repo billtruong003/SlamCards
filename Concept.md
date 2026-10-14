@@ -26,6 +26,13 @@ Mỗi lá bài nhốt một nhân vật. Skill nhân vật là lớp thứ hai, 
 - Mỗi duel: mỗi bên 1 lá, **úp**, đặt ở hai đầu bàn. Lá úp là nhân vật còn bị phong ấn, lật ngửa là nhân vật thức dậy. Lớp skill sau này sẽ bám vào đúng chỗ này.
 - Màn hình hiện **DUEL**. Hai bên ra **tù xì**. Người thắng **chọn** đập trước hay nhường. Đi trước chưa chắc đã lợi (xem phần "Tầm đánh" bên dưới), nên lựa chọn này có ý nghĩa thật.
 
+### 3–4 người (đã có trong bản online)
+- Bàn to hơn khi có 3–4 người, để không ai đứng sẵn trong tầm một cú đập của người bên cạnh.
+- Không tù xì: người đi đầu là ngẫu nhiên (ván sau là người bị loại đầu tiên ở ván trước), rồi đi theo chiều kim đồng hồ.
+- Bị ăn bài (bài mình úp, bị bài ngửa của ai đó đè hẳn) thì **bị loại** khỏi ván. Đập làm rớt bất kỳ lá nào thì người đập bị loại, lá kia được đặt lại.
+- Người cuối cùng còn trụ thắng ván. Thắng 2 ván trước thì thắng trận, như chơi 2 người.
+- Người rời trận giữa chừng bị tính là bị loại; còn một người thì người đó thắng ván.
+
 ### Cú đập
 - **Chỉ được đập trong vòng tròn quanh bài mình,** như tầm với của tay. Muốn tác động lên bài địch thì bài mình phải ở gần nó trước.
 - **Luồng gió thổi mọi lá trong bán kính,** cả bài địch. Hai lá còn xa nhau thì cú đập chỉ ảnh hưởng bài mình. Khi đã sát nhau thì một cú đập có thể lật bài địch úp xuống, đẩy nó đi, hoặc vô tình lật luôn bài mình.
@@ -151,8 +158,7 @@ Steam, indie trả tiền một lần, khoảng $4.99–$5.99. Bán như party g
 
 ## ICEBOX
 
-- Online thật bằng Photon Fusion
-- 3–4 người chơi
+- Online thật bằng Photon Fusion (đã làm online bằng server Node + WebSocket riêng, không dùng Photon)
 - Hệ thống sưu tầm, mở khóa nhân vật
 - Nhiều loại dép có đặc tính khác nhau
 - Mirror Girl, Mimic, Joker, Twins, Red Thread, Second Hand

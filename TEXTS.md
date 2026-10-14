@@ -1,5 +1,7 @@
 # Hạng mục chữ trong game
 
+> **Đã cũ (14/10/2026).** Chữ trong game giờ nằm ở `proto/src/locales/vi.json` (nguồn) và 9 ngôn ngữ khác; bảng đọc được ở `docs/localization/STRINGS.md` (`npm run i18n:export` trong `proto/`). Sửa chữ thì sửa `vi.json`, không sửa file này. File này giữ lại làm lịch sử: các mã A1, B2… vẫn được ghi trong `context.json`.
+
 M điền cột **Chữ của m**. Cột "Hiện tại" chỉ để biết chỗ đó đang ghi gì, không cần giữ.
 Biến: `{tên}` tên người chơi · `{màu}` ĐEN/ĐỎ/XANH/LỤC · `{s}` số giây · `{n}` số · `{MÃ}` mã phòng.
 "Dài" = độ dài tối đa nên giữ để không vỡ layout (ký tự, tính cả dấu cách).

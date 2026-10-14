@@ -64,6 +64,16 @@
     "max": 30,
     "id": "A12"
   },
+  "error.inMatchWait": {
+    "where": "Menu error after opening an invite link (or typing a code) for a room whose match is already running. {code} = room code",
+    "max": 70,
+    "id": "Room {code} lagi main. Buka link-nya lagi pas udah selesai!"
+  },
+  "menu.randomNames": {
+    "where": "Not shown as one line: a | separated list of silly nicknames; one is picked at random to prefill the name box on a first visit. Each name max 16 characters, kid-friendly, local flavour",
+    "max": 400,
+    "id": "Si Sandal|Bocil Gesit|Raja Cilok|Ucup Turbo|Mbak Bakso|Jago Tepok|Kancil Kece|Bang Geprek|Dedek Ompol|Mas Kerupuk"
+  },
   "error.roomGone": {
     "where": "Menu error: invite link to a room that no longer exists",
     "max": 100,
@@ -386,6 +396,11 @@
     "max": 45,
     "id": "D14"
   },
+  "turn.tooLate": {
+    "where": "Pop text where the player tapped in the last ~0.6 s of their turn, when a slam can no longer be sent",
+    "max": 10,
+    "id": "Telat!"
+  },
   "card.up": {
     "where": "Label under a card: face up (followed by owner)",
     "max": 8,
@@ -551,6 +566,11 @@
     "where": "Rematch button after pressing: waiting for the others",
     "max": 20,
     "id": "F7"
+  },
+  "match.newRoom": {
+    "where": "Match-end button shown instead of Rematch when everyone else has left; makes a fresh room",
+    "max": 18,
+    "id": "Bikin room baru"
   },
   "match.menu": {
     "where": "Button: back to menu",
