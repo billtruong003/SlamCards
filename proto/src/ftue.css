@@ -1,0 +1,126 @@
+/* Errors, connection cards, short-screen lobby and first-time help (FTUE). */
+
+/* ---------- errors and connection ---------- */
+.fatal-title{font-size:clamp(30px,7vw,46px)}
+.menu-error{margin:0;width:100%;background:#ffd9e5;border:3px solid var(--pink-dark);border-radius:12px;padding:8px 12px;font-weight:700;font-size:15px;line-height:1.3;color:#a32050;text-align:left}
+.netfail{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(42,20,24,.55)}
+.netfail-card{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;font-weight:700}
+.netfail-card h2{margin:0;font-size:28px;line-height:1.1}
+.netfail-card p{margin:0}
+.netfail-wait{font-size:14px;color:var(--muted)}
+
+/* ---------- lobby: short screens keep the start button in view ---------- */
+@media (max-height:780px){
+  .panel.menu-card{padding:14px 20px;gap:9px}
+  .panel.menu-card h1.stamp{font-size:36px!important}
+  .slot{padding:4px 12px}
+  .slot-dep{width:32px;height:32px;margin-bottom:2px}
+  .dep-choice img{max-width:64px}
+}
+.slot-tag{display:inline-block;margin-top:3px;background:var(--cream);color:var(--pink-dark);border-radius:999px;padding:0 8px;font-size:12px;font-weight:800}
+
+/* ---------- "?" button ---------- */
+#help{position:relative;min-width:30px}
+#help.dot::after{content:"";position:absolute;right:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--pink-dark);border:2px solid var(--ink)}
+
+/* ---------- invite card beside the lobby, start confirmation ---------- */
+.menu-bg.with-invite{flex-direction:column;gap:18px}
+.menu-bg.with-invite .menu-card{margin:auto auto 0}
+.menu-bg.with-invite .ftue-invite{margin:0 auto auto}
+.ftue-side{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;width:min(340px,calc(100vw - 32px))}
+.ftue-h{margin:0;font-size:28px;line-height:1.05;font-weight:800}
+.ftue-p{margin:0;font-weight:700;font-size:17px;line-height:1.3}
+.ftue-p b{color:var(--pink-dark)}
+.ftue-invite-art{position:relative;width:136px;height:72px}
+.ftue-no{background:none;border:0;color:var(--muted);font-weight:700;font-size:16px;text-decoration:underline;padding:4px 8px;min-height:36px}
+@media (min-width:1220px){
+  .menu-bg.with-invite .ftue-invite{position:fixed;left:calc(50% + 240px);top:50%;transform:translateY(-50%);margin:0}
+  .menu-bg.with-invite .menu-card:not(.ftue-invite){margin:auto}
+}
+.ftue-confirm{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(42,20,24,.3)}
+@media (min-width:1220px){.ftue-confirm .ftue-side{position:fixed;left:calc(50% + 240px);top:50%;transform:translateY(-50%)}}
+
+/* ---------- the five steps ---------- */
+.ftue-modal{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(42,20,24,.45);overflow-y:auto}
+.ftue-card{display:flex;width:min(640px,100%);min-height:300px;margin:auto;background:var(--cream);border:4px solid var(--ink);border-radius:18px;box-shadow:0 6px 0 var(--ink);overflow:hidden}
+.ftue-art{flex:none;width:250px;border-right:3px solid var(--ink);background:repeating-linear-gradient(0deg,#e7c38c 0 18px,#e2bb81 18px 20px)}
+.fa-stage{position:relative;width:250px;height:300px;margin:0 auto}
+.ftue-txt{flex:1;min-width:0;padding:16px 18px 14px;display:flex;flex-direction:column;gap:8px}
+.ftue-step{font-weight:800;font-size:13px;color:var(--pink-dark);letter-spacing:.04em}
+.ftue-txt h2{margin:0;font-weight:800;font-size:28px;line-height:1.05}
+.ftue-body{display:flex;flex-direction:column;gap:6px}
+.ftue-body p{margin:0;font-weight:600;font-size:16px;line-height:1.35}
+.ftue-body b{color:var(--pink-dark)}
+.ftue-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:6px}
+.ftue-pips{display:flex;gap:5px}
+.ftue-pips i{width:10px;height:10px;border-radius:50%;border:2px solid var(--ink)}
+.ftue-pips i.on{background:var(--ink)}
+.ftue-skip{background:none;border:0;color:var(--muted);font-weight:700;font-size:14px;text-decoration:underline;min-height:40px;padding:0 8px}
+.ftue-next{min-height:42px;font-size:17px}
+@media (max-width:600px){
+  .ftue-card{flex-direction:column}
+  .ftue-art{width:100%;border-right:0;border-bottom:3px solid var(--ink);height:240px;overflow:hidden}
+  .fa-stage{transform:scale(.8);transform-origin:top center}
+}
+
+/* tutorial pictures (from mockup/ftue-preview) */
+.fa-c{position:absolute;--s:.44;--r:0deg;width:calc(92px*var(--s));height:calc(136px*var(--s));background:url(/cards.png) no-repeat;background-size:calc(1500px*var(--s)) calc(576px*var(--s));transform:translate(-50%,-50%) rotate(var(--r));filter:drop-shadow(0 3px 0 rgba(42,20,24,.35))}
+.fa-c.bf{background-position:calc(-1304px*var(--s)) calc(-292px*var(--s))}
+.fa-c.bb{background-position:calc(-1404px*var(--s)) calc(-292px*var(--s))}
+.fa-c.pf{background-position:calc(-1304px*var(--s)) calc(-436px*var(--s))}
+.fa-c.pb{background-position:calc(-1404px*var(--s)) calc(-436px*var(--s))}
+.fa-c.fa-air{filter:drop-shadow(14px 26px 4px rgba(42,20,24,.25))}
+.fa-ring{position:absolute;border-radius:50%;transform:translate(-50%,-50%)}
+.fa-reach{border:3px dashed var(--ink);background:rgba(255,255,255,.25)}
+.fa-shake{width:26px;height:26px;border:2px dashed var(--ink)}
+.fa-impact{width:34px;height:34px;border:5px solid #fff;box-shadow:0 0 0 4px var(--ink)}
+.fa-forced{width:64px;height:64px;border:3px solid var(--pink);background:rgba(255,111,156,.2)}
+.fa-dep{position:absolute;width:24px;height:50px;opacity:.9;transform:translate(-50%,-50%) rotate(var(--r))}
+.fa-trail{position:absolute;left:0;top:0;width:250px;height:300px;pointer-events:none}
+.fa-lbl{position:absolute;transform:translate(-50%,-50%);font-weight:800;font-size:11px;background:var(--cream);border:2px solid var(--ink);border-radius:6px;padding:0 5px;white-space:nowrap}
+.fa-pop{position:absolute;font-weight:800;font-size:44px;color:var(--cream);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;transform:translate(-50%,-50%) rotate(-8deg)}
+.fa-v{display:inline-flex;flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);align-items:center;justify-content:center;font-weight:800;font-size:15px;background:var(--cream)}
+.fa-cell .fa-v,.fa-stage>.fa-v{position:absolute;transform:translate(-50%,-50%)}
+.fa-v.ok{background:var(--mint)}
+.fa-v.bad{background:var(--pink);color:#fff}
+.fa-v.fa-out{width:auto;border-radius:10px;padding:0 10px;font-size:14px;white-space:nowrap}
+.fa-cell{position:absolute;width:113px;height:118px;border:3px solid var(--ink);border-radius:12px;background:repeating-linear-gradient(0deg,#e7c38c 0 14px,#e2bb81 14px 16px);overflow:hidden}
+.fa-cap{position:absolute;left:0;right:0;bottom:0;background:var(--cream);border-top:3px solid var(--ink);font-weight:800;font-size:12px;line-height:1.15;text-align:center;padding:3px 4px}
+.fa-floor{position:absolute;right:0;top:0;bottom:0;width:52px;background:repeating-conic-gradient(#f3e6cf 0 25%,#ecdcbf 0 50%) 0 0/20px 20px;border-left:4px solid var(--ink)}
+.fa-tools{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.fa-wind{display:flex;align-items:center;gap:6px;background:var(--cream);border:3px solid var(--ink);border-radius:10px;padding:0 10px;font-weight:800;font-size:15px;height:30px}
+.fa-type{background:var(--cream);border:3px solid var(--ink);border-radius:10px;padding:0 8px;font-weight:700;font-size:12px;opacity:.6}
+.fa-type.sel{opacity:1;background:var(--mint)}
+
+/* ---------- "?" quick rules ---------- */
+.help-panel{width:min(440px,calc(100vw - 20px))}
+.rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.rule{display:flex;gap:6px;align-items:flex-start;border:2px solid var(--ink);border-radius:10px;padding:5px 7px;background:#fff;font-weight:700;font-size:13px;line-height:1.25}
+.help-actions{justify-content:space-between}
+.help-actions .btn{min-height:36px;font-size:14px;padding:2px 12px}
+@media (max-width:420px){.rules-grid{grid-template-columns:1fr}}
+
+/* ---------- in-match: stashed-steps bubble, tips, first-turn pointer ---------- */
+.ftue-bubble{position:fixed;right:10px;bottom:76px;z-index:11;max-width:min(300px,calc(100vw - 20px));background:var(--cream);border:3px solid var(--ink);border-radius:14px;box-shadow:0 5px 0 var(--ink);padding:8px 12px;font-weight:700;font-size:15px;line-height:1.3}
+.ftue-bubble b{color:var(--pink-dark)}
+.ftue-tip{position:fixed;top:96px;left:0;right:0;margin:0 auto;width:max-content;z-index:7;display:flex;align-items:stretch;max-width:calc(100vw - 24px);background:var(--cream);border:3px solid var(--ink);border-radius:12px;box-shadow:0 4px 0 var(--ink);overflow:hidden;pointer-events:none;font-weight:800}
+.ftue-tip i{font-style:normal;background:var(--pink-dark);color:#fff;padding:2px 10px;font-size:13px;display:flex;align-items:center;letter-spacing:.04em}
+.ftue-tip span{padding:2px 12px}
+.ftue-point{position:fixed;left:0;top:0;z-index:6;pointer-events:none;will-change:transform}
+.ftue-pulse{position:absolute;left:-20px;top:-20px;width:40px;height:40px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 3px var(--pink-dark),0 0 0 12px rgba(214,60,110,.25);animation:ftuePulse 1s ease-in-out infinite alternate}
+@keyframes ftuePulse{to{transform:scale(1.18)}}
+.ftue-say{position:absolute;left:calc(-120px + var(--shift, 0px));bottom:34px;width:240px;background:var(--cream);border:3px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 var(--ink);padding:6px 12px;font-weight:700;font-size:15px;line-height:1.25;text-align:center}
+.ftue-say b{color:var(--pink-dark)}
+@media (max-width:820px){
+  .ftue-bubble{right:8px;bottom:54px}
+  .ftue-tip{top:52px;font-size:13px}
+}
+/* Phone held upright, during a match: the slam-type buttons own the bottom edge, so the corner
+   buttons and what they open move to the top right, under the wind. */
+@media (max-width:820px) and (orientation:portrait){
+  #hud:not([hidden]) ~ #corner{top:48px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .panel-box{top:84px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .ftue-bubble{top:84px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .ftue-tip{top:88px}
+}
+@media (prefers-reduced-motion:reduce){.ftue-pulse{animation:none}}

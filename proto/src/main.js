@@ -10,6 +10,7 @@ import { mountMenuBackground } from './menu-bg.js';
 import { playIntro } from './intro.js';
 import { loadDeps, depModel, DEPS, DEFAULT_DEP } from './deps.js';
 import { showMeme, preloadMemes, setMemesEnabled, memesEnabled } from './memes.js';
+import { createFtue } from './ftue.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -30,9 +31,31 @@ async function copyText(text, field) {
   }
 }
 
+function showFatal() {
+  els.overlay.className = '';
+  els.overlay.innerHTML = `
+    <div class="menu-bg"><div class="panel menu-card">
+      <h1 class="stamp title fatal-title">Máy này không chạy được game!</h1>
+      <p class="sub">Trình duyệt không bật được đồ họa 3D. Thử mở bằng Chrome, hoặc bật "tăng tốc phần cứng" trong cài đặt trình duyệt.</p>
+    </div></div>`;
+}
+
 playIntro();
-const world = await World.create($('stage'));
+let world;
+try {
+  world = await World.create($('stage'));
+} catch (err) {
+  console.error('3D setup failed', err);
+  window.slamBooted = true;
+  showFatal();
+  throw err;
+}
+window.slamBooted = true;
 const visuals = new Visuals(world.scene);
+const MENU_CARDS = {
+  black: { p: [-4.5, 0.008, 0], q: [0, 0, 1, 0] },
+  pink: { p: [4.5, 0.008, 0], q: [0, 0, 1, 0] },
+};
 
 let ws = null;
 let me = null;
@@ -63,6 +86,16 @@ if (TOUCH) {
   document.getElementById('type-flat').textContent = 'Đập bằng';
   document.getElementById('type-tilt').textContent = 'Đập nghiêng';
 }
+const ftue = createFtue({
+  send,
+  world,
+  touch: TOUCH,
+  toastVisible: () => !els.toast.hidden,
+  hidePanels: () => {
+    els.panel.hidden = true;
+    els.infoPanel.hidden = true;
+  },
+});
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
 const RPS_LABEL = { bua: 'Búa', keo: 'Kéo', bao: 'Bao' };
 
@@ -71,10 +104,53 @@ const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => `&#${c.char
 const htmlName = (seat) => `<b class="seat-${seat}">${escapeHtml(nameOf(seat))}</b>`;
 const opponentsOf = (seat) => (state?.alive ?? []).filter((s) => s !== seat);
 
-const storage = {
-  get(key) { try { return sessionStorage.getItem(key); } catch { return null; } },
-  set(key, value) { try { sessionStorage.setItem(key, value); } catch { /* private mode */ } },
-};
+const store = (area) => ({
+  get(key) { try { return area().getItem(key); } catch { return null; } },
+  set(key, value) { try { area().setItem(key, value); } catch { /* private mode */ } },
+  remove(key) { try { area().removeItem(key); } catch { /* private mode */ } },
+});
+const tabStore = store(() => sessionStorage);
+const deviceStore = store(() => localStorage);
+
+// The seat token lives in this tab and on the device, so closing the tab and reopening the link
+// gets the seat back. Another tab already playing in that room keeps it: a second tab opened to
+// play against yourself joins as a new player instead of kicking the first one out.
+const tokenKey = (code) => `slam-token-${code}`;
+const tabs = 'BroadcastChannel' in window ? new BroadcastChannel('slam-tabs') : null;
+if (tabs) {
+  tabs.onmessage = (e) => {
+    if (e.data?.ask && e.data.ask === roomCode && me) tabs.postMessage({ have: roomCode });
+  };
+}
+function anotherTabHas(code) {
+  if (!tabs) return Promise.resolve(false);
+  return new Promise((resolve) => {
+    const listener = (e) => { if (e.data?.have === code) done(true); };
+    const done = (answer) => {
+      tabs.removeEventListener('message', listener);
+      clearTimeout(timer);
+      resolve(answer);
+    };
+    const timer = setTimeout(() => done(false), 250);
+    tabs.addEventListener('message', listener);
+    tabs.postMessage({ ask: code });
+  });
+}
+async function tokenFor(code) {
+  const own = tabStore.get(tokenKey(code));
+  if (own) return own;
+  const shared = deviceStore.get(tokenKey(code));
+  if (!shared) return null;
+  return (await anotherTabHas(code)) ? null : shared;
+}
+function saveToken(code, token) {
+  tabStore.set(tokenKey(code), token);
+  deviceStore.set(tokenKey(code), token);
+}
+function forgetToken(code) {
+  tabStore.remove(tokenKey(code));
+  deviceStore.remove(tokenKey(code));
+}
 
 const playerName = {
   get: () => { try { return localStorage.getItem('slam-name') || ''; } catch { return ''; } },
@@ -87,9 +163,61 @@ const playerDep = {
 };
 const depOf = (seat) => state?.players[seat]?.dep ?? DEFAULT_DEP[seat];
 
-function joinRoom(code) {
+function joinRoom(code, token) {
   roomCode = code;
-  send({ t: 'join', code, token: storage.get(`slam-token-${code}`), name: playerName.get(), dep: playerDep.get() || undefined });
+  send({ t: 'join', code, token: token ?? undefined, name: playerName.get(), dep: playerDep.get() || undefined });
+}
+
+// An invite link (or a reconnect) first asks whether the room is still there and whether this
+// device already has a seat in it, so nobody types a name for a room that is gone.
+let pendingPeek = null;
+async function openRoom(code) {
+  const token = await tokenFor(code);
+  pendingPeek = { code, token };
+  send({ t: 'peek', code, token: token ?? undefined });
+}
+
+function onPeek(msg) {
+  if (!pendingPeek || msg.code !== pendingPeek.code) return;
+  const { code, token } = pendingPeek;
+  pendingPeek = null;
+  const refuse = (text) => {
+    forgetToken(code);
+    leaveRoom();
+    renderMenu(text);
+  };
+  if (!msg.exists) refuse(`Phòng ${code} không còn nữa rồi. Có thể nó hết hạn hoặc server vừa khởi động lại. Tạo phòng mới nhé!`);
+  else if (msg.mine) joinRoom(code, token);
+  else if (msg.phase !== 'lobby') refuse('Phòng đang đánh dở, tạo phòng mới đi!');
+  else if (msg.full) refuse('Phòng đủ 4 đứa rồi, vào không được!');
+  else if (playerName.get()) joinRoom(code, null);
+  else renderNamePrompt(code);
+}
+
+// Back to a clean menu: no room, no leftover HUD, labels or toasts from the last match.
+function leaveRoom() {
+  state = null;
+  me = null;
+  roomCode = null;
+  pendingPeek = null;
+  sim = null;
+  playback = null;
+  awaitingServer = false;
+  appliedCardsKey = '';
+  overlayKey = '';
+  hudKey = '';
+  history.replaceState(null, '', location.pathname);
+  els.hud.hidden = true;
+  els.banner.hidden = true;
+  els.hint.hidden = true;
+  els.toggle.hidden = true;
+  for (const badge of els.labels.children) badge.hidden = true;
+  hideToast();
+  visuals.hideAim();
+  world.setup(['black', 'pink']);
+  world.setCards(MENU_CARDS);
+  world.needsRender = true;
+  ftue.leaveRoom();
 }
 
 // ---------- sound settings ----------
@@ -120,29 +248,86 @@ $('memes-on').onchange = (e) => setMemesEnabled(e.target.checked);
 els.settings.onclick = () => {
   els.panel.hidden = !els.panel.hidden;
   els.infoPanel.hidden = true;
+  ftue.closeHelp();
 };
 els.info.onclick = () => {
   els.infoPanel.hidden = !els.infoPanel.hidden;
   els.panel.hidden = true;
+  ftue.closeHelp();
 };
 $('close-info').onclick = () => { els.infoPanel.hidden = true; };
 $('close-panel').onclick = () => { els.panel.hidden = true; };
 
 // ---------- network ----------
 
+// Reconnects with growing pauses (1, 2, 4, 8 s). A page that never reached the server, or lost
+// it for longer than the seat is kept, gets a card with a retry button instead of a silent loop.
+const RETRY_MS = [1000, 2000, 4000, 8000];
+const GIVE_UP_AFTER = 5;
+let everConnected = false;
+let failures = 0;
+let lostAt = 0;
+let retryTimer = 0;
+let retryAt = 0;
+let menuNotice = '';
+let quietClose = false;
+
 function connect() {
+  clearTimeout(retryTimer);
   ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${location.pathname.replace(/[^/]*$/, '')}ws`);
   ws.onopen = () => {
-    if (!roomCode) renderMenu();
-    else if (playerName.get() || storage.get(`slam-token-${roomCode}`)) joinRoom(roomCode);
-    else renderNamePrompt(roomCode);
+    everConnected = true;
+    failures = 0;
+    lostAt = 0;
+    hideNetFail();
+    if (roomCode) openRoom(roomCode);
+    else {
+      renderMenu(menuNotice);
+      menuNotice = '';
+    }
   };
-  ws.onmessage = (event) => onMessage(JSON.parse(event.data));
+  ws.onmessage = (event) => {
+    try {
+      onMessage(JSON.parse(event.data));
+    } catch (err) {
+      console.error('message failed', err);
+    }
+  };
   ws.onclose = () => {
-    showToast('Rớt mạng rồi! Đang kết nối lại…');
-    setTimeout(connect, 1500);
+    if (quietClose) {
+      quietClose = false;
+      connect();
+      return;
+    }
+    failures += 1;
+    lostAt ||= Date.now();
+    const wait = RETRY_MS[Math.min(failures - 1, RETRY_MS.length - 1)];
+    const longGone = Date.now() - lostAt > 60000;
+    if ((!everConnected && failures >= GIVE_UP_AFTER) || longGone) showNetFail();
+    else if (everConnected) showToast('Rớt mạng rồi! Đang kết nối lại…');
+    retryAt = performance.now() + wait;
+    retryTimer = setTimeout(connect, wait);
   };
 }
+
+function showNetFail() {
+  const card = $('netfail');
+  if (!card.hidden) return;
+  hideToast();
+  card.hidden = false;
+  $('netfail-retry').onclick = () => {
+    failures = 0;
+    connect();
+  };
+}
+function hideNetFail() {
+  $('netfail').hidden = true;
+}
+setInterval(() => {
+  if ($('netfail').hidden) return;
+  const secs = Math.max(0, Math.ceil((retryAt - performance.now()) / 1000));
+  setText($('netfail-wait'), secs ? `Tự thử lại sau ${secs} giây…` : 'Đang thử lại…');
+}, 250);
 
 function send(msg) {
   if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify(msg));
@@ -152,12 +337,19 @@ function onMessage(msg) {
   if (msg.t === 'joined') {
     me = msg.color;
     roomCode = msg.code;
-    storage.set(`slam-token-${roomCode}`, msg.token);
+    saveToken(roomCode, msg.token);
     history.replaceState(null, '', `?room=${roomCode}`);
+    lastPong = performance.now();
     hideToast();
+  } else if (msg.t === 'peek') {
+    onPeek(msg);
+  } else if (msg.t === 'replaced') {
+    if (roomCode) tabStore.remove(tokenKey(roomCode));
+    leaveRoom();
+    menuNotice = 'Phòng này đang mở ở tab khác rồi. Chơi tiếp ở tab đó nhé!';
+    quietClose = true;
   } else if (msg.t === 'error') {
-    roomCode = null;
-    history.replaceState(null, '', location.pathname);
+    leaveRoom();
     renderMenu(msg.message);
   } else if (msg.t === 'state') {
     onState(msg);
@@ -172,6 +364,7 @@ function onMessage(msg) {
     }
   } else if (msg.t === 'playAbort') {
     playback = null;
+    resyncCards();
   } else if (msg.t === 'pong') {
     lastPong = performance.now();
     pingMs = Math.round(lastPong - msg.at);
@@ -192,11 +385,7 @@ function onState(next) {
   if (awaitingServer && !(state.phase === 'turn' && state.turn === me)) awaitingServer = false;
 
   if (state.seats.length >= 2) world.setup(state.seats);
-  const key = JSON.stringify(state.cards);
-  if (state.seats.length >= 2 && !sim && !playback && key !== appliedCardsKey && state.phase !== 'anim') {
-    world.setCards(state.cards);
-    appliedCardsKey = key;
-  }
+  applyStateCards();
 
   const gone = Object.keys(state.players).filter((s) => s !== me && !state.players[s].connected && !state.players[s].left);
   if (gone.length) showToast(`${gone.map(nameOf).join(', ')} rớt mạng! Đợi tối đa 60 giây…`);
@@ -207,7 +396,24 @@ function onState(next) {
   playMusic(['lobby', 'matchEnd'].includes(state.phase) ? 'menu' : 'game');
   renderHud();
   renderOverlay();
+  ftue.onState(state, me);
   world.needsRender = true;
+}
+
+// The table shows the server's cards whenever no local slam or replay is moving them.
+function applyStateCards() {
+  if (!state || state.seats.length < 2 || sim || playback || state.phase === 'anim') return;
+  const key = JSON.stringify(state.cards);
+  if (key === appliedCardsKey) return;
+  world.setCards(state.cards);
+  appliedCardsKey = key;
+}
+
+// After a local slam or replay the table may differ from the server (a slam the server refused,
+// an aborted replay), so the server's cards are applied again even if they did not change.
+function resyncCards() {
+  appliedCardsKey = '';
+  applyStateCards();
 }
 
 // Mid-round knockouts in 3-4 player games get a short toast.
@@ -310,6 +516,26 @@ function readName() {
   return name;
 }
 
+// Sends a request from a menu button, or says why it cannot go out yet. The button stays
+// locked until the server answers (joined, peek or error re-render the screen).
+function sendFromMenu(button, msg) {
+  if (ws?.readyState !== WebSocket.OPEN) {
+    showMenuError('Đang kết nối lại, đợi tí rồi bấm nhé!');
+    return;
+  }
+  button.disabled = true;
+  send(msg);
+}
+
+function showMenuError(text) {
+  const box = els.overlay.querySelector('.menu-error');
+  if (!box) return;
+  box.textContent = text;
+  box.hidden = !text;
+}
+
+const menuError = (error) => `<p class="menu-error" ${error ? '' : 'hidden'}>${escapeHtml(error)}</p>`;
+
 function renderMenu(error = '') {
   overlayKey = 'menu';
   playMusic('menu');
@@ -318,18 +544,18 @@ function renderMenu(error = '') {
     <div class="menu-bg"><div class="panel menu-card">
       <h1 class="stamp title">DÉP LÀO<br>TUỔI THƠ</h1>
       <p class="sub">Đập bài tuổi thơ, chiến online 2–4 đứa</p>
+      ${menuError(error)}
       ${nameField()}
       <button class="btn pri wide" id="create">Tạo phòng</button>
       <div class="row">
         <label><input class="input" id="code" maxlength="4" placeholder="Mã phòng" aria-label="Mã phòng"></label>
         <button class="btn" id="join">Vào phòng</button>
       </div>
-      ${error ? `<p class="sub error">${escapeHtml(error)}</p>` : ''}
     </div></div>`;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
   $('create').onclick = () => {
     const name = readName();
-    if (name) send({ t: 'create', name, dep: playerDep.get() || undefined });
+    if (name) sendFromMenu($('create'), { t: 'create', name, dep: playerDep.get() || undefined });
   };
   const join = () => {
     const code = $('code').value.trim().toUpperCase();
@@ -337,7 +563,14 @@ function renderMenu(error = '') {
       $('code').focus();
       return;
     }
-    if (readName()) joinRoom(code);
+    if (!readName()) return;
+    if (ws?.readyState !== WebSocket.OPEN) {
+      showMenuError('Đang kết nối lại, đợi tí rồi bấm nhé!');
+      return;
+    }
+    $('join').disabled = true;
+    roomCode = code;
+    openRoom(code);
   };
   $('join').onclick = join;
   $('code').onkeydown = (e) => { if (e.key === 'Enter') join(); };
@@ -351,11 +584,20 @@ function renderNamePrompt(code) {
     <div class="menu-bg"><div class="panel menu-card">
       <h1 class="stamp title">DÉP LÀO<br>TUỔI THƠ</h1>
       <p class="sub">Có đứa rủ m vào phòng <span class="code">${escapeHtml(code)}</span> nè!</p>
+      ${menuError('')}
       ${nameField()}
       <button class="btn pri wide" id="go">Vào phòng</button>
     </div></div>`;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
-  const go = () => { if (readName()) joinRoom(code); };
+  const go = () => {
+    if (!readName()) return;
+    if (ws?.readyState !== WebSocket.OPEN) {
+      showMenuError('Đang kết nối lại, đợi tí rồi bấm nhé!');
+      return;
+    }
+    $('go').disabled = true;
+    openRoom(code);
+  };
   $('go').onclick = go;
   $('name').onkeydown = (e) => { if (e.key === 'Enter') go(); };
   $('name').focus();
@@ -372,7 +614,8 @@ function renderOverlay() {
     case 'lobby': {
       const link = `${location.origin}${location.pathname}?room=${s.code}`;
       const count = Object.keys(s.players).length;
-      const roster = SEATS.map((seat) => `${s.players[seat]?.name ?? ''}:${s.players[seat]?.dep ?? ''}`).join('|');
+      const roster = SEATS.map((seat) => `${s.players[seat]?.name ?? ''}:${s.players[seat]?.dep ?? ''}:${s.players[seat]?.tutorial ?? 0}`).join('|');
+      const reading = (seat) => (s.players[seat].tutorial ? `<span class="slot-tag">đang xem cách chơi ${s.players[seat].tutorial}/5</span>` : '');
       const mine = depOf(me);
       const fresh = setOverlay(`lobby-${roster}`, `
         <div class="menu-bg"><div class="panel menu-card">
@@ -384,7 +627,7 @@ function renderOverlay() {
           </div>
           <div class="seats">
             ${SEATS.map((seat) => (s.players[seat] ? `
-              <div class="slot seat ${seat}"><img class="slot-dep" src="deps/${depOf(seat)}.jpg" alt="">${escapeHtml(s.players[seat].name)}<small>Bài ${SEAT_LABEL[seat].toLowerCase()}${seat === me ? ' · m' : ''}</small></div>`
+              <div class="slot seat ${seat}"><img class="slot-dep" src="deps/${depOf(seat)}.jpg" alt="">${escapeHtml(s.players[seat].name)}<small>Bài ${SEAT_LABEL[seat].toLowerCase()}${seat === me ? ' · m' : ''}</small>${reading(seat)}</div>`
     : '<div class="slot waiting">Đợi tí…<small>Còn trống</small></div>')).join('')}
           </div>
           <p class="sub dep-title">Chọn dép chiến</p>
@@ -399,7 +642,10 @@ function renderOverlay() {
         $('copy').onclick = async () => {
           $('copy').textContent = await copyText(link, $('link')) ? 'Đã copy!' : 'Tự copy nhé!';
         };
-        $('start').onclick = () => send({ t: 'start' });
+        $('start').onclick = () => {
+          const go = () => send({ t: 'start' });
+          if (!ftue.confirmStart(go, nameOf)) go();
+        };
         els.overlay.querySelectorAll('[data-dep]').forEach((b) => {
           b.onclick = () => {
             playerDep.set(b.dataset.dep);
@@ -407,6 +653,7 @@ function renderOverlay() {
           };
         });
       }
+      ftue.decorateLobby();
       break;
     }
     case 'roundIntro':
@@ -660,8 +907,12 @@ function updateWindArrow() {
 
 // ---------- aiming & slamming ----------
 
+// The slipper takes ~0.2 s to land before the slam reaches the server, so the last half second
+// of a turn is closed: a slam sent then would arrive after the turn already timed out.
+const LATE_SLAM_MS = 600;
+const turnMsLeft = () => state.remainingMs - (performance.now() - stateAt);
 const myTurnToAim = () => state && state.phase === 'turn' && state.turn === me && state.alive.includes(me)
-  && !sim && !playback && !awaitingServer;
+  && !sim && !playback && !awaitingServer && turnMsLeft() > LATE_SLAM_MS;
 const cardPositions = () => Object.fromEntries(world.seats.map((s) => [s, world.cards[s].mesh.position]));
 
 function isValidAim(point) {
@@ -736,6 +987,7 @@ function shakeHand(point) {
 
 function slam(aim) {
   awaitingServer = true;
+  ftue.onSlam();
   visuals.hideAim();
   const impact = shakeHand(aim);
   const type = slamType;
@@ -797,12 +1049,14 @@ function stepSim(now) {
   if (!done) return;
 
   const final = world.readCards();
-  if (!sim.local) {
+  const local = sim.local;
+  if (!local) {
     flushChunk();
     send({ t: 'slamEnd', final });
     lastSlamStats = slamStats(sim.frames, me);
   }
   sim = null;
+  if (!local) resyncCards();
 }
 
 function flushChunk() {
@@ -831,8 +1085,8 @@ function finishPlayback() {
   lastSlamStats = slamStats(playback.buffer, playback.by);
   world.setCards(playback.final);
   playback = null;
-  appliedCardsKey = '';
   send({ t: 'playbackDone' });
+  resyncCards();
 }
 
 function stepPlayback(now) {
@@ -899,6 +1153,7 @@ function frame(now) {
     }
     updateBannerAndHint();
     updateWindArrow();
+    ftue.frame(now, canAim);
   }
   if (visuals.busy) world.needsRender = true;
   windClock += dt;
@@ -973,10 +1228,7 @@ if (new URLSearchParams(location.search).has('debug')) {
   };
 }
 
-world.setCards({
-  black: { p: [-4.5, 0.008, 0], q: [0, 0, 1, 0] },
-  pink: { p: [4.5, 0.008, 0], q: [0, 0, 1, 0] },
-});
+world.setCards(MENU_CARDS);
 loadDeps().catch((err) => console.warn('slipper models unavailable, using fallback', err));
 connect();
 requestAnimationFrame(frame);

@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./src/style.css">
+<link rel="stylesheet" href="./src/ftue.css">
 </head>
 <body>
 <div id="stage"></div>
@@ -28,6 +29,7 @@
 <div class="credit">Card art: Dani Maccari</div>
 <div id="netstat"><span id="ping"></span><span id="fps"></span></div>
 <div id="corner">
+  <button id="help" aria-label="Luật chơi">?</button>
   <button id="info" aria-label="Thông tin">Info</button>
   <button id="settings" aria-label="Chỉnh âm thanh">Âm thanh</button>
 </div>
@@ -41,6 +43,25 @@
   <button class="btn" id="close-info">Đóng</button>
 </div>
 
+<div id="netfail" class="netfail" hidden>
+  <div class="menu-card netfail-card" role="alertdialog" aria-labelledby="netfail-title">
+    <h2 id="netfail-title">Không vào được server!</h2>
+    <p>Thử mấy lần rồi vẫn không được. Kiểm tra mạng, hoặc đợi tí rồi thử lại.</p>
+    <button class="btn pri" id="netfail-retry">Thử lại</button>
+    <p class="netfail-wait" id="netfail-wait"></p>
+  </div>
+</div>
+
+<div id="boot-fail" class="netfail" hidden>
+  <div class="menu-card netfail-card">
+    <p>Game tải lâu quá. Thử tải lại trang, hoặc mở bằng Chrome hay Safari bản mới nhé!</p>
+  </div>
+</div>
+<script nomodule>document.getElementById('boot-fail').hidden = false;</script>
+<script>
+  // Browsers too old for the game's JavaScript load nothing and show no error; say so after a while.
+  setTimeout(function () { if (!window.slamBooted) document.getElementById('boot-fail').hidden = false; }, 20000);
+</script>
 <script type="module" src="./src/main.js"></script>
 </body>
 </html>

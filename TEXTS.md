@@ -112,7 +112,7 @@ Biến: `{tên}` tên người chơi · `{màu}` ĐEN/ĐỎ/XANH/LỤC · `{s}` 
 | H2 | Cú đập đẹp, dòng 1 / dòng 2 | 15 / 20 | TRÌNH LÀ GÌ… / …LÀ TRÌNH HALAND! | |
 | H3 | Vỗ tay | 10 | VỖ TAY NÀO! | |
 
-## I. FTUE (chữ đã duyệt, game chưa làm FTUE)
+## I. FTUE (I1–I16 đã duyệt; I17 trở đi là chữ nháp, cần duyệt)
 | ID | Chỗ hiện | Cần nói gì | Dài | Hiện tại | Chữ của m |
 |---|---|---|---|---|---|
 | I1 | Popup mời: tiêu đề | hỏi có phải lần đầu chơi | 30 | Lần đầu đập bài à? | |
@@ -131,7 +131,31 @@ Biến: `{tên}` tên người chơi · `{màu}` ĐEN/ĐỎ/XANH/LỤC · `{s}` 
 | I14 | Nhắc: bài mình sát mép | đập mạnh dễ rớt | 50 | Sát mép rồi! Đập mạnh là bay luôn đấy! | |
 | I15 | Nhắc: lần đầu bắt buộc đập | giải thích vòng hồng | 50 | Bỏ lượt rồi nhé! Giờ phải đập trong vòng hồng. | |
 | I16 | Nhắc: lần đầu hết giờ | hết giờ là mất lượt | 40 | Hết giờ là mất lượt đấy! | |
-| I17 | Bảng luật nhanh (nút ?): tiêu đề + 6 ô | | 15 + 25 mỗi ô | NHỚ 6 ĐIỀU NÀY! | |
+| I17 | Bảng luật nhanh (nút ?): tiêu đề | | 15 | NHỚ 6 ĐIỀU NÀY! | |
+| I17a | Luật nhanh ô 1 | ngửa đè úp = ăn | 35 | M ngửa đè địch úp = ăn | |
+| I17b | Luật nhanh ô 2 | bị đè = bị ăn | 35 | Địch ngửa đè m úp = bị ăn | |
+| I17c | Luật nhanh ô 3 | làm rớt = loại | 35 | M đập làm rớt bài = bị loại | |
+| I17d | Luật nhanh ô 4 | cùng mặt / chỉ chạm = đánh tiếp | 40 | Cùng mặt hoặc chỉ chạm = đánh tiếp | |
+| I17e | Luật nhanh ô 5 | vừa bỏ lượt = vòng hồng | 45 | Vừa bỏ lượt = phải đập trong vòng hồng | |
+| I17f | Luật nhanh ô 6 | 30 giây | 35 | Hết 30 giây = mất lượt | |
+| I18 | Luật nhanh: nút mở lại hướng dẫn / khi còn dở | | 20 / 30 | Xem lại hướng dẫn / Xem tiếp từ bước {n}/5 | |
+| I19 | Nút ? ở góc (đọc cho trình đọc màn hình) | | 15 | Luật chơi | |
+| I20 | Phòng chờ: nhãn dưới ô người đang xem hướng dẫn | | 25 | đang xem cách chơi {n}/5 | |
+| I21 | Thẻ hỏi lại khi bấm bắt đầu lúc có người đang xem: tiêu đề | `{tên}` đang xem hướng dẫn | 25 | {tên} đang học luật | |
+| I22 | Thẻ hỏi lại: dòng phụ + 2 nút | đang ở bước mấy, bắt đầu thì xem tiếp trong trận được | 90 / 15 mỗi nút | Nó mới xem tới bước {n}/5. Bắt đầu luôn thì nó xem tiếp trong trận được. / Bắt đầu luôn · Đợi tí | |
+| I23 | Bong bóng khi trận bắt đầu lúc mình đang xem | hướng dẫn cất vào nút ?, xem tiếp bước mấy | 60 | Hướng dẫn cất ở đây. Bấm ? xem tiếp từ bước {n}/5. | |
+| I24 | Nhãn trước câu nhắc I12–I16 | | 5 | MẸO | |
+
+## K. Lỗi & kết nối (chữ nháp, cần duyệt)
+| ID | Chỗ hiện | Cần nói gì | Dài | Hiện tại | Chữ của m |
+|---|---|---|---|---|---|
+| K1 | Ô báo lỗi trên menu: link tới phòng không còn | phòng `{MÃ}` hết hạn hoặc server vừa khởi động lại | 100 | Phòng {MÃ} không còn nữa rồi. Có thể nó hết hạn hoặc server vừa khởi động lại. Tạo phòng mới nhé! | |
+| K2 | Ô báo lỗi trên menu: mở phòng ở tab khác | phòng đã mở ở tab khác | 60 | Phòng này đang mở ở tab khác rồi. Chơi tiếp ở tab đó nhé! | |
+| K3 | Thẻ không kết nối được: tiêu đề + dòng phụ | | 25 + 80 | Không vào được server! / Thử mấy lần rồi vẫn không được. Kiểm tra mạng, hoặc đợi tí rồi thử lại. | |
+| K4 | Thẻ không kết nối được: nút + đếm ngược | | 10 / 30 | Thử lại / Tự thử lại sau {s} giây… | |
+| K5 | Bấm Tạo/Vào phòng lúc đang mất kết nối | | 40 | Đang kết nối lại, đợi tí rồi bấm nhé! | |
+| K6 | Máy không chạy được 3D: tiêu đề + dòng phụ | | 25 + 100 | Máy này không chạy được game! / Trình duyệt không bật được đồ họa 3D. Thử mở bằng Chrome, hoặc bật "tăng tốc phần cứng" trong cài đặt trình duyệt. | |
+| K7 | Trình duyệt quá cũ / tải quá lâu | | 90 | Game tải lâu quá. Thử tải lại trang, hoặc mở bằng Chrome hay Safari bản mới nhé! | |
 
 ## J. Góc dưới & Info
 | ID | Chỗ hiện | Dài | Hiện tại | Chữ của m |

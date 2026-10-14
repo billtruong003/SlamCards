@@ -30,6 +30,7 @@ proto/                 Game web (đây là phần đang chạy)
   index.html
   src/
     main.js            Luồng client: menu, phòng chờ, các màn overlay, HUD, nhập liệu, mạng
+    ftue.js ftue.css   Hướng dẫn người mới: thẻ mời ở phòng chờ, 5 bước, chỉ tay lượt đầu, câu nhắc, nút ?
     world.js           Three.js scene + vật lý Rapier, camera, render theo yêu cầu, rung camera
     rules.js           Luật dùng chung client/server: ghế, kích thước bàn, xử thắng thua (judge)
     config.js          Mọi con số tune được (lực đập, tầm với, gió, mạng…)
@@ -43,6 +44,7 @@ proto/                 Game web (đây là phần đang chạy)
     menu-bg.js         Nền động ở menu
     style.css
   server/server.js     Server Node: phục vụ file tĩnh + WebSocket, giữ phòng, xử luật, gió, lượt
+  test/                Test đầu-cuối cho server (npm test)
   public/              Ảnh bài, nhạc, meme, model dép, logo
   deploy.sh            Build và đẩy lên VPS
   deploy/              Cấu hình nginx của domain
@@ -68,7 +70,13 @@ npm start
 
 Mở http://localhost:8097. Muốn đổi cổng thì đặt biến `PORT`.
 
-Mở 2 tab cùng một link phòng để tự chơi với mình. Thêm `?debug` vào URL để có `window.slamDebug` trong console (xem state, đặt bài, slow-mo hiệu ứng…).
+Mở 2 tab cùng một link phòng để tự chơi với mình. Thêm `?debug` vào URL để có `window.slamDebug` trong console (xem state, đặt bài, slow-mo hiệu ứng…). Thêm `?noftue` để tắt hướng dẫn người mới khi test. Muốn xem lại hướng dẫn như người mới thì xóa `slam-ftue` và `slam-ftue-matches` trong localStorage.
+
+Test server (chạy server thật, giả lập nhiều người chơi qua WebSocket):
+
+```bash
+npm test
+```
 
 `npm run dev` chạy Vite dev server ở cổng 5173 và proxy `/ws` sang server Node ở 8097, nên vẫn phải chạy `npm start` song song.
 
@@ -78,7 +86,7 @@ Mở 2 tab cùng một link phòng để tự chơi với mình. Thêm `?debug` 
 
 - **Client:** Three.js 0.169 + Rapier 0.14 (bản non-compat, file `.wasm` nạp tay qua `instantiateStreaming`, xem `world.js` và alias trong `vite.config.js`). Vite build với `base: './'`, mọi đường dẫn asset là tương đối nên cùng một bản build chạy được ở `/` lẫn `/slam-cards/`.
 - **Server có quyền quyết:** server giữ phòng, chọn gió, tù xì, thứ tự lượt và xử thắng thua bằng `rules.js`. Người đập chạy vật lý trên máy mình rồi stream đường bay lên server (`slamStart` → `slamChunk` mỗi 6 frame → `slamEnd`). Người xem phát lại có buffer, phát xong báo `playbackDone`; server đợi mọi người xem xong (tối đa 4 giây) mới qua lượt.
-- **Kết nối lại:** token lưu trong `sessionStorage`, rớt mạng được chờ tối đa 60 giây.
+- **Kết nối lại:** token lưu cả trong `sessionStorage` lẫn `localStorage`, nên đóng tab rồi mở lại link vẫn về đúng ghế (tab khác đang giữ ghế đó thì vào thành người mới). Rớt mạng được chờ tối đa 60 giây. Mở link phòng thì client hỏi server (`peek`) phòng còn không trước khi hỏi tên. Không kết nối được thì thử lại sau 1, 2, 4, 8 giây rồi hiện thẻ "Không vào được server!".
 - **Hiệu năng:** chỉ vẽ khi có gì thay đổi; gió chạy 30 hình/giây; tối đa khoảng 60 hình/giây trên màn hình tần số cao; tự hạ độ phân giải khi máy chậm; shadow map chỉ vẽ một lần. FPS hiện ở góc phải dưới.
 - **Tải:** test 800 client giả lập tốn khoảng 20% một nhân CPU và 101 MB RAM.
 
@@ -121,7 +129,7 @@ Mọi chữ hiện trong game liệt kê ở [TEXTS.md](TEXTS.md), mỗi dòng c
 
 ## Việc tiếp theo
 
-- **FTUE (hướng dẫn người mới):** mockup đã duyệt, chữ đã chốt (mục I trong TEXTS.md), chưa code. Gồm popup mời, 5 bước có hình, chỉ tay ở lượt đầu, câu nhắc theo tình huống, nút `?` xem lại luật.
+- Duyệt chữ nháp FTUE (I17–I24) và chữ lỗi/kết nối (mục K) trong TEXTS.md.
 - Cập nhật Concept.md theo luật 2–4 người.
 - Cho đổi dép ở màn hết trận.
 - Nâng giới hạn kết nối của nginx nếu đông người (hiện ước khoảng 500–700 người chơi cùng lúc).
