@@ -97,11 +97,10 @@ try {
   const mover = turn === 'black' ? host : guest;
 
   // UX-09: tap during the closed last 0.6 s of the turn → "too late" pop
-  await mover.waitForFunction(() => slamDebug.state.remainingMs > 0, null, { timeout: 5000 });
+  await mover.waitForFunction(() => slamDebug.turnMsLeft() > 1000, null, { timeout: 5000 });
   const late = await mover.evaluate(async () => {
-    const s = slamDebug.state;
-    const left = s.remainingMs;
-    await new Promise((r) => setTimeout(r, Math.max(0, left - 350)));
+    // the client's own clock for the turn (server time minus time since that state arrived)
+    while (slamDebug.turnMsLeft() > 350) await new Promise((r) => setTimeout(r, 20));
     const c = document.querySelector('#stage canvas');
     const r = c.getBoundingClientRect();
     c.dispatchEvent(new PointerEvent('pointerdown', { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, pointerType: 'mouse', button: 0, bubbles: true }));

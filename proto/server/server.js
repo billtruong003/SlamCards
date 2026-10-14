@@ -333,7 +333,9 @@ function startSlam(room, impact, type) {
 function relayChunk(room, frames) {
   room.slam.frames += frames.length;
   const text = JSON.stringify({ t: 'playChunk', frames });
-  for (const p of others(room, room.slam.by)) if (p.ws?.readyState === p.ws?.OPEN) p.ws.send(text);
+  // an offline seat has ws === null; `undefined === undefined` used to let it through and throw,
+  // which also cut the relay for every player after it
+  for (const p of others(room, room.slam.by)) if (p.ws && p.ws.readyState === p.ws.OPEN) p.ws.send(text);
 }
 
 function endSlam(room, final) {

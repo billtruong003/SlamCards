@@ -139,6 +139,26 @@ test('D2: a player dropped mid-slam keeps a parked card, even if the slammer rep
   } finally { srv.stop(); }
 });
 
+test('slam frames still reach the others when an earlier seat is offline', async () => {
+  const srv = await startServer({ disconnect: 5000, watchMaxMs: 2000 });
+  try {
+    const players = await threePlayerGame(srv.port);
+    const turn = players[0].state.turn;
+    const slammer = bySeat(players, turn);
+    const order = ['black', 'pink', 'blue'].filter((s) => s !== turn);
+    const leaver = bySeat(players, order[0]);
+    const stayer = bySeat(players, order[1]);
+    leaver.close();
+    await stayer.waitState((s) => s.players[leaver.seat].connected === false);
+    slammer.send({ t: 'slamStart', impact: near(slammer.state.cards[turn]), type: 'flat' });
+    await stayer.next((m) => m.t === 'playStart');
+    slammer.send({ t: 'slamChunk', frames: [[0, 0, 0, 0, 0, 0, 1]] });
+    const chunk = await stayer.next((m) => m.t === 'playChunk', 2000);
+    assert.equal(chunk.frames.length, 1);
+    assert.doesNotMatch(srv.log(), /slamChunk failed/);
+  } finally { srv.stop(); }
+});
+
 test('D2: an aborted slam does not bring back a dropped player card', async () => {
   const srv = await startServer({ slamMaxMs: 800 });
   try {

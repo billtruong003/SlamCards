@@ -127,6 +127,8 @@ Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state establishe
 
 ## P2
 
+- [x] **QA-10 · Server: người đập gửi chuyển động bài, mà có một ghế đang offline đứng trước trong danh sách, thì server lỗi `null.send` và dừng gửi cho những người sau.** Gặp trên bản live (log lỗi 11 lần, lúc test người rời giữa trận). Người xem sau ghế offline không thấy bài bay, chỉ thấy kết quả. Sửa `relayChunk`, có test server.
+
 - [x] **QA-09 · Mạng chậm: thẻ "Game tải lâu quá" hiện lúc 20 giây rồi nằm đè menu dù game đã tải xong, che nút Vào phòng.** Gặp trên bản live (iPhone 13 giả lập, tải 22 giây). Sửa: ẩn thẻ khi game tải xong. Kiểm tra: `node qa/slow-boot.mjs`.
 - [x] **UX-13 · Màn kết ván: dòng điểm "Bill 1 · Tèo 0" bị lá bài thắng và nhãn ▲ NGỬA của nó che.** Gặp trên bản live (`qa/out/match/04-round-end.png`). Sửa: nhãn bài nằm dưới lớp overlay, hoặc dời dòng điểm khỏi giữa màn.
 

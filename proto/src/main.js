@@ -1286,6 +1286,7 @@ if (new URLSearchParams(location.search).has('debug')) {
       world.needsRender = true;
     },
     cards: () => world.readCards(),
+    turnMsLeft: () => (state?.phase === 'turn' ? turnMsLeft() : 0),
     place: (cards) => world.setCards(cards),
     effects: (x, z, type = 'flat') => world.slamEffects(new THREE.Vector3(x, 0, z), type),
     localSlam: (x, z, type = 'flat') => {
