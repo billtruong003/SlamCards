@@ -635,5 +635,19 @@ renderWays();
 const thumbs = await petThumbs();
 renderPets(thumbs);
 renderLobbies(thumbs);
+// Hooks for qa/customize-shots.mjs and the asset renders.
+window.__mock = {
+  thumbs, renderer, camera, card, scene, state, WAYS,
+  async set({ pet, way, dep, colors, faceUp }) {
+    if (dep) { state.dep = dep; await placeSlipper(); }
+    if (colors) { state.colors[state.dep] = colors; recolour(); }
+    if (way) state.way = WAYS.find((w) => w.id === way);
+    if (pet) state.pet = pet;
+    if (faceUp !== undefined) { state.faceUp = faceUp; targetYaw = (faceUp ? 0 : Math.PI) + 0.3; yaw = targetYaw; }
+    if (pet || way) { buildCard(); await placePet(); }
+  },
+  freeze(v) { idleT = 0; dragging = v; },
+  showOnly(what) { card.visible = what === 'card'; if (showSlipper) showSlipper.root.visible = what === 'slipper'; },
+};
 window.__ready = true;
 </script>
