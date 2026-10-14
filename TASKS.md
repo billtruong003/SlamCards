@@ -18,10 +18,13 @@ Chữ mới: thêm vào `vi.json` + `context.json` + viết luôn cho cả 10 ng
 **Giai đoạn 2 · Lá bài stencil + Tủ đồ (việc chính)**
 1. **C1 · Prototype lá stencil nằm trên bàn thật** (dùng pet + dép cố định, chưa cần chọn đồ). Ô cửa đặt lại depth trước khi vẽ khoảng không; vẽ các lá từ thấp lên cao để lá đè lá đúng; mặt sau đúng khi bài bay/lật; viền bàn không đè. Chạy WebKit/iPhone SE + đo draw call. **Cổng quyết định:** không đạt thì đổi hướng (vẽ khoảng không ra texture rồi dán lên lá) trước khi làm tiếp C2.
 2. **A · Chủ phòng + Sẵn sàng.** Server: host, ready, chuyển host khi rời, tái đấu theo cùng luật. Client: "Chiến thôi! (n/m sẵn sàng)" / "Sẵn sàng" / "Hủy sẵn sàng", vương miện chủ phòng. Gộp QA-07. Test từng luật.
+2b. **Tạo phòng có tùy chọn + phòng công khai** (canvas hàng "Vào trận"): khi tạo chọn Riêng tư (chỉ ai có link, mặc định) / Công khai, và tối đa 2/3/4 người; chủ phòng đổi được trong phòng chờ. Server giữ danh sách phòng công khai (đang chờ lên đầu, lọc theo số người), client màn "Phòng công khai" tự cập nhật. Vào phòng công khai = phòng chờ bình thường (chủ phòng + Sẵn sàng). Test.
+2c. **Chơi ngay (ghép ngẫu nhiên 2/3/4)**: hàng chờ trên server theo số người; đủ người thì tạo phòng và bắt đầu luôn (không cần Sẵn sàng). Màn "Đang tìm đối thủ" hiện người vừa vào; sau 20 giây nếu đã có ≥ 1 người thì gợi ý chơi ít người hơn. Không có bot giả người. Hủy được. Test (ghép đúng số, hủy giữa chừng, rớt mạng khi đang chờ, 2 tab).
+2d. **Màn chính mới**: tên, chọn 2/3/4, nút "Chơi ngay", "Tạo phòng", "Phòng công khai", ô mã; Tủ đồ ngay ở màn chính (cần bước 3) và lá của m bên trái trên máy tính.
 3. **Giao thức đồ** `pickLook { pet, dep, depColors, cardColor }`: lưu localStorage + gửi server; server kiểm tra hợp lệ, không trùng màu bài; đổi đồ thì tự bỏ Sẵn sàng. Test. (B, C2, C3, D cần bước này.)
 4. **B · Dép nhiều màu trong game**: shader tô màu theo phần (từ mockup), 12 màu mỗi phần, màn chọn dép theo canvas "PickDep". Sửa luôn ART-01.
 5. **D · 4 màu bài mới + chọn đồ trong phòng chờ**: hồng/xanh/vàng/xanh lá + hoa văn + biểu tượng; ô ghế, chip HUD, dòng điểm theo canvas "Main/Guest/Phone"; màu có người lấy thì mờ.
-6. **[DEPLOY 2]** (A + B + D; lá bài vẫn kiểu cũ nhưng màu mới).
+6. **[DEPLOY 2]** (A + phòng công khai + chơi ngay + màn chính + B + D; lá bài vẫn kiểu cũ nhưng màu mới).
 7. **C2 · Thay lá bài trong game bằng lá mới**: mặt ngửa ô cửa + khoảng không 3 lớp + bệ, mặt úp logo; viền pet pháp tuyến mượt; chỉ tải pet của người trong phòng; vật lý giữ hộp 1 × 1.478.
 8. **C3 · Pet phản ứng theo trận** (ăn → nhảy, bị ăn → lắc đầu, tới lượt → gật, rớt bàn → ngã) + màn chọn pet theo canvas "PickPet". Giữ nhãn ▲NGỬA/▼ÚP. ART-02: chụp lại ảnh dép/pet bằng shader game.
 9. **PERF-01** warm-up shader (sau C2 vì C2 thêm shader) + đo `qa/perf.mjs` (mục tiêu < ~50 draw call với 4 lá) + `qa/devices.mjs`.
