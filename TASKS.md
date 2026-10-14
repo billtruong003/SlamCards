@@ -207,6 +207,8 @@ Ngôn ngữ chọn theo **ngôn ngữ trình duyệt** (`navigator.languages`), 
 
 ## Tính năng mới: Tủ đồ (pet trong lá bài, dép tự chọn màu, chủ phòng + Sẵn sàng)
 
+> Ghi chú gốc từ 14/10, giữ làm chi tiết kỹ thuật. Thứ tự làm và phạm vi mới nhất nằm ở **Lộ trình phase dài** phía trên.
+
 Mockup chạy thật: `mockup/customize/index.html` (artifact https://claude.ai/artifact/FMn6afs8qBzdu4unpgC9ex). Pet: Kenney Cube Pets (CC0), 24 con, mỗi con 8 động tác, ~150 KB. Ảnh mockup: `qa/customize-shots.mjs` → `qa/out/customize/`.
 
 **A. Phòng chờ: chủ phòng + Sẵn sàng** (làm trước, ít rủi ro, gộp với QA-07)
