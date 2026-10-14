@@ -8,16 +8,62 @@ Danh sách này đã gộp việc của session "Kết nối VPS (fork)" (bàn g
 
 **Luật cứng**: test kĩ trước, deploy là bước cuối và phải hỏi Bill (deploy xóa các phòng đang chơi). Không đụng `lucy-*`, docker hordecall, `warp-svc`, backup trên VPS. Sửa code Lucy (`/root/lucy/hub`) phải theo CLAUDE.md của repo đó: `gitnexus_impact` trước khi sửa, `gitnexus_detect_changes` trước khi commit.
 
-## Thứ tự đề xuất (chờ Bill duyệt)
+## Lộ trình chạy dài (thứ tự theo phụ thuộc)
 
-1. ~~**QA-01** + **UX-01**~~ xong 14/10 (kèm UX-06).
-2. **OPS-01** alias ssh `hordecall` để `deploy.sh` chạy được từ máy này. **G8** bỏ link IP.
-3. **Deploy nhánh** vào giờ vắng, gộp **G7** (pm2 400M), **V1** (ưu tiên CPU cho game), **V3** (reboot). Chỉ làm khi Bill đồng ý.
-4. **G4** (gồm UX-10) đo đạc → **LU1–LU4** bảng số Lucy.
-5. P1 còn lại: UX-11, UX-12, QA-02, UX-02, UX-03, QA-06.
-6. Tủ đồ: A (chủ phòng + Sẵn sàng, gộp QA-07) → B (dép nhiều màu) → D (màu bài + chọn đồ) → C (lá bài stencil, phần khó nhất).
-7. Đa ngôn ngữ: L10N-01 xong → L10N-02/03. Quảng cáo ADS-01 (test) → ADS-02 → bật thật khi AdSense duyệt.
-8. P2/P3, G2 ủng hộ, G5, G6, PERF-01, web studio WS1.
+Mỗi bước: code → `npm test` → `node qa/devices.mjs` (5 máy) → bước nào đụng giao diện thì chạy thêm `SLAM_LANG=<mã>` cho 11 ngôn ngữ trên iPhone SE → commit. Mỗi mốc **[DEPLOY]**: kiểm tra 0 người đang chơi → sao lưu `/opt/slam-cards` → deploy → `SLAM_BASE=… node qa/devices.mjs` + `node qa/live-match.mjs` trên bản live → báo Bill.
+
+Chữ mới ở bất kỳ bước nào: thêm vào `vi.json` + `context.json`, viết luôn bản `en`; các ngôn ngữ khác tạm dùng tiếng Anh cho tới đợt dịch kế tiếp (L10N-04).
+
+**Giai đoạn 1 · Sửa lỗi còn lại (không phụ thuộc gì, làm ngay)**
+1. UX-13 dòng điểm kết ván bị lá bài che.
+2. UX-02 tên màu khó đọc ở dòng điểm (chip nền kem + ô màu ghế). Làm trước Tủ đồ D vì D đổi màu ghế, dùng lại kiểu chip này.
+3. QA-02 gõ sai mã phòng báo sai lý do (chữ mới).
+4. UX-11 + UX-12 chỉ tay/mẹo/banner đè nhau trên điện thoại (dọc + ngang).
+5. UX-04 nút góc ≥ 44px trên màn cảm ứng, chừa chỗ đáy cho phòng chờ.
+6. UX-05 meme không che bàn trên màn dọc.
+7. QA-08 không có Web Audio thì game vẫn chạy, không tiếng.
+8. QA-06 ghế mất kết nối rút timer lượt còn ~8 giây (server, có test).
+9. UX-03 hết trận còn một mình → nút "Tạo phòng mới" (chữ mới).
+10. UX-09 đập trong 0,6 giây cuối → chữ "Hết giờ!" (chữ mới).
+11. UX-08 vào phòng đang đánh → báo đợi hết trận (chữ mới; bản "ngồi xem" để sau).
+12. UX-07 tên ngẫu nhiên cho người được mời (chữ mới, danh sách tên theo từng ngôn ngữ).
+13. QA-03 chờ `peek` tối đa 5 giây · QA-04 giữ 5 token gần nhất · QA-05 cờ "đã đập lần đầu" lưu storage.
+14. G8 phần còn lại: Concept.md theo luật 2–4 người. TXT-01 dọn TEXTS.md (giờ nguồn chữ là `vi.json`).
+15. **[DEPLOY 1]** + V3 reboot nếu Bill đồng ý.
+
+**Giai đoạn 2 · Số liệu (cần trước Tủ đồ để đo được tác động)**
+16. G4 (gồm UX-10): sự kiện JSONL phía server + client, mã ẩn danh, không IP, `/__stats` chỉ 127.0.0.1, giới hạn 20 sự kiện/phút. Có test.
+17. **[DEPLOY 2]**.
+18. LU1 → LU2 → LU3 → LU4 trên Lucy (repo khác, theo CLAUDE.md + gitnexus). Cần G4 đã chạy trên live ít nhất 1 ngày để có dữ liệu thật. LU5 HTTPS cho Lucy làm cùng lúc.
+
+**Giai đoạn 3 · Tủ đồ (A → giao thức → B → D → C, mỗi chữ một mốc test)**
+19. A · Chủ phòng + Sẵn sàng (server: host, ready, chuyển host khi rời, tái đấu theo cùng luật; client: nút "Chiến thôi (n/m)" / "Sẵn sàng"). Gộp QA-07. Có test từng luật.
+20. Giao thức đồ: `pickLook { pet, dep, depColors, cardColor }` lưu localStorage + gửi server, server kiểm tra hợp lệ và không trùng màu bài. Đổi đồ → tự bỏ Sẵn sàng. Có test. (B, C, D đều cần bước này.)
+21. B · Dép tô màu theo phần trong game (shader từ mockup), bảng 12 màu mỗi phần, UI chọn dép theo canvas "PickDep". Sửa luôn ART-01 (palette phẳng / shader).
+22. D · 4 màu bài mới + hoa văn + biểu tượng; chip HUD, dòng điểm, ô ghế phòng chờ theo canvas "Main/Guest/Phone". Người chơi tự chọn màu (màu có người lấy thì mờ).
+23. **[DEPLOY 3]** (A + B + D, lá bài vẫn kiểu cũ nhưng màu mới).
+24. C1 · Prototype riêng: lá stencil nằm trên bàn (ô cửa đặt lại depth, vẽ lá thấp → cao, lá đè lá đúng, viền bàn không đè). Chạy WebKit/iPhone SE.
+25. C2 · Thay lá bài trong `cards.js` bằng lá mới (mặt ngửa ô cửa + khoảng không 3 lớp, mặt úp logo), vật lý giữ nguyên. Pet: chỉ tải pet của người trong phòng, viền pháp tuyến mượt.
+26. C3 · Pet phản ứng theo sự kiện (ăn → nhảy, bị ăn → lắc đầu, tới lượt → gật, rớt bàn → ngã). Giữ nhãn ▲NGỬA/▼ÚP.
+27. UI chọn pet theo canvas "PickPet". ART-02: chụp lại ảnh dép/pet bằng shader game.
+28. PERF-01 warm-up shader (làm sau C vì C thêm shader mới) + đo lại `qa/perf.mjs` (< ~50 draw call với 4 lá).
+29. L10N-04: gom toàn bộ chữ mới (tên 24 pet, màu, Sẵn sàng…) → `STRINGS.md` → Bill đưa AI dịch → `i18n:check` → kiểm tra 11 ngôn ngữ.
+30. **[DEPLOY 4]** Tủ đồ đầy đủ.
+
+**Giai đoạn 4 · Tính năng phụ**
+31. G5 ảnh xem trước link phòng (Open Graph, theo ngôn ngữ).
+32. G2 ủng hộ: dải mời hết trận, nút góc, bảng QR / tấm trượt "Lưu ảnh mã QR", danh sách người ủng hộ công khai (file JSON Bill sửa tay hoặc qua Lucy).
+33. G6 nút "Báo lỗi" (cần A1 hộp `support@`, hoặc gửi về Lucy).
+34. **[DEPLOY 5]**.
+
+**Giai đoạn 5 · Web studio + chuẩn bị quảng cáo (khi Bill muốn bật quảng cáo)**
+35. WS1 cổng game trên `billthedevstudio.io.vn` (Dép Lào + 3 game casual).
+36. WS3 trang chính sách riêng tư (viết theo dữ liệu G4 thu thật). WS4 `ads.txt` (cần A4 tài khoản AdSense).
+37. ADS-01 quảng cáo chế độ test → ADS-02 CMP cho châu Âu → Bill nộp H5 Games Ads → bật thật. Cần Q3 duyệt.
+
+**Để sau**: Android (AdMob), cổng game (CrazyGames…), WS2/WS5/WS6.
+
+**Bill làm (không chặn đường chính, trừ chỗ ghi)**: OPS-01 alias ssh (đang deploy bằng `SLAM_HOST`), V1/V2/V3 đồng ý, A1 hộp mail (chặn G6), A4 AdSense (chặn WS4/ADS), Q3 duyệt quảng cáo, A2/A3/A5/A6.
 
 ## Câu hỏi
 
