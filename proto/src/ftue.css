@@ -24,7 +24,9 @@
 #help.dot::after{content:"";position:absolute;right:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--pink-dark);border:2px solid var(--ink)}
 
 /* ---------- invite card beside the lobby, start confirmation ---------- */
-.menu-bg.with-invite{flex-direction:column;gap:18px}
+/* flex-start, not center: a centred column taller than a phone screen spills off the top where it can't be
+   scrolled to (UX-01). The auto margins below still centre it when it fits. */
+.menu-bg.with-invite{flex-direction:column;gap:18px;justify-content:flex-start}
 .menu-bg.with-invite .menu-card{margin:auto auto 0}
 .menu-bg.with-invite .ftue-invite{margin:0 auto auto}
 .ftue-side{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;width:min(340px,calc(100vw - 32px))}

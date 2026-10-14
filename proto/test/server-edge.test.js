@@ -113,7 +113,7 @@ test('bad slam payloads: invalid final and oversized chunk streams are refused',
 });
 
 // Known bug QA-01: no 'error' listener on sockets, so ws's "Max payload size exceeded" kills the process.
-test('huge message closes that socket only; server keeps serving', { todo: 'QA-01: add ws error handler' }, async () => {
+test('huge message closes that socket only; server keeps serving (QA-01)', async () => {
   const srv = await startServer();
   try {
     const big = await connect(srv.port);

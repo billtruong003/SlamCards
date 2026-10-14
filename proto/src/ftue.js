@@ -207,7 +207,13 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
         <button type="button" class="ftue-no" id="ftue-no">Biết chơi rồi</button>
       </div>`);
     $('ftue-yes').onclick = () => openTutorial(0);
-    $('ftue-no').onclick = () => { remember(); removeInvite(); };
+    // "Already know how": no first-turn pointer and no tips either (UX-06), same as after three matches.
+    $('ftue-no').onclick = () => {
+      remember();
+      matches = Math.max(matches, TIP_MATCHES);
+      saved.set('slam-ftue-matches', String(matches));
+      removeInvite();
+    };
   }
 
   // Starting while someone is still reading asks once. Returns false when nothing needs asking.

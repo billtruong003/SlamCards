@@ -10,36 +10,38 @@ Danh sách này đã gộp việc của session "Kết nối VPS (fork)" (bàn g
 
 ## Thứ tự đề xuất (chờ Bill duyệt)
 
-1. **QA-01** + **UX-01** (P0, nhỏ, có test).
+1. ~~**QA-01** + **UX-01**~~ xong 14/10 (kèm UX-06).
 2. **OPS-01** alias ssh `hordecall` để `deploy.sh` chạy được từ máy này. **G8** bỏ link IP.
 3. **Deploy nhánh** vào giờ vắng, gộp **G7** (pm2 400M), **V1** (ưu tiên CPU cho game), **V3** (reboot). Chỉ làm khi Bill đồng ý.
 4. **G4** (gồm UX-10) đo đạc → **LU1–LU4** bảng số Lucy.
 5. P1 còn lại: UX-11, UX-12, QA-02, UX-02, UX-03, QA-06.
 6. Tủ đồ: A (chủ phòng + Sẵn sàng, gộp QA-07) → B (dép nhiều màu) → D (màu bài + chọn đồ) → C (lá bài stencil, phần khó nhất).
-7. P2/P3, G2 ủng hộ, G5, G6, PERF-01. Quảng cáo và web studio chờ Q3/Q4.
+7. P2/P3, G2 ủng hộ, G5, G6, PERF-01, web studio WS1. Quảng cáo chờ Q3.
 
 ## Câu hỏi
 
 - [x] **Q1 · Luật "đè hẳn"**: đã chốt 14/10. Giữ code (≥ 50% diện tích chồng lên là "đè hẳn") và giữ chữ "đè hẳn", vì hai cách nói không khác nghĩa.
 - [x] **Q2 · Mockup FTUE**: đã duyệt 14/10, làm theo mockup. FTUE đã có trong nhánh (`src/ftue.js`, `src/ftue.css`).
-- [ ] **Q3** · Duyệt chỗ đặt quảng cáo (mục G3).
-- [ ] **Q4** · Tên miền cổng game: `play.billthedevstudio.com` hay giữ `billthedevstudio.io.vn`.
-- [ ] **Q5** · Game nào được đưa lên cổng studio (Timeless Soul chắc chắn; Zombie War, Typing Fight, Drag & Slice?).
-- [ ] **Q6** · Gmail cá nhân nào là chính; kênh @BillTheDev là kênh nào.
-- [ ] **Q7** · Có danh sách người ủng hộ công khai không.
-- [ ] **UX-06** · Người bấm "Biết chơi rồi": tắt chỉ tay nhưng giữ mẹo, hay tắt cả hai?
+- [ ] **Q3** · Duyệt chỗ đặt quảng cáo (mục G3). Mockup 3 chỗ ở canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4tJz, hàng "Q3". Chờ Bill xem.
+- [x] **Q4** · Cổng game dùng `billthedevstudio.io.vn` (chốt 14/10).
+- [x] **Q5** · Tạm thời đưa 3 game casual (Meh Merge, Nah Blocks, Bruh Arrows), chỉ gồm nội dung quảng cáo, video YouTube, ảnh store và link store (chốt 14/10).
+- [x] **Q6** · Gmail chính: truongbill003@gmail.com (chốt 14/10). Hộp mail studio (A1) tạo trên PA Vietnam: Bill tự đăng nhập và tạo, Claude không được tạo tài khoản/đặt mật khẩu thay.
+- [x] **Q7** · Có danh sách người ủng hộ công khai (chốt 14/10). Thêm vào G2.
+- [x] **UX-06** · Người bấm "Biết chơi rồi": tắt cả chỉ tay lẫn mẹo (chốt 14/10).
 
 ## P0 — phải sửa trước khi deploy
 
-- [ ] **QA-01 · Server sập khi nhận tin nhắn > 2 MB (hoặc khung WebSocket lỗi).** Một tin nhắn làm mất mọi phòng đang chơi. Có từ đầu, production đang dính. Đã chạy thử 3/3.
+- [x] **QA-01 · Server sập khi nhận tin nhắn > 2 MB (hoặc khung WebSocket lỗi).** Một tin nhắn làm mất mọi phòng đang chơi. Có từ đầu, production đang dính. Đã chạy thử 3/3.
   - Nguyên nhân: socket không có listener `error`, thư viện `ws` ném "Max payload size exceeded" thành lỗi không ai bắt (`server/server.js`, đoạn `wss.on('connection')`).
   - Sửa: thêm `ws.on('error', …)` (log rồi bỏ qua) và `wss.on('error', …)`.
   - Kiểm tra: bỏ `todo` ở test "huge message" trong `test/server-edge.test.js`, `npm test` phải pass.
+  - Xong 14/10: `npm test` 26/26 pass.
 
-- [ ] **UX-01 · Điện thoại: tiêu đề + mã phòng ở phòng chờ bị đẩy lên khỏi màn hình, cuộn không tới.** Chỉ xảy ra khi thẻ mời FTUE đang hiện. Lỗi mới. Đã chạy thử trên cả 5 thiết bị giả lập: iPhone SE −190px, Galaxy S9 −146px, iPhone 13 −130px, Pixel 7 −98px, iPad Mini −6px (không có thẻ mời thì ở 56px). Ảnh: `qa/screens/ux01-iphone-se-lobby-top.png`.
+- [x] **UX-01 · Điện thoại: tiêu đề + mã phòng ở phòng chờ bị đẩy lên khỏi màn hình, cuộn không tới.** Chỉ xảy ra khi thẻ mời FTUE đang hiện. Lỗi mới. Đã chạy thử trên cả 5 thiết bị giả lập: iPhone SE −190px, Galaxy S9 −146px, iPhone 13 −130px, Pixel 7 −98px, iPad Mini −6px (không có thẻ mời thì ở 56px). Ảnh: `qa/screens/ux01-iphone-se-lobby-top.png`.
   - Nguyên nhân: `.menu-bg.with-invite` xếp dọc nhưng vẫn `justify-content:center`, phần tràn phía trên bị cắt (`src/ftue.css`).
   - Sửa: `justify-content:flex-start` cho `.menu-bg.with-invite`, để `margin:auto` lo căn giữa khi đủ chỗ.
   - Kiểm tra: 375×812, người mới vào bằng link → cuộn lên đầu thấy "Phòng XXXX".
+  - Xong 14/10: `qa/devices.mjs` cả 5 máy, đỉnh thẻ phòng chờ ở 16px, nút góc không còn đè nút thẻ mời.
 
 - [ ] **OPS-01 · `proto/deploy.sh` không chạy được từ máy này**: nó dùng ssh host `hordecall`, mà `C:\Users\ducnq\.ssh\config` chưa có alias đó. Thêm:
   ```
@@ -84,7 +86,7 @@ Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state establishe
   - Sửa: chừa khoảng trống đáy cho `.menu-bg` trên màn hẹp; tăng vùng chạm nút góc trên màn cảm ứng.
 - [ ] **UX-05 · Điện thoại dọc: meme hiện đè lên bàn, che bài.** Có từ đầu. Đã chạy thử (meme che bài đối thủ).
   - Sửa: trên màn dọc đưa meme lên dải trên (dưới HUD) hoặc thu nhỏ; không che vùng bàn.
-- [ ] **UX-06 · Người bấm "Biết chơi rồi" vẫn bị chỉ tay lượt đầu + mẹo trong 3 trận đầu.** Chờ Bill trả lời (xem Câu hỏi).
+- [x] **UX-06 · Người bấm "Biết chơi rồi" vẫn bị chỉ tay lượt đầu + mẹo trong 3 trận đầu.** Bill chốt: tắt cả hai. Xong 14/10: bấm "Biết chơi rồi" đặt số trận đã chơi lên 3, chỉ tay và mẹo đều tắt. Kiểm tra: `node qa/ux06-check.mjs`.
 - [ ] **UX-07 · Người được mời phải gõ tên trước khi vào phòng.** Đề xuất điền sẵn một tên ngẫu nhiên đúng giọng game (vd "Tí sún", "Tèo mũi"), sửa sau được. Chữ cần duyệt.
 - [ ] **QA-07 (L6) · Ai trong phòng chờ cũng bấm được "Chiến thôi".** Có từ đầu. Đọc code. Làm chung với Tủ đồ mục A.
 - [ ] **UX-08 (C5) · Bạn đến muộn bấm link khi phòng đang đánh thì bị đuổi về menu.** Có từ đầu (C5). Tối thiểu: báo "Phòng đang đánh, đợi hết trận rồi bấm lại link". Tốt hơn: cho ngồi xem và vào luôn ở trận sau.
@@ -107,18 +109,18 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
 - [ ] **LU2** · Lucy giao diện theo canvas trang "Lucy" (https://claude.ai/artifact/CjdMqkAyKS6BuFnxjY9uTb).
 - [ ] **LU3** · Tóm tắt Telegram 8:00 + nút "Hỏi Lucy".
 - [ ] **LU4** · Tín hiệu "cần nâng máy": online đỉnh/ngày > 1.000, độ trễ p95 > 50 ms, CPU game > 70% một nhân, load 15 phút > 1.6, RAM trống < 500 MB; đỏ 3 ngày liền thì báo Telegram.
-- [ ] **LU5** · HTTPS cho Lucy (token đang đi qua http thường). Chờ Q4.
+- [ ] **LU5** · HTTPS cho Lucy (token đang đi qua http thường), vd `lucy.billthedevstudio.io.vn`.
 
 ## Tính năng khác
 
-- [ ] **G2** · Ủng hộ trong game theo canvas trang "Dép Lào · Ủng hộ": dải mời ở màn hết trận, nút "Ủng hộ" cạnh Info/Âm thanh, bảng QR (máy tính), tấm trượt có nút "Lưu ảnh mã QR" (điện thoại). Không hiện tên chủ tài khoản. QR gốc: `C:\Users\ducnq\Downloads\77375854_download.webp`, cắt x 324–845, y 360–911. Chữ mới vào TEXTS.md.
+- [ ] **G2** · Ủng hộ trong game theo canvas trang "Dép Lào · Ủng hộ": dải mời ở màn hết trận, nút "Ủng hộ" cạnh Info/Âm thanh, bảng QR (máy tính), tấm trượt có nút "Lưu ảnh mã QR" (điện thoại). Không hiện tên chủ tài khoản. Có danh sách người ủng hộ công khai (Q7). QR gốc: `C:\Users\ducnq\Downloads\77375854_download.webp`, cắt x 324–845, y 360–911. Chữ mới vào TEXTS.md.
 - [ ] **G5** · Ảnh xem trước khi dán link phòng (Open Graph) cho Zalo/Messenger.
 - [ ] **G6** · Nút "Báo lỗi" (về `support@` hoặc Lucy).
 - [ ] **G3** · Quảng cáo. Chờ Q3 + Bill đăng ký AdSense. Không chặn nút copy link; không bao giờ trong ván.
 
-## Web studio (chờ Q4)
+## Web studio (cổng game ở `billthedevstudio.io.vn`)
 
-- [ ] **WS1** · Cổng game từ canvas (trang tĩnh, dùng chung danh sách game với Lucy).
+- [ ] **WS1** · Cổng game từ canvas (trang tĩnh, dùng chung danh sách game với Lucy) trên `billthedevstudio.io.vn`. Đợt đầu: Dép Lào + 3 game casual (chỉ nội dung quảng cáo, video YouTube, ảnh store, link store).
 - [ ] **WS3** · Trang pháp lý (riêng tư: tên người chơi, mã ẩn danh, quảng cáo).
 - [ ] **WS4** · `ads.txt` cho web; giữ `app-ads.txt` ở billthedev.com.
 - [ ] **WS2** landing `.com` · **WS5** press kit · **WS6** portfolio thêm nút "Game của studio" ở /arcade.

@@ -636,8 +636,14 @@ function handle(ws, msg) {
   }
 }
 
+// Without these, `ws` throws its socket errors (e.g. "Max payload size exceeded" for a message over
+// maxPayload, or a broken frame) as uncaught exceptions and the whole server goes down (QA-01).
+// The library already closes the offending socket, so logging is all that's left to do.
+wss.on('error', (err) => console.error('websocket server error', err));
+
 wss.on('connection', (ws) => {
   ws.isAlive = true;
+  ws.on('error', (err) => console.error('socket error', err.message));
   ws.on('pong', () => { ws.isAlive = true; });
   ws.on('message', (data) => {
     let msg;
