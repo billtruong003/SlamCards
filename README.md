@@ -2,7 +2,7 @@
 
 Game đập bài bằng dép chơi online trên trình duyệt, 2–4 người. Mỗi người một lá bài úp trên bàn, thay phiên đập dép xuống bàn để gió hất bài bay. Lật bài mình ngửa rồi cho nó đè lên bài úp của địch là ăn.
 
-**Chơi:** https://billthedevstudio.io.vn/slam-cards/ (bản dự phòng: http://14.225.255.73:8096)
+**Chơi:** https://billthedevstudio.io.vn/slam-cards/
 
 Làm bởi [BillTheDev](https://www.billthedev.com).
 

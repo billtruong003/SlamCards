@@ -61,7 +61,7 @@ Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state establishe
 - [ ] **V1** · Ưu tiên CPU cho game: `/usr/local/bin/vps-priority` (cron 5 phút) `renice 10` các tiến trình `lucy-*`; thêm `nice -n 15` vào dòng `cron_dream.sh` trong crontab root. Bill đã duyệt.
 - [ ] **V3** · Reboot giờ vắng để nạp thư viện vừa cập nhật.
 - [ ] **V2** · Gửi tin Telegram thử (`vps-diskguard --test`). Chỉ khi Bill cho phép.
-- [ ] **G8** · Bỏ link IP `http://14.225.255.73:8096` khỏi README và `deploy.sh`; cập nhật Concept.md theo luật 2–4 người.
+- [ ] **G8** · ~~Bỏ link IP `:8096` khỏi README và `deploy.sh`~~ (xong 14/10; cổng 8096 trên nginx vẫn mở, đóng khi deploy nếu Bill đồng ý). Còn: cập nhật Concept.md theo luật 2–4 người.
 
 ## P1
 
