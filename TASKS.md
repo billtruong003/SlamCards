@@ -141,8 +141,8 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
 Ngôn ngữ chọn theo **ngôn ngữ trình duyệt** (`navigator.languages`), có ô chọn tay ở góc và `?lang=`. **Không** tra IP hay vị trí. Đợt 1: vi, en, zh-Hans, zh-Hant, id, th, pt-BR, es.
 
 - [x] **L10N-01** · (xong 14/10, 194 chuỗi) Hạ tầng: `src/i18n.js`, `src/locales/vi.json` (nguồn) + `context.json` (chỗ hiện, độ dài tối đa), chuyển mọi chữ trong game sang `t()`, server gửi mã lỗi, font dự phòng cho chữ Trung/Thái, `npm run i18n:export` / `i18n:check`.
-- [ ] **L10N-02** · Bill đưa `docs/localization/PROMPT.md` + `STRINGS.md` cho AI khác viết từng ngôn ngữ (và viết lại bản Việt cho tự nhiên hơn) → lưu `src/locales/<mã>.json` → `npm run i18n:check`.
-- [ ] **L10N-03** · Kiểm tra giao diện từng ngôn ngữ trên điện thoại giả lập (chữ dài vỡ nút, font Trung/Thái). Meme có chữ/giọng tiếng Việt: giữ nguyên hoặc thay theo ngôn ngữ (quyết sau).
+- [x] **L10N-02** (xong 14/10: 9 ngôn ngữ + vi viết lại) · Bill đưa `docs/localization/PROMPT.md` + `STRINGS.md` cho AI khác viết từng ngôn ngữ (và viết lại bản Việt cho tự nhiên hơn) → lưu `src/locales/<mã>.json` → `npm run i18n:check`.
+- [x] **L10N-03** (xong 14/10: 11 ngôn ngữ trên iPhone SE, không chữ tràn) · Kiểm tra giao diện từng ngôn ngữ trên điện thoại giả lập (chữ dài vỡ nút, font Trung/Thái). Meme có chữ/giọng tiếng Việt: giữ nguyên hoặc thay theo ngôn ngữ (quyết sau).
 
 ## Quyền riêng tư (để không bị Google chặn quảng cáo)
 
