@@ -53,6 +53,27 @@ Ký hiệu: **QA** = lỗi kỹ thuật, **UX** = code chạy đúng nhưng ngư
 - [ ] **UX-10 · Chưa có số liệu FTUE**, không biết người mới bỏ ở bước nào. Đề xuất gắn event: `room_join_success`, `ftue_invite_yes/no`, `ftue_step_n`, `ftue_skip`, `first_slam`, `first_flip`, `round_end`, `match_end`, `rematch`.
 - [ ] **TXT-01 · Duyệt chữ nháp I17–I24 và K1–K7 trong TEXTS.md.**
 
+## Hình ảnh & hiệu năng
+
+- [ ] **ART-01 · Dép trong game nhìn như tô màu mượt, không ra chất toon.** Đã kiểm tra: dép có dùng `MeshToonMaterial` (3 dải) + viền mực, nhưng texture `art/blender/palette.png` là các ô **chuyển màu** (mỗi ô sáng → tối). UV của dép trải dọc ô nên bóng đổ đã "vẽ sẵn" trong màu, che mất các dải toon. Ảnh: `qa/screens/art01-slippers-closeup.png`.
+  - Sửa (trong `art/blender/build_slippers_lowpoly.py`): mỗi vật liệu lấy màu ở **một điểm** của ô (dồn UV vào giữa ô), hoặc thay palette bằng ô màu phẳng. Xuất lại 3 file `.glb`. Có thể chỉnh thêm độ tương phản 3 dải trong `toonGradient()` (`src/toon.js`) sau khi màu nền đã phẳng.
+  - Nghi thêm (chưa chứng minh): đèn bán cầu 1.6 (`HemisphereLight` trong `world.js`) tô mượt, không chia dải; nếu sau khi làm phẳng màu mà dải vẫn mờ thì giảm đèn này.
+- [ ] **ART-02 · Ảnh dép ở phòng chờ (`public/deps/*.jpg`) là ảnh render Blender kiểu thật, không cùng phong cách toon + viền mực trong game.** Sửa: chụp lại ảnh từ chính model trong game (cùng shader), có thể tự động bằng script Playwright như `qa/toon-look.mjs`.
+- [ ] **PERF-01 · Khựng nhẹ ở cú đập đầu tiên trên máy yếu.** Đo: điện thoại tầm trung (CPU chậm 4×) có 1 frame 50ms; máy yếu (CPU chậm 6×) có 3 frame giật, dài nhất 83ms. Số shader tăng dần 5 → 10 đúng lúc hiệu ứng đập/dép rơi xuất hiện lần đầu → trình duyệt biên dịch shader lúc đang chơi.
+  - Sửa: sau khi tải xong, gọi `renderer.compile(scene, camera)` và cho hiệu ứng đập + dép rơi chạy một lần ngoài màn hình (warm-up) trước khi vào trận.
+
+Đo hiệu năng ngày 14/10/2026 (`node qa/perf.mjs`, Chromium dùng GPU thật AMD Radeon 610M — GPU tích hợp yếu; kết quả ở `qa/perf-report-2026-10-14.json`):
+
+| Cấu hình | FPS | Khung hình p95 | Khung dài nhất | Draw call | Tam giác |
+|---|---|---|---|---|---|
+| Laptop 1280×720 | 60 | 16.8 ms | 33 ms (1 lần, lúc đập) | 17–26 | ≤ 1 582 |
+| Laptop 1920×1080 (dpr 1.5) | 60 | 16.7 ms | 16.8 ms | 17–25 | ≤ 1 182 |
+| Pixel 7, CPU chậm 4× | 60 | 16.8 ms | 50 ms (lúc đập) | 17–28 | ≤ 1 592 |
+| Galaxy S9+, CPU chậm 6× | 59–60 | 16.8 ms | 83.5 ms (lúc đập) | 17–28 | ≤ 1 592 |
+
+- Game chỉ vẽ khi có gì thay đổi: lúc đứng yên vẽ 0 khung/giây (đỡ pin). Bộ nhớ JS khoảng 33 MB. Tải lần đầu 2.5–3.8 MB chưa nén; production đã bật gzip + cache 1 năm cho file trong `assets/`.
+- Kết luận: chưa cần tối ưu lớn. Chỉ nên làm PERF-01. Giả lập chỉ làm chậm CPU, còn GPU vẫn là của laptop; điện thoại yếu thật (GPU, nóng máy) cần đo bằng máy thật qua Chrome remote debugging.
+
 ## Đợt test thiết bị giả lập
 
 Playwright 1.48: WebKit (cùng engine với Safari) với hồ sơ iPhone 13, iPhone SE, iPad Mini; Chromium với Pixel 7, Galaxy S9+. Mỗi máy là người mới mở link mời: nhập tên → phòng chờ → 5 bước hướng dẫn → tù xì → chạm vào chỗ chỉ tay để đập → xoay ngang → xoay dọc. Âm thanh tắt.

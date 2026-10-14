@@ -1,0 +1,410 @@
+[
+  {
+    "profile": "desktop-1280x720",
+    "cpuThrottle": 1,
+    "phases": {
+      "lobby": {
+        "rafFps": 60,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 18,
+        "triangles": 126,
+        "programs": 5,
+        "textures": 5,
+        "geometries": 13,
+        "pixelRatio": 1,
+        "canvas": "1280x720",
+        "heapMB": 8.5
+      },
+      "turnIdle": {
+        "rafFps": 60,
+        "drawnFps": 23,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 23,
+        "triangles": 1102,
+        "programs": 7,
+        "textures": 5,
+        "geometries": 18,
+        "pixelRatio": 1,
+        "canvas": "1280x720",
+        "heapMB": 32.2
+      },
+      "aiming": {
+        "rafFps": 60,
+        "drawnFps": 41,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 26,
+        "triangles": 1582,
+        "programs": 9,
+        "textures": 5,
+        "geometries": 23,
+        "pixelRatio": 1,
+        "canvas": "1280x720",
+        "heapMB": 32.4
+      },
+      "mySlam": {
+        "rafFps": 60,
+        "drawnFps": 23,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.3
+        },
+        "janky": 1,
+        "drawCalls": 17,
+        "triangles": 124,
+        "programs": 10,
+        "textures": 6,
+        "geometries": 30,
+        "pixelRatio": 1,
+        "canvas": "1280x720",
+        "heapMB": 32.8
+      },
+      "watching": {
+        "rafFps": 60,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 18,
+        "triangles": 126,
+        "programs": 10,
+        "textures": 6,
+        "geometries": 30,
+        "pixelRatio": 1,
+        "canvas": "1280x720",
+        "heapMB": 32.4
+      }
+    },
+    "longTasks": 3,
+    "errors": [],
+    "bootMs": 3707,
+    "gpu": "ANGLE (AMD, AMD Radeon(TM) 610M (0x0000164E) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "transferKB": 2522,
+    "heapMB": 32.4
+  },
+  {
+    "profile": "desktop-1920x1080-dpr1.5",
+    "cpuThrottle": 1,
+    "phases": {
+      "lobby": {
+        "rafFps": 61,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 18,
+        "triangles": 126,
+        "programs": 5,
+        "textures": 5,
+        "geometries": 13,
+        "pixelRatio": 1.5,
+        "canvas": "1920x1080",
+        "heapMB": 8.6
+      },
+      "turnIdle": {
+        "rafFps": 61,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 22,
+        "triangles": 702,
+        "programs": 6,
+        "textures": 5,
+        "geometries": 17,
+        "pixelRatio": 1.5,
+        "canvas": "1920x1080",
+        "heapMB": 31.5
+      },
+      "aiming": {
+        "rafFps": 60,
+        "drawnFps": 30,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 25,
+        "triangles": 1182,
+        "programs": 8,
+        "textures": 5,
+        "geometries": 22,
+        "pixelRatio": 1.5,
+        "canvas": "1920x1080",
+        "heapMB": 32.3
+      },
+      "mySlam": {
+        "rafFps": 60,
+        "drawnFps": 20,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 17,
+        "triangles": 124,
+        "programs": 10,
+        "textures": 6,
+        "geometries": 29,
+        "pixelRatio": 1.5,
+        "canvas": "1920x1080",
+        "heapMB": 32.5
+      },
+      "watching": {
+        "rafFps": 60,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 18,
+        "triangles": 126,
+        "programs": 10,
+        "textures": 6,
+        "geometries": 29,
+        "pixelRatio": 1.5,
+        "canvas": "1920x1080",
+        "heapMB": 32.3
+      }
+    },
+    "longTasks": 1,
+    "errors": [],
+    "bootMs": 865,
+    "gpu": "ANGLE (AMD, AMD Radeon(TM) 610M (0x0000164E) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "transferKB": 2522,
+    "heapMB": 32.3
+  },
+  {
+    "profile": "phone-mid (Pixel 7, CPU 4x slower)",
+    "cpuThrottle": 4,
+    "phases": {
+      "lobby": {
+        "rafFps": 60,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 18,
+        "triangles": 126,
+        "programs": 5,
+        "textures": 5,
+        "geometries": 13,
+        "pixelRatio": 1.5,
+        "canvas": "618x1258",
+        "heapMB": 9
+      },
+      "turnIdle": {
+        "rafFps": 60,
+        "drawnFps": 22,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 23,
+        "triangles": 1102,
+        "programs": 7,
+        "textures": 5,
+        "geometries": 18,
+        "pixelRatio": 1.5,
+        "canvas": "618x1258",
+        "heapMB": 32.5
+      },
+      "aiming": {
+        "rafFps": 60,
+        "drawnFps": 39,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 33.4
+        },
+        "janky": 1,
+        "drawCalls": 28,
+        "triangles": 1592,
+        "programs": 9,
+        "textures": 5,
+        "geometries": 23,
+        "pixelRatio": 1.5,
+        "canvas": "618x1258",
+        "heapMB": 32.4
+      },
+      "mySlam": {
+        "rafFps": 60,
+        "drawnFps": 30,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 50
+        },
+        "janky": 1,
+        "drawCalls": 19,
+        "triangles": 526,
+        "programs": 10,
+        "textures": 6,
+        "geometries": 30,
+        "pixelRatio": 1.5,
+        "canvas": "618x1258",
+        "heapMB": 33.3
+      },
+      "watching": {
+        "rafFps": 60,
+        "drawnFps": 46,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 28,
+        "triangles": 1592,
+        "programs": 10,
+        "textures": 7,
+        "geometries": 32,
+        "pixelRatio": 1.5,
+        "canvas": "618x1258",
+        "heapMB": 33.7
+      }
+    },
+    "longTasks": 6,
+    "errors": [],
+    "bootMs": 1126,
+    "gpu": "ANGLE (AMD, AMD Radeon(TM) 610M (0x0000164E) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "transferKB": 3846,
+    "heapMB": 33.8
+  },
+  {
+    "profile": "phone-low (Galaxy S9+, CPU 6x slower)",
+    "cpuThrottle": 6,
+    "phases": {
+      "lobby": {
+        "rafFps": 60,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.3
+        },
+        "janky": 1,
+        "drawCalls": 18,
+        "triangles": 126,
+        "programs": 5,
+        "textures": 5,
+        "geometries": 13,
+        "pixelRatio": 1.5,
+        "canvas": "480x987",
+        "heapMB": 8.2
+      },
+      "turnIdle": {
+        "rafFps": 60,
+        "drawnFps": 23,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.7,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 23,
+        "triangles": 1102,
+        "programs": 7,
+        "textures": 5,
+        "geometries": 18,
+        "pixelRatio": 1.5,
+        "canvas": "480x987",
+        "heapMB": 32.1
+      },
+      "aiming": {
+        "rafFps": 60,
+        "drawnFps": 34,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 33.3
+        },
+        "janky": 2,
+        "drawCalls": 28,
+        "triangles": 1592,
+        "programs": 9,
+        "textures": 5,
+        "geometries": 23,
+        "pixelRatio": 1.5,
+        "canvas": "480x987",
+        "heapMB": 32.8
+      },
+      "mySlam": {
+        "rafFps": 59,
+        "drawnFps": 21,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 83.5
+        },
+        "janky": 3,
+        "drawCalls": 17,
+        "triangles": 124,
+        "programs": 10,
+        "textures": 6,
+        "geometries": 30,
+        "pixelRatio": 1.5,
+        "canvas": "480x987",
+        "heapMB": 33.4
+      },
+      "watching": {
+        "rafFps": 60,
+        "drawnFps": 0,
+        "frameMs": {
+          "p50": 16.7,
+          "p95": 16.8,
+          "max": 16.8
+        },
+        "janky": 0,
+        "drawCalls": 18,
+        "triangles": 126,
+        "programs": 10,
+        "textures": 6,
+        "geometries": 30,
+        "pixelRatio": 1.5,
+        "canvas": "480x987",
+        "heapMB": 33.2
+      }
+    },
+    "longTasks": 12,
+    "errors": [],
+    "bootMs": 1411,
+    "gpu": "ANGLE (AMD, AMD Radeon(TM) 610M (0x0000164E) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "transferKB": 3846,
+    "heapMB": 33.2
+  }
+]
