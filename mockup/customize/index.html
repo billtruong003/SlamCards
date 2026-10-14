@@ -90,7 +90,7 @@ button:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
 <div class="wrap">
   <header style="display:flex;flex-direction:column;gap:8px">
     <h1>Tủ đồ: <em>pet trong lá bài</em> + dép tự chọn màu</h1>
-    <p class="lede">Mockup chạy thật bằng three.js, cùng kiểu toon + viền mực của game. Mặt ngửa là một ô cửa nhìn vào căn phòng 3D có pet (stencil buffer), mặt úp có ô tròn nhìn thấy pet đang ngủ. Kéo để xoay bài, bấm "Lật bài" để xem mặt kia.</p>
+    <p class="lede">Mockup chạy thật bằng three.js, cùng kiểu toon + viền mực của game. Mặt ngửa là một ô cửa nhìn vào khoảng không có pet (stencil buffer), mặt úp là logo Bill The Dev. Kéo để xoay bài, bấm "Lật bài" để xem mặt kia.</p>
   </header>
 
   <section class="bench">
@@ -214,6 +214,7 @@ const CARD_W = 1, CARD_H = 1.478, THICK = 0.016, CARD_CORNER = 0.085;
 const WIN = { cx: 0, cy: 0.14, hw: 0.38, hh: 0.46, r: 0.07 };
 const PORT = { cx: 0, cy: 0.04, r: 0.3 };
 const REF_FRONT = 1, REF_BACK = 2;
+const FLOOR_Y = WIN.cy - WIN.hh + 0.13; // top of the little stage the pet stands on
 
 const state = { pet: 'cat', way: WAYS[0], dep: 'dep_lao', colors: {}, faceUp: true };
 for (const [k, s] of Object.entries(SLIPPERS)) state.colors[k] = s.slots.map((x) => x.def);
@@ -239,9 +240,41 @@ gradient.minFilter = gradient.magFilter = THREE.NearestFilter;
 gradient.needsUpdate = true;
 const toon = (opts) => new THREE.MeshToonMaterial({ gradientMap: gradient, ...opts });
 const gated = (material, ref) => Object.assign(material, { stencilWrite: true, stencilRef: ref, stencilFunc: THREE.EqualStencilFunc, stencilFail: THREE.KeepStencilOp, stencilZFail: THREE.KeepStencilOp, stencilZPass: THREE.KeepStencilOp });
+// The hull is pushed along normals averaged over every vertex at the same spot (baked once per geometry),
+// so flat-shaded cube pets keep one closed outline instead of splitting open at each hard edge.
+function bakeSmoothNormals(geo) {
+  if (geo.attributes.smoothNormal) return geo;
+  if (!geo.attributes.normal) geo.computeVertexNormals();
+  const pos = geo.attributes.position, nor = geo.attributes.normal, n = new THREE.Vector3();
+  const key = (a, i) => `${a.getX(i).toFixed(3)},${a.getY(i).toFixed(3)},${a.getZ(i).toFixed(3)}`;
+  const sums = new Map();
+  for (let i = 0; i < pos.count; i++) {
+    const k = key(pos, i), nk = key(nor, i);
+    let e = sums.get(k);
+    if (!e) sums.set(k, e = { v: new THREE.Vector3(), seen: new Set() });
+    if (!e.seen.has(nk)) { e.seen.add(nk); e.v.add(n.fromBufferAttribute(nor, i)); } // each face direction counts once
+  }
+  const out = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const v = sums.get(key(pos, i)).v;
+    n.copy(v.lengthSq() > 1e-8 ? v : n.fromBufferAttribute(nor, i)).normalize().toArray(out, i * 3);
+  }
+  geo.setAttribute('smoothNormal', new THREE.BufferAttribute(out, 3));
+  return geo;
+}
 function outline(thickness) {
   const m = new THREE.MeshBasicMaterial({ color: 0x2a1418, side: THREE.BackSide });
-  m.onBeforeCompile = (s) => { s.vertexShader = s.vertexShader.replace('#include <begin_vertex>', `#include <begin_vertex>\n transformed += normalize(normal) * ${thickness.toFixed(4)};`); };
+  // width is a uniform: three.js shares one program between materials with the same onBeforeCompile source,
+  // so a width baked into the shader text would leak from the first outline to every other one
+  const width = { value: thickness };
+  m.onBeforeCompile = (s) => {
+    s.uniforms.outlineWidth = width;
+    s.vertexShader = 'attribute vec3 smoothNormal;\nuniform float outlineWidth;\n' + s.vertexShader
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(smoothNormal) * outlineWidth;')
+      // nudge the hull a little away from the eye: small shells (noses, eyes) stop poking ink through the face,
+      // while the silhouette over the background stays
+      .replace('#include <project_vertex>', '#include <project_vertex>\n gl_Position.z += 0.0006 * gl_Position.w;');
+  };
   return m;
 }
 
@@ -333,27 +366,72 @@ function backTexture(way) {
   }
   // cream inner rim, as on the game's old card backs
   g.lineWidth = 7; g.strokeStyle = CREAM; rr(g, 26, 26, 460, BH - 52, CORNER - 26); g.stroke();
-  // centre medallion: the amber avatar of the pack
-  const mx = 256, my = BH / 2 - 34, mr = 118;
-  g.fillStyle = INK; g.beginPath(); g.arc(mx, my + 7, mr + 6, 0, 7); g.fill();
-  g.fillStyle = AMBER; g.beginPath(); g.arc(mx, my, mr, 0, 7); g.fill();
-  g.lineWidth = 8; g.strokeStyle = INK; g.stroke();
-  if (marks.color) g.drawImage(marks.color, mx - 92, my - 98, 184, 184);
-  // wordmark: "Bill" cream + "The Dev" amber, game stamp style
-  const ty = my + mr + 74;
-  g.font = `800 50px ${FONT}`;
-  const w1 = g.measureText('Bill ').width, w2 = g.measureText('The Dev').width, x0 = 256 - (w1 + w2) / 2;
-  stamp(g, 'Bill', x0, ty, 50, CREAM, 'left');
-  stamp(g, 'The Dev', x0 + w1, ty, 50, AMBER, 'left');
+  // the studio mark on its own, then the wordmark coloured like the logo: Bill white, The grey, Dev amber
+  const ms = 250, my = BH / 2 - 50;
+  if (marks.color) g.drawImage(marks.color, 256 - ms / 2, my - ms / 2, ms, ms);
+  const ty = my + ms / 2 + 56, fs = 54;
+  g.font = `800 ${fs}px ${FONT}`;
+  const parts = [['Bill', '#ffffff'], ['The', '#c9c3bf'], ['Dev', AMBER]];
+  const gap = g.measureText(' ').width, widths = parts.map(([t]) => g.measureText(t).width);
+  let x = 256 - (widths.reduce((a, b) => a + b) + gap * 2) / 2;
+  parts.forEach(([t, col], i) => { stamp(g, t, x, ty, fs, col, 'left'); x += widths[i] + gap; });
   g.restore();
   return toTex(c);
 }function toTex(c) { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; }
-function roomTexture(way, night) {
-  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
-  g.fillStyle = night ? way.night : way.room; g.fillRect(0, 0, 256, 256);
-  g.fillStyle = night ? 'rgba(255,255,220,.8)' : 'rgba(255,255,255,.55)';
-  for (let i = 0; i < 26; i++) { const x = (i * 97) % 256, y = (i * 53) % 256; g.beginPath(); g.arc(x, y, night ? 2.5 : 9, 0, 7); g.fill(); }
-  const t = toTex(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2, 2); return t;
+// ---------- the space behind the window ----------
+// After Minions Art's "UI Background" shader, three layers:
+//   1. base: a soft checker, scaled, scrolled and slowly rotated, coloured by a two-colour lerp;
+//   2. mask: polka dots with their own scale/rotation/scroll, faded by a rotating gradient, multiplied by the
+//      base for some noise, cut with smoothstep and coloured;
+//   3. a four-colour corner gradient blended on top with Lighten.
+// Its "screen independent UVs" here are the view ray through a plane at infinity, in card space: the pattern
+// keeps its aspect for any window size and slides with a little parallax as the card tilts.
+const spaceTime = { value: 0 };
+function spaceMaterial(way) {
+  const c = (h) => new THREE.Color(h), cream = '#fffbf0';
+  return new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    uniforms: {
+      uTime: spaceTime,
+      uBgA: { value: c(way.room) }, uBgB: { value: c(way.room).lerp(c(cream), 0.6) },
+      uDot: { value: c(way.color).lerp(c(cream), 0.35) },
+      uC0: { value: c(way.color).lerp(c(cream), 0.55) }, uC1: { value: c(cream) },
+      uC2: { value: c('#ffe2b8') }, uC3: { value: c(way.room).lerp(c(way.color), 0.25) },
+    },
+    vertexShader: `
+      varying vec3 vPos; varying vec3 vCam;
+      void main() {
+        vPos = position;
+        vCam = (inverse(modelMatrix) * vec4(cameraPosition, 1.0)).xyz;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform float uTime; uniform vec3 uBgA, uBgB, uDot, uC0, uC1, uC2, uC3;
+      varying vec3 vPos; varying vec3 vCam;
+      mat2 rot(float a) { float s = sin(a), c = cos(a); return mat2(c, -s, s, c); }
+      void main() {
+        // the ray from the eye hits a plane 1 unit behind the card: card-sized UVs with parallax
+        vec3 d = normalize(vPos - vCam);
+        vec2 uv = (vCam + d * ((-1.0 - vCam.z) / min(d.z, -0.05))).xy;
+        // 1. base layer
+        vec2 bu = rot(0.4 + uTime * 0.02) * (uv * 5.0) + vec2(uTime * 0.12, uTime * 0.05);
+        float checker = smoothstep(-0.06, 0.06, sin(bu.x * 3.14159) * sin(bu.y * 3.14159));
+        vec3 col = mix(uBgA, uBgB, checker * 0.55 + 0.2);
+        // 2. mask layer
+        vec2 mu = rot(-0.5) * (uv * 3.4) + vec2(-uTime * 0.08, uTime * 0.1);
+        float dots = 1.0 - smoothstep(0.2, 0.26, length(fract(mu) - 0.5));
+        float fade = clamp((rot(0.6 + uTime * 0.15) * uv).y * 0.9 + 0.55, 0.0, 1.0);
+        float mask = dots * fade * mix(1.0, checker, 0.25);
+        mask = smoothstep(0.3, 0.45, mask);
+        col = mix(col, uDot, mask * 0.85);
+        // 3. corner gradient, Lighten
+        vec2 t = clamp(rot(0.3) * (uv - vec2(0.0, 0.15)) * 1.1 + 0.5, 0.0, 1.0);
+        vec3 grad = mix(mix(uC2, uC3, t.x), mix(uC0, uC1, t.x), t.y);
+        col = mix(col, max(col, grad), 0.55);
+        gl_FragColor = vec4(col, 1.0);
+        #include <colorspace_fragment>
+      }`,
+  });
 }
 
 // ---------- the card ----------
@@ -389,12 +467,15 @@ function buildCard() {
 
   // the room behind the front window (only drawn where stencil == REF_FRONT)
   const room = new THREE.Group();
-  const roomMat = gated(toon({ map: roomTexture(way, false), side: THREE.BackSide }), REF_FRONT);
-  const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.0), roomMat);
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.0), gated(spaceMaterial(way), REF_FRONT));
   box.position.set(0, WIN.cy + 0.2, -0.5 - THICK); box.renderOrder = 2;
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 1.0), gated(toon({ color: way.floor }), REF_FRONT));
-  floor.rotation.x = -Math.PI / 2; floor.position.set(0, WIN.cy - WIN.hh + 0.06, -0.5); floor.renderOrder = 2;
-  room.add(box, floor);
+  // a little round stage for the pet and its slipper, floating in the space
+  const stageGeo = bakeSmoothNormals(new THREE.CylinderGeometry(0.36, 0.33, 0.05, 40));
+  const stage = new THREE.Mesh(stageGeo, gated(toon({ color: way.floor }), REF_FRONT));
+  stage.add(new THREE.Mesh(stageGeo, gated(outline(0.012), REF_FRONT)));
+  stage.position.set(0.04, FLOOR_Y - 0.025, -0.4);
+  stage.traverse((o) => { o.renderOrder = 2; });
+  room.add(box, stage);
 
   Object.assign(cardParts, { front, back, edge, frontMask, room });
   for (const k of Object.keys(cardParts)) card.add(cardParts[k]);
@@ -420,7 +501,8 @@ function preparePet(gltf, ref, height) {
   for (const m of meshes) {
     m.material = gated(toon({ map: m.material.map }), ref);
     m.renderOrder = 3;
-    const o = new THREE.Mesh(m.geometry, gated(outline(0.035 / s * 0.6), ref));
+    bakeSmoothNormals(m.geometry);
+    const o = new THREE.Mesh(m.geometry, gated(outline(0.015 / s), ref));
     o.renderOrder = 3;
     if (m.isSkinnedMesh) { const so = new THREE.SkinnedMesh(m.geometry, o.material); so.bind(m.skeleton, m.bindMatrix); so.renderOrder = 3; m.parent.add(so); } else m.add(o);
   }
@@ -437,7 +519,7 @@ async function placePet() {
   for (const p of [petAwake, petAsleep]) p?.holder.parent?.remove(p.holder);
   mixers = [];
   petAwake = preparePet(gltf, REF_FRONT, 0.42);
-  petAwake.holder.position.set(-0.04, WIN.cy - WIN.hh + 0.06, -0.42);
+  petAwake.holder.position.set(-0.04, FLOOR_Y, -0.42);
   petAwake.holder.rotation.y = 0.35;
   cardParts.room.add(petAwake.holder);
   play(petAwake, 'idle');
@@ -490,6 +572,7 @@ async function makeSlipper(ref, height) {
     const slots = state.colors[id];
     mesh.material = recolourMaterial(mesh.material.map, slots, ref);
     mats.push(mesh.material);
+    bakeSmoothNormals(mesh.geometry);
     const o = new THREE.Mesh(mesh.geometry, ref ? gated(outline(0.012), ref) : outline(0.012));
     mesh.add(o);
     if (ref) { mesh.renderOrder = 3; o.renderOrder = 3; }
@@ -515,7 +598,7 @@ async function placeProp() {
   if (dep !== state.dep) return;
   if (propSlipper) propSlipper.root.parent?.remove(propSlipper.root);
   propSlipper = prop;
-  prop.root.position.set(0.2, WIN.cy - WIN.hh + 0.07, -0.25);
+  prop.root.position.set(0.2, FLOOR_Y + 0.01, -0.25);
   prop.root.rotation.set(0, -0.9, 0);
   cardParts.room.add(prop.root);
 }
@@ -556,6 +639,7 @@ function frame() {
   const facing = Math.cos(yaw) > 0;
   document.getElementById('side').textContent = facing ? 'MẶT NGỬA' : 'MẶT ÚP';
   for (const m of mixers) m.update(dt);
+  spaceTime.value += dt;
   zees.forEach((z) => {
     const t = (idleT * 0.35 + z.userData.phase) % 1;
     z.position.set(0.06 + t * 0.12, PORT.cy - 0.02 + t * 0.26, 0.3);
