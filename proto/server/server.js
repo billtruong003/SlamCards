@@ -5,9 +5,11 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '../src/rules.js';
+import { TUNE } from '../src/config.js';
 
 const PORT = Number(process.env.PORT) || 8097;
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
+const TUTORIAL_STEPS = 5;
 
 const TIMING = {
   roundIntro: 2000,
@@ -21,7 +23,10 @@ const TIMING = {
   watchMaxMs: 4000,
   roundEnd: 3200,
   disconnect: 60000,
+  lobbyDisconnect: 5000,
 };
+// Tests shorten the clock: SLAM_TIMING='{"turn":500}'.
+Object.assign(TIMING, JSON.parse(process.env.SLAM_TIMING || '{}'));
 
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
@@ -29,9 +34,16 @@ const MIME = {
 };
 
 const server = http.createServer((req, res) => {
-  const urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  let urlPath;
+  try {
+    urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  } catch {
+    res.writeHead(400);
+    res.end('bad request');
+    return;
+  }
   let file = path.join(DIST, urlPath);
-  if (!file.startsWith(DIST) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+  if (!file.startsWith(DIST + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     file = path.join(DIST, 'index.html');
   }
   fs.readFile(file, (err, data) => {
@@ -132,7 +144,7 @@ function publicState(room, you) {
     wind: room.wind,
     forced: room.turn ? room.passStreak[room.turn] >= 1 : false,
     cards: room.cards,
-    players: Object.fromEntries(Object.entries(room.players).map(([seat, p]) => [seat, { connected: p.connected, name: p.name, left: Boolean(p.left), dep: p.dep }])),
+    players: Object.fromEntries(Object.entries(room.players).map(([seat, p]) => [seat, { connected: p.connected, name: p.name, left: Boolean(p.left), dep: p.dep, tutorial: p.tutorial || 0 }])),
     rpsChosen: Object.fromEntries(room.seats.map((s) => [s, Boolean(room.rps[s])])),
     rpsShow: room.phase === 'rpsReveal' ? room.rps : null,
     rpsWinner: room.rpsWinner,
@@ -157,8 +169,29 @@ function schedule(room, ms, fn) {
   room.deadline = Date.now() + ms;
   room.timer = setTimeout(() => {
     room.deadline = 0;
-    fn();
+    try {
+      fn();
+    } catch (err) {
+      console.error(`[${room.code}] timer failed`, err);
+    }
   }, ms);
+}
+
+// Cards of players who are out of the round always stay parked, whatever a slammer reports.
+function parkInactive(room, cards) {
+  for (const seat of room.seats) if (!room.alive.includes(seat)) cards[seat] = PARKED;
+  return cards;
+}
+
+// A slam point the client sent: finite numbers inside the slammer's reach, or null.
+function cleanImpact(room, seat, impact) {
+  const x = Number(impact?.x);
+  const z = Number(impact?.z);
+  if (!Number.isFinite(x) || !Number.isFinite(z)) return null;
+  const card = room.cards[seat]?.p;
+  if (!card) return null;
+  const reach = (room.passStreak[seat] >= 1 ? TUNE.forcedRadius : TUNE.reachRadius) + TUNE.handShake + 0.3;
+  return Math.hypot(x - card[0], z - card[2]) <= reach ? { x, z } : null;
 }
 
 // ---------- match flow ----------
@@ -174,6 +207,7 @@ function startMatch(room) {
 }
 
 function startRound(room) {
+  room.slam = null;
   room.round += 1;
   room.alive = room.seats.filter((s) => !room.players[s].left);
   room.cards = { ...Object.fromEntries(room.seats.map((s) => [s, PARKED])), ...initialCards(room.alive) };
@@ -273,7 +307,7 @@ function registerPass(room, impact) {
 
 // A slam is streamed: start, frame chunks while the slammer simulates, then the final
 // resting state. Everyone else replays it live; the result applies once they have watched it.
-function startSlam(room, msg) {
+function startSlam(room, impact, type) {
   const by = room.turn;
   log(room, `slam start by ${by}`);
   room.passStreak[by] = 0;
@@ -281,7 +315,7 @@ function startSlam(room, msg) {
   room.slam = { by, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers) };
   room.phase = 'anim';
   room.event = null;
-  for (const p of others(room, by)) send(p.ws, { t: 'playStart', by, impact: msg.impact, type: msg.type });
+  for (const p of others(room, by)) send(p.ws, { t: 'playStart', by, impact, type: type === 'tilt' ? 'tilt' : 'flat' });
   schedule(room, TIMING.slamMaxMs, () => abortSlam(room));
   broadcast(room);
 }
@@ -299,7 +333,7 @@ function endSlam(room, final) {
   const cards = { ...final };
   for (const seat of slam.result?.restore ?? []) cards[seat] = slam.previous[seat];
   for (const seat of slam.result?.eliminated ?? []) cards[seat] = PARKED;
-  room.cards = cards;
+  room.cards = parkInactive(room, cards);
   log(room, `slam end by ${slam.by}, ${slam.frames} frames, result=${slam.result ? `${slam.result.reason}:${slam.result.eliminated}` : 'none'}`);
   for (const p of others(room, slam.by)) send(p.ws, { t: 'playEnd', final });
   for (const s of [...slam.waiting]) if (!room.players[s]?.connected) slam.waiting.delete(s);
@@ -333,7 +367,7 @@ function finishSlam(room) {
 function abortSlam(room) {
   const { slam } = room;
   log(room, `slam by ${slam.by} never finished, reverting`);
-  room.cards = slam.previous;
+  room.cards = parkInactive(room, { ...slam.previous });
   room.slam = null;
   for (const p of others(room, slam.by)) send(p.ws, { t: 'playAbort' });
   room.turn = nextAlive(room, slam.by);
@@ -341,6 +375,7 @@ function abortSlam(room) {
 }
 
 function endRound(room, result) {
+  room.slam = null;
   room.scores[result.winner] += 1;
   room.result = result;
   room.nextFirst = room.firstOut;
@@ -355,6 +390,7 @@ function endRound(room, result) {
 
 function endMatch(room, winner, reason = 'score') {
   clearTimeout(room.timer);
+  room.slam = null;
   room.phase = 'matchEnd';
   room.deadline = 0;
   room.result = { ...room.result, matchWinner: winner, matchReason: reason };
@@ -380,7 +416,11 @@ function dropPlayer(room, seat) {
     endMatch(room, stillIn[0] ?? seat, 'disconnect');
     return;
   }
-  if (!room.alive.includes(seat)) return;
+  // The round is already decided; startRound leaves this seat out of the next one.
+  if (room.phase === 'roundEnd' || !room.alive.includes(seat)) {
+    broadcast(room);
+    return;
+  }
   room.alive = room.alive.filter((s) => s !== seat);
   room.cards = { ...room.cards, [seat]: PARKED };
   room.event = { type: 'left', by: seat, eliminated: [seat] };
@@ -410,7 +450,14 @@ function validCards(room, cards) {
 
 // ---------- messages ----------
 
+// A second tab (or a duplicated one) taking over a seat closes the older connection.
 function attach(ws, room, seat, player) {
+  if (player.ws && player.ws !== ws) {
+    const old = player.ws;
+    old.ctx = null;
+    send(old, { t: 'replaced' });
+    old.close(4000, 'replaced');
+  }
   player.ws = ws;
   player.connected = true;
   clearTimeout(player.discTimer);
@@ -419,10 +466,58 @@ function attach(ws, room, seat, player) {
   broadcast(room);
 }
 
+// Connection lost, or the same socket moving to another room. A lobby seat left on purpose
+// frees up at once; otherwise the player gets a grace period to come back.
+function detach(ws, { leaving = false } = {}) {
+  const ctx = ws.ctx;
+  ws.ctx = null;
+  if (!ctx) return;
+  const { room, seat } = ctx;
+  const player = room.players[seat];
+  if (!player || player.ws !== ws || !rooms.has(room.code)) return;
+  player.connected = false;
+  player.ws = null;
+  player.tutorial = 0;
+  if (room.slam?.waiting.delete(seat) && room.slam.ended && !room.slam.waiting.size) finishSlam(room);
+  if (leaving && room.phase === 'lobby') {
+    dropPlayer(room, seat);
+    return;
+  }
+  broadcast(room);
+  const grace = room.phase === 'lobby' ? TIMING.lobbyDisconnect : TIMING.disconnect;
+  clearTimeout(player.discTimer);
+  player.discTimer = setTimeout(() => {
+    if (!player.connected && rooms.has(room.code)) dropPlayer(room, seat);
+  }, grace);
+}
+
 function handle(ws, msg) {
   if (msg.t === 'ping') {
     send(ws, { t: 'pong', at: msg.at });
     return;
+  }
+
+  // Lets a client opening an invite link know whether the room is still there before asking for a name.
+  if (msg.t === 'peek') {
+    const code = String(msg.code || '').toUpperCase();
+    const room = rooms.get(code);
+    const mine = Boolean(room && msg.token && Object.values(room.players).some((p) => p.token === msg.token && !p.left));
+    send(ws, {
+      t: 'peek',
+      code,
+      exists: Boolean(room),
+      phase: room?.phase ?? null,
+      full: room ? Object.keys(room.players).length >= MAX_PLAYERS : false,
+      mine,
+    });
+    return;
+  }
+
+  if (msg.t === 'create' || msg.t === 'join') {
+    const ctx = ws.ctx;
+    const rejoin = msg.t === 'join' && ctx && ctx.room.code === String(msg.code || '').toUpperCase()
+      && ctx.room.players[ctx.seat]?.token === msg.token;
+    if (!rejoin) detach(ws, { leaving: true });
   }
 
   if (msg.t === 'create') {
@@ -462,6 +557,17 @@ function handle(ws, msg) {
   const ctx = ws.ctx;
   if (!ctx) return;
   const { room, seat } = ctx;
+  if (room.players[seat]?.ws !== ws || rooms.get(room.code) !== room) return;
+
+  if (msg.t === 'ftue') {
+    const step = Math.trunc(Number(msg.step));
+    const next = step >= 1 && step <= TUTORIAL_STEPS ? step : 0;
+    if (room.players[seat].tutorial !== next) {
+      room.players[seat].tutorial = next;
+      broadcast(room);
+    }
+    return;
+  }
 
   if (msg.t === 'pickDep' && ['lobby', 'matchEnd'].includes(room.phase) && DEPS.includes(msg.dep)) {
     room.players[seat].dep = msg.dep;
@@ -487,13 +593,16 @@ function handle(ws, msg) {
     return;
   }
 
-  if (msg.t === 'pass' && room.phase === 'turn' && seat === room.turn) {
-    registerPass(room, msg.impact ?? null);
+  // After a pass the next turn must be a real slam, so a second pass in a row is refused.
+  if (msg.t === 'pass' && room.phase === 'turn' && seat === room.turn && !(room.passStreak[seat] >= 1)) {
+    const impact = cleanImpact(room, seat, msg.impact);
+    if (impact) registerPass(room, impact);
     return;
   }
 
   if (msg.t === 'slamStart' && room.phase === 'turn' && seat === room.turn) {
-    startSlam(room, msg);
+    const impact = cleanImpact(room, seat, msg.impact);
+    if (impact) startSlam(room, impact, msg.type);
     return;
   }
 
@@ -537,22 +646,20 @@ wss.on('connection', (ws) => {
     } catch {
       return;
     }
-    handle(ws, msg);
+    if (!msg || typeof msg !== 'object' || Array.isArray(msg)) return;
+    try {
+      handle(ws, msg);
+    } catch (err) {
+      console.error(`message ${String(msg.t).slice(0, 20)} failed`, err);
+    }
   });
 
   ws.on('close', () => {
-    const ctx = ws.ctx;
-    if (!ctx) return;
-    const { room, seat } = ctx;
-    const player = room.players[seat];
-    if (!player || player.ws !== ws) return;
-    player.connected = false;
-    if (room.slam?.waiting.delete(seat) && room.slam.ended && !room.slam.waiting.size) finishSlam(room);
-    broadcast(room);
-    const grace = room.phase === 'lobby' ? 5000 : TIMING.disconnect;
-    player.discTimer = setTimeout(() => {
-      if (!player.connected && rooms.has(room.code)) dropPlayer(room, seat);
-    }, grace);
+    try {
+      detach(ws);
+    } catch (err) {
+      console.error('disconnect failed', err);
+    }
   });
 });
 
