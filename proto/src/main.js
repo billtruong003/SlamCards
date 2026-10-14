@@ -50,13 +50,22 @@ $('info-by').innerHTML = t('info.by', { name: '<b>BillTheDev</b>' });
 for (const id of ['credit', 'info-credit']) $(id).textContent = t('info.cardArt', { name: 'Dani Maccari' });
 els.windText.textContent = t('hud.wind', { n: 0 });
 
-// The picker only shows once a second language ships; changing it reloads the page.
+// Language: a small globe button in the corner (short code only, so it fits beside ?/Info/Sound on
+// phones) opening a panel of native names. Shown once a second language ships; picking reloads.
+const LANG_SHORT = { 'zh-Hans': '简', 'zh-Hant': '繁', 'pt-BR': 'PT' };
+const GLOBE = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4.2 2.8 6.5S10 12.5 8 14.5M8 1.5C6 3.5 5.2 5.7 5.2 8S6 12.5 8 14.5"/></svg>';
 const langs = availableLangs();
+const langPanel = $('lang-panel');
 if (langs.length > 1) {
-  const picker = $('lang');
-  picker.innerHTML = langs.map((l) => `<option value="${l.code}" lang="${l.code}"${l.code === lang() ? ' selected' : ''}>${escapeHtml(l.name)}</option>`).join('');
-  picker.onchange = () => setLang(picker.value);
-  picker.hidden = false;
+  const btn = $('lang');
+  btn.innerHTML = `${GLOBE}<span>${LANG_SHORT[lang()] ?? lang().toUpperCase()}</span>`;
+  btn.hidden = false;
+  langPanel.innerHTML = `
+    <h2>${t('corner.lang')}</h2>
+    <div class="lang-list">${langs.map((l) => `<button class="btn" lang="${l.code}" data-lang="${l.code}" aria-pressed="${l.code === lang()}">${escapeHtml(l.name)}</button>`).join('')}</div>
+    <button class="btn" id="close-lang">${t('common.close')}</button>`;
+  langPanel.querySelectorAll('[data-lang]').forEach((b) => { b.onclick = () => (b.dataset.lang === lang() ? (langPanel.hidden = true) : setLang(b.dataset.lang)); });
+  $('close-lang').onclick = () => { langPanel.hidden = true; };
 }
 
 playIntro();
@@ -111,6 +120,7 @@ const ftue = createFtue({
   hidePanels: () => {
     els.panel.hidden = true;
     els.infoPanel.hidden = true;
+    langPanel.hidden = true;
   },
 });
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
@@ -265,11 +275,19 @@ $('memes-on').onchange = (e) => setMemesEnabled(e.target.checked);
 els.settings.onclick = () => {
   els.panel.hidden = !els.panel.hidden;
   els.infoPanel.hidden = true;
+  langPanel.hidden = true;
   ftue.closeHelp();
 };
 els.info.onclick = () => {
   els.infoPanel.hidden = !els.infoPanel.hidden;
   els.panel.hidden = true;
+  langPanel.hidden = true;
+  ftue.closeHelp();
+};
+$('lang').onclick = () => {
+  langPanel.hidden = !langPanel.hidden;
+  els.panel.hidden = true;
+  els.infoPanel.hidden = true;
   ftue.closeHelp();
 };
 $('close-info').onclick = () => { els.infoPanel.hidden = true; };

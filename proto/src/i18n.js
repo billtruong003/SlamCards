@@ -12,6 +12,8 @@ export const LANGS = [
   { code: 'th', name: 'ไทย' },
   { code: 'pt-BR', name: 'Português' },
   { code: 'es', name: 'Español' },
+  { code: 'ja', name: '日本語' },
+  { code: 'ko', name: '한국어' },
 ];
 
 const loaders = Object.fromEntries(Object.entries(import.meta.glob(['./locales/*.json', '!./locales/context.json', '!./locales/vi.json']))
@@ -26,7 +28,7 @@ function fromBrowser(tag) {
   const t = tag.toLowerCase();
   if (t.startsWith('zh')) return /^zh-(tw|hk|mo|hant)/.test(t) ? 'zh-Hant' : 'zh-Hans';
   if (t.startsWith('pt')) return 'pt-BR';
-  return ['es', 'vi', 'en', 'id', 'th'].find((code) => t === code || t.startsWith(`${code}-`)) ?? null;
+  return ['es', 'vi', 'en', 'id', 'th', 'ja', 'ko'].find((code) => t === code || t.startsWith(`${code}-`)) ?? null;
 }
 
 // URL ?lang= → saved choice → browser languages → English if shipped, else Vietnamese.

@@ -1,6 +1,7 @@
 // Device pass: each emulated phone/tablet opens an invite link as a brand-new player and plays a first turn.
 // Setup once (inside qa/, nothing ships with the game):  cd qa && npm i --no-save playwright@1.48.2 && npx playwright install webkit chromium
 // Run (game server on :8097, client built):  node qa/devices.mjs [profile-name]
+// Another language: SLAM_LANG=en node qa/devices.mjs  (adds ?lang=, writes to qa/out/<lang>/)
 // Output: qa/out/<device>/*.png and qa/out/report.json
 import { webkit, chromium, devices } from 'playwright';
 import { createRequire } from 'node:module';
@@ -10,7 +11,8 @@ import path from 'node:path';
 const require = createRequire(new URL('../proto/package.json', import.meta.url));
 const WebSocket = require('ws');
 const BASE = 'http://localhost:8097';
-const OUT = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), 'out');
+const LANG = process.env.SLAM_LANG || '';
+const OUT = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), 'out', LANG);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const PROFILES = [
@@ -55,7 +57,18 @@ async function runProfile(p) {
   const dir = path.join(OUT, p.name);
   fs.mkdirSync(dir, { recursive: true });
   const report = { device: p.name, engine: p.engine.name(), steps: [], errors: [], findings: [] };
-  const shot = async (page, name) => page.screenshot({ path: path.join(dir, `${name}.png`) });
+  // Text that no longer fits its box (long translations): clipped horizontally, or spilling out of a button.
+  const CLIPPED = () => [...document.querySelectorAll('button, h1, h2, .stamp, .sub, .slot, #banner, #hint, #toast, .chip, label, small, .ftue-tip, .rule')]
+    .filter((el) => el.offsetParent !== null && el.textContent.trim())
+    .filter((el) => el.scrollWidth > el.clientWidth + 2 || (el.tagName === 'BUTTON' && el.scrollHeight > el.clientHeight + 4))
+    .map((el) => `${el.id || el.className || el.tagName}: "${el.textContent.trim().slice(0, 40)}"`);
+  const shot = async (page, name) => {
+    await page.screenshot({ path: path.join(dir, `${name}.png`) });
+    for (const c of await page.evaluate(CLIPPED).catch(() => [])) {
+      const f = `Text does not fit (${name}): ${c}`;
+      if (!report.findings.includes(f)) report.findings.push(f);
+    }
+  };
   const step = (name, ok, data = {}) => report.steps.push({ name, ok, ...data });
 
   const host = hostBot();
@@ -89,7 +102,7 @@ async function runProfile(p) {
 
   try {
     const t0 = Date.now();
-    await page.goto(`${BASE}/?room=${host.code}&debug`);
+    await page.goto(`${BASE}/?room=${host.code}&debug${LANG ? `&lang=${LANG}` : ''}`);
     const booted = await until(() => page.evaluate(() => window.slamBooted === true), 25000);
     const webgl = await page.evaluate(() => { const c = document.createElement('canvas'); const g = c.getContext('webgl2') || c.getContext('webgl'); return g ? g.getParameter(g.VERSION) : null; });
     const audio = await page.evaluate(() => (window.__audioStubbed ? 'missing (stubbed for test)' : 'available'));
@@ -129,7 +142,7 @@ async function runProfile(p) {
       await shot(page, '04-tutorial-1');
       const fit = await page.evaluate(() => { const r = document.querySelector('.ftue-card').getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, nextVisible: document.querySelector('.ftue-next').getBoundingClientRect().bottom <= innerHeight }; });
       step('tutorial modal', true, fit);
-      if (!fit.nextVisible) report.findings.push('Tutorial "Tiếp" button below the fold');
+      if (!fit.nextVisible) report.findings.push('Tutorial "Next" button below the fold');
       for (let i = 0; i < 4; i++) { await page.locator('.ftue-next').tap(); await sleep(150); }
       await shot(page, '05-tutorial-5');
       await page.locator('.ftue-next').tap();
