@@ -117,6 +117,13 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
 - [ ] **G5** · Ảnh xem trước khi dán link phòng (Open Graph) cho Zalo/Messenger.
 - [ ] **G6** · Nút "Báo lỗi" (về `support@` hoặc Lucy).
 - [ ] **G3** · Quảng cáo. Chờ Q3 + Bill đăng ký AdSense. Không chặn nút copy link; không bao giờ trong ván.
+  - Đề xuất kênh (so sánh 14/10, chờ Bill chốt):
+    - Web của mình: Google H5 Games Ads (Ad Placement API, phải xin duyệt) cho quảng cáo nhận thưởng + toàn màn. Banner để sau.
+    - Đưa ra nước ngoài: CrazyGames (không độc quyền, hoặc độc quyền 2 tháng để được thêm 50%), sau đó GameDistribution (33%). Poki chỉ khi được chọn: độc quyền web 5 năm.
+    - Sau cùng: app Android + AdMob.
+  - [ ] **PORT-01** · Bản tiếng Anh (chữ + meme).
+  - [ ] **PORT-02** · Vào chơi ngay: ghép trận nhanh hoặc đấu bot, không bắt tạo phòng (CrazyGames đòi "vào thẳng gameplay").
+  - [ ] **PORT-03** · Bản build cho cổng game: SDK của cổng (quảng cáo, đăng nhập, link mời), tắt QR ủng hộ và quảng cáo riêng.
 
 ## Web studio (cổng game ở `billthedevstudio.io.vn`)
 
