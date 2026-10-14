@@ -9,7 +9,6 @@ export const MAX_PLAYERS = 4;
 
 // Seats in clockwise order. Each seat owns one card style.
 export const SEATS = ['black', 'pink', 'blue', 'green'];
-export const SEAT_LABEL = { black: 'ĐEN', pink: 'ĐỎ', blue: 'XANH', green: 'LỤC' };
 
 // Bigger table for 3-4 players so nobody starts within one slam of a neighbour.
 export function tableFor(count) {

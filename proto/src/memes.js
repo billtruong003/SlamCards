@@ -13,7 +13,7 @@ const MEMES = {
     { sound: 'fall-oidoioi.mp3', image: 'fall-tom.jpg' },
   ],
   roundWin: [{ sound: 'round-clap.mp3', vfx: 'clap', maxMs: 4500 }],
-  matchWin: [{ sound: 'match-win.mp3', image: 'match-win.jpg', caption: 'PERFECT VICTORY', maxMs: 7000 }],
+  matchWin: [{ sound: 'match-win.mp3', image: 'match-win.jpg', caption: 'meme.perfectVictory', maxMs: 7000 }],
   matchLose: [{ sound: 'match-lose.mp3', image: 'match-lose.jpg' }],
   pass: [{ sound: 'pass-huh.mp3', image: 'pass-huh.jpg' }],
   timeout: [{ sound: 'timeout-snore.mp3', image: 'timeout-snore.jpg', maxMs: 4000 }],
@@ -23,6 +23,7 @@ const MEMES = {
 };
 
 import { loadClip, playClip } from './audio.js';
+import { t } from './i18n.js';
 
 const MIN_SHOW_MS = 1600;
 const MAX_QUEUE = 2;
@@ -101,13 +102,13 @@ async function next() {
 
 function render(meme) {
   if (meme.vfx === 'trinh') {
-    return `<div class="vfx-trinh"><span class="l1">TRÌNH LÀ GÌ…</span><span class="l2">…LÀ TRÌNH HALAND!</span></div>`;
+    return `<div class="vfx-trinh"><span class="l1">${t('meme.trinh1')}</span><span class="l2">${t('meme.trinh2')}</span></div>`;
   }
   if (meme.vfx === 'clap') {
-    return '<div class="vfx-clap"><span>VỖ TAY NÀO!</span></div>';
+    return `<div class="vfx-clap"><span>${t('meme.clap')}</span></div>`;
   }
   return `<figure class="meme-card">
     <img src="${BASE + meme.image}" alt="">
-    ${meme.caption ? `<figcaption>${meme.caption}</figcaption>` : ''}
+    ${meme.caption ? `<figcaption>${t(meme.caption)}</figcaption>` : ''}
   </figure>`;
 }

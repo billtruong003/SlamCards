@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { World } from './world.js';
 import { Visuals } from './visuals.js';
 import { TUNE } from './config.js';
-import { SEATS, SEAT_LABEL, ROUNDS_TO_WIN, FALL_Y, MAX_PLAYERS } from './rules.js';
+import { SEATS, ROUNDS_TO_WIN, FALL_Y, MAX_PLAYERS } from './rules.js';
 import { thump } from './sound.js';
 import { playMusic, refreshMusic } from './music.js';
 import { getLevel, setLevel } from './audio.js';
@@ -11,6 +11,7 @@ import { playIntro } from './intro.js';
 import { loadDeps, depModel, DEPS, DEFAULT_DEP } from './deps.js';
 import { showMeme, preloadMemes, setMemesEnabled, memesEnabled } from './memes.js';
 import { createFtue } from './ftue.js';
+import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStatic } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -31,13 +32,31 @@ async function copyText(text, field) {
   }
 }
 
+const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
 function showFatal() {
   els.overlay.className = '';
   els.overlay.innerHTML = `
     <div class="menu-bg"><div class="panel menu-card">
-      <h1 class="stamp title fatal-title">Máy này không chạy được game!</h1>
-      <p class="sub">Trình duyệt không bật được đồ họa 3D. Thử mở bằng Chrome, hoặc bật "tăng tốc phần cứng" trong cài đặt trình duyệt.</p>
+      <h1 class="stamp title fatal-title">${escapeHtml(t('fatal.title'))}</h1>
+      <p class="sub">${escapeHtml(t('fatal.body'))}</p>
     </div></div>`;
+}
+
+await loadLang(detectLang());
+document.title = t('menu.title');
+applyStatic();
+$('info-by').innerHTML = t('info.by', { name: '<b>BillTheDev</b>' });
+for (const id of ['credit', 'info-credit']) $(id).textContent = t('info.cardArt', { name: 'Dani Maccari' });
+els.windText.textContent = t('hud.wind', { n: 0 });
+
+// The picker only shows once a second language ships; changing it reloads the page.
+const langs = availableLangs();
+if (langs.length > 1) {
+  const picker = $('lang');
+  picker.innerHTML = langs.map((l) => `<option value="${l.code}" lang="${l.code}"${l.code === lang() ? ' selected' : ''}>${escapeHtml(l.name)}</option>`).join('');
+  picker.onchange = () => setLang(picker.value);
+  picker.hidden = false;
 }
 
 playIntro();
@@ -82,10 +101,8 @@ let lastSlamStats = null;
 let memesPreloaded = false;
 
 const TOUCH = matchMedia('(pointer: coarse)').matches;
-if (TOUCH) {
-  document.getElementById('type-flat').textContent = 'Đập bằng';
-  document.getElementById('type-tilt').textContent = 'Đập nghiêng';
-}
+els.flat.textContent = TOUCH ? t('turn.flat') : `${t('turn.flat')} · Q`;
+els.tilt.textContent = TOUCH ? t('turn.tilt') : `${t('turn.tilt')} · E`;
 const ftue = createFtue({
   send,
   world,
@@ -97,10 +114,10 @@ const ftue = createFtue({
   },
 });
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
-const RPS_LABEL = { bua: 'Búa', keo: 'Kéo', bao: 'Bao' };
+const seatLabel = (seat) => t(`seat.${seat}`);
+const list = (items) => items.join(t('common.listSep'));
 
-const nameOf = (seat) => state?.players[seat]?.name || SEAT_LABEL[seat];
-const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const nameOf = (seat) => state?.players[seat]?.name || seatLabel(seat);
 const htmlName = (seat) => `<b class="seat-${seat}">${escapeHtml(nameOf(seat))}</b>`;
 const opponentsOf = (seat) => (state?.alive ?? []).filter((s) => s !== seat);
 
@@ -165,7 +182,7 @@ const depOf = (seat) => state?.players[seat]?.dep ?? DEFAULT_DEP[seat];
 
 function joinRoom(code, token) {
   roomCode = code;
-  send({ t: 'join', code, token: token ?? undefined, name: playerName.get(), dep: playerDep.get() || undefined });
+  send({ t: 'join', code, token: token ?? undefined, name: playerName.get() || t('menu.defaultName'), dep: playerDep.get() || undefined });
 }
 
 // An invite link (or a reconnect) first asks whether the room is still there and whether this
@@ -186,10 +203,10 @@ function onPeek(msg) {
     leaveRoom();
     renderMenu(text);
   };
-  if (!msg.exists) refuse(`Phòng ${code} không còn nữa rồi. Có thể nó hết hạn hoặc server vừa khởi động lại. Tạo phòng mới nhé!`);
+  if (!msg.exists) refuse(t('error.roomGone', { code }));
   else if (msg.mine) joinRoom(code, token);
-  else if (msg.phase !== 'lobby') refuse('Phòng đang đánh dở, tạo phòng mới đi!');
-  else if (msg.full) refuse('Phòng đủ 4 đứa rồi, vào không được!');
+  else if (msg.phase !== 'lobby') refuse(t('error.inMatch'));
+  else if (msg.full) refuse(t('error.full'));
   else if (playerName.get()) joinRoom(code, null);
   else renderNamePrompt(code);
 }
@@ -222,16 +239,16 @@ function leaveRoom() {
 
 // ---------- sound settings ----------
 
-const SLIDERS = [['music', 'Nhạc nền'], ['meme', 'Meme'], ['sfx', 'Tiếng dép']];
+const SLIDERS = ['music', 'meme', 'sfx'];
 els.panel.innerHTML = `
-  <h2>Âm thanh</h2>
-  ${SLIDERS.map(([key, label]) => `
-    <label class="vol">${label}
+  <h2>${t('sound.title')}</h2>
+  ${SLIDERS.map((key) => `
+    <label class="vol">${t(`sound.${key}`)}
       <input type="range" min="0" max="100" step="5" value="${Math.round(getLevel(key) * 100)}" data-vol="${key}">
       <output>${Math.round(getLevel(key) * 100)}</output>
     </label>`).join('')}
-  <label class="check"><input type="checkbox" id="memes-on" ${memesEnabled() ? 'checked' : ''}> Bật meme</label>
-  <button class="btn" id="close-panel">Đóng</button>`;
+  <label class="check"><input type="checkbox" id="memes-on" ${memesEnabled() ? 'checked' : ''}> ${t('sound.memesOn')}</label>
+  <button class="btn" id="close-panel">${t('common.close')}</button>`;
 els.panel.querySelectorAll('[data-vol]').forEach((input) => {
   input.oninput = () => {
     const value = Number(input.value) / 100;
@@ -304,7 +321,7 @@ function connect() {
     const wait = RETRY_MS[Math.min(failures - 1, RETRY_MS.length - 1)];
     const longGone = Date.now() - lostAt > 60000;
     if ((!everConnected && failures >= GIVE_UP_AFTER) || longGone) showNetFail();
-    else if (everConnected) showToast('Rớt mạng rồi! Đang kết nối lại…');
+    else if (everConnected) showToast(t('net.lost'));
     retryAt = performance.now() + wait;
     retryTimer = setTimeout(connect, wait);
   };
@@ -326,7 +343,7 @@ function hideNetFail() {
 setInterval(() => {
   if ($('netfail').hidden) return;
   const secs = Math.max(0, Math.ceil((retryAt - performance.now()) / 1000));
-  setText($('netfail-wait'), secs ? `Tự thử lại sau ${secs} giây…` : 'Đang thử lại…');
+  setText($('netfail-wait'), secs ? t('net.retryIn', { secs }) : t('net.retrying'));
 }, 250);
 
 function send(msg) {
@@ -346,11 +363,11 @@ function onMessage(msg) {
   } else if (msg.t === 'replaced') {
     if (roomCode) tabStore.remove(tokenKey(roomCode));
     leaveRoom();
-    menuNotice = 'Phòng này đang mở ở tab khác rồi. Chơi tiếp ở tab đó nhé!';
+    menuNotice = t('error.otherTab');
     quietClose = true;
   } else if (msg.t === 'error') {
     leaveRoom();
-    renderMenu(msg.message);
+    renderMenu(msg.code && has(`error.${msg.code}`) ? t(`error.${msg.code}`) : msg.message);
   } else if (msg.t === 'state') {
     onState(msg);
   } else if (msg.t === 'playStart') {
@@ -373,7 +390,7 @@ function onMessage(msg) {
       const at = new THREE.Vector3(msg.impact.x, 0, msg.impact.z);
       visuals.dropDep(at, () => impactFx(at, 0.25, 0.4), depOf(msg.by));
     }
-    showToast(msg.timeout ? `${nameOf(msg.by)} hết giờ, mất lượt!` : `${nameOf(msg.by)} bỏ lượt rồi!`, 1500);
+    showToast(t(msg.timeout ? 'toast.timeout' : 'toast.pass', { name: nameOf(msg.by) }), 1500);
   } else if (msg.t === 'autoSlam') {
     autoSlam();
   }
@@ -388,7 +405,7 @@ function onState(next) {
   applyStateCards();
 
   const gone = Object.keys(state.players).filter((s) => s !== me && !state.players[s].connected && !state.players[s].left);
-  if (gone.length) showToast(`${gone.map(nameOf).join(', ')} rớt mạng! Đợi tối đa 60 giây…`);
+  if (gone.length) showToast(t('toast.dropped', { names: list(gone.map(nameOf)) }));
   else if (els.toast.dataset.sticky) hideToast();
 
   announceEvent();
@@ -423,9 +440,9 @@ function announceEvent() {
   if (key === lastEventKey) return;
   lastEventKey = key;
   if (!event?.eliminated?.length || state.phase === 'roundEnd') return;
-  const out = event.eliminated.map(nameOf).join(', ');
-  const text = event.type === 'fall' ? `${nameOf(event.by)} đập rớt bài! Bị loại!`
-    : event.type === 'left' ? `${out} nghỉ chơi rồi.` : `${nameOf(event.by)} ăn bài của ${out}!`;
+  const out = list(event.eliminated.map(nameOf));
+  const text = event.type === 'fall' ? t('toast.fall', { name: nameOf(event.by) })
+    : event.type === 'left' ? t('toast.left', { out }) : t('toast.capture', { by: nameOf(event.by), out });
   showToast(text, 2500);
 }
 
@@ -499,8 +516,8 @@ function setOverlay(key, html, { clear = false } = {}) {
 }
 
 function nameField() {
-  return `<label class="name-field">Tên của m
-    <input class="input name" id="name" maxlength="16" placeholder="VD: Tí sún" value="${escapeHtml(playerName.get())}" autocomplete="nickname">
+  return `<label class="name-field">${t('menu.nameLabel')}
+    <input class="input name" id="name" maxlength="16" placeholder="${escapeHtml(t('menu.namePlaceholder'))}" value="${escapeHtml(playerName.get())}" autocomplete="nickname">
   </label>`;
 }
 
@@ -520,7 +537,7 @@ function readName() {
 // locked until the server answers (joined, peek or error re-render the screen).
 function sendFromMenu(button, msg) {
   if (ws?.readyState !== WebSocket.OPEN) {
-    showMenuError('Đang kết nối lại, đợi tí rồi bấm nhé!');
+    showMenuError(t('error.reconnecting'));
     return;
   }
   button.disabled = true;
@@ -534,6 +551,7 @@ function showMenuError(text) {
   box.hidden = !text;
 }
 
+const logo = () => `<h1 class="stamp title">${escapeHtml(t('menu.logo')).replace(/\n/g, '<br>')}</h1>`;
 const menuError = (error) => `<p class="menu-error" ${error ? '' : 'hidden'}>${escapeHtml(error)}</p>`;
 
 function renderMenu(error = '') {
@@ -542,14 +560,14 @@ function renderMenu(error = '') {
   els.overlay.className = '';
   els.overlay.innerHTML = `
     <div class="menu-bg"><div class="panel menu-card">
-      <h1 class="stamp title">DÉP LÀO<br>TUỔI THƠ</h1>
-      <p class="sub">Đập bài tuổi thơ, chiến online 2–4 đứa</p>
+      ${logo()}
+      <p class="sub">${t('menu.tagline')}</p>
       ${menuError(error)}
       ${nameField()}
-      <button class="btn pri wide" id="create">Tạo phòng</button>
+      <button class="btn pri wide" id="create">${t('menu.create')}</button>
       <div class="row">
-        <label><input class="input" id="code" maxlength="4" placeholder="Mã phòng" aria-label="Mã phòng"></label>
-        <button class="btn" id="join">Vào phòng</button>
+        <label><input class="input" id="code" maxlength="4" placeholder="${escapeHtml(t('menu.codePlaceholder'))}" aria-label="${escapeHtml(t('menu.codePlaceholder'))}"></label>
+        <button class="btn" id="join">${t('menu.join')}</button>
       </div>
     </div></div>`;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
@@ -565,7 +583,7 @@ function renderMenu(error = '') {
     }
     if (!readName()) return;
     if (ws?.readyState !== WebSocket.OPEN) {
-      showMenuError('Đang kết nối lại, đợi tí rồi bấm nhé!');
+      showMenuError(t('error.reconnecting'));
       return;
     }
     $('join').disabled = true;
@@ -582,17 +600,17 @@ function renderNamePrompt(code) {
   els.overlay.className = '';
   els.overlay.innerHTML = `
     <div class="menu-bg"><div class="panel menu-card">
-      <h1 class="stamp title">DÉP LÀO<br>TUỔI THƠ</h1>
-      <p class="sub">Có đứa rủ m vào phòng <span class="code">${escapeHtml(code)}</span> nè!</p>
+      ${logo()}
+      <p class="sub">${t('invite.sub', { code: `<span class="code">${escapeHtml(code)}</span>` })}</p>
       ${menuError('')}
       ${nameField()}
-      <button class="btn pri wide" id="go">Vào phòng</button>
+      <button class="btn pri wide" id="go">${t('menu.join')}</button>
     </div></div>`;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
   const go = () => {
     if (!readName()) return;
     if (ws?.readyState !== WebSocket.OPEN) {
-      showMenuError('Đang kết nối lại, đợi tí rồi bấm nhé!');
+      showMenuError(t('error.reconnecting'));
       return;
     }
     $('go').disabled = true;
@@ -609,38 +627,38 @@ function scoreLine() {
 
 function renderOverlay() {
   const s = state;
-  const myColor = `<b class="seat-${me}">${SEAT_LABEL[me]}</b>`;
+  const myColor = `<b class="seat-${me}">${seatLabel(me)}</b>`;
   switch (s.phase) {
     case 'lobby': {
       const link = `${location.origin}${location.pathname}?room=${s.code}`;
       const count = Object.keys(s.players).length;
       const roster = SEATS.map((seat) => `${s.players[seat]?.name ?? ''}:${s.players[seat]?.dep ?? ''}:${s.players[seat]?.tutorial ?? 0}`).join('|');
-      const reading = (seat) => (s.players[seat].tutorial ? `<span class="slot-tag">đang xem cách chơi ${s.players[seat].tutorial}/5</span>` : '');
+      const reading = (seat) => (s.players[seat].tutorial ? `<span class="slot-tag">${t('lobby.reading', { n: s.players[seat].tutorial, total: 5 })}</span>` : '');
       const mine = depOf(me);
       const fresh = setOverlay(`lobby-${roster}`, `
         <div class="menu-bg"><div class="panel menu-card">
-          <h1 class="stamp" style="font-size:44px">Phòng <span class="code">${s.code}</span></h1>
-          <p class="sub">Gửi link rủ thêm chiến hữu vào đập!</p>
+          <h1 class="stamp" style="font-size:44px">${t('lobby.title', { code: `<span class="code">${s.code}</span>` })}</h1>
+          <p class="sub">${t('lobby.sub')}</p>
           <div class="row">
-            <label><input class="input" style="width:min(340px,70vw);text-transform:none" id="link" value="${link}" readonly aria-label="Link mời"></label>
-            <button class="btn" id="copy">Copy link</button>
+            <label><input class="input" style="width:min(340px,70vw);text-transform:none" id="link" value="${link}" readonly aria-label="${escapeHtml(t('lobby.linkLabel'))}"></label>
+            <button class="btn" id="copy">${t('lobby.copy')}</button>
           </div>
           <div class="seats">
             ${SEATS.map((seat) => (s.players[seat] ? `
-              <div class="slot seat ${seat}"><img class="slot-dep" src="deps/${depOf(seat)}.jpg" alt="">${escapeHtml(s.players[seat].name)}<small>Bài ${SEAT_LABEL[seat].toLowerCase()}${seat === me ? ' · m' : ''}</small>${reading(seat)}</div>`
-    : '<div class="slot waiting">Đợi tí…<small>Còn trống</small></div>')).join('')}
+              <div class="slot seat ${seat}"><img class="slot-dep" src="deps/${depOf(seat)}.jpg" alt="">${escapeHtml(s.players[seat].name)}<small>${t('lobby.seatCard', { color: seatLabel(seat).toLowerCase() })}${seat === me ? ` · ${t('lobby.you')}` : ''}</small>${reading(seat)}</div>`
+    : `<div class="slot waiting">${t('lobby.waiting')}<small>${t('lobby.empty')}</small></div>`)).join('')}
           </div>
-          <p class="sub dep-title">Chọn dép chiến</p>
+          <p class="sub dep-title">${t('lobby.depTitle')}</p>
           <div class="dep-picker">
             ${DEPS.map((d) => `<button class="dep-choice${d.id === mine ? ' sel' : ''}" data-dep="${d.id}">
-              <img src="deps/${d.id}.jpg" alt=""><span>${d.label}</span></button>`).join('')}
+              <img src="deps/${d.id}.jpg" alt=""><span>${t(`dep.${d.id}`)}</span></button>`).join('')}
           </div>
-          <button class="btn pri wide" id="start" ${count < 2 ? 'disabled' : ''}>${count < 2 ? 'Đợi thêm 1 đứa nữa!' : `Chiến thôi! (${count} đứa)`}</button>
+          <button class="btn pri wide" id="start" ${count < 2 ? 'disabled' : ''}>${count < 2 ? t('lobby.needMore') : t('lobby.start', { n: count })}</button>
         </div></div>`);
       if (fresh) {
         mountMenuBackground(els.overlay.querySelector('.menu-bg'));
         $('copy').onclick = async () => {
-          $('copy').textContent = await copyText(link, $('link')) ? 'Đã copy!' : 'Tự copy nhé!';
+          $('copy').textContent = await copyText(link, $('link')) ? t('lobby.copied') : t('lobby.copyManual');
         };
         $('start').onclick = () => {
           const go = () => send({ t: 'start' });
@@ -659,26 +677,26 @@ function renderOverlay() {
     case 'roundIntro':
       setOverlay(`intro-${s.round}`, `
         <div class="panel">
-          <h1 class="stamp">VÁN ${s.round}</h1>
+          <h1 class="stamp">${t('round.title', { n: s.round })}</h1>
           <p class="sub" style="font-size:22px">${scoreLine()}</p>
-          <p class="sub">Bài m màu ${myColor}. Thắng ${ROUNDS_TO_WIN} ván là ăn cả trận!</p>
+          <p class="sub">${t('round.sub', { color: myColor, n: ROUNDS_TO_WIN })}</p>
         </div>`);
       break;
     case 'rps': {
       if (!s.alive.includes(me)) {
-        setOverlay(`rps-watch-${s.round}`, '<div class="panel"><h1 class="stamp" style="font-size:44px">Hai đứa đang tù xì…</h1></div>');
+        setOverlay(`rps-watch-${s.round}`, `<div class="panel"><h1 class="stamp" style="font-size:44px">${t('rps.watching')}</h1></div>`);
         break;
       }
       const opp = opponentsOf(me)[0];
       const chosen = s.rpsChosen[me];
       setOverlay(`rps-${s.round}-${chosen}-${s.rpsChosen[opp]}`, `
         <div class="panel">
-          <h1 class="stamp" style="font-size:52px">TÙ XÌ!</h1>
-          ${chosen ? '<p class="sub">Chốt rồi! Đợi đối thủ…</p>' : `
+          <h1 class="stamp" style="font-size:52px">${t('rps.title')}</h1>
+          ${chosen ? `<p class="sub">${t('rps.locked')}</p>` : `
           <div class="row">
-            ${Object.keys(RPS_ICON).map((k) => `<button class="rps" data-rps="${k}"><span class="icon">${RPS_ICON[k]}</span>${RPS_LABEL[k]}</button>`).join('')}
+            ${Object.keys(RPS_ICON).map((k) => `<button class="rps" data-rps="${k}"><span class="icon">${RPS_ICON[k]}</span>${t(`rps.${k}`)}</button>`).join('')}
           </div>`}
-          <p class="sub">${htmlName(opp)} ${s.rpsChosen[opp] ? 'chốt rồi' : 'đang chọn…'} · <span id="rps-timer"></span></p>
+          <p class="sub">${t(s.rpsChosen[opp] ? 'rps.oppLocked' : 'rps.oppChoosing', { name: htmlName(opp) })} · <span id="rps-timer"></span></p>
         </div>`);
       els.overlay.querySelectorAll('[data-rps]').forEach((b) => {
         b.onclick = () => send({ t: 'rps', choice: b.dataset.rps });
@@ -689,11 +707,11 @@ function renderOverlay() {
       const [a, b] = s.alive;
       const left = s.alive.includes(me) ? me : a;
       const right = left === a ? b : a;
-      const title = !s.rpsWinner ? 'HÒA! LÀM LẠI!' : s.rpsWinner === me ? 'M THẮNG!' : `${escapeHtml(nameOf(s.rpsWinner)).toUpperCase()} THẮNG!`;
+      const title = !s.rpsWinner ? t('rps.draw') : s.rpsWinner === me ? t('rps.youWin') : t('rps.theyWin', { name: escapeHtml(nameOf(s.rpsWinner)).toUpperCase() });
       setOverlay(`reveal-${s.round}-${s.rpsShow[a]}-${s.rpsShow[b]}-${s.rpsWinner}`, `
         <div class="panel">
           <div class="row">
-            <div class="rps ${s.rpsWinner === left ? 'sel' : ''}"><span class="icon">${RPS_ICON[s.rpsShow[left]]}</span>${left === me ? 'M' : escapeHtml(nameOf(left))}</div>
+            <div class="rps ${s.rpsWinner === left ? 'sel' : ''}"><span class="icon">${RPS_ICON[s.rpsShow[left]]}</span>${left === me ? t('rps.you') : escapeHtml(nameOf(left))}</div>
             <span class="stamp" style="font-size:36px">VS</span>
             <div class="rps ${s.rpsWinner === right ? 'sel' : ''}"><span class="icon">${RPS_ICON[s.rpsShow[right]]}</span>${escapeHtml(nameOf(right))}</div>
           </div>
@@ -705,38 +723,38 @@ function renderOverlay() {
       if (s.rpsWinner === me) {
         if (setOverlay(`choose-${s.round}`, `
           <div class="panel">
-            <h1 class="stamp" style="font-size:44px">Đập trước hay nhường nó?</h1>
+            <h1 class="stamp" style="font-size:44px">${t('choose.title')}</h1>
             <div class="row">
-              <button class="btn pri" id="first">Đập trước</button>
-              <button class="btn" id="yield">Nhường</button>
+              <button class="btn pri" id="first">${t('choose.first')}</button>
+              <button class="btn" id="yield">${t('choose.yield')}</button>
             </div>
-            <p class="sub" style="font-weight:500">Đập trước được lợi thế, nhưng cũng dễ ăn đòn trước đấy!</p>
+            <p class="sub" style="font-weight:500">${t('choose.note')}</p>
           </div>`)) {
           $('first').onclick = () => send({ t: 'choose', first: true });
           $('yield').onclick = () => send({ t: 'choose', first: false });
         }
       } else {
-        setOverlay(`choose-wait-${s.round}`, `<div class="panel"><h1 class="stamp" style="font-size:40px">Đợi ${escapeHtml(nameOf(s.rpsWinner))} chọn lượt…</h1></div>`);
+        setOverlay(`choose-wait-${s.round}`, `<div class="panel"><h1 class="stamp" style="font-size:40px">${t('choose.wait', { name: escapeHtml(nameOf(s.rpsWinner)) })}</h1></div>`);
       }
       break;
     case 'order':
       setOverlay(`order-${s.round}`, `
         <div class="panel">
-          <h1 class="stamp" style="font-size:48px">THỨ TỰ ĐẬP</h1>
-          <div class="row order">${s.order.map((seat, i) => `${i ? '<span class="arrow">→</span>' : ''}<div class="slot seat ${seat}">${escapeHtml(nameOf(seat))}${seat === me ? '<small>m</small>' : ''}</div>`).join('')}</div>
-          <p class="sub">M cầm bài ${myColor}. Trụ lại cuối cùng là thắng ván!</p>
+          <h1 class="stamp" style="font-size:48px">${t('order.title')}</h1>
+          <div class="row order">${s.order.map((seat, i) => `${i ? '<span class="arrow">→</span>' : ''}<div class="slot seat ${seat}">${escapeHtml(nameOf(seat))}${seat === me ? `<small>${t('lobby.you')}</small>` : ''}</div>`).join('')}</div>
+          <p class="sub">${t('order.sub', { color: myColor })}</p>
         </div>`);
       break;
     case 'roundEnd': {
       const { winner, reason, by, eliminated = [] } = s.result;
-      const head = reason === 'fall' ? 'RỚT BÀN!' : reason === 'left' ? 'RỜI TRẬN' : 'ĂN RỒI!';
-      const out = eliminated.map(htmlName).join(', ');
-      const how = reason === 'fall' ? `${htmlName(by)} đập rớt bài, bị loại!`
-        : reason === 'left' ? `${out} nghỉ chơi rồi.` : `Bài ngửa của ${htmlName(by)} đè bài úp của ${out}!`;
+      const head = t(reason === 'fall' ? 'result.fall' : reason === 'left' ? 'result.left' : 'result.capture');
+      const out = list(eliminated.map(htmlName));
+      const how = reason === 'fall' ? t('result.fallHow', { name: htmlName(by) })
+        : reason === 'left' ? t('result.leftHow', { out }) : t('result.captureHow', { by: htmlName(by), out });
       setOverlay(`end-${s.round}`, `
         <div class="panel">
           <h1 class="stamp ${winner === me ? '' : 'pink'}">${head}</h1>
-          <p class="sub note">${how} ${htmlName(winner)} thắng ván này!</p>
+          <p class="sub note">${how} ${t('result.roundWinner', { name: htmlName(winner) })}</p>
           <p class="sub" style="font-size:22px">${scoreLine()}</p>
         </div>`, { clear: true });
       break;
@@ -748,14 +766,14 @@ function renderOverlay() {
       const waitingFor = present.filter((seat) => !s.rematch[seat]);
       if (setOverlay(`match-${JSON.stringify(s.rematch)}-${present.join()}`, `
         <div class="panel">
-          <h1 class="stamp ${iWon ? '' : 'pink'}">${iWon ? 'M THẮNG RỒI!' : `${escapeHtml(nameOf(winner)).toUpperCase()} THẮNG!`}</h1>
+          <h1 class="stamp ${iWon ? '' : 'pink'}">${iWon ? t('match.youWin') : t('match.theyWin', { name: escapeHtml(nameOf(winner)).toUpperCase() })}</h1>
           <p class="sub" style="font-size:22px">${scoreLine()}</p>
-          ${s.result?.matchReason === 'disconnect' ? '<p class="sub">Mọi người nghỉ chơi hết rồi!</p>' : ''}
+          ${s.result?.matchReason === 'disconnect' ? `<p class="sub">${t('match.allLeft')}</p>` : ''}
           <div class="row">
-            <button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? 'Đợi tụi nó…' : 'Tái đấu'}</button>
-            <button class="btn" id="menu">Về menu</button>
+            <button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? t('match.rematchWaiting') : t('match.rematch')}</button>
+            <button class="btn" id="menu">${t('match.menu')}</button>
           </div>
-          ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">Đang đợi: ${waitingFor.map(htmlName).join(', ')}</p>` : ''}
+          ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">${t('match.waitingFor', { names: list(waitingFor.map(htmlName)) })}</p>` : ''}
         </div>`)) {
         $('rematch').onclick = () => send({ t: 'rematch' });
         $('menu').onclick = () => { location.href = location.pathname; };
@@ -771,7 +789,7 @@ function renderHud() {
   const inGame = !['lobby', 'matchEnd'].includes(state.phase);
   els.hud.hidden = !inGame;
   const strength = state.wind.strength;
-  els.windText.textContent = `GIÓ ${strength}`;
+  els.windText.textContent = t('hud.wind', { n: strength });
   els.windBars.innerHTML = Array.from({ length: 4 }, (_, i) => `<i class="${i < strength ? 'on' : ''}"></i>`).join('');
   els.wind.dataset.level = String(strength);
   visuals.setWind(state.wind, world.table, ['turn', 'anim'].includes(state.phase));
@@ -783,7 +801,7 @@ function renderHud() {
     const out = !state.alive.includes(seat) && ['turn', 'anim'].includes(state.phase);
     const dots = Array.from({ length: ROUNDS_TO_WIN }, (_, i) => `<span class="dot ${i < (state.scores[seat] ?? 0) ? seat : ''}"></span>`).join('');
     return `<div class="chip ${seat}${out ? ' out' : ''}${state.turn === seat ? ' turn' : ''}">
-      <span class="swatch ${seat}"></span><span class="name">${escapeHtml(nameOf(seat))}${seat === me ? ' (m)' : ''}</span><span class="dots">${dots}</span>
+      <span class="swatch ${seat}"></span><span class="name">${escapeHtml(nameOf(seat))}${seat === me ? ` ${t('hud.meTag')}` : ''}</span><span class="dots">${dots}</span>
     </div>`;
   }).join('');
 }
@@ -801,31 +819,27 @@ function updateBannerAndHint() {
     setHidden(els.banner, true);
     setHidden(els.hint, true);
     const timer = $('rps-timer');
-    if (timer && state) setText(timer, `${remainingSeconds()}s`);
+    if (timer && state) setText(timer, t('rps.timer', { secs: remainingSeconds() }));
     return;
   }
   setHidden(els.banner, false);
   setHidden(els.hint, false);
   const mine = state.turn === me;
   if (state.phase === 'anim' || sim) {
-    setText(els.banner, mine ? (sim ? 'BÀI ĐANG BAY…' : 'ĐỢI MỌI NGƯỜI XEM…') : `${nameOf(state.turn).toUpperCase()} ĐẬP!`);
+    setText(els.banner, mine ? t(sim ? 'turn.flying' : 'turn.waitReplay') : t('turn.otherSlams', { name: nameOf(state.turn).toUpperCase() }));
     setClass(els.banner, mine ? '' : 'pink');
-    setText(els.hint, mine ? 'Đợi bài nằm yên đã!' : `Đang xem ${nameOf(state.turn)} đập`);
+    setText(els.hint, mine ? t('turn.hintSettle') : t('turn.hintWatching', { name: nameOf(state.turn) }));
     return;
   }
-  const secs = `${remainingSeconds()}s`;
+  const secs = remainingSeconds();
   if (mine) {
-    setText(els.banner, state.forced ? `PHẢI ĐẬP! · ${secs}` : `TỚI M ĐẬP! · ${secs}`);
+    setText(els.banner, t(state.forced ? 'turn.forced' : 'turn.mine', { secs }));
     setClass(els.banner, state.forced ? 'pink' : '');
-    setText(els.hint, state.forced
-      ? 'Bỏ lượt rồi à? Giờ phải đập trong vòng hồng!'
-      : TOUCH
-        ? 'Kéo để ngắm, thả để đập · Đập chỗ trống = bỏ lượt'
-        : 'Click để đập · Càng sát càng mạnh · Đập chỗ trống = bỏ lượt · Q/E đổi kiểu');
+    setText(els.hint, t(state.forced ? 'turn.hintForced' : TOUCH ? 'turn.hintTouch' : 'turn.hintMouse'));
   } else {
-    setText(els.banner, `TỚI ${nameOf(state.turn).toUpperCase()} · ${secs}`);
+    setText(els.banner, t('turn.other', { name: nameOf(state.turn).toUpperCase(), secs }));
     setClass(els.banner, 'pink');
-    setText(els.hint, state.alive.includes(me) ? `${nameOf(state.turn)} đang ngắm…` : 'M bị loại rồi! Ngồi hóng tiếp thôi.');
+    setText(els.hint, state.alive.includes(me) ? t('turn.hintAiming', { name: nameOf(state.turn) }) : t('turn.hintOut'));
   }
 }
 
@@ -871,8 +885,8 @@ function updateLabels() {
     const { x, y, z } = card.mesh.position;
     const q = card.mesh.quaternion;
     const faceUp = 1 - 2 * (q.x * q.x + q.z * q.z) > 0;
-    const owner = seat === me ? ' (m)' : ` (${nameOf(seat)})`;
-    const text = y < FALL_Y ? `RỚT${owner}` : `${faceUp ? '▲ NGỬA' : '▼ ÚP'}${owner}`;
+    const owner = seat === me ? t('hud.meTag') : t('card.owner', { name: nameOf(seat) });
+    const text = `${t(y < FALL_Y ? 'card.fallen' : faceUp ? 'card.up' : 'card.down')} ${owner}`;
     if (el.textContent !== text) el.textContent = text;
     // just under the card on screen, whichever way the camera faces the table
     world.toScreen(x, y, z, labelScreen);
@@ -1005,7 +1019,7 @@ function slam(aim) {
   visuals.dropDep(impact, () => {
     const strength = Math.max(...effects.map((e) => e.strength));
     impactFx(impact, strength, 0.5 + strength * 0.5);
-    popText(impact, 'BỐP!');
+    popText(impact, t('card.pop'));
     send({ t: 'slamStart', impact: impactMsg, type });
     setTimeout(() => {
       world.applySlam(impact, type);
@@ -1076,7 +1090,7 @@ function startPlayback(msg) {
   playback = current;
   visuals.dropDep(impact, () => {
     impactFx(impact, 0.8, 0.8);
-    popText(impact, 'BỐP!');
+    popText(impact, t('card.pop'));
     setTimeout(() => { current.impactDone = true; }, TUNE.hitstopMs);
   }, depOf(msg.by));
 }
@@ -1169,7 +1183,7 @@ function frame(now) {
 
 let drawnFrames = 0;
 setInterval(() => {
-  setText(els.fps, drawnFrames < 5 ? 'fps –' : `${drawnFrames} fps`);
+  setText(els.fps, drawnFrames < 5 ? t('net.fpsIdle') : t('net.fps', { n: drawnFrames }));
   els.fps.classList.toggle('bad', drawnFrames >= 5 && drawnFrames < 40);
   drawnFrames = 0;
 }, 1000);
@@ -1179,8 +1193,8 @@ setInterval(() => {
   send({ t: 'ping', at: performance.now() });
   const silent = performance.now() - lastPong;
   const slow = silent > TUNE.net.slowPingMs;
-  if (slow && !els.toast.dataset.sticky) showToast('Mạng hơi lag…', 2500);
-  els.ping.textContent = slow ? 'ping ?' : `ping ${pingMs}ms`;
+  if (slow && !els.toast.dataset.sticky) showToast(t('net.lag'), 2500);
+  els.ping.textContent = slow ? t('net.pingUnknown') : t('net.ping', { n: pingMs });
   els.ping.classList.toggle('bad', slow || pingMs > 250);
 }, TUNE.net.pingMs);
 

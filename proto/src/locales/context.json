@@ -1,0 +1,950 @@
+{
+  "menu.title": {
+    "where": "Game name: browser tab title",
+    "max": 20,
+    "id": "A1"
+  },
+  "menu.logo": {
+    "where": "Game logo on the menu, big stamp text; \\n is the line break",
+    "max": 20,
+    "id": "A1"
+  },
+  "menu.tagline": {
+    "where": "Line under the logo: what the game is, how many players",
+    "max": 40,
+    "id": "A2"
+  },
+  "menu.nameLabel": {
+    "where": "Label above the player name field",
+    "max": 15,
+    "id": "A3"
+  },
+  "menu.namePlaceholder": {
+    "where": "Grey example text inside the name field",
+    "max": 15,
+    "id": "A4"
+  },
+  "menu.defaultName": {
+    "where": "Name used when the player leaves it blank (server adds \" 2\", \" 3\" for duplicates)",
+    "max": 12,
+    "id": "A5"
+  },
+  "menu.create": {
+    "where": "Button: create a room",
+    "max": 12,
+    "id": "A6"
+  },
+  "menu.codePlaceholder": {
+    "where": "Grey text / screen-reader label of the 4-letter room code field",
+    "max": 10,
+    "id": "A7"
+  },
+  "menu.join": {
+    "where": "Button: join a room (menu and invite screen)",
+    "max": 12,
+    "id": "A8"
+  },
+  "invite.sub": {
+    "where": "Invite-link screen: you were invited to room {code}. {code} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 40,
+    "id": "A9"
+  },
+  "error.notFound": {
+    "where": "Menu error: wrong room code",
+    "max": 30,
+    "id": "A10"
+  },
+  "error.inMatch": {
+    "where": "Menu error: that room is mid-match",
+    "max": 30,
+    "id": "A11"
+  },
+  "error.full": {
+    "where": "Menu error: room already has 4 players",
+    "max": 30,
+    "id": "A12"
+  },
+  "error.roomGone": {
+    "where": "Menu error: invite link to a room that no longer exists",
+    "max": 100,
+    "id": "K1"
+  },
+  "error.otherTab": {
+    "where": "Menu error: the same room was opened in another browser tab",
+    "max": 60,
+    "id": "K2"
+  },
+  "error.reconnecting": {
+    "where": "Menu error: pressed Create/Join while offline",
+    "max": 40,
+    "id": "K5"
+  },
+  "lobby.title": {
+    "where": "Lobby heading: room {code}. {code} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 15,
+    "id": "B1"
+  },
+  "lobby.sub": {
+    "where": "Lobby subtitle: send the link to friends",
+    "max": 45,
+    "id": "B2"
+  },
+  "lobby.linkLabel": {
+    "where": "Screen-reader label of the invite link field",
+    "max": 20
+  },
+  "lobby.copy": {
+    "where": "Button: copy invite link",
+    "max": 10,
+    "id": "B3"
+  },
+  "lobby.copied": {
+    "where": "Copy button after copying",
+    "max": 10,
+    "id": "B3"
+  },
+  "lobby.copyManual": {
+    "where": "Copy button when the browser blocks copying",
+    "max": 18,
+    "id": "J7"
+  },
+  "lobby.seatCard": {
+    "where": "Small line in a player slot: their card colour ({color} is seat.* in lower case)",
+    "max": 14,
+    "id": "B4"
+  },
+  "lobby.you": {
+    "where": "Marks your own slot in the lobby and the turn order (\"· m\"); means \"you\"",
+    "max": 4,
+    "id": "B4"
+  },
+  "lobby.waiting": {
+    "where": "Empty player slot, big text",
+    "max": 12,
+    "id": "B5"
+  },
+  "lobby.empty": {
+    "where": "Empty player slot, small text",
+    "max": 8,
+    "id": "B5"
+  },
+  "lobby.reading": {
+    "where": "Tag under a player who is reading the tutorial (step {n} of {total})",
+    "max": 25,
+    "id": "I20"
+  },
+  "lobby.depTitle": {
+    "where": "Heading above the slipper picker",
+    "max": 20,
+    "id": "B6"
+  },
+  "lobby.needMore": {
+    "where": "Start button while alone in the room",
+    "max": 25,
+    "id": "B8"
+  },
+  "lobby.start": {
+    "where": "Start button with {n} players",
+    "max": 20,
+    "id": "B9"
+  },
+  "dep.dep_lao": {
+    "where": "Slipper name: classic flip-flop",
+    "max": 12,
+    "id": "B7"
+  },
+  "dep.dep_to_ong": {
+    "where": "Slipper name: honeycomb plastic sandal",
+    "max": 12,
+    "id": "B7"
+  },
+  "dep.dep_le": {
+    "where": "Slipper name: slide sandal",
+    "max": 12,
+    "id": "B7"
+  },
+  "seat.black": {
+    "where": "Card colour name: black (upper case; also used lower-cased in lobby.seatCard)",
+    "max": 5,
+    "id": "B10"
+  },
+  "seat.pink": {
+    "where": "Card colour name: red/pink seat",
+    "max": 5,
+    "id": "B10"
+  },
+  "seat.blue": {
+    "where": "Card colour name: blue",
+    "max": 5,
+    "id": "B10"
+  },
+  "seat.green": {
+    "where": "Card colour name: green",
+    "max": 5,
+    "id": "B10"
+  },
+  "round.title": {
+    "where": "Round intro heading: round {n}",
+    "max": 10,
+    "id": "C1"
+  },
+  "round.sub": {
+    "where": "Round intro: your card colour, win {n} rounds to win the match. {color} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 50,
+    "id": "C2"
+  },
+  "rps.watching": {
+    "where": "Shown to players who are out while two others play rock-paper-scissors",
+    "max": 20,
+    "id": "C7"
+  },
+  "rps.title": {
+    "where": "Rock-paper-scissors heading",
+    "max": 10,
+    "id": "C3"
+  },
+  "rps.bua": {
+    "where": "Rock",
+    "max": 5,
+    "id": "C4"
+  },
+  "rps.keo": {
+    "where": "Scissors",
+    "max": 5,
+    "id": "C4"
+  },
+  "rps.bao": {
+    "where": "Paper",
+    "max": 5,
+    "id": "C4"
+  },
+  "rps.locked": {
+    "where": "After you picked: waiting for the opponent",
+    "max": 30,
+    "id": "C5"
+  },
+  "rps.oppLocked": {
+    "where": "Opponent has picked. {name} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 25,
+    "id": "C6"
+  },
+  "rps.oppChoosing": {
+    "where": "Opponent still picking. {name} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 25,
+    "id": "C6"
+  },
+  "rps.timer": {
+    "where": "Seconds left, short unit",
+    "max": 5
+  },
+  "rps.draw": {
+    "where": "RPS result: draw, play again",
+    "max": 15,
+    "id": "C8"
+  },
+  "rps.youWin": {
+    "where": "RPS result: you won",
+    "max": 15,
+    "id": "C9"
+  },
+  "rps.theyWin": {
+    "where": "RPS result: {name} won ({name} is upper-cased HTML)",
+    "max": 15,
+    "id": "C9"
+  },
+  "rps.you": {
+    "where": "Your side label on the RPS reveal (\"you\")",
+    "max": 6
+  },
+  "choose.title": {
+    "where": "RPS winner: go first or let the other go first?",
+    "max": 30,
+    "id": "C10"
+  },
+  "choose.first": {
+    "where": "Button: go first",
+    "max": 15,
+    "id": "C11"
+  },
+  "choose.yield": {
+    "where": "Button: let the opponent go first",
+    "max": 15,
+    "id": "C11"
+  },
+  "choose.note": {
+    "where": "Explains pros/cons of going first",
+    "max": 80,
+    "id": "C12"
+  },
+  "choose.wait": {
+    "where": "RPS loser waits for {name} to choose",
+    "max": 25,
+    "id": "C13"
+  },
+  "order.title": {
+    "where": "3-4 players: turn order heading",
+    "max": 15,
+    "id": "C14"
+  },
+  "order.sub": {
+    "where": "Turn order: your colour, last one standing wins. {color} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 55,
+    "id": "C15"
+  },
+  "hud.meTag": {
+    "where": "After your own name in the player chips and card labels (\"you\")",
+    "max": 6,
+    "id": "D1"
+  },
+  "hud.wind": {
+    "where": "Wind box: wind strength {n} (0-4)",
+    "max": 8,
+    "id": "D2"
+  },
+  "turn.flat": {
+    "where": "Slam-type button: flat slam (PC adds \" · Q\")",
+    "max": 15,
+    "id": "D3"
+  },
+  "turn.tilt": {
+    "where": "Slam-type button: tilted slam (PC adds \" · E\")",
+    "max": 15,
+    "id": "D3"
+  },
+  "turn.mine": {
+    "where": "Banner: your turn, {secs} seconds left",
+    "max": 22,
+    "id": "D4"
+  },
+  "turn.forced": {
+    "where": "Banner: you must slam (passed last turn)",
+    "max": 22,
+    "id": "D5"
+  },
+  "turn.other": {
+    "where": "Banner: {name}'s turn ({name} upper-cased)",
+    "max": 25,
+    "id": "D6"
+  },
+  "turn.flying": {
+    "where": "Banner right after your slam: cards flying",
+    "max": 22,
+    "id": "D7"
+  },
+  "turn.waitReplay": {
+    "where": "Banner: waiting for others to watch your slam replay",
+    "max": 25,
+    "id": "D7"
+  },
+  "turn.otherSlams": {
+    "where": "Banner while {name} slams ({name} upper-cased)",
+    "max": 18,
+    "id": "D8"
+  },
+  "turn.hintMouse": {
+    "where": "Bottom hint on PC during your turn",
+    "max": 90,
+    "id": "D9"
+  },
+  "turn.hintTouch": {
+    "where": "Bottom hint on phones during your turn",
+    "max": 70,
+    "id": "D10"
+  },
+  "turn.hintForced": {
+    "where": "Bottom hint when forced to slam inside the pink ring",
+    "max": 70,
+    "id": "D11"
+  },
+  "turn.hintSettle": {
+    "where": "Bottom hint: wait for cards to stop",
+    "max": 25,
+    "id": "D12"
+  },
+  "turn.hintWatching": {
+    "where": "Bottom hint: watching {name} slam",
+    "max": 30,
+    "id": "D13"
+  },
+  "turn.hintAiming": {
+    "where": "Bottom hint: {name} is aiming",
+    "max": 30,
+    "id": "D13"
+  },
+  "turn.hintOut": {
+    "where": "Bottom hint: you are eliminated, keep watching",
+    "max": 45,
+    "id": "D14"
+  },
+  "card.up": {
+    "where": "Label under a card: face up (followed by owner)",
+    "max": 8,
+    "id": "D15"
+  },
+  "card.down": {
+    "where": "Label under a card: face down",
+    "max": 8,
+    "id": "D15"
+  },
+  "card.fallen": {
+    "where": "Label under a card: fell off the table",
+    "max": 8,
+    "id": "D15"
+  },
+  "card.owner": {
+    "where": "Owner after a card label for other players' cards",
+    "max": 18
+  },
+  "card.pop": {
+    "where": "Comic \"slap!\" pop text when a slipper lands (also menu backdrop)",
+    "max": 6,
+    "id": "D16"
+  },
+  "toast.timeout": {
+    "where": "Toast: {name} ran out of time",
+    "max": 30,
+    "id": "E1"
+  },
+  "toast.pass": {
+    "where": "Toast: {name} passed",
+    "max": 25,
+    "id": "E2"
+  },
+  "toast.fall": {
+    "where": "Toast (3-4 players): {name} knocked a card off and is out",
+    "max": 35,
+    "id": "E3"
+  },
+  "toast.capture": {
+    "where": "Toast (3-4 players): {by} captured {out} (names, comma list)",
+    "max": 30,
+    "id": "E4"
+  },
+  "toast.left": {
+    "where": "Toast: {out} left the match",
+    "max": 25,
+    "id": "E5"
+  },
+  "toast.dropped": {
+    "where": "Toast: other players lost connection; waiting up to 60 s",
+    "max": 50,
+    "id": "E7"
+  },
+  "net.lost": {
+    "where": "Toast: your connection dropped, reconnecting",
+    "max": 30,
+    "id": "E6"
+  },
+  "net.lag": {
+    "where": "Toast: network is slow",
+    "max": 20,
+    "id": "E8"
+  },
+  "net.failTitle": {
+    "where": "Connection-failed card: heading",
+    "max": 25,
+    "id": "K3"
+  },
+  "net.failBody": {
+    "where": "Connection-failed card: explanation",
+    "max": 80,
+    "id": "K3"
+  },
+  "net.retry": {
+    "where": "Connection-failed card: retry button",
+    "max": 10,
+    "id": "K4"
+  },
+  "net.retryIn": {
+    "where": "Connection-failed card: auto retry countdown",
+    "max": 30,
+    "id": "K4"
+  },
+  "net.retrying": {
+    "where": "Connection-failed card: retrying now",
+    "max": 30,
+    "id": "K4"
+  },
+  "net.fpsIdle": {
+    "where": "Corner stats: frame rate when the table is idle",
+    "max": 8,
+    "id": "J8"
+  },
+  "net.fps": {
+    "where": "Corner stats: frames per second",
+    "max": 8,
+    "id": "J8"
+  },
+  "net.pingUnknown": {
+    "where": "Corner stats: no ping reply",
+    "max": 10
+  },
+  "net.ping": {
+    "where": "Corner stats: network round trip",
+    "max": 12
+  },
+  "result.fall": {
+    "where": "Round end heading: a card fell off",
+    "max": 12,
+    "id": "F1"
+  },
+  "result.left": {
+    "where": "Round end heading: someone left",
+    "max": 12,
+    "id": "F1"
+  },
+  "result.capture": {
+    "where": "Round end heading: a capture",
+    "max": 12,
+    "id": "F1"
+  },
+  "result.fallHow": {
+    "where": "Round end: {name} knocked a card off, out. {name} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 45,
+    "id": "F2"
+  },
+  "result.leftHow": {
+    "where": "Round end: {out} left. {out} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 45
+  },
+  "result.captureHow": {
+    "where": "Round end: {by}'s face-up card lies on {out}'s face-down card. {by} and {out} are pre-escaped HTML.",
+    "max": 45,
+    "id": "F3"
+  },
+  "result.roundWinner": {
+    "where": "Round end, after the explanation: {name} wins the round. {name} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 25,
+    "id": "F4"
+  },
+  "match.youWin": {
+    "where": "Match end heading: you won",
+    "max": 15,
+    "id": "F5"
+  },
+  "match.theyWin": {
+    "where": "Match end heading: {name} won ({name} upper-cased HTML)",
+    "max": 15,
+    "id": "F5"
+  },
+  "match.allLeft": {
+    "where": "Match end: everyone else left",
+    "max": 35,
+    "id": "F6"
+  },
+  "match.rematch": {
+    "where": "Button: rematch",
+    "max": 12,
+    "id": "F7"
+  },
+  "match.rematchWaiting": {
+    "where": "Rematch button after pressing: waiting for the others",
+    "max": 20,
+    "id": "F7"
+  },
+  "match.menu": {
+    "where": "Button: back to menu",
+    "max": 10,
+    "id": "F8"
+  },
+  "match.waitingFor": {
+    "where": "Who has not pressed rematch yet. {names} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 40,
+    "id": "F9"
+  },
+  "sound.title": {
+    "where": "Corner button and sound panel heading",
+    "max": 10,
+    "id": "G1"
+  },
+  "sound.aria": {
+    "where": "Screen-reader label of the sound button",
+    "max": 20
+  },
+  "sound.music": {
+    "where": "Volume slider: music (label column is 80 px)",
+    "max": 12,
+    "id": "G2"
+  },
+  "sound.meme": {
+    "where": "Volume slider: meme sounds",
+    "max": 12,
+    "id": "G2"
+  },
+  "sound.sfx": {
+    "where": "Volume slider: slipper sound effects",
+    "max": 12,
+    "id": "G2"
+  },
+  "sound.memesOn": {
+    "where": "Checkbox: show meme reactions",
+    "max": 15,
+    "id": "G3"
+  },
+  "meme.perfectVictory": {
+    "where": "Caption on the match-win meme image (Mortal Kombat quote; often kept in English)",
+    "max": 20,
+    "id": "H1"
+  },
+  "meme.trinh1": {
+    "where": "Skill-shot meme, line 1; plays with a Vietnamese voice clip (\"what is skill…\")",
+    "max": 15,
+    "id": "H2"
+  },
+  "meme.trinh2": {
+    "where": "Skill-shot meme, line 2 (\"…is Haaland-level skill!\")",
+    "max": 20,
+    "id": "H2"
+  },
+  "meme.clap": {
+    "where": "Round-win meme: \"let's clap!\"",
+    "max": 10,
+    "id": "H3"
+  },
+  "ftue.invite.title": {
+    "where": "Lobby invite card: first time playing?",
+    "max": 30,
+    "id": "I1"
+  },
+  "ftue.invite.sub": {
+    "where": "Lobby invite card: offers a 1-minute tutorial",
+    "max": 70,
+    "id": "I2"
+  },
+  "ftue.invite.yes": {
+    "where": "Invite card button: show me how",
+    "max": 15,
+    "id": "I3"
+  },
+  "ftue.invite.no": {
+    "where": "Invite card button: I already know",
+    "max": 15,
+    "id": "I3"
+  },
+  "ftue.next": {
+    "where": "Tutorial button: next",
+    "max": 10,
+    "id": "I4"
+  },
+  "ftue.skip": {
+    "where": "Tutorial button: skip",
+    "max": 10,
+    "id": "I4"
+  },
+  "ftue.done": {
+    "where": "Tutorial last-step button: play",
+    "max": 10,
+    "id": "I4"
+  },
+  "ftue.step": {
+    "where": "Tutorial step counter above the title",
+    "max": 20
+  },
+  "ftue.step1.title": {
+    "where": "Tutorial step 1 title: goal",
+    "max": 45,
+    "id": "I5"
+  },
+  "ftue.step1.p1": {
+    "where": "Tutorial step 1, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 110,
+    "id": "I5"
+  },
+  "ftue.step1.p2": {
+    "where": "Tutorial step 1, paragraph 2",
+    "max": 50,
+    "id": "I5"
+  },
+  "ftue.step1.mineUp": {
+    "where": "Step 1 picture label: your card, face up",
+    "max": 14
+  },
+  "ftue.step1.enemyDown": {
+    "where": "Step 1 picture label: enemy card, face down",
+    "max": 14
+  },
+  "ftue.step1.eat": {
+    "where": "Step 1 picture pop text: capture!",
+    "max": 6
+  },
+  "ftue.step2.title": {
+    "where": "Tutorial step 2 title: aiming",
+    "max": 45,
+    "id": "I6"
+  },
+  "ftue.step2.p1": {
+    "where": "Tutorial step 2, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 90,
+    "id": "I6"
+  },
+  "ftue.step2.p2": {
+    "where": "Tutorial step 2, paragraph 2",
+    "max": 70,
+    "id": "I6"
+  },
+  "ftue.step2.touch": {
+    "where": "Tutorial step 2, extra paragraph on phones",
+    "max": 40
+  },
+  "ftue.step2.reach": {
+    "where": "Step 2 picture label: black ring = your reach",
+    "max": 26
+  },
+  "ftue.step2.dropHere": {
+    "where": "Step 2 picture label: slipper lands here",
+    "max": 14
+  },
+  "ftue.step3.title": {
+    "where": "Tutorial step 3 title: face up beats face down",
+    "max": 45,
+    "id": "I7"
+  },
+  "ftue.step3.p1": {
+    "where": "Tutorial step 3, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 70,
+    "id": "I7"
+  },
+  "ftue.step3.p2": {
+    "where": "Tutorial step 3, paragraph 2",
+    "max": 80,
+    "id": "I7"
+  },
+  "ftue.step3.p3": {
+    "where": "Tutorial step 3, paragraph 3. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 50,
+    "id": "I7"
+  },
+  "ftue.step3.win": {
+    "where": "Step 3 picture caption: you capture",
+    "max": 25,
+    "id": "I8"
+  },
+  "ftue.step3.lose": {
+    "where": "Step 3 picture caption: you get captured",
+    "max": 25,
+    "id": "I8"
+  },
+  "ftue.step3.bothDown": {
+    "where": "Step 3 picture caption: both face down",
+    "max": 25,
+    "id": "I8"
+  },
+  "ftue.step3.bothUp": {
+    "where": "Step 3 picture caption: both face up",
+    "max": 25,
+    "id": "I8"
+  },
+  "ftue.step4.title": {
+    "where": "Tutorial step 4 title: do not knock cards off",
+    "max": 45,
+    "id": "I9"
+  },
+  "ftue.step4.p1": {
+    "where": "Tutorial step 4, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 80,
+    "id": "I9"
+  },
+  "ftue.step4.p2": {
+    "where": "Tutorial step 4, paragraph 2",
+    "max": 80,
+    "id": "I9"
+  },
+  "ftue.step4.slamHere": {
+    "where": "Step 4 picture label: you slam here",
+    "max": 14
+  },
+  "ftue.step4.fall": {
+    "where": "Step 4 picture label: card falls",
+    "max": 8
+  },
+  "ftue.step4.out": {
+    "where": "Step 4 picture stamp: you are out",
+    "max": 14
+  },
+  "ftue.step5.title": {
+    "where": "Tutorial step 5 title: a few more tricks",
+    "max": 45,
+    "id": "I10"
+  },
+  "ftue.step5.p1": {
+    "where": "Tutorial step 5, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 90,
+    "id": "I10"
+  },
+  "ftue.step5.p2": {
+    "where": "Tutorial step 5, paragraph 2. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 90,
+    "id": "I10"
+  },
+  "ftue.pointer": {
+    "where": "First-turn speech bubble pointing next to your card (bubble is 240 px wide). May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 60,
+    "id": "I11"
+  },
+  "ftue.confirm.title": {
+    "where": "Start-confirm card: {name} is still reading the tutorial",
+    "max": 25,
+    "id": "I21"
+  },
+  "ftue.confirm.body": {
+    "where": "Start-confirm card: they are at step {n}/{total}; they can finish during the match. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 90,
+    "id": "I22"
+  },
+  "ftue.confirm.go": {
+    "where": "Start-confirm button: start anyway",
+    "max": 15,
+    "id": "I22"
+  },
+  "ftue.confirm.wait": {
+    "where": "Start-confirm button: wait",
+    "max": 15,
+    "id": "I22"
+  },
+  "ftue.stashed": {
+    "where": "Bubble by the \"?\" button when the match starts mid-tutorial. May contain <b>…</b> for emphasis; keep tags balanced.",
+    "max": 60,
+    "id": "I23"
+  },
+  "tip.label": {
+    "where": "Tag in front of in-match tips",
+    "max": 5,
+    "id": "I24"
+  },
+  "tip.flipped": {
+    "where": "Tip: your card just turned face up",
+    "max": 50,
+    "id": "I12"
+  },
+  "tip.threat": {
+    "where": "Tip: face-up enemy card near your face-down card",
+    "max": 50,
+    "id": "I13"
+  },
+  "tip.edge": {
+    "where": "Tip: your card is near the table edge",
+    "max": 50,
+    "id": "I14"
+  },
+  "tip.forced": {
+    "where": "Tip: first forced slam, explains the pink ring",
+    "max": 50,
+    "id": "I15"
+  },
+  "tip.timeout": {
+    "where": "Tip: first timeout",
+    "max": 40,
+    "id": "I16"
+  },
+  "rules.title": {
+    "where": "Quick-rules panel (\"?\" button) heading",
+    "max": 15,
+    "id": "I17"
+  },
+  "rules.r1": {
+    "where": "Quick rule 1: your face-up on enemy face-down = capture",
+    "max": 35,
+    "id": "I17a"
+  },
+  "rules.r2": {
+    "where": "Quick rule 2: enemy face-up on your face-down = captured",
+    "max": 35,
+    "id": "I17b"
+  },
+  "rules.r3": {
+    "where": "Quick rule 3: knock a card off = out",
+    "max": 35,
+    "id": "I17c"
+  },
+  "rules.r4": {
+    "where": "Quick rule 4: same side or just touching = play on",
+    "max": 40,
+    "id": "I17d"
+  },
+  "rules.r5": {
+    "where": "Quick rule 5: just passed = must slam in the pink ring",
+    "max": 45,
+    "id": "I17e"
+  },
+  "rules.r6": {
+    "where": "Quick rule 6: 30 s timeout = lose the turn",
+    "max": 35,
+    "id": "I17f"
+  },
+  "rules.replay": {
+    "where": "Quick-rules button: replay the tutorial",
+    "max": 20,
+    "id": "I18"
+  },
+  "rules.resume": {
+    "where": "Quick-rules button: resume the tutorial at step {n}",
+    "max": 30,
+    "id": "I18"
+  },
+  "corner.help": {
+    "where": "Screen-reader label of the \"?\" corner button",
+    "max": 15,
+    "id": "I19"
+  },
+  "corner.info": {
+    "where": "Corner button that opens the info panel",
+    "max": 8,
+    "id": "J1"
+  },
+  "corner.infoAria": {
+    "where": "Screen-reader label of the Info button",
+    "max": 20
+  },
+  "corner.lang": {
+    "where": "Screen-reader label of the language picker",
+    "max": 20
+  },
+  "info.title": {
+    "where": "Info panel heading (game name)",
+    "max": 25,
+    "id": "J2"
+  },
+  "info.by": {
+    "where": "Info panel: \"a game by {name}\". {name} is pre-escaped HTML markup; keep the placeholder.",
+    "max": 30,
+    "id": "J3"
+  },
+  "info.portfolio": {
+    "where": "Info panel: label before the website link",
+    "max": 12,
+    "id": "J4"
+  },
+  "info.contact": {
+    "where": "Info panel: label before the email link",
+    "max": 12,
+    "id": "J5"
+  },
+  "info.cardArt": {
+    "where": "Artist credit (corner and info panel)",
+    "max": 30
+  },
+  "common.close": {
+    "where": "Close button of the info, sound and quick-rules panels",
+    "max": 8,
+    "id": "J6"
+  },
+  "common.listSep": {
+    "where": "Separator between names in a list (e.g. \"A, B\")",
+    "max": 3
+  },
+  "fatal.title": {
+    "where": "3D failed: heading",
+    "max": 25,
+    "id": "K6"
+  },
+  "fatal.body": {
+    "where": "3D failed: explanation (\"hardware acceleration\" setting)",
+    "max": 100,
+    "id": "K6"
+  },
+  "boot.slow": {
+    "where": "Browser too old / game took too long to load (static HTML copy stays Vietnamese if JS never runs)",
+    "max": 90,
+    "id": "K7"
+  }
+}

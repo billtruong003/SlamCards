@@ -16,7 +16,8 @@ Danh sách này đã gộp việc của session "Kết nối VPS (fork)" (bàn g
 4. **G4** (gồm UX-10) đo đạc → **LU1–LU4** bảng số Lucy.
 5. P1 còn lại: UX-11, UX-12, QA-02, UX-02, UX-03, QA-06.
 6. Tủ đồ: A (chủ phòng + Sẵn sàng, gộp QA-07) → B (dép nhiều màu) → D (màu bài + chọn đồ) → C (lá bài stencil, phần khó nhất).
-7. P2/P3, G2 ủng hộ, G5, G6, PERF-01, web studio WS1. Quảng cáo chờ Q3.
+7. Đa ngôn ngữ: L10N-01 xong → L10N-02/03. Quảng cáo ADS-01 (test) → ADS-02 → bật thật khi AdSense duyệt.
+8. P2/P3, G2 ủng hộ, G5, G6, PERF-01, web studio WS1.
 
 ## Câu hỏi
 
@@ -117,13 +118,9 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
 - [ ] **G5** · Ảnh xem trước khi dán link phòng (Open Graph) cho Zalo/Messenger.
 - [ ] **G6** · Nút "Báo lỗi" (về `support@` hoặc Lucy).
 - [ ] **G3** · Quảng cáo. Chờ Q3 + Bill đăng ký AdSense. Không chặn nút copy link; không bao giờ trong ván.
-  - Đề xuất kênh (so sánh 14/10, chờ Bill chốt):
-    - Web của mình: Google H5 Games Ads (Ad Placement API, phải xin duyệt) cho quảng cáo nhận thưởng + toàn màn. Banner để sau.
-    - Đưa ra nước ngoài: CrazyGames (không độc quyền, hoặc độc quyền 2 tháng để được thêm 50%), sau đó GameDistribution (33%). Poki chỉ khi được chọn: độc quyền web 5 năm.
-    - Sau cùng: app Android + AdMob.
-  - [ ] **PORT-01** · Bản tiếng Anh (chữ + meme).
-  - [ ] **PORT-02** · Vào chơi ngay: ghép trận nhanh hoặc đấu bot, không bắt tạo phòng (CrazyGames đòi "vào thẳng gameplay").
-  - [ ] **PORT-03** · Bản build cho cổng game: SDK của cổng (quảng cáo, đăng nhập, link mời), tắt QR ủng hộ và quảng cáo riêng.
+  - Kênh (Bill chốt 14/10): bản web prototype dùng Google H5 Games Ads (Ad Placement API, phải xin duyệt) cho quảng cáo nhận thưởng + toàn màn; banner để sau. Android (AdMob) và cổng game (CrazyGames…) để sau, xem mục "Để sau".
+  - [ ] **ADS-01** · Gắn Ad Placement API ở chế độ test (`data-adbreak-test="on"`) sau cờ bật/tắt: `adBreak` lúc bấm "Về menu" (giới hạn 1 lần / 3 trận hoặc 5 phút), rewarded cho màu dép có khóa. Tắt tiếng game khi quảng cáo chạy. Bật thật khi AdSense duyệt.
+  - [ ] **ADS-02** · Trước khi bật thật: trang chính sách riêng tư (WS3), `ads.txt` (WS4), và bảng hỏi đồng ý của một CMP được Google chứng nhận cho khách châu Âu/Anh/Thụy Sĩ.
 
 ## Web studio (cổng game ở `billthedevstudio.io.vn`)
 
@@ -135,6 +132,26 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
 ## Bill tự làm
 
 - [ ] **A1** tạo 3 hộp mail `bill@`, `admin@`, `support@` · **A2** thống nhất tên tài khoản · **A3** cài Claude in Chrome · **A4** đăng ký AdSense · **A5** theo dõi Claude for Startups · **A6** thay key `chautn@gem-corp.global` trên VPS bằng key riêng.
+
+## Đa ngôn ngữ
+
+Ngôn ngữ chọn theo **ngôn ngữ trình duyệt** (`navigator.languages`), có ô chọn tay ở góc và `?lang=`. **Không** tra IP hay vị trí. Đợt 1: vi, en, zh-Hans, zh-Hant, id, th, pt-BR, es.
+
+- [x] **L10N-01** · (xong 14/10, 194 chuỗi) Hạ tầng: `src/i18n.js`, `src/locales/vi.json` (nguồn) + `context.json` (chỗ hiện, độ dài tối đa), chuyển mọi chữ trong game sang `t()`, server gửi mã lỗi, font dự phòng cho chữ Trung/Thái, `npm run i18n:export` / `i18n:check`.
+- [ ] **L10N-02** · Bill đưa `docs/localization/PROMPT.md` + `STRINGS.md` cho AI khác viết từng ngôn ngữ (và viết lại bản Việt cho tự nhiên hơn) → lưu `src/locales/<mã>.json` → `npm run i18n:check`.
+- [ ] **L10N-03** · Kiểm tra giao diện từng ngôn ngữ trên điện thoại giả lập (chữ dài vỡ nút, font Trung/Thái). Meme có chữ/giọng tiếng Việt: giữ nguyên hoặc thay theo ngôn ngữ (quyết sau).
+
+## Quyền riêng tư (để không bị Google chặn quảng cáo)
+
+- Không lưu IP, không tra vị trí theo IP, không dò vân tay trình duyệt. Mã người chơi là mã ngẫu nhiên trong localStorage (G4).
+- Không gửi tên người chơi hay thông tin cá nhân nào cho Google/quảng cáo.
+- nginx mặc định ghi IP vào log truy cập: ghi rõ trong trang chính sách (WS3), giữ log ngắn ngày (cân nhắc ẩn bớt octet cuối).
+- Khách châu Âu/Anh/Thụy Sĩ: phải có bảng hỏi đồng ý (CMP được Google chứng nhận) trước khi hiện quảng cáo (ADS-02).
+
+## Để sau
+
+- **Android** (AdMob): sau khi bản web prototype ổn.
+- **Cổng game** (CrazyGames, GameDistribution, Poki): từ từ, chưa làm. Khi làm cần: vào chơi ngay (ghép trận nhanh/đấu bot), bản build riêng có SDK của cổng (tắt QR ủng hộ và quảng cáo riêng).
 
 ## Tính năng mới: Tủ đồ (pet trong lá bài, dép tự chọn màu, chủ phòng + Sẵn sàng)
 

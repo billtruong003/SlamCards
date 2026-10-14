@@ -1,5 +1,6 @@
 // Menu backdrop: scattered cards, and a slipper that keeps slamming one at random and
 // flipping it. Silent on purpose; the menu only has music.
+import { t } from './i18n.js';
 
 const CARDS = ['black-front', 'black-back', 'pink-front', 'pink-back'];
 const FLIPPED = { 'black-front': 'black-back', 'black-back': 'black-front', 'pink-front': 'pink-back', 'pink-back': 'pink-front' };
@@ -69,7 +70,7 @@ export function mountMenuBackground(host) {
       };
       const pop = document.createElement('div');
       pop.className = 'mpop';
-      pop.textContent = 'BỐP!';
+      pop.textContent = t('card.pop');
       pop.style.left = `${x}px`;
       pop.style.top = `${y - 30}px`;
       layer.appendChild(pop);

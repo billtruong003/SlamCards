@@ -46,6 +46,29 @@ test('room limits: 5th player refused, joining a running match refused, codes ar
   } finally { srv.stop(); }
 });
 
+test('join errors carry a stable code for the client to translate', async () => {
+  const srv = await startServer();
+  try {
+    const ghost = await connect(srv.port);
+    ghost.send({ t: 'join', code: 'ZZZZ', name: 'X' });
+    const notFound = await ghost.next((m) => m.t === 'error');
+    assert.equal(notFound.code, 'notFound');
+    assert.ok(notFound.message, 'old clients still get a message');
+
+    const players = await lobby(srv.port, 4);
+    const fifth = await connect(srv.port);
+    fifth.send({ t: 'join', code: players[0].code, name: 'X' });
+    assert.equal((await fifth.next((m) => m.t === 'error')).code, 'full');
+
+    const [a] = await lobby(srv.port, 2);
+    a.send({ t: 'start' });
+    await a.waitState((s) => s.phase !== 'lobby');
+    const late = await connect(srv.port);
+    late.send({ t: 'join', code: a.code, name: 'Late' });
+    assert.equal((await late.next((m) => m.t === 'error')).code, 'inMatch');
+  } finally { srv.stop(); }
+});
+
 test('start needs 2 players; a second start is ignored; only the rps winner chooses', async () => {
   const srv = await startServer();
   try {

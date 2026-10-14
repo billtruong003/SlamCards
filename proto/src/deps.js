@@ -3,11 +3,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { toonize, outlineMaterial } from './toon.js';
 
 // Low-poly slipper models (art/blender/build_slippers_lowpoly.py); each player picks one in the lobby.
-export const DEPS = [
-  { id: 'dep_lao', label: 'Dép lào' },
-  { id: 'dep_to_ong', label: 'Tổ ong' },
-  { id: 'dep_le', label: 'Dép lê' },
-];
+// Display names are the locale keys dep.<id>.
+export const DEPS = [{ id: 'dep_lao' }, { id: 'dep_to_ong' }, { id: 'dep_le' }];
 export const DEFAULT_DEP = { black: 'dep_lao', pink: 'dep_le', blue: 'dep_to_ong', green: 'dep_lao' };
 const SCALE = 1.3;
 

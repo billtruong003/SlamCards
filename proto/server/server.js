@@ -528,10 +528,11 @@ function handle(ws, msg) {
     return;
   }
 
+  // Errors carry a `code` the client turns into its own language (error.<code>); `message` is for old clients.
   if (msg.t === 'join') {
     const room = rooms.get(String(msg.code || '').toUpperCase());
     if (!room) {
-      send(ws, { t: 'error', message: 'Không thấy phòng này đâu!' });
+      send(ws, { t: 'error', code: 'notFound', message: 'Không thấy phòng này đâu!' });
       return;
     }
     const existing = Object.keys(room.players).find((s) => msg.token && room.players[s].token === msg.token);
@@ -540,12 +541,12 @@ function handle(ws, msg) {
       return;
     }
     if (room.phase !== 'lobby') {
-      send(ws, { t: 'error', message: 'Phòng đang đánh dở, tạo phòng mới đi!' });
+      send(ws, { t: 'error', code: 'inMatch', message: 'Phòng đang đánh dở, tạo phòng mới đi!' });
       return;
     }
     const seat = SEATS.find((s) => !room.players[s]);
     if (!seat || Object.keys(room.players).length >= MAX_PLAYERS) {
-      send(ws, { t: 'error', message: 'Phòng đủ 4 đứa rồi, vào không được!' });
+      send(ws, { t: 'error', code: 'full', message: 'Phòng đủ 4 đứa rồi, vào không được!' });
       return;
     }
     const player = { token: crypto.randomUUID(), name: uniqueName(room, cleanName(msg.name)), dep: cleanDep(msg.dep, seat) };
