@@ -57,8 +57,8 @@ Danh sách này đã gộp việc của session "Kết nối VPS (fork)" (bàn g
 
 Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state established '( sport = :8097 )' | wc -l` gần 0. Bản sao config VPS: `/root/vps-maintenance-20261014/`.
 
-- [ ] **DEP-01 · Deploy nhánh `fix/stability-and-ftue`** sau khi xong P0 + OPS-01.
-- [ ] **G7** · pm2 giới hạn RAM: `pm2 restart slam-cards --max-memory-restart 400M --update-env && pm2 save`.
+- [x] **DEP-01 · Deploy nhánh `fix/stability-and-ftue`** (14/10, kèm 10 ngôn ngữ; deploy bằng `SLAM_HOST=root@14.225.255.73 bash deploy.sh` vì chưa có alias). Bản cũ sao lưu ở VPS `/root/slam-cards-backup-20261014-80d3c9c.tgz`.
+- [x] **G7** · (xong 14/10) pm2 giới hạn RAM: `pm2 restart slam-cards --max-memory-restart 400M --update-env && pm2 save`.
 - [ ] **V1** · Ưu tiên CPU cho game: `/usr/local/bin/vps-priority` (cron 5 phút) `renice 10` các tiến trình `lucy-*`; thêm `nice -n 15` vào dòng `cron_dream.sh` trong crontab root. Bill đã duyệt.
 - [ ] **V3** · Reboot giờ vắng để nạp thư viện vừa cập nhật.
 - [ ] **V2** · Gửi tin Telegram thử (`vps-diskguard --test`). Chỉ khi Bill cho phép.
@@ -80,6 +80,9 @@ Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state establishe
   - Sửa: ghế đang mất kết nối thì rút timer lượt xuống khoảng 8 giây.
 
 ## P2
+
+- [x] **QA-09 · Mạng chậm: thẻ "Game tải lâu quá" hiện lúc 20 giây rồi nằm đè menu dù game đã tải xong, che nút Vào phòng.** Gặp trên bản live (iPhone 13 giả lập, tải 22 giây). Sửa: ẩn thẻ khi game tải xong. Kiểm tra: `node qa/slow-boot.mjs`.
+- [ ] **UX-13 · Màn kết ván: dòng điểm "Bill 1 · Tèo 0" bị lá bài thắng và nhãn ▲ NGỬA của nó che.** Gặp trên bản live (`qa/out/match/04-round-end.png`). Sửa: nhãn bài nằm dưới lớp overlay, hoặc dời dòng điểm khỏi giữa màn.
 
 - [ ] **QA-08 · Trình duyệt không có Web Audio (hoặc tạo AudioContext lỗi) thì cả game không chạy, chỉ hiện "Game tải lâu quá".** `src/audio.js` tạo `AudioContext` ngay khi nạp module, lỗi là chết luôn. Đã chạy thử trên WebKit (Playwright trên Windows không có Web Audio). iOS Safari thật có Web Audio nên ít người gặp, nhưng âm thanh là phần phụ, không được làm sập game.
   - Sửa: bọc việc tạo `AudioContext` trong try/catch, không có thì các bus âm thanh thành no-op, game vẫn chơi được không tiếng.
