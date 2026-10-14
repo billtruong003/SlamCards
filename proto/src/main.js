@@ -79,6 +79,9 @@ try {
   throw err;
 }
 window.slamBooted = true;
+// On a slow connection the 20 s "still loading?" card (index.html) can show just before boot
+// finishes; it would then sit on top of the menu and block it.
+$('boot-fail').hidden = true;
 const visuals = new Visuals(world.scene);
 const MENU_CARDS = {
   black: { p: [-4.5, 0.008, 0], q: [0, 0, 1, 0] },

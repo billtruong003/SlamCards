@@ -10,7 +10,8 @@ import path from 'node:path';
 
 const require = createRequire(new URL('../proto/package.json', import.meta.url));
 const WebSocket = require('ws');
-const BASE = 'http://localhost:8097';
+// SLAM_BASE=https://billthedevstudio.io.vn/slam-cards to test the live server.
+const BASE = process.env.SLAM_BASE || 'http://localhost:8097';
 const LANG = process.env.SLAM_LANG || '';
 const OUT = path.join(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Z]:)/, '$1')), 'out', LANG);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
