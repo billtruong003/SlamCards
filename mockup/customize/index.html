@@ -2,7 +2,7 @@
 <title>Dép Lào: Tủ đồ</title>
 <meta name="description" content="Mockup lá bài có pet bên trong (stencil buffer), chọn dép + màu, và phòng chờ có Sẵn sàng.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 /* Layout: game-style workbench — 3D stage on the left, customise panel on the right, notes below.
    Single deliberate look (the game's cream paper + ink outline), so no dark variant. */
@@ -198,10 +198,10 @@ const PETS = [
   ['fish', 'Cá'], ['parrot', 'Vẹt'], ['beaver', 'Hải ly'], ['hog', 'Heo rừng'], ['polar', 'Gấu Bắc cực'], ['caterpillar', 'Sâu'],
 ];
 const WAYS = [
-  { id: 'hong', name: 'Hồng dâu', color: '#ff5c9d', dark: '#c2306b', suit: '♥', pattern: 'stripes', room: '#ffd6e6', floor: '#ffb3cf', night: '#3a2350' },
-  { id: 'xanh', name: 'Xanh biển', color: '#2fa8ff', dark: '#1a6fb3', suit: '◆', pattern: 'dots', room: '#d3ecff', floor: '#a7d6ff', night: '#1d2a55' },
-  { id: 'vang', name: 'Vàng nắng', color: '#ffc93c', dark: '#c98e00', suit: '★', pattern: 'zigzag', room: '#fff2c4', floor: '#ffe08a', night: '#3b2f4f' },
-  { id: 'la', name: 'Xanh lá mạ', color: '#3ccf6e', dark: '#1f8f45', suit: '♣', pattern: 'checker', room: '#d6f7e0', floor: '#a9ebbd', night: '#1f3b3a' },
+  { id: 'hong', short: 'HỒNG', name: 'Hồng dâu', color: '#ff5c9d', dark: '#c2306b', suit: '♥', pattern: 'stripes', room: '#ffd6e6', floor: '#ffb3cf', night: '#3a2350' },
+  { id: 'xanh', short: 'XANH', name: 'Xanh biển', color: '#2fa8ff', dark: '#1a6fb3', suit: '◆', pattern: 'dots', room: '#d3ecff', floor: '#a7d6ff', night: '#1d2a55' },
+  { id: 'vang', short: 'VÀNG', name: 'Vàng nắng', color: '#ffc93c', dark: '#c98e00', suit: '★', pattern: 'zigzag', room: '#fff2c4', floor: '#ffe08a', night: '#3b2f4f' },
+  { id: 'la', short: 'LÁ', name: 'Xanh lá mạ', color: '#3ccf6e', dark: '#1f8f45', suit: '♣', pattern: 'checker', room: '#d6f7e0', floor: '#a9ebbd', night: '#1f3b3a' },
 ];
 const SLIPPERS = {
   dep_lao: { name: 'Dép lào', slots: [{ cell: [3, 8], label: 'Mặt đế', def: '#fffaf0' }, { cell: [1, 14], label: 'Quai + viền đế', def: '#4f8ff0' }] },
@@ -210,7 +210,7 @@ const SLIPPERS = {
 };
 const DEP_COLORS = ['#fffaf0', '#2a1418', '#ff5c9d', '#ff8a3d', '#ffc93c', '#3ccf6e', '#2fa8ff', '#4f8ff0', '#9b6bff', '#d93a3a', '#7a3d1a', '#6cc3e8'];
 
-const CARD_W = 1, CARD_H = 1.478, THICK = 0.016;
+const CARD_W = 1, CARD_H = 1.478, THICK = 0.016, CARD_CORNER = 0.085;
 const WIN = { cx: 0, cy: 0.13, hw: 0.38, hh: 0.47, r: 0.07 };
 const PORT = { cx: 0, cy: 0.04, r: 0.3 };
 const REF_FRONT = 1, REF_BACK = 2;
@@ -255,7 +255,7 @@ function roundRect(shape, cx, cy, hw, hh, r, hole = false) {
   if (hole) shape.holes.push(p);
   return p;
 }
-const outerShape = () => { const s = new THREE.Shape(); roundRect(s, 0, 0, CARD_W / 2, CARD_H / 2, 0.085); return s; };
+const outerShape = () => { const s = new THREE.Shape(); roundRect(s, 0, 0, CARD_W / 2, CARD_H / 2, CARD_CORNER); return s; };
 function planarUV(geo) {
   const pos = geo.attributes.position, uv = new Float32Array(pos.count * 2);
   for (let i = 0; i < pos.count; i++) { uv[i * 2] = pos.getX(i) / CARD_W + 0.5; uv[i * 2 + 1] = pos.getY(i) / CARD_H + 0.5; }
@@ -263,53 +263,97 @@ function planarUV(geo) {
   return geo;
 }
 
-// ---------- canvas art for the card faces ----------
-const S = 512, SH = Math.round(S * CARD_H);
-const px = (x) => (x / CARD_W + 0.5) * S, py = (y) => (0.5 - y / CARD_H) * SH;
+// ---------- canvas art for the card faces (BillTheDev banner look) ----------
+// Drawn in a 512-wide space (1 card unit = 512 px) and stored at 2x. The canvas starts all ink and the
+// dark body is clipped to the SAME corner radius as the mesh, so the outline can never spill past an edge.
+const S = 1024, SH = Math.round(S * CARD_H);
+const K = S / 512, BH = SH / K;
+const bx = (x) => (x / CARD_W + 0.5) * 512, by = (y) => (0.5 - y / CARD_H) * BH;
+const CORNER = CARD_CORNER * 512, BORDER = 9;
+const DARK = '#121216', INK = '#2a1418', TEXT = '#f5f5f5', MUTED = '#9a9aa6', FAINT = '#5d5d68';
+const MONO = '"JetBrains Mono", ui-monospace, monospace', DISPLAY = '"Be Vietnam Pro", system-ui, sans-serif';
+let foxImg = null;
 function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
-function patternFill(ctx, way, x, y, w, h) {
-  ctx.save(); rr(ctx, x, y, w, h, 34); ctx.clip();
-  ctx.fillStyle = way.color; ctx.fillRect(x, y, w, h);
-  ctx.fillStyle = 'rgba(255,255,255,.28)'; ctx.strokeStyle = 'rgba(255,255,255,.28)'; ctx.lineWidth = 14;
-  if (way.pattern === 'stripes') for (let i = -h; i < w + h; i += 46) { ctx.beginPath(); ctx.moveTo(x + i, y); ctx.lineTo(x + i - h, y + h); ctx.stroke(); }
-  if (way.pattern === 'dots') for (let j = 0; j < h; j += 40) for (let i = (j / 40) % 2 ? 20 : 0; i < w; i += 40) { ctx.beginPath(); ctx.arc(x + i, y + j, 8, 0, 7); ctx.fill(); }
-  if (way.pattern === 'zigzag') for (let j = 10; j < h; j += 44) { ctx.beginPath(); for (let i = 0; i <= w; i += 24) ctx.lineTo(x + i, y + j + ((i / 24) % 2 ? 14 : -14)); ctx.stroke(); }
-  if (way.pattern === 'checker') for (let j = 0; j < h; j += 36) for (let i = ((j / 36) % 2) * 36; i < w; i += 72) ctx.fillRect(x + i, y + j, 36, 36);
-  ctx.restore();
+function cardCanvas() {
+  const c = document.createElement('canvas'); c.width = S; c.height = SH;
+  const g = c.getContext('2d');
+  g.scale(K, K);
+  g.fillStyle = INK; g.fillRect(0, 0, 512, BH);
+  g.save(); rr(g, BORDER, BORDER, 512 - 2 * BORDER, BH - 2 * BORDER, CORNER - BORDER); g.clip();
+  g.fillStyle = DARK; g.fillRect(0, 0, 512, BH);
+  return { c, g };
 }
-function inkRim(ctx) { ctx.lineWidth = 14; ctx.strokeStyle = '#2a1418'; rr(ctx, 7, 7, S - 14, SH - 14, 40); ctx.stroke(); }
-function frontTexture(way, petName) {
-  const c = document.createElement('canvas'); c.width = S; c.height = SH; const g = c.getContext('2d');
-  patternFill(g, way, 0, 0, S, SH);
-  g.fillStyle = '#fffbf0'; rr(g, 26, 26, S - 52, SH - 52, 30); g.fill();
-  g.fillStyle = way.color; rr(g, 40, 40, S - 80, SH - 80, 24); g.fill();
-  // window rim (the hole itself is cut in the mesh)
-  g.lineWidth = 12; g.strokeStyle = '#2a1418';
-  rr(g, px(WIN.cx - WIN.hw) - 4, py(WIN.cy + WIN.hh) - 4, (WIN.hw * 2 / CARD_W) * S + 8, (WIN.hh * 2 / CARD_H) * SH + 8, 40); g.stroke();
-  // name plate
-  const ny = py(WIN.cy - WIN.hh) + 26, nh = 92;
-  g.fillStyle = '#fffbf0'; rr(g, 70, ny, S - 140, nh, 22); g.fill(); g.lineWidth = 8; g.stroke();
-  g.fillStyle = '#2a1418'; g.font = '800 54px "Baloo 2", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText(petName.toUpperCase(), S / 2, ny + nh / 2 + 4);
-  // corner suits
-  g.font = '800 58px "Baloo 2", sans-serif'; g.fillStyle = '#fffbf0'; g.strokeStyle = '#2a1418'; g.lineWidth = 7;
-  for (const [x, y] of [[68, 78], [S - 68, SH - 70]]) { g.strokeText(way.suit, x, y); g.fillText(way.suit, x, y); }
-  inkRim(g);
+function text(g, str, x, y, font, color, spacing = 0, align = 'left') {
+  g.font = font; g.fillStyle = color; g.textAlign = align; g.textBaseline = 'alphabetic';
+  g.letterSpacing = `${spacing}px`; g.fillText(str, x, y); g.letterSpacing = '0px';
+}
+function fitFont(g, str, maxW, size, weight, family) {
+  let s = size;
+  do { g.font = `${weight} ${s}px ${family}`; s -= 2; } while (g.measureText(str).width > maxW && s > 18);
+  return g.font;
+}
+function scanlines(g, x, y, w, h, color, alpha, gap = 14, band = 6) {
+  g.save(); g.globalAlpha = alpha; g.fillStyle = color;
+  for (let j = y; j < y + h; j += gap) g.fillRect(x, j, w, band);
+  g.restore();
+}
+function frontTexture(way, petName, depName) {
+  const { c, g } = cardCanvas();
+  const wx = bx(WIN.cx - WIN.hw), wy = by(WIN.cy + WIN.hh), ww = WIN.hw * 2 * 512, wh = WIN.hh * 2 * 512, wr = WIN.r * 512;
+  // accent hairline + window frame
+  g.lineWidth = 2; g.strokeStyle = way.color; rr(g, 20, 20, 472, BH - 40, CORNER - 20); g.stroke();
+  g.lineWidth = 8; g.strokeStyle = INK; rr(g, wx - 4, wy - 4, ww + 8, wh + 8, wr + 4); g.stroke();
+  g.lineWidth = 2; g.strokeStyle = way.color; rr(g, wx - 11, wy - 11, ww + 22, wh + 22, wr + 11); g.stroke();
+  // banner text: mono kicker, huge name, mono subline
+  let y = wy + wh + 46;
+  g.fillStyle = way.color; g.beginPath(); g.arc(wx + 6, y - 6, 5.5, 0, 7); g.fill();
+  text(g, 'ĐANG THỨC', wx + 20, y, `700 16px ${MONO}`, way.color, 3);
+  y += 60;
+  const name = petName.toUpperCase();
+  g.fillStyle = TEXT; g.font = fitFont(g, name, ww, 60, 900, DISPLAY); g.textAlign = 'left'; g.fillText(name, wx - 2, y);
+  y += 32;
+  text(g, `BÀI ${way.short} · ${depName.toUpperCase()}`, wx, y, `500 14px ${MONO}`, MUTED, 2);
+  // footer: studio mark
+  const fy = BH - 32;
+  text(g, 'BILL THE DEV', wx, fy, `700 12px ${MONO}`, FAINT, 3);
+  if (foxImg) g.drawImage(foxImg, wx + ww - 28, fy - 23, 30, 30);
+  g.restore();
   return toTex(c);
 }
 function backTexture(way) {
-  const c = document.createElement('canvas'); c.width = S; c.height = SH; const g = c.getContext('2d');
-  patternFill(g, way, 0, 0, S, SH);
-  g.lineWidth = 10; g.strokeStyle = '#fffbf0'; rr(g, 34, 34, S - 68, SH - 68, 28); g.stroke();
-  // porthole ring
-  const cx = px(PORT.cx), cy = py(PORT.cy), r = (PORT.r / CARD_W) * S;
-  g.lineWidth = 26; g.strokeStyle = '#fffbf0'; g.beginPath(); g.arc(cx, cy, r + 10, 0, 7); g.stroke();
-  g.lineWidth = 9; g.strokeStyle = '#2a1418'; g.beginPath(); g.arc(cx, cy, r + 2, 0, 7); g.stroke(); g.beginPath(); g.arc(cx, cy, r + 24, 0, 7); g.stroke();
-  g.font = '800 70px "Baloo 2", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fffbf0'; g.strokeStyle = '#2a1418'; g.lineWidth = 8;
-  g.strokeText(way.suit, S / 2, SH - 110); g.fillText(way.suit, S / 2, SH - 110);
-  g.font = '800 34px "Baloo 2", sans-serif'; g.strokeText('DÉP LÀO', S / 2, 120); g.fillText('DÉP LÀO', S / 2, 120);
-  inkRim(g);
+  const { c, g } = cardCanvas();
+  const cx = bx(PORT.cx), cy = by(PORT.cy), r = PORT.r * 512;
+  // seat-colour scanlines (the hero-art bands of the studio banner), fading out around the porthole
+  scanlines(g, 0, 0, 512, BH, way.color, 0.92);
+  const fade = g.createRadialGradient(cx, cy, r * 0.9, cx, cy, r * 2.1);
+  fade.addColorStop(0, 'rgba(18,18,22,0.95)'); fade.addColorStop(1, 'rgba(18,18,22,0)');
+  g.fillStyle = fade; g.fillRect(0, 0, 512, BH);
+  g.lineWidth = 2; g.strokeStyle = way.color; rr(g, 20, 20, 472, BH - 40, CORNER - 20); g.stroke();
+  // porthole frame
+  g.lineWidth = 8; g.strokeStyle = INK; g.beginPath(); g.arc(cx, cy, r + 4, 0, 7); g.stroke();
+  g.lineWidth = 2; g.strokeStyle = way.color; g.beginPath(); g.arc(cx, cy, r + 13, 0, 7); g.stroke();
+  // top pill: studio mark
+  g.fillStyle = DARK; rr(g, 156, 42, 200, 38, 19); g.fill(); g.lineWidth = 1.5; g.strokeStyle = '#34343c'; g.stroke();
+  g.fillStyle = way.color; g.beginPath(); g.arc(178, 61, 5, 0, 7); g.fill();
+  text(g, 'BILL THE DEV', 192, 66, `700 13px ${MONO}`, TEXT, 2.5);
+  // bottom: game title in the banner style
+  const ty = BH - 92;
+  g.fillStyle = DARK; g.globalAlpha = 0.8; rr(g, 70, ty - 58, 372, 104, 16); g.fill(); g.globalAlpha = 1;
+  text(g, 'DÉP LÀO', 256, ty, `900 54px ${DISPLAY}`, TEXT, 0, 'center');
+  text(g, `TUỔI THƠ · ĐANG NGỦ`, 256, ty + 30, `700 13px ${MONO}`, way.color, 3, 'center');
+  g.restore();
   return toTex(c);
+}
+// Thin dark bands over the window, like the studio's scanlined hero art.
+let scanTexture = null;
+function windowScanlines() {
+  if (!scanTexture) {
+    const c = document.createElement('canvas'); c.width = 4; c.height = 8; const g = c.getContext('2d');
+    g.fillStyle = 'rgba(10,10,14,0.16)'; g.fillRect(0, 0, 4, 3);
+    scanTexture = new THREE.CanvasTexture(c); scanTexture.wrapS = scanTexture.wrapT = THREE.RepeatWrapping; scanTexture.repeat.set(1, 70);
+    scanTexture.magFilter = THREE.NearestFilter;
+  }
+  return scanTexture;
 }
 function toTex(c) { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; }
 function roomTexture(way, night) {
@@ -333,12 +377,12 @@ function buildCard() {
 
   // front face: frame with a window hole
   const fShape = outerShape(); roundRect(fShape, WIN.cx, WIN.cy, WIN.hw, WIN.hh, WIN.r, true);
-  const front = new THREE.Mesh(planarUV(new THREE.ShapeGeometry(fShape, 24)), toon({ map: frontTexture(way, petName) }));
+  const front = new THREE.Mesh(planarUV(new THREE.ShapeGeometry(fShape, 24)), new THREE.MeshBasicMaterial({ map: frontTexture(way, petName, SLIPPERS[state.dep].name) }));
   front.position.z = THICK / 2;
   // back face: frame with a round porthole, facing -z
   const bShape = outerShape(); const hole = new THREE.Path(); hole.absarc(PORT.cx, PORT.cy, PORT.r, 0, Math.PI * 2, true); bShape.holes.push(hole);
   const backGeo = planarUV(new THREE.ShapeGeometry(bShape, 48));
-  const back = new THREE.Mesh(backGeo, toon({ map: backTexture(way) }));
+  const back = new THREE.Mesh(backGeo, new THREE.MeshBasicMaterial({ map: backTexture(way) }));
   back.rotation.y = Math.PI; back.position.z = -THICK / 2;
   // edges only (extrude caps hidden): ink-coloured rim
   const edgeGeo = new THREE.ExtrudeGeometry(outerShape(), { depth: THICK, bevelEnabled: false, curveSegments: 24 });
@@ -350,6 +394,8 @@ function buildCard() {
   const wShape = new THREE.Shape(); roundRect(wShape, WIN.cx, WIN.cy, WIN.hw, WIN.hh, WIN.r);
   const frontMask = new THREE.Mesh(new THREE.ShapeGeometry(wShape, 24), maskMat(REF_FRONT));
   frontMask.position.z = THICK / 2; frontMask.renderOrder = 1;
+  const scan = new THREE.Mesh(new THREE.ShapeGeometry(wShape, 24), gated(new THREE.MeshBasicMaterial({ map: windowScanlines(), transparent: true, depthTest: false, depthWrite: false }), REF_FRONT));
+  scan.position.z = THICK / 2 + 0.0005; scan.renderOrder = 6;
   const pShape = new THREE.Shape(); pShape.absarc(PORT.cx, PORT.cy, PORT.r, 0, Math.PI * 2);
   const backMask = new THREE.Mesh(new THREE.ShapeGeometry(pShape, 48), maskMat(REF_BACK));
   backMask.rotation.y = Math.PI; backMask.position.z = -THICK / 2; backMask.renderOrder = 1;
@@ -370,7 +416,7 @@ function buildCard() {
   nfloor.rotation.x = -Math.PI / 2; nfloor.position.set(0, PORT.cy - 0.24, 0.45); nfloor.renderOrder = 2;
   night.add(nbox, nfloor);
 
-  Object.assign(cardParts, { front, back, edge, frontMask, backMask, room, night });
+  Object.assign(cardParts, { front, back, edge, frontMask, backMask, scan, room, night });
   for (const k of Object.keys(cardParts)) card.add(cardParts[k]);
   placePet();
   placeProp();
@@ -595,7 +641,7 @@ function renderPets(thumbs) {
 }
 function renderDepPanel() {
   $('depTypes').innerHTML = Object.entries(SLIPPERS).map(([id, s]) => `<button class="choice" aria-pressed="${id === state.dep}" data-dep="${id}">${s.name}</button>`).join('');
-  $('depTypes').querySelectorAll('[data-dep]').forEach((b) => b.onclick = () => { state.dep = b.dataset.dep; renderDepPanel(); placeSlipper(); });
+  $('depTypes').querySelectorAll('[data-dep]').forEach((b) => b.onclick = () => { state.dep = b.dataset.dep; renderDepPanel(); placeSlipper(); buildCard(); });
   const slots = SLIPPERS[state.dep].slots;
   $('slots').innerHTML = slots.map((s, i) => `<div class="slot"><b>${s.label}</b><div class="swatches">${DEP_COLORS.map((c) => `<button class="sw" style="background:${c}" aria-label="${s.label} ${c}" aria-pressed="${state.colors[state.dep][i] === c}" data-slot="${i}" data-c="${c}"></button>`).join('')}</div></div>`).join('');
   $('slots').querySelectorAll('[data-slot]').forEach((b) => b.onclick = () => {
@@ -625,6 +671,8 @@ function renderLobbies(thumbs) {
 
 // ---------- boot ----------
 await document.fonts.ready;
+await Promise.all([`900 60px "Be Vietnam Pro"`, `700 16px "JetBrains Mono"`, `500 14px "JetBrains Mono"`].map((f) => document.fonts.load(f, 'ĐANG THỨC Ấ')));
+foxImg = await new Promise((resolve) => { const i = new Image(); i.onload = () => resolve(i); i.onerror = () => resolve(null); i.src = 'fox_head.png'; });
 resize();
 buildCard();
 await placeSlipper();
