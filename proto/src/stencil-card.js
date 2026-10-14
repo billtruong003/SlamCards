@@ -1,0 +1,468 @@
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { CARD_HALF_W, CARD_HALF_D, CARD_HALF_T } from './rules.js';
+import { toonGradient } from './toon.js';
+import { depModel } from './deps.js';
+
+// Prototype (milestone 1, `?stencil`): a card whose face-up side is a window into a little 3D
+// space with the player's pet, drawn with the stencil buffer so it shows through the card even
+// though that space sits "under" the table.
+//
+// Per card, in this order (renderOrder, cards sorted low to high every frame):
+//   1. the card itself (frame with a hole, back, edge) writes depth as usual
+//   2. MASK   the window, colour off: writes this card's stencil code where it is visible
+//   3. RESET  the window again where stencil == code: pushes depth to the far plane, so the
+//             table no longer hides what lies behind the window
+//   4. ROOM   the space, stage, pet and slipper, only where stencil == code
+//   5. RESTORE the window where stencil == code: writes the card surface's depth back, so
+//             cards and slippers drawn later sort against the card, not the room behind it
+// The window mask is front-face only, so a face-down card never opens its window.
+//
+// Geometry is built in "card space" (the mockup's): x across, y along the card, z out of the
+// face. A child group turns that onto the physics body, whose face points up along +y.
+
+const W = CARD_HALF_W * 2;
+const H = CARD_HALF_D * 2;
+const CORNER = 0.085;
+const WIN = { cx: 0, cy: 0.155, hw: 0.38, hh: 0.445, r: 0.07 };
+const STAGE_Y = -0.2; // floor of the stage, in the stage's own (camera-facing) space
+const STAGE_TILT = 0.25; // how far the stage tips its top toward the camera (a three-quarter view)
+const BASE_ORDER = 100;
+
+// Fixed looks until the wardrobe exists (milestone 3).
+const LOOKS = {
+  black: { color: '#ff5c9d', room: '#ffd6e6', floor: '#ffb3cf', pet: 'cat', petName: 'MÈO' },
+  pink: { color: '#2fa8ff', room: '#d3ecff', floor: '#a7d6ff', pet: 'panda', petName: 'GẤU TRÚC' },
+  blue: { color: '#ffc93c', room: '#fff2c4', floor: '#ffe08a', pet: 'chick', petName: 'GÀ CON' },
+  green: { color: '#3ccf6e', room: '#d6f7e0', floor: '#a9ebbd', pet: 'fox', petName: 'CÁO' },
+};
+
+// ---------- shared helpers ----------
+
+const toon = (opts) => new THREE.MeshToonMaterial({ gradientMap: toonGradient(), ...opts });
+const gate = (material, ref) => Object.assign(material, {
+  stencilWrite: true, stencilRef: ref, stencilFunc: THREE.EqualStencilFunc,
+  stencilFail: THREE.KeepStencilOp, stencilZFail: THREE.KeepStencilOp, stencilZPass: THREE.KeepStencilOp,
+});
+
+// Outline hull along normals averaged per position, so flat-shaded cube pets keep one closed line.
+function bakeSmoothNormals(geo) {
+  if (geo.attributes.smoothNormal) return geo;
+  if (!geo.attributes.normal) geo.computeVertexNormals();
+  const pos = geo.attributes.position;
+  const nor = geo.attributes.normal;
+  const n = new THREE.Vector3();
+  const key = (a, i) => `${a.getX(i).toFixed(3)},${a.getY(i).toFixed(3)},${a.getZ(i).toFixed(3)}`;
+  const sums = new Map();
+  for (let i = 0; i < pos.count; i++) {
+    const k = key(pos, i);
+    const nk = key(nor, i);
+    let e = sums.get(k);
+    if (!e) sums.set(k, e = { v: new THREE.Vector3(), seen: new Set() });
+    if (!e.seen.has(nk)) { e.seen.add(nk); e.v.add(n.fromBufferAttribute(nor, i)); }
+  }
+  const out = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const v = sums.get(key(pos, i)).v;
+    n.copy(v.lengthSq() > 1e-8 ? v : n.fromBufferAttribute(nor, i)).normalize().toArray(out, i * 3);
+  }
+  geo.setAttribute('smoothNormal', new THREE.BufferAttribute(out, 3));
+  return geo;
+}
+function outline(width) {
+  const m = new THREE.MeshBasicMaterial({ color: 0x2a1418, side: THREE.BackSide });
+  const uniform = { value: width };
+  m.onBeforeCompile = (s) => {
+    s.uniforms.outlineWidth = uniform;
+    s.vertexShader = `attribute vec3 smoothNormal;\nuniform float outlineWidth;\n${s.vertexShader}`
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(smoothNormal) * outlineWidth;')
+      .replace('#include <project_vertex>', '#include <project_vertex>\n gl_Position.z += 0.0006 * gl_Position.w;');
+  };
+  return m;
+}
+
+function roundRect(path, cx, cy, hw, hh, r) {
+  path.moveTo(cx - hw + r, cy - hh);
+  path.lineTo(cx + hw - r, cy - hh); path.quadraticCurveTo(cx + hw, cy - hh, cx + hw, cy - hh + r);
+  path.lineTo(cx + hw, cy + hh - r); path.quadraticCurveTo(cx + hw, cy + hh, cx + hw - r, cy + hh);
+  path.lineTo(cx - hw + r, cy + hh); path.quadraticCurveTo(cx - hw, cy + hh, cx - hw, cy + hh - r);
+  path.lineTo(cx - hw, cy - hh + r); path.quadraticCurveTo(cx - hw, cy - hh, cx - hw + r, cy - hh);
+  return path;
+}
+function planarUV(geo) {
+  const pos = geo.attributes.position;
+  const uv = new Float32Array(pos.count * 2);
+  for (let i = 0; i < pos.count; i++) { uv[i * 2] = pos.getX(i) / W + 0.5; uv[i * 2 + 1] = pos.getY(i) / H + 0.5; }
+  geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  return geo;
+}
+const outerShape = () => roundRect(new THREE.Shape(), 0, 0, W / 2, H / 2, CORNER);
+const windowShape = () => roundRect(new THREE.Shape(), WIN.cx, WIN.cy, WIN.hw, WIN.hh, WIN.r);
+
+// ---------- card faces, drawn on canvases (same art as mockup/customize) ----------
+
+const INK = '#2a1418';
+const CREAM = '#fffbf0';
+const AMBER = '#ffb84d';
+const FONT = '"Baloo 2", system-ui, sans-serif';
+const S = 1024;
+const SH = Math.round(S * H);
+const K = S / 512;
+const BH = SH / K;
+const bx = (x) => (x / W + 0.5) * 512;
+const by = (y) => (0.5 - y / H) * BH;
+const marks = {};
+const loadImg = (src) => new Promise((resolve) => { const i = new Image(); i.onload = () => resolve(i); i.onerror = () => resolve(null); i.src = src; });
+const marksReady = Promise.all([loadImg('brand/bill-the-dev-mark.svg'), loadImg('brand/bill-the-dev-mark-white.svg')])
+  .then(([color, white]) => Object.assign(marks, { color, white }));
+
+function rr(g, x, y, w, h, r) { g.beginPath(); g.roundRect(x, y, w, h, r); }
+function cardCanvas(fill) {
+  const c = document.createElement('canvas');
+  c.width = S; c.height = SH;
+  const g = c.getContext('2d');
+  g.scale(K, K);
+  g.fillStyle = INK; g.fillRect(0, 0, 512, BH);
+  g.save(); rr(g, 10, 10, 492, BH - 20, CORNER * 512 - 10); g.clip();
+  g.fillStyle = fill; g.fillRect(0, 0, 512, BH);
+  return { c, g };
+}
+function stamp(g, str, x, y, size, fill = CREAM, align = 'center', maxW = 999) {
+  let s = size;
+  do { g.font = `800 ${s}px ${FONT}`; s -= 2; } while (g.measureText(str).width > maxW && s > 18);
+  g.textAlign = align; g.textBaseline = 'alphabetic'; g.lineJoin = 'round';
+  g.strokeStyle = INK; g.lineWidth = Math.max(6, s * 0.16); g.fillStyle = INK;
+  g.strokeText(str, x, y + s * 0.09); g.fillText(str, x, y + s * 0.09);
+  g.strokeText(str, x, y); g.fillStyle = fill; g.fillText(str, x, y);
+}
+function toTex(c) { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; }
+
+function frontTexture(look, depName) {
+  const { c, g } = cardCanvas(look.color);
+  const wx = bx(WIN.cx - WIN.hw); const wy = by(WIN.cy + WIN.hh);
+  const ww = WIN.hw * 2 * 512; const wh = WIN.hh * 2 * 512; const wr = WIN.r * 512;
+  const inset = 24;
+  g.fillStyle = CREAM; rr(g, inset, inset, 512 - 2 * inset, BH - 2 * inset, CORNER * 512 - inset); g.fill();
+  g.lineWidth = 5; g.strokeStyle = INK; g.stroke();
+  g.lineWidth = 9; rr(g, wx - 4.5, wy - 4.5, ww + 9, wh + 9, wr + 4.5); g.stroke();
+  const ry = wy + wh + 58; const rw = ww - 10; const rh = 64;
+  g.fillStyle = look.color; rr(g, 256 - rw / 2, ry - rh / 2 + 4, rw, rh, 18); g.fill();
+  g.lineWidth = 6; g.stroke();
+  stamp(g, look.petName, 256, ry + 16, 42, CREAM, 'center', rw - 30);
+  const cy = ry + 70;
+  g.font = `800 19px ${FONT}`;
+  const label = depName.toUpperCase();
+  const cw = g.measureText(label).width + 52;
+  const cx0 = 256 - 22;
+  g.fillStyle = '#fff'; rr(g, cx0 - cw / 2, cy - 19, cw, 36, 18); g.fill(); g.lineWidth = 4; g.stroke();
+  g.fillStyle = look.color; g.beginPath(); g.arc(cx0 - cw / 2 + 20, cy - 1, 7, 0, 7); g.fill(); g.lineWidth = 2.5; g.stroke();
+  g.fillStyle = INK; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(label, cx0 - cw / 2 + 34, cy + 1);
+  if (marks.color) g.drawImage(marks.color, cx0 + cw / 2 + 8, cy - 20, 38, 38);
+  g.restore();
+  return toTex(c);
+}
+function backTexture(look) {
+  const { c, g } = cardCanvas(look.color);
+  if (marks.white) {
+    g.save(); g.globalAlpha = 0.24;
+    for (let row = 0, y = -10; y < BH + 40; row++, y += 74) {
+      for (let col = 0, x = (row % 2) * 44 - 20; x < 540; col++, x += 88) {
+        g.save(); g.translate(x + 28, y + 28); g.rotate(((row + col) % 2 ? 1 : -1) * 0.22); g.drawImage(marks.white, -26, -26, 52, 52); g.restore();
+      }
+    }
+    g.restore();
+  }
+  g.lineWidth = 7; g.strokeStyle = CREAM; rr(g, 26, 26, 460, BH - 52, CORNER * 512 - 26); g.stroke();
+  const ms = 250; const my = BH / 2 - 50;
+  if (marks.color) g.drawImage(marks.color, 256 - ms / 2, my - ms / 2, ms, ms);
+  const ty = my + ms / 2 + 56; const fs = 54;
+  g.font = `800 ${fs}px ${FONT}`;
+  const parts = [['Bill', '#ffffff'], ['The', '#c9c3bf'], ['Dev', AMBER]];
+  const gap = g.measureText(' ').width;
+  const widths = parts.map(([s]) => g.measureText(s).width);
+  let x = 256 - (widths.reduce((a, b) => a + b) + gap * 2) / 2;
+  parts.forEach(([s, col], i) => { stamp(g, s, x, ty, fs, col, 'left'); x += widths[i] + gap; });
+  g.restore();
+  return toTex(c);
+}
+
+// ---------- the space behind the window (three layers, after Minions Art's UI background) ----------
+
+export const spaceTime = { value: 0 };
+function spaceMaterial(look) {
+  const c = (h) => new THREE.Color(h);
+  return new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    uniforms: {
+      uTime: spaceTime,
+      uBgA: { value: c(look.room) }, uBgB: { value: c(look.room).lerp(c(CREAM), 0.6) },
+      uDot: { value: c(look.color).lerp(c(CREAM), 0.35) },
+      uC0: { value: c(look.color).lerp(c(CREAM), 0.55) }, uC1: { value: c(CREAM) },
+      uC2: { value: c('#ffe2b8') }, uC3: { value: c(look.room).lerp(c(look.color), 0.25) },
+    },
+    vertexShader: `
+      varying vec3 vPos; varying vec3 vCam;
+      void main() {
+        vPos = position;
+        vCam = (inverse(modelMatrix) * vec4(cameraPosition, 1.0)).xyz;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform float uTime; uniform vec3 uBgA, uBgB, uDot, uC0, uC1, uC2, uC3;
+      varying vec3 vPos; varying vec3 vCam;
+      mat2 rot(float a) { float s = sin(a), c = cos(a); return mat2(c, -s, s, c); }
+      void main() {
+        vec3 d = normalize(vPos - vCam);
+        vec2 uv = (vCam + d * ((-1.0 - vCam.z) / min(d.z, -0.05))).xy;
+        vec2 bu = rot(0.4 + uTime * 0.02) * (uv * 5.0) + vec2(uTime * 0.12, uTime * 0.05);
+        float checker = smoothstep(-0.06, 0.06, sin(bu.x * 3.14159) * sin(bu.y * 3.14159));
+        vec3 col = mix(uBgA, uBgB, checker * 0.55 + 0.2);
+        vec2 mu = rot(-0.5) * (uv * 3.4) + vec2(-uTime * 0.08, uTime * 0.1);
+        float dots = 1.0 - smoothstep(0.2, 0.26, length(fract(mu) - 0.5));
+        float fade = clamp((rot(0.6 + uTime * 0.15) * uv).y * 0.9 + 0.55, 0.0, 1.0);
+        float mask = smoothstep(0.3, 0.45, dots * fade * mix(1.0, checker, 0.25));
+        col = mix(col, uDot, mask * 0.85);
+        vec2 t = clamp(rot(0.3) * (uv - vec2(0.0, 0.15)) * 1.1 + 0.5, 0.0, 1.0);
+        vec3 grad = mix(mix(uC2, uC3, t.x), mix(uC0, uC1, t.x), t.y);
+        col = mix(col, max(col, grad), 0.55);
+        gl_FragColor = vec4(col, 1.0);
+        #include <colorspace_fragment>
+      }`,
+  });
+}
+
+// ---------- window passes ----------
+
+const maskMaterial = (ref) => new THREE.MeshBasicMaterial({
+  colorWrite: false, depthWrite: false,
+  stencilWrite: true, stencilRef: ref, stencilFunc: THREE.AlwaysStencilFunc, stencilZPass: THREE.ReplaceStencilOp,
+});
+// Depth-only pass over the window where stencil == ref: `far` pushes depth to the back of the
+// view (so the room behind the window can draw), otherwise it writes the card surface back.
+function depthMaterial(ref, far) {
+  return gate(new THREE.ShaderMaterial({
+    colorWrite: false,
+    depthWrite: true,
+    depthFunc: THREE.AlwaysDepth,
+    vertexShader: 'void main() { gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: far
+      ? 'void main() { gl_FragColor = vec4(0.0); gl_FragDepth = 0.99999; }'
+      : 'void main() { gl_FragColor = vec4(0.0); gl_FragDepth = gl_FragCoord.z; }',
+  }), ref);
+}
+
+// ---------- pets ----------
+
+const petCache = {};
+const loader = new GLTFLoader();
+const loadPet = (id) => (petCache[id] ??= loader.loadAsync(`pets/animal-${id}.json`));
+
+// Kenney's cube pets animate each part as its own node: 7 parts = 7 draw calls, 14 with outlines.
+// Rebuilt once per pet kind as ONE skinned mesh: every node becomes a bone and each part's vertices
+// ride their node's bone, so the clips (which target node names) still play, in 2 draw calls.
+const mergedPets = {};
+function mergePet(id, gltf) {
+  if (mergedPets[id]) return mergedPets[id];
+  const src = gltf.scene;
+  src.updateMatrixWorld(true);
+  const rootInv = new THREE.Matrix4().copy(src.matrixWorld).invert();
+  const bones = [];
+  const boneIndex = new Map();
+  const mirror = (obj) => {
+    const bone = new THREE.Bone();
+    bone.name = obj.name;
+    bone.position.copy(obj.position);
+    bone.quaternion.copy(obj.quaternion);
+    bone.scale.copy(obj.scale);
+    boneIndex.set(obj, bones.length);
+    bones.push(bone);
+    for (const child of obj.children) bone.add(mirror(child));
+    return bone;
+  };
+  const tops = src.children.map(mirror);
+  const geos = [];
+  let map = null;
+  const m = new THREE.Matrix4();
+  src.traverse((o) => {
+    if (!o.isMesh) return;
+    let g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+    for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'uv'].includes(k)) g.deleteAttribute(k);
+    g.applyMatrix4(m.multiplyMatrices(rootInv, o.matrixWorld));
+    const n = g.attributes.position.count;
+    const idx = new Uint16Array(n * 4);
+    const wgt = new Float32Array(n * 4);
+    const b = boneIndex.get(o);
+    for (let i = 0; i < n; i++) { idx[i * 4] = b; wgt[i * 4] = 1; }
+    g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(idx, 4));
+    g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(wgt, 4));
+    map ??= o.material.map;
+    geos.push(g);
+  });
+  const geometry = bakeSmoothNormals(mergeGeometries(geos));
+  const box = new THREE.Box3().setFromBufferAttribute(geometry.attributes.position);
+  mergedPets[id] = { geometry, tops, map, box, clips: gltf.animations };
+  return mergedPets[id];
+}
+
+function preparePet(id, gltf, ref, height) {
+  const merged = mergePet(id, gltf);
+  const root = new THREE.Group();
+  const rig = new THREE.Group();
+  root.add(rig);
+  const tops = merged.tops.map((t) => t.clone(true));
+  rig.add(...tops);
+  rig.updateMatrixWorld(true);
+  const bones = [];
+  rig.traverse((o) => { if (o.isBone) bones.push(o); });
+  const skeleton = new THREE.Skeleton(bones);
+  const body = new THREE.SkinnedMesh(merged.geometry, gate(toon({ map: merged.map }), ref));
+  const s = height / merged.box.getSize(new THREE.Vector3()).y;
+  const line = new THREE.SkinnedMesh(merged.geometry, gate(outline(0.015 / s), ref));
+  rig.add(body, line);
+  body.bind(skeleton);
+  line.bind(skeleton);
+  body.frustumCulled = line.frustumCulled = false; // the bind-pose bounds don't follow the bones
+  rig.scale.setScalar(s);
+  rig.position.y = -merged.box.min.y * s;
+  const mixer = new THREE.AnimationMixer(rig);
+  const idle = merged.clips.find((a) => a.name === 'idle') ?? merged.clips[0];
+  if (idle) mixer.clipAction(idle).play();
+  return { root, mixer };
+}
+
+// ---------- the card ----------
+
+export function createStencilCard(seat, ref, depKind) {
+  const look = LOOKS[seat];
+  const mesh = new THREE.Group();          // follows the physics body (face = +y)
+  const face = new THREE.Group();          // card space: face = +z
+  face.rotation.x = -Math.PI / 2;
+  mesh.add(face);
+  const parts = { card: [], mask: [], reset: [], room: [], restore: [] };
+  const add = (pass, obj, parent = face) => { parent.add(obj); parts[pass].push(obj); return obj; };
+
+  const frontMat = new THREE.MeshBasicMaterial();
+  const backMat = new THREE.MeshBasicMaterial();
+  marksReady.then(() => {
+    frontMat.map = frontTexture(look, depKind === 'dep_le' ? 'Dép lê' : depKind === 'dep_to_ong' ? 'Tổ ong' : 'Dép lào');
+    backMat.map = backTexture(look);
+    frontMat.needsUpdate = backMat.needsUpdate = true;
+  });
+  const frontShape = outerShape();
+  frontShape.holes.push(roundRect(new THREE.Path(), WIN.cx, WIN.cy, WIN.hw, WIN.hh, WIN.r));
+  const front = add('card', new THREE.Mesh(planarUV(new THREE.ShapeGeometry(frontShape, 16)), frontMat));
+  front.position.z = CARD_HALF_T;
+  const back = add('card', new THREE.Mesh(planarUV(new THREE.ShapeGeometry(outerShape(), 16)), backMat));
+  back.rotation.y = Math.PI;
+  back.position.z = -CARD_HALF_T;
+  const edgeGeo = new THREE.ExtrudeGeometry(outerShape(), { depth: CARD_HALF_T * 2, bevelEnabled: false, curveSegments: 16 });
+  edgeGeo.translate(0, 0, -CARD_HALF_T);
+  add('card', new THREE.Mesh(edgeGeo, [new THREE.MeshBasicMaterial({ visible: false }), new THREE.MeshBasicMaterial({ color: 0x2a1418 })]));
+
+  const winGeo = new THREE.ShapeGeometry(windowShape(), 16);
+  add('mask', new THREE.Mesh(winGeo, maskMaterial(ref))).position.z = CARD_HALF_T;
+  add('reset', new THREE.Mesh(winGeo, depthMaterial(ref, true))).position.z = CARD_HALF_T;
+  add('restore', new THREE.Mesh(winGeo, depthMaterial(ref, false))).position.z = CARD_HALF_T;
+
+  const room = add('room', new THREE.Group());
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.0), gate(spaceMaterial(look), ref));
+  box.position.set(0, WIN.cy + 0.2, -0.5 - CARD_HALF_T);
+  room.add(box);
+  // The stage (pet, slipper, round floor) turns to face the camera every frame: the card lies flat
+  // and in any direction on the table, but the pet should always stand upright and look at the
+  // player, like a little diorama seen through a magic window.
+  const stageRoot = new THREE.Group();
+  stageRoot.position.set(WIN.cx, WIN.cy + 0.06, -0.24);
+  room.add(stageRoot);
+  const stageGeo = bakeSmoothNormals(new THREE.CylinderGeometry(0.34, 0.31, 0.05, 32));
+  const stage = new THREE.Mesh(stageGeo, gate(toon({ color: look.floor }), ref));
+  stage.add(new THREE.Mesh(stageGeo, gate(outline(0.012), ref)));
+  stage.position.set(0, STAGE_Y - 0.025, 0);
+  stageRoot.add(stage);
+
+  const mixers = [];
+  loadPet(look.pet).then((gltf) => {
+    const pet = preparePet(look.pet, gltf, ref, 0.4);
+    pet.root.position.set(-0.07, STAGE_Y, -0.05);
+    pet.root.rotation.y = 0.3;
+    stageRoot.add(pet.root);
+    mixers.push(pet.mixer);
+    setRank(rank);
+  }).catch((err) => console.warn('pet failed to load', err));
+
+  // the slipper models may still be loading when the card is built
+  let propAdded = false;
+  function addProp() {
+    const prop = depModel(depKind)?.clone();
+    if (!prop) return;
+    propAdded = true;
+    prop.traverse((o) => { if (o.material) o.material = gate(o.material.clone(), ref); });
+    prop.scale.multiplyScalar(0.32 / 1.3);
+    prop.position.set(0.17, STAGE_Y + 0.01, 0.1);
+    prop.rotation.set(0, -0.9, 0);
+    stageRoot.add(prop);
+    setRank(rank);
+  }
+
+  let rank = 0;
+  function setRank(r) {
+    rank = r;
+    const base = BASE_ORDER + r * 10;
+    const order = { card: 0, mask: 1, reset: 2, room: 3, restore: 4 };
+    for (const [pass, objs] of Object.entries(parts)) {
+      // meshes only: three.js sorts by a parent Group's renderOrder first (groupOrder), so a
+      // numbered group would pull the whole room after the restore pass
+      for (const obj of objs) obj.traverse((o) => { if (!o.isGroup) o.renderOrder = base + order[pass]; });
+    }
+  }
+  setRank(0);
+
+  const shadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(CARD_HALF_W * 2.1, CARD_HALF_D * 2.1).rotateX(-Math.PI / 2),
+    new THREE.MeshBasicMaterial({ color: 0x2a1418, transparent: true, opacity: 0.22, depthWrite: false }),
+  );
+
+  // pets only animate while their window faces up; a face-down card costs nothing extra
+  const up = new THREE.Vector3();
+  const camPos = new THREE.Vector3();
+  const fwd = new THREE.Vector3();
+  const upv = new THREE.Vector3();
+  const side = new THREE.Vector3();
+  const basis = new THREE.Matrix4();
+  const faceInv = new THREE.Matrix4();
+  // Only the side facing the camera draws: a face-down card is 2 draw calls (back + edge), the
+  // window passes and the room cost nothing until the card shows its face.
+  const toCam = new THREE.Vector3();
+  function update(dt, camera) {
+    if (!propAdded) addProp();
+    up.set(0, 1, 0).applyQuaternion(mesh.quaternion);
+    const facing = camera ? up.dot(toCam.copy(camera.position).sub(mesh.position)) : up.y;
+    const open = facing > 0 && mesh.visible;
+    const edgeOn = Math.abs(facing) < 0.05;
+    for (const o of [front, ...parts.mask, ...parts.reset, ...parts.restore, room]) o.visible = open || edgeOn;
+    back.visible = !open || edgeOn;
+    if (!open) return false;
+    for (const m of mixers) m.update(dt);
+    if (camera) {
+      // basis in card space: +z toward the camera, +y = the screen's up, then tip the top toward us
+      face.updateWorldMatrix(true, false);
+      faceInv.copy(face.matrixWorld).invert();
+      fwd.copy(camera.getWorldPosition(camPos)).applyMatrix4(faceInv).sub(stageRoot.position).normalize();
+      upv.set(0, 1, 0).applyQuaternion(camera.quaternion).transformDirection(faceInv);
+      side.crossVectors(upv, fwd).normalize();
+      upv.crossVectors(fwd, side);
+      basis.makeBasis(side, upv, fwd);
+      stageRoot.quaternion.setFromRotationMatrix(basis);
+      stageRoot.rotateX(STAGE_TILT);
+    }
+    return mixers.length > 0;
+  }
+
+  return { mesh, shadow, setRank, update, stencilRef: ref };
+}
+
+// Lowest card first, so a card lying on another draws its window after the one below.
+export function orderStencilCards(cards) {
+  [...cards].sort((a, b) => a.mesh.position.y - b.mesh.position.y).forEach((c, i) => c.setRank(i));
+}

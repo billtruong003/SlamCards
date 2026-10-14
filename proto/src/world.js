@@ -1,6 +1,11 @@
 import * as THREE from 'three';
 import { TUNE } from './config.js';
 import { createCardMesh } from './cards.js';
+import { createStencilCard, orderStencilCards, spaceTime } from './stencil-card.js';
+import { DEFAULT_DEP } from './deps.js';
+
+// Milestone 1 prototype: cards with a stencil window and a pet inside (see stencil-card.js).
+const STENCIL = new URLSearchParams(location.search).has('stencil');
 import { toonizeTree, toonize } from './toon.js';
 import { CARD_HALF_W, CARD_HALF_T, CARD_HALF_D, tableFor } from './rules.js';
 
@@ -101,7 +106,7 @@ export class World {
   }
 
   constructor(container) {
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', stencil: STENCIL });
     // Resolution steps down on its own when frames run slow (see adaptQuality).
     this.pixelRatio = Math.min(devicePixelRatio, 1.5);
     this.renderer.setPixelRatio(this.pixelRatio);
@@ -171,7 +176,7 @@ export class World {
     this.table = tableFor(seats.length);
     this.buildTable(this.table);
     this.seats = [...seats];
-    this.cards = Object.fromEntries(seats.map((seat) => [seat, this.buildCard(seat)]));
+    this.cards = Object.fromEntries(seats.map((seat, i) => [seat, this.buildCard(seat, i + 1)]));
     this.resize();
   }
 
@@ -215,8 +220,9 @@ export class World {
     );
   }
 
-  buildCard(seat) {
-    const { mesh, shadow } = createCardMesh(seat);
+  buildCard(seat, stencilRef) {
+    const made = STENCIL ? createStencilCard(seat, stencilRef, DEFAULT_DEP[seat]) : createCardMesh(seat);
+    const { mesh, shadow } = made;
     this.scene.add(mesh);
     this.scene.add(shadow);
     const body = this.physics.createRigidBody(
@@ -233,7 +239,7 @@ export class World {
         .setRestitution(TUNE.card.restitution),
       body,
     );
-    return { mesh, shadow, body };
+    return { mesh, shadow, body, stencil: STENCIL ? made : null };
   }
 
   resize() {
@@ -490,6 +496,13 @@ export class World {
     const gap = now - this.lastRenderAt;
     const dt = Math.min(gap / 1000, 0.1);
     const shaking = this.trauma > 0;
+    if (STENCIL && this.seats?.length) {
+      // pets breathe and the space behind the window drifts, so keep drawing while a window is open
+      const stencilCards = this.seats.map((s) => this.cards[s].stencil);
+      spaceTime.value += dt;
+      if (stencilCards.map((c) => c.update(dt, this.camera)).some(Boolean)) this.needsRender = true;
+      orderStencilCards(stencilCards);
+    }
     if (!this.needsRender && !shaking) {
       this.lastRenderAt = now;
       this.drewLast = false;

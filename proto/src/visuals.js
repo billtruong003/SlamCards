@@ -152,6 +152,8 @@ export class Visuals {
     if (model.parent !== this.depTilt) {
       this.depTilt.clear();
       this.depTilt.add(model);
+      // drawn after the cards: a card's stencil window resets depth and would hide a slipper drawn before it
+      model.traverse((o) => { o.renderOrder = 900; });
     }
     if (document.hidden || performance.now() - this.lastFrameAt > 500) {
       onImpact();

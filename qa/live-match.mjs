@@ -8,6 +8,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const BASE = process.env.SLAM_BASE || 'http://localhost:8097';
+// SLAM_STENCIL=1 plays with the stencil-window card prototype
+const Q = process.env.SLAM_STENCIL ? 'stencil&' : '';
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'out', 'match');
 fs.mkdirSync(OUT, { recursive: true });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -33,7 +35,7 @@ const shot = (p, n) => p.screenshot({ path: path.join(OUT, `${n}.png`) });
 const host = await player('host');
 const guest = await player('guest');
 try {
-  await host.goto(`${BASE}/?debug&noftue`);
+  await host.goto(`${BASE}/?${Q}debug&noftue`);
   await host.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
   await host.fill('#name', 'Bill');
   await host.click('#create');
@@ -41,7 +43,7 @@ try {
   const link = await host.inputValue('#link');
   step('host creates room', /room=/.test(link), { link });
 
-  await guest.goto(`${link}${link.includes('?') ? '&' : '?'}debug&noftue`);
+  await guest.goto(`${link}${link.includes('?') ? '&' : '?'}${Q}debug&noftue`);
   await guest.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
   await guest.fill('#name', 'Tèo');
   await guest.click('#go');
@@ -94,7 +96,7 @@ try {
   step('match reached the end', lastPhase !== '' && rematched, { slams, seconds: Math.round((Date.now() - t0) / 1000) });
 
   await host.click('#overlay .btn:not(.pri)').catch(() => {});
-  await guest.goto(`${BASE}/?debug&noftue`);
+  await guest.goto(`${BASE}/?${Q}debug&noftue`);
   await guest.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
 
   // dead invite link
@@ -106,7 +108,7 @@ try {
   step('dead invite link explains itself', /ZZZZ/.test(dead), { text: dead.slice(0, 160) });
 
   // mistyped code from the menu
-  await guest.goto(`${BASE}/?debug&noftue`);
+  await guest.goto(`${BASE}/?${Q}debug&noftue`);
   await guest.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
   await guest.fill('#code', 'QQQQ');
   await guest.click('#join');
