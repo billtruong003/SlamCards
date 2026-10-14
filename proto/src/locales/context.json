@@ -69,6 +69,16 @@
     "max": 100,
     "id": "K1"
   },
+  "error.typedNotFound": {
+    "where": "Menu error after typing a room code that matches no room (likely a typo). {code} = the 4 letters typed",
+    "max": 45,
+    "id": "Room {code} nggak ada. Cek lagi kodenya!"
+  },
+  "error.codeShort": {
+    "where": "Menu error when Join is pressed with fewer than 4 letters in the room code box",
+    "max": 40,
+    "id": "Kode room isinya 4 huruf!"
+  },
   "error.otherTab": {
     "where": "Menu error: the same room was opened in another browser tab",
     "max": 60,

@@ -9,8 +9,20 @@ const PEAK_LIMIT = 0.9;
 let levels = { ...DEFAULTS };
 try { levels = { ...DEFAULTS, ...JSON.parse(localStorage.getItem('slam-volume') || '{}') }; } catch { /* private mode */ }
 
-export const ctx = new (window.AudioContext || window.webkitAudioContext)();
+// Sound is optional (QA-08): with no Web Audio, or a context that fails to start, `ctx` is null,
+// buses are null and every player below turns into a no-op, so the game still runs silently.
+function createContext() {
+  try {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    return Ctor ? new Ctor() : null;
+  } catch (err) {
+    console.warn('no Web Audio, playing silently', err);
+    return null;
+  }
+}
+export const ctx = createContext();
 const buses = Object.fromEntries(Object.keys(DEFAULTS).map((name) => {
+  if (!ctx) return [name, null];
   const gain = ctx.createGain();
   gain.gain.value = levels[name];
   gain.connect(ctx.destination);
@@ -22,11 +34,11 @@ export const getLevel = (name) => levels[name];
 
 export function setLevel(name, value) {
   levels[name] = value;
-  buses[name].gain.setTargetAtTime(value, ctx.currentTime, 0.03);
+  buses[name]?.gain.setTargetAtTime(value, ctx.currentTime, 0.03);
   try { localStorage.setItem('slam-volume', JSON.stringify(levels)); } catch { /* private mode */ }
 }
 
-const unlock = () => { if (ctx.state !== 'running') ctx.resume(); };
+const unlock = () => { if (ctx && ctx.state !== 'running') ctx.resume(); };
 addEventListener('pointerdown', unlock);
 addEventListener('keydown', unlock);
 
@@ -54,6 +66,7 @@ function loudnessGain(buffer) {
 }
 
 export function loadClip(url) {
+  if (!ctx) return Promise.resolve(null);
   if (!clips.has(url)) {
     clips.set(url, fetch(url)
       .then((r) => r.arrayBuffer())

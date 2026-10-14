@@ -101,6 +101,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 .badge.green{background:var(--seat-green);color:#fff}
 .seat-black{color:var(--seat-black)}.seat-pink{color:var(--seat-pink)}.seat-blue{color:var(--seat-blue)}.seat-green{color:var(--seat-green)}
 .panel .sub .seat-black{color:var(--cream);text-decoration:underline}
+/* names inside lines of cream text over the dimmed table: a small cream tag keeps every seat colour readable */
+.panel .sub:not(.note) b[class^="seat-"]{background:var(--cream);border-radius:6px;padding:0 6px;text-decoration:none}
+.panel .sub:not(.note) b.seat-black{color:var(--seat-black)}
+.scores{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.score-chip{display:inline-flex;align-items:center;gap:6px;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:999px;padding:0 12px;min-height:34px;font-weight:800;font-size:17px;box-shadow:0 3px 0 var(--ink)}
+.score-chip .dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink)}
+.score-chip b{font-size:21px;margin-left:2px}
 .seats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
 .slot.seat{color:#fff;border-color:var(--ink)}
 .slot.seat small{color:rgba(255,255,255,.8)}
@@ -171,7 +178,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   .dot{width:10px;height:10px}
   .wind{font-size:14px;min-height:34px;padding:0 8px}
   #wind-arrow{font-size:22px}
-  #banner{top:auto;bottom:118px;font-size:15px}
+  #banner{font-size:15px}
   #hint{font-size:12px;white-space:normal;text-align:center;width:calc(100vw - 24px);bottom:76px}
   #toggle{flex-direction:row;left:50%;transform:translateX(-50%);bottom:12px}
   #toggle button{min-height:44px;font-size:13px}
@@ -179,11 +186,18 @@ button{font:inherit;color:inherit;cursor:pointer}
   .credit,#netstat{display:none}
   .badge{font-size:10px;line-height:15px;padding:0 5px}
   .meme-card{top:auto;bottom:170px;right:8px;width:min(170px,44vw)}
+  .meme-card img{max-height:120px}
   .stamp{-webkit-text-stroke:3px var(--ink)}
   .panel{padding:10px}
   .rps{width:80px;height:80px}
   .menu-card{padding:16px}
   .panel-box{bottom:64px}
+}
+/* Fingers need 44 px targets (UX-04). The menu leaves room at the bottom so the corner row never
+   sits on a button of the lobby or the invite card. */
+@media (pointer:coarse){
+  #corner button{min-height:44px;min-width:44px;font-size:14px}
+  .menu-bg{padding-bottom:76px}
 }
 @media (max-width:820px) and (orientation:landscape){
   #banner{top:46px;bottom:auto}

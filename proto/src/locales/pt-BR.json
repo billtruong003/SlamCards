@@ -13,6 +13,8 @@
   "error.inMatch": "Já começou! Crie outra sala!",
   "error.full": "Já tem 4! A sala tá cheia!",
   "error.roomGone": "A sala {code} sumiu. Pode ter expirado ou o servidor reiniciou. Crie outra sala!",
+  "error.typedNotFound": "Sala {code} não existe. Confere o código!",
+  "error.codeShort": "O código da sala tem 4 letras!",
   "error.otherTab": "Esta sala está aberta em outra aba. Continue por lá!",
   "error.reconnecting": "Reconectando. Espera um pouco!",
   "lobby.title": "Sala {code}",

@@ -300,6 +300,8 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
     }
     const at = world.toScreen(target.x, 0, target.z);
     point.style.transform = `translate(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px)`;
+    // near the top the bubble would cover the turn banner, so it hangs below the pulse instead
+    point.classList.toggle('below', at.y < 240);
     // Keep the speech bubble (240 px wide, centred on the pulse) inside the screen.
     const centre = Math.min(Math.max(at.x, 128), innerWidth - 128);
     point.style.setProperty('--shift', `${(centre - at.x).toFixed(1)}px`);

@@ -13,6 +13,8 @@
   "error.inMatch": "Lagi main! Bikin room baru!",
   "error.full": "Udah 4 orang! Room penuh!",
   "error.roomGone": "Room {code} sudah nggak ada. Mungkin kedaluwarsa atau server baru restart. Bikin room baru!",
+  "error.typedNotFound": "Room {code} nggak ada. Cek lagi kodenya!",
+  "error.codeShort": "Kode room isinya 4 huruf!",
   "error.otherTab": "Room ini terbuka di tab lain. Lanjut main di sana!",
   "error.reconnecting": "Lagi nyambung ulang. Tunggu sebentar!",
   "lobby.title": "Room {code}",

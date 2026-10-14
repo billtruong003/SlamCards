@@ -2,6 +2,7 @@ import { ctx, bus } from './audio.js';
 
 // A short filtered noise burst: the "bốp" of a slipper on wood.
 export function thump(volume = 1) {
+  if (!ctx) return;
   try {
     const length = Math.floor(ctx.sampleRate * 0.18);
     const buffer = ctx.createBuffer(1, length, ctx.sampleRate);

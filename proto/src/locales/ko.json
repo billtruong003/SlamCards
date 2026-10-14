@@ -13,6 +13,8 @@
   "error.inMatch": "이미 게임 중이야! 새 방을 만들어 줘!",
   "error.full": "4명 꽉 찼어! 더는 못 들어가!",
   "error.roomGone": "{code}번 방이 없어졌어. 시간이 만료됐거나 서버가 재시작됐을 수 있어. 새 방을 만들어 줘!",
+  "error.typedNotFound": "{code} 방이 없어. 코드 다시 확인해 봐!",
+  "error.codeShort": "방 코드는 4글자야!",
   "error.otherTab": "다른 탭에서 이 방을 열었어. 그 탭에서 계속해 줘!",
   "error.reconnecting": "다시 연결 중이야. 잠깐 기다려 줘!",
   "lobby.title": "방 {code}",

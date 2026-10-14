@@ -13,6 +13,8 @@
   "error.inMatch": "Match on! Create a new room!",
   "error.full": "Room full! All 4 spots taken!",
   "error.roomGone": "Room {code} is gone. It may have expired or the server restarted. Create a new room!",
+  "error.typedNotFound": "No room {code}. Check the code!",
+  "error.codeShort": "Room codes have 4 letters!",
   "error.otherTab": "This room is open in another tab. Play there!",
   "error.reconnecting": "Reconnecting. Give it a sec!",
   "lobby.title": "Room {code}",

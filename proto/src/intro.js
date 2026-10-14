@@ -40,7 +40,7 @@ function tween(ms, curve, apply) {
 
 // The 0.12 s rising blip at the shades' impact (synthesised: the original asset may not ship on its own).
 function click() {
-  if (ctx.state !== 'running') return;
+  if (!ctx || ctx.state !== 'running') return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = 'square';

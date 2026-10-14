@@ -18,6 +18,7 @@ const TIMING = {
   choose: 12000,
   order: 2600,
   turn: 30000,
+  awayTurn: 8000,
   forcedGrace: 10000,
   slamMaxMs: 15000,
   watchMaxMs: 4000,
@@ -284,15 +285,24 @@ function startTurn(room) {
   log(room, `turn ${room.turn} forced=${forced}`);
   room.phase = 'turn';
   room.wind = newWind();
-  schedule(room, TIMING.turn, () => {
-    if (!forced) {
+  scheduleTurnEnd(room, TIMING.turn);
+  broadcast(room);
+}
+
+// A player who is offline gets a short turn, so the table doesn't wait 30 s (40 s when forced)
+// for someone who is gone (QA-06). If they come back in time they play out what is left.
+const awayMs = (room) => (room.players[room.turn]?.connected ? Infinity : TIMING.awayTurn);
+function scheduleTurnEnd(room, ms) {
+  const forced = room.passStreak[room.turn] >= 1;
+  schedule(room, Math.min(ms, awayMs(room)), () => {
+    const player = room.players[room.turn];
+    if (!forced || !player?.connected) {
       registerPass(room, null);
       return;
     }
-    send(room.players[room.turn]?.ws, { t: 'autoSlam' });
+    send(player.ws, { t: 'autoSlam' });
     schedule(room, TIMING.forcedGrace, () => registerPass(room, null));
   });
-  broadcast(room);
 }
 
 function registerPass(room, impact) {
@@ -479,6 +489,11 @@ function detach(ws, { leaving = false } = {}) {
   player.ws = null;
   player.tutorial = 0;
   if (room.slam?.waiting.delete(seat) && room.slam.ended && !room.slam.waiting.size) finishSlam(room);
+  // dropped during their own turn: cut what is left of it down to the short away turn
+  if (room.phase === 'turn' && room.turn === seat && room.deadline - Date.now() > TIMING.awayTurn) {
+    scheduleTurnEnd(room, TIMING.awayTurn);
+    broadcast(room);
+  }
   if (leaving && room.phase === 'lobby') {
     dropPlayer(room, seat);
     return;

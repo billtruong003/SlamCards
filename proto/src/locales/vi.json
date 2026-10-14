@@ -13,6 +13,8 @@
   "error.inMatch": "Đang chơi rồi! Tạo phòng mới!",
   "error.full": "Đủ 4 đứa rồi! Phòng đầy!",
   "error.roomGone": "Phòng {code} không còn nữa. Có thể đã hết hạn hoặc server vừa khởi động lại. Tạo phòng mới nhé!",
+  "error.typedNotFound": "Không thấy phòng {code}. Xem lại mã nhé!",
+  "error.codeShort": "Mã phòng có 4 ký tự nhé!",
   "error.otherTab": "Phòng đang mở ở tab khác. Qua tab đó chơi tiếp nhé!",
   "error.reconnecting": "Đang nối lại mạng, đợi tí rồi bấm lại nhé!",
   "lobby.title": "Phòng {code}",

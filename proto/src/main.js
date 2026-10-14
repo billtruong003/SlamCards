@@ -201,22 +201,23 @@ function joinRoom(code, token) {
 // An invite link (or a reconnect) first asks whether the room is still there and whether this
 // device already has a seat in it, so nobody types a name for a room that is gone.
 let pendingPeek = null;
-async function openRoom(code) {
+async function openRoom(code, typed = false) {
   const token = await tokenFor(code);
-  pendingPeek = { code, token };
+  pendingPeek = { code, token, typed };
   send({ t: 'peek', code, token: token ?? undefined });
 }
 
 function onPeek(msg) {
   if (!pendingPeek || msg.code !== pendingPeek.code) return;
-  const { code, token } = pendingPeek;
+  const { code, token, typed } = pendingPeek;
   pendingPeek = null;
   const refuse = (text) => {
     forgetToken(code);
     leaveRoom();
     renderMenu(text);
   };
-  if (!msg.exists) refuse(t('error.roomGone', { code }));
+  // a typed code that matches nothing is most likely a typo, not an expired room (QA-02)
+  if (!msg.exists) refuse(t(typed ? 'error.typedNotFound' : 'error.roomGone', { code }));
   else if (msg.mine) joinRoom(code, token);
   else if (msg.phase !== 'lobby') refuse(t('error.inMatch'));
   else if (msg.full) refuse(t('error.full'));
@@ -599,6 +600,7 @@ function renderMenu(error = '') {
   const join = () => {
     const code = $('code').value.trim().toUpperCase();
     if (code.length !== 4) {
+      showMenuError(t('error.codeShort'));
       $('code').focus();
       return;
     }
@@ -609,7 +611,7 @@ function renderMenu(error = '') {
     }
     $('join').disabled = true;
     roomCode = code;
-    openRoom(code);
+    openRoom(code, true);
   };
   $('join').onclick = join;
   $('code').onkeydown = (e) => { if (e.key === 'Enter') join(); };
@@ -642,8 +644,10 @@ function renderNamePrompt(code) {
   $('name').focus();
 }
 
+// One cream chip per player (UX-02/UX-13): seat colours on the dimmed table were close to 1:1
+// contrast, and a bare text line got lost against the winning card behind it.
 function scoreLine() {
-  return state.seats.map((s) => `${htmlName(s)} ${state.scores[s] ?? 0}`).join(' · ');
+  return `<span class="scores">${state.seats.map((s) => `<span class="score-chip"><i class="dot ${s}"></i>${escapeHtml(nameOf(s))}<b>${state.scores[s] ?? 0}</b></span>`).join('')}</span>`;
 }
 
 function renderOverlay() {
@@ -699,7 +703,7 @@ function renderOverlay() {
       setOverlay(`intro-${s.round}`, `
         <div class="panel">
           <h1 class="stamp">${t('round.title', { n: s.round })}</h1>
-          <p class="sub" style="font-size:22px">${scoreLine()}</p>
+          ${scoreLine()}
           <p class="sub">${t('round.sub', { color: myColor, n: ROUNDS_TO_WIN })}</p>
         </div>`);
       break;
@@ -776,7 +780,7 @@ function renderOverlay() {
         <div class="panel">
           <h1 class="stamp ${winner === me ? '' : 'pink'}">${head}</h1>
           <p class="sub note">${how} ${t('result.roundWinner', { name: htmlName(winner) })}</p>
-          <p class="sub" style="font-size:22px">${scoreLine()}</p>
+          ${scoreLine()}
         </div>`, { clear: true });
       break;
     }
@@ -788,7 +792,7 @@ function renderOverlay() {
       if (setOverlay(`match-${JSON.stringify(s.rematch)}-${present.join()}`, `
         <div class="panel">
           <h1 class="stamp ${iWon ? '' : 'pink'}">${iWon ? t('match.youWin') : t('match.theyWin', { name: escapeHtml(nameOf(winner)).toUpperCase() })}</h1>
-          <p class="sub" style="font-size:22px">${scoreLine()}</p>
+          ${scoreLine()}
           ${s.result?.matchReason === 'disconnect' ? `<p class="sub">${t('match.allLeft')}</p>` : ''}
           <div class="row">
             <button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? t('match.rematchWaiting') : t('match.rematch')}</button>

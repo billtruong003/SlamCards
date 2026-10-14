@@ -194,6 +194,22 @@ test('timeouts: plain turn passes, forced turn gets autoSlam then passes', async
   } finally { srv.stop(); }
 });
 
+test('offline player: their turn shrinks to the short away turn (QA-06)', async () => {
+  const srv = await startServer({ turn: 2500, awayTurn: 300, disconnect: 20000 });
+  try {
+    const [a, b] = await twoPlayerGame(srv.port);
+    await a.waitState((s) => s.phase === 'turn' && s.turn === 'black', 2000);
+    const t0 = Date.now();
+    a.close();
+    const next = await b.waitState((s) => s.turn === 'pink', 2000);
+    assert.equal(next.event.type, 'timeout');
+    assert.ok(Date.now() - t0 < 1200, `turn passed after ${Date.now() - t0} ms`);
+    // pink plays nothing; black's next turn starts short too, because black is still away
+    const away = await b.waitState((s) => s.turn === 'black', 6000);
+    assert.ok(away.remainingMs <= 300, `away turn has ${away.remainingMs} ms`);
+  } finally { srv.stop(); }
+});
+
 test('reconnect: same token within grace gets the seat back mid-match', async () => {
   const srv = await startServer({ disconnect: 2000 });
   try {

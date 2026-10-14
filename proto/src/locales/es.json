@@ -13,6 +13,8 @@
   "error.inMatch": "¡Ya juegan! ¡Crea otra sala!",
   "error.full": "¡Ya son 4! ¡Sala llena!",
   "error.roomGone": "La sala {code} ya no existe. Quizá caducó o se reinició el servidor. ¡Crea otra sala!",
+  "error.typedNotFound": "No existe la sala {code}. ¡Revisa el código!",
+  "error.codeShort": "¡El código tiene 4 letras!",
   "error.otherTab": "Esta sala está abierta en otra pestaña. ¡Sigue jugando allí!",
   "error.reconnecting": "Reconectando. ¡Espera un momento!",
   "lobby.title": "Sala {code}",

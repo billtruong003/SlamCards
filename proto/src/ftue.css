@@ -121,8 +121,19 @@
    buttons and what they open move to the top right, under the wind. */
 @media (max-width:820px) and (orientation:portrait){
   #hud:not([hidden]) ~ #corner{top:48px;bottom:auto;right:6px}
-  #hud:not([hidden]) ~ .panel-box{top:84px;bottom:auto;right:6px}
-  #hud:not([hidden]) ~ .ftue-bubble{top:84px;bottom:auto;right:6px}
-  #hud:not([hidden]) ~ .ftue-tip{top:88px}
+  #hud:not([hidden]) ~ .panel-box{top:98px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .ftue-bubble{top:98px;bottom:auto;right:6px}
+  #hud:not([hidden]) ~ .ftue-tip{top:136px}
+  /* the turn banner sits in the top band under the corner buttons, clear of the player's own card
+     at the bottom where the first-turn pointer and its bubble go (UX-11) */
+  #hud:not([hidden]) ~ #banner{top:98px;bottom:auto}
+  #hud:not([hidden]) ~ #toast{top:136px}
+  /* memes: a small card in the top-left corner under the scores, not over the table (UX-05) */
+  .meme-card{top:176px;bottom:auto;left:8px;right:auto;width:min(130px,34vw);transform-origin:top left}
 }
+/* Phone on its side: the tip goes under the turn banner instead of on top of it (UX-12). */
+@media (max-width:820px) and (orientation:landscape){
+  .ftue-tip{top:78px}
+}
+.ftue-point.below .ftue-say{bottom:auto;top:34px}
 @media (prefers-reduced-motion:reduce){.ftue-pulse{animation:none}}
