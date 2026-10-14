@@ -211,7 +211,7 @@ const SLIPPERS = {
 const DEP_COLORS = ['#fffaf0', '#2a1418', '#ff5c9d', '#ff8a3d', '#ffc93c', '#3ccf6e', '#2fa8ff', '#4f8ff0', '#9b6bff', '#d93a3a', '#7a3d1a', '#6cc3e8'];
 
 const CARD_W = 1, CARD_H = 1.478, THICK = 0.016, CARD_CORNER = 0.085;
-const WIN = { cx: 0, cy: 0.14, hw: 0.38, hh: 0.46, r: 0.07 };
+const WIN = { cx: 0, cy: 0.155, hw: 0.38, hh: 0.445, r: 0.07 };
 const PORT = { cx: 0, cy: 0.04, r: 0.3 };
 const REF_FRONT = 1, REF_BACK = 2;
 const FLOOR_Y = WIN.cy - WIN.hh + 0.13; // top of the little stage the pet stands on
@@ -336,7 +336,7 @@ function frontTexture(way, petName, depName) {
   // window frame: thick ink like every panel in the game
   g.lineWidth = 9; g.strokeStyle = INK; rr(g, wx - 4.5, wy - 4.5, ww + 9, wh + 9, wr + 4.5); g.stroke();
   // name ribbon across the window's bottom edge
-  const ry = wy + wh + 42, rw = ww - 10, rh = 64;
+  const ry = wy + wh + 58, rw = ww - 10, rh = 64; // clear gap under the window ring
   g.fillStyle = way.color; rr(g, 256 - rw / 2, ry - rh / 2 + 4, rw, rh, 18); g.fill();
   g.lineWidth = 6; g.strokeStyle = INK; g.stroke();
   stamp(g, petName.toUpperCase(), 256, ry + 16, 42, CREAM, 'center', rw - 30);

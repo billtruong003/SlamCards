@@ -50,13 +50,17 @@ function woodTexture(hx, hz) {
 }
 
 // Ink outline for a box: the same box a little larger, back faces only.
+// The hull rises `pad` above the table top, so it would hide cards lying near the rim. It writes no
+// depth and draws after the room (renderOrder 1) but before the cards (renderOrder 2): the table
+// itself still hides a card behind it, the outline never does, and the two never z-fight.
 function boxOutline(geometry, pad = 0.045) {
   geometry.computeBoundingBox();
   const size = geometry.boundingBox.getSize(new THREE.Vector3());
   const outline = new THREE.Mesh(
     new THREE.BoxGeometry(size.x + pad * 2, size.y + pad * 2, size.z + pad * 2),
-    new THREE.MeshBasicMaterial({ color: 0x2a1418, side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ color: 0x2a1418, side: THREE.BackSide, depthWrite: false }),
   );
+  outline.renderOrder = 1;
   return outline;
 }
 

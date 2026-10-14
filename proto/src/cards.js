@@ -111,6 +111,7 @@ export function createCardMesh(seat) {
   // No shadow-map casting: the depth pass would ignore the rounded SDF edge and draw square
   // corners. The flat `shadow` quad below stands in while the card is airborne.
   const mesh = new THREE.Mesh(geometry, material);
+  mesh.renderOrder = 2; // after the table outline, see boxOutline in world.js
 
   const shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(CARD_HALF_W * 2.1, CARD_HALF_D * 2.1).rotateX(-Math.PI / 2),

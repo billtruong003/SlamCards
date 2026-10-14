@@ -4,6 +4,31 @@ Danh sách từ đợt QA + review trải nghiệm ngày 14/10/2026 (nhánh `fix
 
 Ký hiệu: **QA** = lỗi kỹ thuật, **UX** = code chạy đúng nhưng người chơi vấp. "Đã chạy thử" = đã tái hiện bằng cách chạy thật; "Đọc code" = suy ra từ code, chưa tái hiện. "Lỗi mới" = do đợt sửa trước gây ra; "Có từ đầu" = có từ commit đầu tiên, bản đang chạy cho người chơi cũng dính.
 
+Danh sách này đã gộp việc của session "Kết nối VPS (fork)" (bàn giao: `docs/HANDOFF_VPS_STUDIO.md`, bảng việc tổng https://claude.ai/artifact/7AQugZcgZ1pgLcVcrK7F4h). Mã trong ngoặc là mã bên đó: S/C/D/L/U/W = lỗi trong artifact "Dép Lào: FTUE & lỗi", G = game, V = VPS, LU = Lucy, WS = web studio, A = Bill tự làm.
+
+**Luật cứng**: test kĩ trước, deploy là bước cuối và phải hỏi Bill (deploy xóa các phòng đang chơi). Không đụng `lucy-*`, docker hordecall, `warp-svc`, backup trên VPS. Sửa code Lucy (`/root/lucy/hub`) phải theo CLAUDE.md của repo đó: `gitnexus_impact` trước khi sửa, `gitnexus_detect_changes` trước khi commit.
+
+## Thứ tự đề xuất (chờ Bill duyệt)
+
+1. **QA-01** + **UX-01** (P0, nhỏ, có test).
+2. **OPS-01** alias ssh `hordecall` để `deploy.sh` chạy được từ máy này. **G8** bỏ link IP.
+3. **Deploy nhánh** vào giờ vắng, gộp **G7** (pm2 400M), **V1** (ưu tiên CPU cho game), **V3** (reboot). Chỉ làm khi Bill đồng ý.
+4. **G4** (gồm UX-10) đo đạc → **LU1–LU4** bảng số Lucy.
+5. P1 còn lại: UX-11, UX-12, QA-02, UX-02, UX-03, QA-06.
+6. Tủ đồ: A (chủ phòng + Sẵn sàng, gộp QA-07) → B (dép nhiều màu) → D (màu bài + chọn đồ) → C (lá bài stencil, phần khó nhất).
+7. P2/P3, G2 ủng hộ, G5, G6, PERF-01. Quảng cáo và web studio chờ Q3/Q4.
+
+## Câu hỏi
+
+- [x] **Q1 · Luật "đè hẳn"**: đã chốt 14/10. Giữ code (≥ 50% diện tích chồng lên là "đè hẳn") và giữ chữ "đè hẳn", vì hai cách nói không khác nghĩa.
+- [x] **Q2 · Mockup FTUE**: đã duyệt 14/10, làm theo mockup. FTUE đã có trong nhánh (`src/ftue.js`, `src/ftue.css`).
+- [ ] **Q3** · Duyệt chỗ đặt quảng cáo (mục G3).
+- [ ] **Q4** · Tên miền cổng game: `play.billthedevstudio.com` hay giữ `billthedevstudio.io.vn`.
+- [ ] **Q5** · Game nào được đưa lên cổng studio (Timeless Soul chắc chắn; Zombie War, Typing Fight, Drag & Slice?).
+- [ ] **Q6** · Gmail cá nhân nào là chính; kênh @BillTheDev là kênh nào.
+- [ ] **Q7** · Có danh sách người ủng hộ công khai không.
+- [ ] **UX-06** · Người bấm "Biết chơi rồi": tắt chỉ tay nhưng giữ mẹo, hay tắt cả hai?
+
 ## P0 — phải sửa trước khi deploy
 
 - [ ] **QA-01 · Server sập khi nhận tin nhắn > 2 MB (hoặc khung WebSocket lỗi).** Một tin nhắn làm mất mọi phòng đang chơi. Có từ đầu, production đang dính. Đã chạy thử 3/3.
@@ -16,6 +41,26 @@ Ký hiệu: **QA** = lỗi kỹ thuật, **UX** = code chạy đúng nhưng ngư
   - Sửa: `justify-content:flex-start` cho `.menu-bg.with-invite`, để `margin:auto` lo căn giữa khi đủ chỗ.
   - Kiểm tra: 375×812, người mới vào bằng link → cuộn lên đầu thấy "Phòng XXXX".
 
+- [ ] **OPS-01 · `proto/deploy.sh` không chạy được từ máy này**: nó dùng ssh host `hordecall`, mà `C:\Users\ducnq\.ssh\config` chưa có alias đó. Thêm:
+  ```
+  Host hordecall
+    HostName 14.225.255.73
+    User root
+    IdentityFile ~/.ssh/id_ed25519
+  ```
+  Kiểm tra: `ssh hordecall true` chạy không hỏi mật khẩu.
+
+## Deploy và vận hành (gộp vào một lần deploy giờ vắng, chờ Bill đồng ý)
+
+Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state established '( sport = :8097 )' | wc -l` gần 0. Bản sao config VPS: `/root/vps-maintenance-20261014/`.
+
+- [ ] **DEP-01 · Deploy nhánh `fix/stability-and-ftue`** sau khi xong P0 + OPS-01.
+- [ ] **G7** · pm2 giới hạn RAM: `pm2 restart slam-cards --max-memory-restart 400M --update-env && pm2 save`.
+- [ ] **V1** · Ưu tiên CPU cho game: `/usr/local/bin/vps-priority` (cron 5 phút) `renice 10` các tiến trình `lucy-*`; thêm `nice -n 15` vào dòng `cron_dream.sh` trong crontab root. Bill đã duyệt.
+- [ ] **V3** · Reboot giờ vắng để nạp thư viện vừa cập nhật.
+- [ ] **V2** · Gửi tin Telegram thử (`vps-diskguard --test`). Chỉ khi Bill cho phép.
+- [ ] **G8** · Bỏ link IP `http://14.225.255.73:8096` khỏi README và `deploy.sh`; cập nhật Concept.md theo luật 2–4 người.
+
 ## P1
 
 - [ ] **UX-11 · Điện thoại nhỏ (iPhone SE), lượt đầu: chỉ tay + bong bóng nằm đè lên banner "TỚI M ĐẬP! · 30s", và bài của mình bị banner + chỉ tay che.** Đúng lúc quan trọng nhất của FTUE thì người mới không thấy bài mình. Đã chạy thử (ảnh `qa/screens/ux11-iphone-se-first-turn.png`).
@@ -26,9 +71,9 @@ Ký hiệu: **QA** = lỗi kỹ thuật, **UX** = code chạy đúng nhưng ngư
   - Sửa: tách 2 câu. Mở link mời → K1 như hiện tại. Gõ mã → câu mới kiểu "Không thấy phòng {MÃ}. Xem lại mã nhé!". Mã chưa đủ 4 ký tự → báo luôn, đừng chỉ nháy ô nhập (hiện đang giữ lại thông báo lỗi cũ). Thêm chữ vào TEXTS.md mục K.
 - [ ] **UX-02 · Tên người chơi màu hồng/xanh/lục gần như không đọc được ở màn đầu ván, kết ván, kết trận.** Tương phản khoảng 1:1 (cần ≥ 4.5:1). Có từ đầu. Đã chạy thử (ảnh kết trận "Tèo Bot" gần như vô hình).
   - Sửa: dòng điểm (`scoreLine` trong `src/main.js`) dùng chip nền kem viền mực như HUD, hoặc chữ kem có ô màu ghế bên cạnh.
-- [ ] **UX-03 · Hết trận mà chỉ còn mình: nút "Tái đấu" chờ mãi.** Gặp mỗi lần bạn bỏ về. Có từ đầu (L5). Đã chạy thử.
+- [ ] **UX-03 (L5) · Hết trận mà chỉ còn mình: nút "Tái đấu" chờ mãi.** Gặp mỗi lần bạn bỏ về. Có từ đầu (L5). Đã chạy thử.
   - Sửa: khi chỉ còn 1 người online thì đổi nút thành "Tạo phòng mới" (chữ mới, cần duyệt).
-- [ ] **QA-06 · Người rớt mạng vẫn bắt cả bàn chờ đủ 30 giây mỗi lượt của họ** (40 giây nếu đang bị bắt đập). Có từ đầu (L4). Đọc code.
+- [ ] **QA-06 (L4) · Người rớt mạng vẫn bắt cả bàn chờ đủ 30 giây mỗi lượt của họ** (40 giây nếu đang bị bắt đập). Có từ đầu (L4). Đọc code.
   - Sửa: ghế đang mất kết nối thì rút timer lượt xuống khoảng 8 giây.
 
 ## P2
@@ -39,10 +84,10 @@ Ký hiệu: **QA** = lỗi kỹ thuật, **UX** = code chạy đúng nhưng ngư
   - Sửa: chừa khoảng trống đáy cho `.menu-bg` trên màn hẹp; tăng vùng chạm nút góc trên màn cảm ứng.
 - [ ] **UX-05 · Điện thoại dọc: meme hiện đè lên bàn, che bài.** Có từ đầu. Đã chạy thử (meme che bài đối thủ).
   - Sửa: trên màn dọc đưa meme lên dải trên (dưới HUD) hoặc thu nhỏ; không che vùng bàn.
-- [ ] **UX-06 · Người bấm "Biết chơi rồi" vẫn bị chỉ tay lượt đầu + mẹo trong 3 trận đầu.** **Cần m quyết:** tắt chỉ tay nhưng giữ mẹo, hay tắt cả hai?
+- [ ] **UX-06 · Người bấm "Biết chơi rồi" vẫn bị chỉ tay lượt đầu + mẹo trong 3 trận đầu.** Chờ Bill trả lời (xem Câu hỏi).
 - [ ] **UX-07 · Người được mời phải gõ tên trước khi vào phòng.** Đề xuất điền sẵn một tên ngẫu nhiên đúng giọng game (vd "Tí sún", "Tèo mũi"), sửa sau được. Chữ cần duyệt.
-- [ ] **QA-07 · Ai trong phòng chờ cũng bấm được "Chiến thôi".** Có từ đầu (L6). Đọc code.
-- [ ] **UX-08 · Bạn đến muộn bấm link khi phòng đang đánh thì bị đuổi về menu.** Có từ đầu (C5). Tối thiểu: báo "Phòng đang đánh, đợi hết trận rồi bấm lại link". Tốt hơn: cho ngồi xem và vào luôn ở trận sau.
+- [ ] **QA-07 (L6) · Ai trong phòng chờ cũng bấm được "Chiến thôi".** Có từ đầu. Đọc code. Làm chung với Tủ đồ mục A.
+- [ ] **UX-08 (C5) · Bạn đến muộn bấm link khi phòng đang đánh thì bị đuổi về menu.** Có từ đầu (C5). Tối thiểu: báo "Phòng đang đánh, đợi hết trận rồi bấm lại link". Tốt hơn: cho ngồi xem và vào luôn ở trận sau.
 
 ## P3
 
@@ -50,8 +95,37 @@ Ký hiệu: **QA** = lỗi kỹ thuật, **UX** = code chạy đúng nhưng ngư
 - [ ] **QA-04 · Mỗi phòng từng vào để lại một token trong localStorage, không bao giờ xóa.** Đọc code. Sửa: chỉ giữ 5 token gần nhất.
 - [ ] **QA-05 · Reload giữa ván 1 của trận đầu thì chỉ tay lượt đầu hiện lại.** Đã chạy thử. Sửa: lưu cờ "đã đập lần đầu" vào storage.
 - [ ] **UX-09 · Đập trong 0.6 giây cuối của lượt bị bỏ qua mà không có phản hồi.** Đọc code. Sửa: hiện chữ nhỏ "Hết giờ!" ở chỗ bấm.
-- [ ] **UX-10 · Chưa có số liệu FTUE**, không biết người mới bỏ ở bước nào. Đề xuất gắn event: `room_join_success`, `ftue_invite_yes/no`, `ftue_step_n`, `ftue_skip`, `first_slam`, `first_flip`, `round_end`, `match_end`, `rematch`.
+- [ ] **UX-10 (= một phần G4) · Chưa có số liệu FTUE.** Làm chung với G4 theo hợp đồng sự kiện chuẩn, không làm riêng.
 - [ ] **TXT-01 · Duyệt chữ nháp I17–I24 và K1–K7 trong TEXTS.md.**
+
+## Đo đạc + bảng số Lucy (làm sau deploy)
+
+Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng quan, Người chơi, Trận đấu, FTUE, Ủng hộ, Kỹ thuật); tên người chơi + mã ẩn danh trong localStorage; **không lưu IP**; tin tóm tắt Telegram 8:00. Chi tiết: `docs/HANDOFF_VPS_STUDIO.md` mục 3.
+
+- [ ] **G4 (gồm UX-10)** · `server/analytics.js` + `src/analytics.js`: ghi JSONL theo hợp đồng sự kiện (`session_start`, `room_create/join`, `join_error`, `match_start`, `round_end`, `match_end`, `rematch`, `ftue_*`, `hint_shown`, `client_error`, `ws_drop/resume`, `server_start/error`, `slam`, `pass`, `donate_*`) ra `/var/lib/game-analytics/slam-cards/YYYY-MM-DD.jsonl`. `GET /__stats` chỉ ở 127.0.0.1, có số kết nối, phòng, độ trễ event loop. Client gửi qua WebSocket, danh sách tên cho phép, tối đa 20 sự kiện/phút/người. Có test.
+- [ ] **LU1** · Lucy server `routes/games.ts` + job gom số 00:10, giữ file thô 30 ngày.
+- [ ] **LU2** · Lucy giao diện theo canvas trang "Lucy" (https://claude.ai/artifact/CjdMqkAyKS6BuFnxjY9uTb).
+- [ ] **LU3** · Tóm tắt Telegram 8:00 + nút "Hỏi Lucy".
+- [ ] **LU4** · Tín hiệu "cần nâng máy": online đỉnh/ngày > 1.000, độ trễ p95 > 50 ms, CPU game > 70% một nhân, load 15 phút > 1.6, RAM trống < 500 MB; đỏ 3 ngày liền thì báo Telegram.
+- [ ] **LU5** · HTTPS cho Lucy (token đang đi qua http thường). Chờ Q4.
+
+## Tính năng khác
+
+- [ ] **G2** · Ủng hộ trong game theo canvas trang "Dép Lào · Ủng hộ": dải mời ở màn hết trận, nút "Ủng hộ" cạnh Info/Âm thanh, bảng QR (máy tính), tấm trượt có nút "Lưu ảnh mã QR" (điện thoại). Không hiện tên chủ tài khoản. QR gốc: `C:\Users\ducnq\Downloads\77375854_download.webp`, cắt x 324–845, y 360–911. Chữ mới vào TEXTS.md.
+- [ ] **G5** · Ảnh xem trước khi dán link phòng (Open Graph) cho Zalo/Messenger.
+- [ ] **G6** · Nút "Báo lỗi" (về `support@` hoặc Lucy).
+- [ ] **G3** · Quảng cáo. Chờ Q3 + Bill đăng ký AdSense. Không chặn nút copy link; không bao giờ trong ván.
+
+## Web studio (chờ Q4)
+
+- [ ] **WS1** · Cổng game từ canvas (trang tĩnh, dùng chung danh sách game với Lucy).
+- [ ] **WS3** · Trang pháp lý (riêng tư: tên người chơi, mã ẩn danh, quảng cáo).
+- [ ] **WS4** · `ads.txt` cho web; giữ `app-ads.txt` ở billthedev.com.
+- [ ] **WS2** landing `.com` · **WS5** press kit · **WS6** portfolio thêm nút "Game của studio" ở /arcade.
+
+## Bill tự làm
+
+- [ ] **A1** tạo 3 hộp mail `bill@`, `admin@`, `support@` · **A2** thống nhất tên tài khoản · **A3** cài Claude in Chrome · **A4** đăng ký AdSense · **A5** theo dõi Claude for Startups · **A6** thay key `chautn@gem-corp.global` trên VPS bằng key riêng.
 
 ## Tính năng mới: Tủ đồ (pet trong lá bài, dép tự chọn màu, chủ phòng + Sẵn sàng)
 
@@ -66,6 +140,8 @@ Mockup chạy thật: `mockup/customize/index.html` (artifact https://claude.ai/
 - [ ] Phòng chờ: thay ảnh JPG bằng xem trước 3D trực tiếp (hoặc chụp lại bằng shader game).
 
 **C. Lá bài stencil + pet**
+
+Thiết kế lá đã chốt 14/10 (mockup `mockup/customize/`, canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4tJz): mặt ngửa nền kem viền mực, khung màu ghế, ô cửa có khoảng hở với dải tên; trong ô là "khoảng không" 3 lớp (kiểu shader UI Background của Minions Art) + bệ tròn cho pet và dép; mặt úp là hoạ tiết cáo + logo, chữ Bill trắng · The xám · Dev cam. Viền pet đi theo pháp tuyến mượt nướng sẵn, độ dày viền là uniform.
 - [ ] Renderer bật `stencil: true`; mỗi lá 1 cặp mã (ngửa/úp), tối đa 4 lá.
 - [ ] Lá mới: mặt trước/sau vẽ bằng canvas (màu, hoa văn, biểu tượng, tên pet), ô cửa chỉ ghi stencil, căn phòng + pet + dép đạo cụ so stencil. Thay `cards.js`; vật lý giữ hộp 1 × 1.478.
 - [ ] **Prototype riêng phần khó nhất**: bài nằm trên bàn thì căn phòng nằm dưới mặt bàn, bị bàn che ở depth test. Cần ô cửa đặt lại depth trước khi vẽ phòng, và vẽ các lá từ thấp lên cao để lá đè vẫn che lá dưới. Mockup hiện chỉ chứng minh lá đứng giữa không gian.
@@ -79,6 +155,8 @@ Mockup chạy thật: `mockup/customize/index.html` (artifact https://claude.ai/
 - [ ] Chữ mới vào TEXTS.md: tên 24 pet, tên màu, Sẵn sàng / Hủy sẵn sàng / Đợi chủ phòng / tab Tủ đồ. Sửa FTUE bước 1 + 3 theo lá bài mới. Ghi công Kenney trong bảng Info.
 
 ## Hình ảnh & hiệu năng
+
+- [x] **ART-03 · Viền mực của bàn đè lên lá bài nằm sát mép.** Hull viền cao hơn mặt bàn 0.045 nên che bài ở mép xa. Sửa: viền bàn không ghi depth, vẽ sau sàn/bàn (`renderOrder` 1), bài vẽ sau viền (`renderOrder` 2). Bàn vẫn che bài nằm sau nó, viền thì không, và không có z-fight. Kiểm tra: `node qa/table-rim.mjs` (cần server :8097) → `qa/out/table-rim.png`.
 
 - [ ] **ART-01 · Dép trong game nhìn như tô màu mượt, không ra chất toon.** Đã kiểm tra: dép có dùng `MeshToonMaterial` (3 dải) + viền mực, nhưng texture `art/blender/palette.png` là các ô **chuyển màu** (mỗi ô sáng → tối). UV của dép trải dọc ô nên bóng đổ đã "vẽ sẵn" trong màu, che mất các dải toon. Ảnh: `qa/screens/art01-slippers-closeup.png`.
   - Sửa (trong `art/blender/build_slippers_lowpoly.py`): mỗi vật liệu lấy màu ở **một điểm** của ô (dồn UV vào giữa ô), hoặc thay palette bằng ô màu phẳng. Xuất lại 3 file `.glb`. Có thể chỉnh thêm độ tương phản 3 dải trong `toonGradient()` (`src/toon.js`) sau khi màu nền đã phẳng.
@@ -115,6 +193,10 @@ Playwright 1.48: WebKit (cùng engine với Safari) với hồ sơ iPhone 13, iP
 - Mạng chậm/mất gói thật (trình duyệt tích hợp không có DevTools throttling).
 - Một trận 3–4 người đầy đủ trên giao diện (logic 3 người đã có test tự động).
 - Máy không có WebGL thật.
+
+## Đã có trong nhánh (session VPS đối chiếu 14/10)
+
+Các lỗi trong artifact "Dép Lào: FTUE & lỗi" đã sửa trong nhánh: S1, S2, C1, C2, C3, C4, C6, C7, C8, D1, D2, L1, L2, L3, L7, U1, W1, W2, W3. Còn mở: QA-01, và L4/L5/L6/C5 = QA-06/UX-03/QA-07/UX-08 ở trên.
 
 ## Đã kiểm tra, đang ổn
 
