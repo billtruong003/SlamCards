@@ -27,3 +27,7 @@ art/blender/out_lowpoly/
 # OS
 .DS_Store
 Thumbs.db
+
+# QA device runs
+qa/out/
+qa/node_modules/

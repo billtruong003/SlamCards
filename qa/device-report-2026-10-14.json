@@ -1,0 +1,601 @@
+[
+  {
+    "device": "iPhone-13-Safari",
+    "engine": "webkit",
+    "steps": [
+      {
+        "name": "boot",
+        "ok": true,
+        "ms": 3601,
+        "webgl": "WebGL 2.0",
+        "audio": "missing (stubbed for test)",
+        "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like G"
+      },
+      {
+        "name": "invite link shows name prompt",
+        "ok": true,
+        "nameInputFontPx": 18,
+        "layout": {
+          "vw": 390,
+          "vh": 664,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "lobby",
+        "ok": true,
+        "cardTopAtScroll0": -130,
+        "invite": true,
+        "inviteTop": 487,
+        "vh": 664,
+        "cornerHitsNo": false,
+        "cornerHitsYes": false
+      },
+      {
+        "name": "tutorial modal",
+        "ok": true,
+        "top": 98,
+        "bottom": 567,
+        "vh": 664,
+        "nextVisible": true
+      },
+      {
+        "name": "first turn",
+        "ok": true,
+        "pointer": true,
+        "pointerAt": "translate(203.7px, 509.8px)",
+        "toggleText": "Đập bằng",
+        "hint": "Kéo để ngắm, thả để đập · Đập chỗ trống = bỏ lượt",
+        "layout": {
+          "vw": 390,
+          "vh": 664,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "tap slam at pointer",
+        "ok": true,
+        "drift": 0,
+        "phase": "turn",
+        "event": null,
+        "tip": "MẸO Ngửa rồi kìa! Giờ tìm cách đè bài địch!",
+        "myCardY": 0.0065
+      },
+      {
+        "name": "landscape",
+        "ok": true,
+        "layout": {
+          "vw": 664,
+          "vh": 390,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "back to portrait",
+        "ok": true,
+        "layout": {
+          "vw": 390,
+          "vh": 664,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "audio context",
+        "ok": true,
+        "state": "n/a (bundled)"
+      }
+    ],
+    "errors": [],
+    "findings": [
+      "Lobby title off-screen and unreachable (card top -130px) — UX-01"
+    ]
+  },
+  {
+    "device": "iPhone-SE-Safari",
+    "engine": "webkit",
+    "steps": [
+      {
+        "name": "boot",
+        "ok": true,
+        "ms": 2732,
+        "webgl": "WebGL 2.0",
+        "audio": "missing (stubbed for test)",
+        "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like"
+      },
+      {
+        "name": "invite link shows name prompt",
+        "ok": true,
+        "nameInputFontPx": 18,
+        "layout": {
+          "vw": 320,
+          "vh": 568,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 49×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "lobby",
+        "ok": true,
+        "cardTopAtScroll0": -190,
+        "invite": true,
+        "inviteTop": 451,
+        "vh": 568,
+        "cornerHitsNo": false,
+        "cornerHitsYes": false
+      },
+      {
+        "name": "tutorial modal",
+        "ok": true,
+        "top": 35,
+        "bottom": 533,
+        "vh": 568,
+        "nextVisible": true
+      },
+      {
+        "name": "first turn",
+        "ok": true,
+        "pointer": true,
+        "pointerAt": "translate(168.4px, 425.7px)",
+        "toggleText": "Đập bằng",
+        "hint": "Kéo để ngắm, thả để đập · Đập chỗ trống = bỏ lượt",
+        "layout": {
+          "vw": 320,
+          "vh": 568,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 49×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "tap slam at pointer",
+        "ok": true,
+        "drift": 0,
+        "phase": "turn",
+        "event": null,
+        "tip": "MẸO Ngửa rồi kìa! Giờ tìm cách đè bài địch!",
+        "myCardY": 0.0063
+      },
+      {
+        "name": "landscape",
+        "ok": true,
+        "layout": {
+          "vw": 568,
+          "vh": 320,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 49×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "back to portrait",
+        "ok": true,
+        "layout": {
+          "vw": 320,
+          "vh": 568,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 49×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "audio context",
+        "ok": true,
+        "state": "n/a (bundled)"
+      }
+    ],
+    "errors": [],
+    "findings": [
+      "Lobby title off-screen and unreachable (card top -190px) — UX-01"
+    ]
+  },
+  {
+    "device": "iPad-Mini-Safari",
+    "engine": "webkit",
+    "steps": [
+      {
+        "name": "boot",
+        "ok": true,
+        "ms": 2951,
+        "webgl": "WebGL 2.0",
+        "audio": "missing (stubbed for test)",
+        "ua": "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Ver"
+      },
+      {
+        "name": "invite link shows name prompt",
+        "ok": true,
+        "nameInputFontPx": 18,
+        "layout": {
+          "vw": 768,
+          "vh": 1024,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "lobby",
+        "ok": true,
+        "cardTopAtScroll0": -6,
+        "invite": true,
+        "inviteTop": 723,
+        "vh": 1024,
+        "cornerHitsNo": false,
+        "cornerHitsYes": false
+      },
+      {
+        "name": "tutorial modal",
+        "ok": true,
+        "top": 358,
+        "bottom": 666,
+        "vh": 1024,
+        "nextVisible": true
+      },
+      {
+        "name": "first turn",
+        "ok": true,
+        "pointer": true,
+        "pointerAt": "translate(394.7px, 864.2px)",
+        "toggleText": "Đập bằng",
+        "hint": "Kéo để ngắm, thả để đập · Đập chỗ trống = bỏ lượt",
+        "layout": {
+          "vw": 768,
+          "vh": 1024,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "tap slam at pointer",
+        "ok": true,
+        "drift": 0,
+        "phase": "turn",
+        "event": null,
+        "tip": "MẸO Ngửa rồi kìa! Giờ tìm cách đè bài địch!",
+        "myCardY": 0.0066
+      },
+      {
+        "name": "landscape",
+        "ok": true,
+        "layout": {
+          "vw": 1024,
+          "vh": 768,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "back to portrait",
+        "ok": true,
+        "layout": {
+          "vw": 768,
+          "vh": 1024,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 47×30",
+            "Âm thanh 78×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "audio context",
+        "ok": true,
+        "state": "n/a (bundled)"
+      }
+    ],
+    "errors": [],
+    "findings": [
+      "Lobby title off-screen and unreachable (card top -6px) — UX-01"
+    ]
+  },
+  {
+    "device": "Pixel-7-Chrome",
+    "engine": "chromium",
+    "steps": [
+      {
+        "name": "boot",
+        "ok": true,
+        "ms": 3711,
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "audio": "available",
+        "ua": "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130"
+      },
+      {
+        "name": "invite link shows name prompt",
+        "ok": true,
+        "nameInputFontPx": 18,
+        "layout": {
+          "vw": 412,
+          "vh": 839,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "lobby",
+        "ok": true,
+        "cardTopAtScroll0": -98,
+        "invite": true,
+        "inviteTop": 629,
+        "vh": 839,
+        "cornerHitsNo": false,
+        "cornerHitsYes": true
+      },
+      {
+        "name": "tutorial modal",
+        "ok": true,
+        "top": 184,
+        "bottom": 655,
+        "vh": 839,
+        "nextVisible": true
+      },
+      {
+        "name": "first turn",
+        "ok": true,
+        "pointer": true,
+        "pointerAt": "translate(191.8px, 609.4px)",
+        "toggleText": "Đập bằng",
+        "hint": "Kéo để ngắm, thả để đập · Đập chỗ trống = bỏ lượt",
+        "layout": {
+          "vw": 412,
+          "vh": 839,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "tap slam at pointer",
+        "ok": true,
+        "drift": 0,
+        "phase": "turn",
+        "event": null,
+        "tip": "MẸO Ngửa rồi kìa! Giờ tìm cách đè bài địch!",
+        "myCardY": 0.0068
+      },
+      {
+        "name": "landscape",
+        "ok": true,
+        "layout": {
+          "vw": 839,
+          "vh": 412,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "back to portrait",
+        "ok": true,
+        "layout": {
+          "vw": 412,
+          "vh": 839,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "audio context",
+        "ok": true,
+        "state": "n/a (bundled)"
+      }
+    ],
+    "errors": [
+      "console: Failed to load module script: Expected a JavaScript module script but the server responded with a MIME type of \"text/html\". Strict MIME type checking is enforced for module scripts per HTML spec."
+    ],
+    "findings": [
+      "Lobby title off-screen and unreachable (card top -98px) — UX-01"
+    ]
+  },
+  {
+    "device": "Galaxy-S9-Chrome",
+    "engine": "chromium",
+    "steps": [
+      {
+        "name": "boot",
+        "ok": true,
+        "ms": 907,
+        "webgl": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "audio": "available",
+        "ua": "Mozilla/5.0 (Linux; Android 8.0.0; SM-G965U Build/R16NW) AppleWebKit/537.36 (KHTML, like G"
+      },
+      {
+        "name": "invite link shows name prompt",
+        "ok": true,
+        "nameInputFontPx": 18,
+        "layout": {
+          "vw": 320,
+          "vh": 658,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "lobby",
+        "ok": true,
+        "cardTopAtScroll0": -146,
+        "invite": true,
+        "inviteTop": 496,
+        "vh": 658,
+        "cornerHitsNo": false,
+        "cornerHitsYes": false
+      },
+      {
+        "name": "tutorial modal",
+        "ok": true,
+        "top": 79,
+        "bottom": 579,
+        "vh": 658,
+        "nextVisible": true
+      },
+      {
+        "name": "first turn",
+        "ok": true,
+        "pointer": true,
+        "pointerAt": "translate(166.3px, 476.1px)",
+        "toggleText": "Đập bằng",
+        "hint": "Kéo để ngắm, thả để đập · Đập chỗ trống = bỏ lượt",
+        "layout": {
+          "vw": 320,
+          "vh": 658,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "tap slam at pointer",
+        "ok": true,
+        "drift": 0,
+        "phase": "turn",
+        "event": null,
+        "tip": "MẸO Ngửa rồi kìa! Giờ tìm cách đè bài địch!",
+        "myCardY": 0.0063
+      },
+      {
+        "name": "landscape",
+        "ok": true,
+        "layout": {
+          "vw": 658,
+          "vh": 320,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "back to portrait",
+        "ok": true,
+        "layout": {
+          "vw": 320,
+          "vh": 658,
+          "overlaps": [],
+          "offscreen": [],
+          "smallTargets": [
+            "? 30×30",
+            "Info 48×30",
+            "Âm thanh 81×30"
+          ],
+          "hScroll": false
+        }
+      },
+      {
+        "name": "audio context",
+        "ok": true,
+        "state": "n/a (bundled)"
+      }
+    ],
+    "errors": [
+      "console: Failed to load module script: Expected a JavaScript module script but the server responded with a MIME type of \"text/html\". Strict MIME type checking is enforced for module scripts per HTML spec."
+    ],
+    "findings": [
+      "Lobby title off-screen and unreachable (card top -146px) — UX-01"
+    ]
+  }
+]
