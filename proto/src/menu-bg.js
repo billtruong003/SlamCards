@@ -1,11 +1,20 @@
 // Menu backdrop: scattered cards, and a slipper that keeps slamming one at random and
 // flipping it. Silent on purpose; the menu only has music.
 import { t } from './i18n.js';
+import { PETS, CARD_COLORS, CARD_COLOR_IDS } from './catalog.js';
 
-const CARDS = ['black-front', 'black-back', 'pink-front', 'pink-back'];
-const FLIPPED = { 'black-front': 'black-back', 'black-back': 'black-front', 'pink-front': 'pink-back', 'pink-back': 'pink-front' };
+// The new cards (pet window face, colour back), drawn in CSS like the tutorial pictures.
+const pick = (list) => list[Math.floor(Math.random() * list.length)];
+// absolute: a relative url() inside a custom property resolves against the stylesheet, not the page
+const petUrl = () => `url(${new URL(`pets/thumbs/${pick(PETS)}.png`, document.baseURI).href})`;
+function dress(el, i) {
+  const c = CARD_COLORS[CARD_COLOR_IDS[i % CARD_COLOR_IDS.length]];
+  el.style.setProperty('--c', c.color);
+  el.style.setProperty('--room', c.room);
+  el.style.setProperty('--pet', petUrl());
+}
 
-const DEP_SVG = `<svg viewBox="0 0 40 84" aria-hidden="true"><rect x="3" y="3" width="34" height="78" rx="17" fill="#f5f7ff" stroke="#2a1418" stroke-width="4"/><path d="M9 36 Q20 20 31 36" fill="none" stroke="#5b8def" stroke-width="7" stroke-linecap="round"/><circle cx="20" cy="24" r="3" fill="#2a1418"/></svg>`;
+const DEP_IMG = '<img src="deps/dep_lao.png" alt="" draggable="false">';
 
 export function mountMenuBackground(host) {
   const layer = document.createElement('div');
@@ -15,9 +24,10 @@ export function mountMenuBackground(host) {
   const count = Math.max(6, Math.round(Math.min(26, (innerWidth * innerHeight) / 52000)));
   const cards = Array.from({ length: count }, (_, i) => {
     const el = document.createElement('div');
-    const kind = CARDS[i % CARDS.length];
+    const kind = i % 2 ? 'back' : 'front';
     el.className = `mcard ${kind}`;
     el.dataset.kind = kind;
+    dress(el, i >> 1);
     el.dataset.rot = String(Math.round((Math.random() - 0.5) * 50));
     el.style.left = `${4 + Math.random() * 88}%`;
     el.style.top = `${6 + Math.random() * 84}%`;
@@ -29,7 +39,7 @@ export function mountMenuBackground(host) {
 
   const dep = document.createElement('div');
   dep.className = 'mdep';
-  dep.innerHTML = DEP_SVG;
+  dep.innerHTML = DEP_IMG;
   layer.appendChild(dep);
 
   const slam = () => {
@@ -59,7 +69,8 @@ export function mountMenuBackground(host) {
         { transform: `rotate(${rot}deg) translateY(-30px) rotateY(90deg)` },
       ], { duration: 160, easing: 'ease-out' }).onfinish = () => {
         card.classList.remove(card.dataset.kind);
-        card.dataset.kind = FLIPPED[card.dataset.kind];
+        card.dataset.kind = card.dataset.kind === 'front' ? 'back' : 'front';
+        if (card.dataset.kind === 'front') card.style.setProperty('--pet', petUrl());
         card.classList.add(card.dataset.kind);
         card.dataset.rot = String(Math.round((Math.random() - 0.5) * 50));
         card.style.transform = `rotate(${card.dataset.rot}deg)`;
