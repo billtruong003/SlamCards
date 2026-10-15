@@ -1,4 +1,4 @@
-:root{--font:"Baloo 2",system-ui,sans-serif;--ink:#2a1418;--cream:#fffbf0;--pink:#ff6f9c;--pink-dark:#d63c6e;--mint:#7fd8b4;--muted:#6a5a52}
+:root{--font:"Baloo 2",system-ui,sans-serif;--ink:#2a1418;--cream:#fffbf0;--pink:#cc87a0;--pink-dark:#a34e71;--mint:#a9d0b0;--muted:#6a5a52}
 *{box-sizing:border-box}
 /* Baloo 2 has no CJK or Thai glyphs: fall back to system fonts for those. */
 :root:lang(zh-Hans){--font:"Baloo 2","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif}
@@ -128,14 +128,14 @@ button{font:inherit;color:inherit;cursor:pointer}
 .meme-card figcaption{font-weight:800;text-align:center;padding:2px 6px;font-size:16px}
 @keyframes memeIn{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(-2deg);opacity:1}}
 .vfx-trinh{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:800;text-align:center}
-.vfx-trinh span{font-size:clamp(44px,10vw,96px);line-height:1;color:#ff6f9c;-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:0 6px 0 var(--ink)}
+.vfx-trinh span{font-size:clamp(44px,10vw,96px);line-height:1;color:#ce7b9a;-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:0 6px 0 var(--ink)}
 .vfx-trinh .l1{animation:rainbow 1s linear infinite,slamIn .4s cubic-bezier(.2,1.8,.4,1) both,wobble .5s ease-in-out .4s infinite alternate}
-.vfx-trinh .l2{color:#ffc371;opacity:0;animation:rainbow 1s linear infinite,slamIn .4s cubic-bezier(.2,1.8,.4,1) 1.6s both,wobble .5s ease-in-out 2s infinite alternate}
+.vfx-trinh .l2{color:#e5b568;opacity:0;animation:rainbow 1s linear infinite,slamIn .4s cubic-bezier(.2,1.8,.4,1) 1.6s both,wobble .5s ease-in-out 2s infinite alternate}
 @keyframes rainbow{from{filter:hue-rotate(0deg) drop-shadow(0 0 12px rgba(255,255,255,.6))}to{filter:hue-rotate(360deg) drop-shadow(0 0 12px rgba(255,255,255,.6))}}
 @keyframes slamIn{from{transform:scale(3) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(-3deg);opacity:1}}
 @keyframes wobble{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.08) rotate(3deg)}}
 .vfx-clap{position:absolute;left:50%;top:22%;transform:translateX(-50%)}
-.vfx-clap span{display:block;font-weight:800;font-size:clamp(40px,8vw,72px);color:#ffc371;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--ink);animation:clap .28s ease-in-out infinite alternate}
+.vfx-clap span{display:block;font-weight:800;font-size:clamp(40px,8vw,72px);color:#e5b568;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--ink);animation:clap .28s ease-in-out infinite alternate}
 @keyframes clap{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.15) rotate(4deg)}}
 
 /* ---------- wind: the key reading of every turn ---------- */
@@ -146,9 +146,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .wind .bars i:nth-child(1){height:8px}.wind .bars i:nth-child(2){height:12px}.wind .bars i:nth-child(3){height:16px}.wind .bars i:nth-child(4){height:20px}
 .wind .bars i.on{background:var(--ink)}
 .wind[data-level="0"]{opacity:.6}
-.wind[data-level="1"],.wind[data-level="2"]{background:#c9f0df}
-.wind[data-level="3"]{background:#ffd59a}
-.wind[data-level="4"]{background:#ff9b9b;animation:windPulse 1s ease-in-out infinite alternate}
+.wind[data-level="1"],.wind[data-level="2"]{background:#d5ecd9}
+.wind[data-level="3"]{background:#eed3ac}
+.wind[data-level="4"]{background:#f1b8cc;animation:windPulse 1s ease-in-out infinite alternate}
 @keyframes windPulse{to{transform:scale(1.06)}}
 
 /* ---------- sound settings ---------- */
@@ -225,7 +225,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* ---------- home, create room, public rooms, quick match ---------- */
 .group-label{margin:0;font-weight:800;font-size:15px;text-align:left;width:100%}
-.quick-group{width:100%;box-sizing:border-box;border:3px solid var(--ink);border-radius:16px;background:#ffe9f0;padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px}
+.quick-group{width:100%;box-sizing:border-box;border:3px solid var(--ink);border-radius:16px;background:#f9eaef;padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px}
 .seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%}
 .seg.two{grid-template-columns:1fr 1fr}
 .seg.three{grid-template-columns:repeat(3,minmax(0,1fr))}

@@ -46,11 +46,11 @@ export class Visuals {
     this.group = new THREE.Group();
     scene.add(this.group);
 
-    this.threats = [0, 1, 2].map(() => [disc(TUNE.threatRange, '#ff6f9c', 0.07), ring(TUNE.threatRange, '#ff6f9c', 0.45, 0.03)]);
+    this.threats = [0, 1, 2].map(() => [disc(TUNE.threatRange, '#a34e71', 0.07), ring(TUNE.threatRange, '#a34e71', 0.45, 0.03)]);
     this.reach = disc(TUNE.reachRadius, '#ffffff', 0.18);
     this.reachEdge = ring(TUNE.reachRadius, '#2a1418', 0.7, 0.04);
-    this.forced = disc(TUNE.forcedRadius, '#ff6f9c', 0.22);
-    this.forcedEdge = ring(TUNE.forcedRadius, '#d63c6e', 0.95, 0.05);
+    this.forced = disc(TUNE.forcedRadius, '#a34e71', 0.22);
+    this.forcedEdge = ring(TUNE.forcedRadius, '#974e66', 0.95, 0.05);
     this.wind = disc(TUNE.windRadius, '#5b8def', 0.12);
     this.windEdge = ring(TUNE.windRadius, '#5b8def', 0.55, 0.03);
     this.shake = ring(TUNE.handShake, '#2a1418', 0.9, 0.025);
@@ -121,7 +121,7 @@ export class Visuals {
       m.position.x = point.x;
       m.position.z = point.z;
     }
-    const tint = valid ? '#5b8def' : '#e03b3b';
+    const tint = valid ? '#2f6e9e' : '#a34949';
     this.wind.material.color.set(tint);
     this.windEdge.material.color.set(tint);
 
