@@ -513,6 +513,17 @@ function myLook() {
   return p ? { pet: p.pet, dep: p.dep, depColors: p.depColors, cardColor: p.cardColor } : playerLook.get();
 }
 
+// The wardrobe in one row (phones, inside the home card): pet, slipper and card colour, opens the wardrobe.
+function gearRow(look) {
+  const c = CARD_COLORS[look.cardColor];
+  return `<button type="button" class="gear-row" data-ward="pet">
+    <img src="${petThumb(look.pet)}" alt=""><img src="deps/${look.dep}.png" alt="">
+    <span class="card-chip" style="--c:${c.color}">${c.suit}</span>
+    <span class="gr-label">${t('wardrobe.title')}<small>${escapeHtml(t(`pet.${look.pet}`))} · ${escapeHtml(t(`dep.${look.dep}`))} · ${escapeHtml(t(`color.${look.cardColor}`))}</small></span>
+    <svg width="12" height="20" viewBox="0 0 12 20" aria-hidden="true"><path d="M2 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>`;
+}
+
 function wireGearTiles() {
   els.overlay.querySelectorAll('[data-ward]').forEach((b) => { b.onclick = () => openWardrobe(b.dataset.ward); });
 }
@@ -771,6 +782,7 @@ function renderMenu(error = '') {
       <p class="sub">${t('menu.tagline')}</p>
       ${menuError(error)}
       ${nameField()}
+      ${gearRow(playerLook.get())}
       <div class="quick-group">
         <p class="group-label">${t('home.quickTitle')}</p>
         <div class="seg" id="size">${sizeButtons(size)}</div>

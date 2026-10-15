@@ -124,7 +124,10 @@ try {
   closing = false;
 
   const phone = await player('Tí', { ...devices['iPhone SE'] });
-  await phone.click('.gear-card [data-ward="dep"]').catch(async () => { await phone.locator('.gear-card [data-ward="dep"]').scrollIntoViewIfNeeded(); await phone.click('.gear-card [data-ward="dep"]'); });
+  // phones: the wardrobe is the row inside the home card, in sight without scrolling
+  check('wardrobe row in sight on the home screen (iPhone SE)', await phone.evaluate(() => { const r = document.querySelector('.gear-row').getBoundingClientRect(); return r.height > 0 && r.bottom <= innerHeight; }));
+  await phone.click('.gear-row');
+  await phone.click('[data-tab="dep"]');
   await phone.waitForSelector('#ward-dep-canvas');
   await phone.waitForTimeout(600);
   await shot(phone, '09-phone-ward-dep');
