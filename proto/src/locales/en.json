@@ -294,6 +294,7 @@
   "info.portfolio": "Portfolio",
   "info.contact": "Contact",
   "info.cardArt": "Card art: {name}",
+  "info.petArt": "3D pets: {name}",
   "common.close": "Close",
   "common.listSep": ", ",
   "fatal.title": "Can't run the game!",

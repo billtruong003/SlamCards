@@ -294,6 +294,7 @@
   "info.portfolio": "作品サイト",
   "info.contact": "連絡先",
   "info.cardArt": "カードイラスト：{name}",
+  "info.petArt": "3Dペット：{name}",
   "common.close": "閉じる",
   "common.listSep": "、",
   "fatal.title": "ゲームを起動できない！",

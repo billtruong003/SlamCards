@@ -294,6 +294,7 @@
   "info.portfolio": "Portfolio",
   "info.contact": "Liên hệ",
   "info.cardArt": "Tranh bài: {name}",
+  "info.petArt": "Pet 3D: {name}",
   "common.close": "Đóng",
   "common.listSep": ", ",
   "fatal.title": "Máy chưa chạy được game!",

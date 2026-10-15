@@ -294,6 +294,7 @@
   "info.portfolio": "作品集",
   "info.contact": "联系",
   "info.cardArt": "卡牌插画：{name}",
+  "info.petArt": "3D 宠物：{name}",
   "common.close": "关闭",
   "common.listSep": "、",
   "fatal.title": "游戏跑不起来！",

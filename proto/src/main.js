@@ -3,7 +3,7 @@ import { World } from './world.js';
 import { Visuals } from './visuals.js';
 import { TUNE } from './config.js';
 import { SEATS, ROUNDS_TO_WIN, FALL_Y, MAX_PLAYERS } from './rules.js';
-import { thump } from './sound.js';
+import { thump, chime } from './sound.js';
 import { playMusic, refreshMusic } from './music.js';
 import { getLevel, setLevel } from './audio.js';
 import { mountMenuBackground } from './menu-bg.js';
@@ -50,6 +50,7 @@ document.title = t('menu.title');
 applyStatic();
 $('info-by').innerHTML = t('info.by', { name: '<b>BillTheDev</b>' });
 for (const id of ['credit', 'info-credit']) $(id).textContent = t('info.cardArt', { name: 'Dani Maccari' });
+$('info-pets').textContent = t('info.petArt', { name: 'Kenney (CC0)' });
 els.windText.textContent = t('hud.wind', { n: 0 });
 
 // Language: a small globe button in the corner (short code only, so it fits beside ?/Info/Sound on
@@ -57,6 +58,9 @@ els.windText.textContent = t('hud.wind', { n: 0 });
 const LANG_SHORT = { 'zh-Hans': '简', 'zh-Hant': '繁', 'pt-BR': 'PT' };
 const GLOBE = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4.2 2.8 6.5S10 12.5 8 14.5M8 1.5C6 3.5 5.2 5.7 5.2 8S6 12.5 8 14.5"/></svg>';
 const CROWN = '<svg width="14" height="12" viewBox="0 0 14 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M1 10 L2 3 L5 6 L7 1.5 L9 6 L12 3 L13 10 Z"/></svg>';
+const LOCK = '<svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="1.5" y="6" width="9" height="7" rx="1.5"/><path d="M3.5 6V4a2.5 2.5 0 0 1 5 0v2"/></svg>';
+const PEOPLE = '<svg width="16" height="13" viewBox="0 0 16 13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="6" cy="4" r="2.5"/><path d="M1.5 12c0-2.6 2-4.3 4.5-4.3s4.5 1.7 4.5 4.3"/><path d="M10.5 1.8a2.4 2.4 0 0 1 0 4.5M12.5 8.2c1.2.6 2 1.9 2 3.8"/></svg>';
+const visIcon = (v) => (v === 'public' ? GLOBE : LOCK);
 const CHECK = '<svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5 L4.5 8.5 L10.5 1.5"/></svg>';
 const langs = availableLangs();
 const langPanel = $('lang-panel');
@@ -491,6 +495,7 @@ function onState(next) {
   else if (els.toast.dataset.sticky) hideToast();
 
   announceEvent();
+  chimeReady();
   reactWithMemes();
   playMusic(['lobby', 'matchEnd'].includes(state.phase) ? 'menu' : 'game');
   renderHud();
@@ -609,6 +614,14 @@ function resyncCards() {
 }
 
 // Mid-round knockouts in 3-4 player games get a short toast.
+// A short tone when someone else in the lobby turns Ready (my own tap already has its button).
+let readyBefore = {};
+function chimeReady() {
+  const now = state?.phase === 'lobby' ? state.ready ?? {} : {};
+  if (Object.keys(now).some((seat) => seat !== me && now[seat] && readyBefore[seat] === false)) chime('ready');
+  readyBefore = Object.fromEntries(SEATS.map((seat) => [seat, Boolean(now[seat])]));
+}
+
 function announceEvent() {
   const event = state.event;
   const key = event ? `${state.round}-${event.type}-${event.by}-${event.eliminated}` : '';
@@ -620,6 +633,7 @@ function announceEvent() {
     : event.type === 'afk' ? t('toast.afk', { name: nameOf(event.by) })
       : event.type === 'left' ? t('toast.left', { out }) : t('toast.capture', { by: nameOf(event.by), out });
   showToast(text, 2500);
+  if (event.type === 'afk') chime('out');
 }
 
 // ---------- meme reactions ----------
@@ -875,7 +889,7 @@ function renderCreate(preset = {}) {
       <p class="group-label">${t('create.who')}</p>
       <div class="seg two" id="vis">
         ${['private', 'public'].map((v) => `<button type="button" class="${v === visibility ? 'on' : ''}" data-vis="${v}" aria-pressed="${v === visibility}">
-          <span class="seg-big">${t(`create.${v}`)}</span><small>${t(`create.${v}Sub`)}</small></button>`).join('')}
+          <span class="seg-big">${visIcon(v)} ${t(`create.${v}`)}</span><small>${t(`create.${v}Sub`)}</small></button>`).join('')}
       </div>
       <p class="group-label">${t('create.cap')}</p>
       <div class="seg three" id="cap">${sizeButtons(cap, [2, 3, 4])}</div>
@@ -960,7 +974,7 @@ function fillRoomList() {
       return `<div class="room-row${open ? '' : ' off'}">
         <img class="room-av" src="${petThumb(r.pet ?? 'cat')}" alt="">
         <span class="room-name">${t('rooms.room', { code: escapeHtml(r.code) })}
-          <small>${t('rooms.count', { n: r.n, cap: r.cap })} <span class="tag ${open ? 'ok' : 'busy'}">${t(open ? 'rooms.waiting' : 'rooms.playing')}</span></small></span>
+          <small>${PEOPLE} ${t('rooms.count', { n: r.n, cap: r.cap })} <span class="tag ${open ? 'ok' : 'busy'}">${t(open ? 'rooms.waiting' : 'rooms.playing')}</span></small></span>
         <span class="room-slots" aria-hidden="true">${slots}</span>
         ${open ? `<button class="btn pri small" data-join="${escapeHtml(r.code)}">${t('rooms.join')}</button>` : '<span></span>'}
       </div>`;
@@ -1042,7 +1056,7 @@ function renderOverlay() {
   switch (s.phase) {
     case 'lobby': {
       if (s.kind === 'quick') {
-        setOverlay('quick-found', `<div class="panel"><h1 class="stamp" style="font-size:52px">${t('queue.found')}</h1></div>`);
+        if (setOverlay('quick-found', `<div class="panel"><h1 class="stamp" style="font-size:52px">${t('queue.found')}</h1></div>`)) chime('found');
         break;
       }
       const link = `${location.origin}${location.pathname}?room=${s.code}`;
@@ -1055,8 +1069,8 @@ function renderOverlay() {
       const seatTag = (seat) => (seat === s.host ? `<span class="seat-tag">${CROWN}${t('lobby.host')}</span>`
         : `<span class="seat-tag${s.ready[seat] ? ' ok' : ''}">${s.ready[seat] ? `${CHECK}${t('lobby.isReady')}` : t('lobby.notReady')}</span>`);
       const tags = `<div class="room-tags">
-          <button class="tag-btn" id="vis-toggle" ${isHost ? '' : 'disabled'}>${t(`create.${s.visibility}`)}${isHost ? ' ▾' : ''}</button>
-          <button class="tag-btn" id="cap-toggle" ${isHost ? '' : 'disabled'}>${t('lobby.capTag', { n: s.cap })}${isHost ? ' ▾' : ''}</button>
+          <button class="tag-btn" id="vis-toggle" ${isHost ? '' : 'disabled'}>${visIcon(s.visibility)}${t(`create.${s.visibility}`)}${isHost ? ' ▾' : ''}</button>
+          <button class="tag-btn" id="cap-toggle" ${isHost ? '' : 'disabled'}>${PEOPLE}${t('lobby.capTag', { n: s.cap })}${isHost ? ' ▾' : ''}</button>
         </div>`;
       const waitingNames = guests.filter((seat) => !s.ready[seat]).map((seat) => escapeHtml(nameOf(seat)));
       const action = isHost

@@ -275,6 +275,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .room-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
 .tag-btn{border:2px solid var(--ink);border-radius:999px;background:var(--cream);font:800 13px var(--font);padding:0 10px;min-height:30px;color:var(--ink)}
 .tag-btn:disabled{opacity:1;color:var(--ink);cursor:default}
+.tag-btn svg,.seg-big svg,.room-name small svg{vertical-align:-2px;margin-right:4px}
 .slot.seat{position:relative;overflow:visible}
 .seat-tag{position:absolute;right:6px;top:-11px;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border:2px solid var(--ink);border-radius:999px;padding:0 7px;background:var(--cream);color:var(--ink);line-height:18px;white-space:nowrap}
 .seat-tag.ok{background:var(--mint)}

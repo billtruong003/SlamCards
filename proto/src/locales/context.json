@@ -1453,6 +1453,11 @@
     "where": "Artist credit (corner and info panel)",
     "max": 30
   },
+  "info.petArt": {
+    "where": "Credit for the 3D pets and slippers' style source (info panel); {name} is 'Kenney (CC0)'",
+    "max": 34,
+    "id": "Pet 3D: {name}"
+  },
   "common.close": {
     "where": "Close button of the info, sound and quick-rules panels",
     "max": 8,

@@ -294,6 +294,7 @@
   "info.portfolio": "Portfólio",
   "info.contact": "Contato",
   "info.cardArt": "Arte das cartas: {name}",
+  "info.petArt": "Pets 3D: {name}",
   "common.close": "Fechar",
   "common.listSep": ", ",
   "fatal.title": "Não deu pra abrir o jogo!",
