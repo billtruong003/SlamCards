@@ -251,7 +251,7 @@ function depthMaterial(ref, far) {
 
 const petCache = {};
 const loader = new GLTFLoader();
-const loadPet = (id) => (petCache[id] ??= loader.loadAsync(`pets/animal-${id}.json`));
+export const loadPet = (id) => (petCache[id] ??= loader.loadAsync(`pets/animal-${id}.json`));
 
 // Kenney's cube pets animate each part as its own node: 7 parts = 7 draw calls, 14 with outlines.
 // Rebuilt once per pet kind as ONE skinned mesh: every node becomes a bone and each part's vertices
@@ -300,7 +300,7 @@ function mergePet(id, gltf) {
   return mergedPets[id];
 }
 
-function preparePet(id, gltf, ref, height) {
+export function preparePet(id, gltf, ref, height) {
   const merged = mergePet(id, gltf);
   const root = new THREE.Group();
   const rig = new THREE.Group();

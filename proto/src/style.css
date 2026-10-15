@@ -254,7 +254,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .room-list{display:flex;flex-direction:column;gap:8px;width:100%;min-height:80px;align-items:stretch}
 .room-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto 84px;gap:10px;align-items:center;background:var(--cream);border:3px solid var(--ink);border-radius:14px;padding:6px 10px;text-align:left}
 .room-row.off{opacity:.55}
-.room-av{width:46px;height:46px;border-radius:10px;border:2px solid var(--ink);object-fit:cover;background:#fff}
+.room-av{width:46px;height:46px;border-radius:10px;border:2px solid var(--ink);object-fit:contain;background:var(--cream)}
 .room-name{font-weight:800;font-size:17px;line-height:1.1;min-width:0}
 .room-name small{display:flex;gap:6px;align-items:center;font-weight:700;font-size:12px;color:var(--muted);margin-top:2px;flex-wrap:wrap}
 .tag{display:inline-flex;align-items:center;font-size:12px;font-weight:800;border:2px solid var(--ink);border-radius:999px;padding:0 8px;background:var(--cream);color:var(--ink);line-height:18px}

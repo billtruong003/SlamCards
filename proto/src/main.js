@@ -958,7 +958,7 @@ function fillRoomList() {
       const open = r.phase === 'lobby' && r.n < r.cap;
       const slots = Array.from({ length: r.cap }, (_, i) => `<b class="${i < r.n ? 'full' : ''}"></b>`).join('');
       return `<div class="room-row${open ? '' : ' off'}">
-        <img class="room-av" src="deps/${r.dep ?? 'dep_lao'}.jpg" alt="">
+        <img class="room-av" src="${petThumb(r.pet ?? 'cat')}" alt="">
         <span class="room-name">${t('rooms.room', { code: escapeHtml(r.code) })}
           <small>${t('rooms.count', { n: r.n, cap: r.cap })} <span class="tag ${open ? 'ok' : 'busy'}">${t(open ? 'rooms.waiting' : 'rooms.playing')}</span></small></span>
         <span class="room-slots" aria-hidden="true">${slots}</span>
@@ -1674,6 +1674,7 @@ if (new URLSearchParams(location.search).has('debug')) {
   window.slamDebug = {
     get state() { return state; },
     world,
+    renderAssets: (opts) => import('./asset-studio.js').then((m) => m.renderAssets(opts)),
     meme: showMeme,
     visuals,
     set timeScale(v) { timeScale = v; },

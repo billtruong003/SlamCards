@@ -158,7 +158,7 @@ export function gearTiles(look) {
   const dots = look.depColors.map((c) => `<i style="background:${c}"></i>`).join('');
   return `<div class="gear-tiles">
     <button type="button" class="gear-tile" data-ward="pet"><img src="${petThumb(look.pet)}" alt="">${esc(t(`pet.${look.pet}`))}<small>${t('wardrobe.pet')}</small></button>
-    <button type="button" class="gear-tile" data-ward="dep"><img src="deps/${look.dep}.jpg" alt=""><span class="dep-dots">${dots}</span>${esc(t(`dep.${look.dep}`))}<small>${t('wardrobe.dep')}</small></button>
+    <button type="button" class="gear-tile" data-ward="dep"><img src="deps/${look.dep}.png" alt=""><span class="dep-dots">${dots}</span>${esc(t(`dep.${look.dep}`))}<small>${t('wardrobe.dep')}</small></button>
     <button type="button" class="gear-tile" data-ward="card"><span class="card-chip" style="--c:${CARD_COLORS[look.cardColor].color}">${CARD_COLORS[look.cardColor].suit}</span>${esc(t(`color.${look.cardColor}`))}<small>${t('wardrobe.card')}</small></button>
   </div>`;
 }
