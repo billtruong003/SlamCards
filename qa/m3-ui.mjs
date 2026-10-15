@@ -14,7 +14,9 @@ const results = [];
 const check = (name, ok, extra = '') => { results.push({ name, ok }); console.log(`${ok ? 'ok  ' : 'FAIL'} ${name} ${extra}`); };
 const browser = await chromium.launch({ channel: 'chromium', args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] });
 const errors = [];
-async function player(name, opts = { viewport: { width: 1280, height: 800 } }, look = null) {
+// loads still in flight when a context is closed fail with console errors: not the game's
+let closing = false;
+async function player(name, opts = { viewport: { width: 1280, height: 800 } }, look = null, url = `${BASE}/?debug&noftue`) {
   const ctx = await browser.newContext({ ...opts, locale: 'vi-VN' });
   await ctx.addInitScript(([n, l]) => {
     localStorage.setItem('slam-volume', '{"music":0,"meme":0,"sfx":0}');
@@ -25,9 +27,10 @@ async function player(name, opts = { viewport: { width: 1280, height: 800 } }, l
   }, [name, look]);
   const p = await ctx.newPage();
   p.on('pageerror', (e) => errors.push(`${name}: ${e.message}`));
-  p.on('console', (m) => { if (m.type() === 'error') errors.push(`${name} console: ${m.text().slice(0, 150)}`); });
-  await p.goto(`${BASE}/?debug&noftue`);
+  p.on('console', (m) => { if (m.type() === 'error' && !closing) errors.push(`${name} console: ${m.text().slice(0, 150)}`); });
+  await p.goto(url);
   await p.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
+  if (url.includes('room=')) return p; // straight into the room, like a friend tapping the invite
   await p.waitForSelector('#play', { timeout: 15000 });
   await p.evaluate(() => document.getElementById('intro')?.remove());
   return p;
@@ -66,9 +69,7 @@ try {
   const link = await host.inputValue('#link');
 
   // a guest who also wants yellow gets another colour, and sees yellow as taken
-  const guest = await player('Tèo', { viewport: { width: 1280, height: 800 } }, { pet: 'penguin', dep: 'dep_lao', depColors: ['#2a1418', '#ff5c9d'], cardColor: 'vang' });
-  await guest.goto(`${link}&debug&noftue`);
-  await guest.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
+  const guest = await player('Tèo', { viewport: { width: 1280, height: 800 } }, { pet: 'penguin', dep: 'dep_lao', depColors: ['#2a1418', '#ff5c9d'], cardColor: 'vang' }, `${link}&debug&noftue`);
   // a saved name skips the name prompt and joins straight away
   await guest.waitForSelector('#ready, #go', { timeout: 10000 });
   if (await guest.$('#go')) await guest.click('#go');
@@ -116,8 +117,10 @@ try {
   await host.waitForTimeout(150);
   await shot(host, '08-slam-yellow-sole');
   check('the falling slipper is the recoloured one', Boolean(slipper), String(slipper));
+  closing = true;
   await guest.context().close();
   await host.context().close();
+  closing = false;
 
   const phone = await player('Tí', { ...devices['iPhone SE'] });
   await phone.click('.gear-card [data-ward="dep"]').catch(async () => { await phone.locator('.gear-card [data-ward="dep"]').scrollIntoViewIfNeeded(); await phone.click('.gear-card [data-ward="dep"]'); });

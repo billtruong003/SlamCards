@@ -53,7 +53,7 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 
 ### Mốc 6 · QA lớn + phát hành
 24. ✅ (15/10; `qa/m6-full.mjs` 4 người ghép "Bất kỳ", phòng 3 người, rớt mạng ở phòng chờ + trong trận, 2 tab, server khởi động lại; 5 máy × 10 ngôn ngữ 0 lỗi; perf máy chậm 6×: đập max 83 ms = mức cũ) **QA đầy đủ** (skill game-qa-strict + game-ux-scenario-review): 2/3/4 người thật bằng nhiều trình duyệt, ghép ngẫu nhiên với nhiều client giả, phòng công khai, tủ đồ, đổi đồ khi đã Sẵn sàng, rớt mạng ở từng màn, 2 tab, server khởi động lại; 5 máy + 11 ngôn ngữ; hiệu năng.
-25. **[DEPLOY 3]** Tủ đồ + lá bài mới + vào trận mới.
+25. ✅ (15/10 15:50; backup VPS `/root/slam-cards-backup-20261015-1548-pre-deploy3.tgz`; QA live: 5 máy, phase1, m2, m3, trận đầy đủ, FTUE sạch; pm2 0 lỗi) **[DEPLOY 3]** Tủ đồ + lá bài mới + vào trận mới.
 
 ### Mốc 7 · Thêm cho game (sau phát hành)
 26. G5 ảnh xem trước khi gửi link phòng (Open Graph 1200 × 630, theo ngôn ngữ, có lá bài + tên phòng).
