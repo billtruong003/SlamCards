@@ -394,6 +394,7 @@ export function createStencilCard(seat, ref) {
   let prop = null;
   let petWanted = null;
   let propKey = '';
+  const painted = { front: '', back: '' };
 
   function setLook(next) {
     const d = SEAT_DEFAULTS[seat];
@@ -409,18 +410,24 @@ export function createStencilCard(seat, ref) {
     look = n;
     const c = CARD_COLORS[n.cardColor];
     const art = { ...c, petName: t(`pet.${n.pet}`).toUpperCase() };
-    if (!old || old.cardColor !== n.cardColor || old.pet !== n.pet || old.dep !== n.dep) {
-      marksReady.then(() => {
-        if (look !== n) return;
+    // Faces are drawn once the brand marks load; a newer look may arrive first, so compare with
+    // what is actually painted, not with the previous look (that one may never have been painted).
+    marksReady.then(() => {
+      if (look !== n) return;
+      const frontKey = `${n.cardColor}|${n.pet}|${n.dep}`;
+      if (painted.front !== frontKey) {
         frontMat.map?.dispose();
         frontMat.map = frontTexture(art, t(`dep.${n.dep}`));
-        if (!old || old.cardColor !== n.cardColor) {
-          backMat.map?.dispose();
-          backMat.map = backTexture(art);
-        }
-        frontMat.needsUpdate = backMat.needsUpdate = true;
-      });
-    }
+        frontMat.needsUpdate = true;
+        painted.front = frontKey;
+      }
+      if (painted.back !== n.cardColor) {
+        backMat.map?.dispose();
+        backMat.map = backTexture(art);
+        backMat.needsUpdate = true;
+        painted.back = n.cardColor;
+      }
+    });
     if (!old || old.cardColor !== n.cardColor) {
       box.material?.dispose?.();
       box.material = gate(spaceMaterial(art), ref);

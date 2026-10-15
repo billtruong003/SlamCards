@@ -1687,6 +1687,7 @@ setInterval(() => {
 if (new URLSearchParams(location.search).has('debug')) {
   window.slamDebug = {
     get state() { return state; },
+    get me() { return me; },
     world,
     renderAssets: (opts) => import('./asset-studio.js').then((m) => m.renderAssets(opts)),
     meme: showMeme,

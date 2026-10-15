@@ -34,22 +34,22 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 9. ✅ (15/10) **Màu bài mới**: 4 màu + hoa văn + biểu tượng thay ĐEN/ĐỎ/XANH/LỤC ở mọi chỗ (ô ghế, chip HUD, dòng điểm, nhãn ▲/▼, lá bài cũ tạm tô theo màu mới). Màn chọn màu bài; màu đã có người lấy thì mờ. Hoa văn từng màu dùng cho nền khoảng không ở mốc 4.
 10. ✅ (15/10; xem pet trong lá bài làm ở mốc 4) **Màn chọn pet** theo bảng PickPet: lưới 24 pet (tải ảnh nhỏ, không tải model khi chưa cần), xem pet trong lá bài.
 11. ✅ (15/10) **Tủ đồ ở Màn chính + Phòng chờ** nối vào 8–10; lá của m to bên trái (máy tính).
-12. **[DEPLOY 2]**: mốc 2 + mốc 3 (lá bài vẫn kiểu cũ nhưng màu, dép, pet đã chọn được).
+12. ✅ (15/10) **[DEPLOY 2]**: mốc 2 + mốc 3 (lá bài vẫn kiểu cũ nhưng màu, dép, pet đã chọn được).
 
 ### Mốc 4 · Lá bài mới trong game
-13. **Thay `cards.js`** bằng lá stencil từ bước 1: mặt ngửa (khung màu ghế, ô cửa, dải tên pet, nhãn dép), mặt úp (hoạ tiết cáo + logo BillTheDev), khoảng không 3 lớp theo màu/hoa văn, bệ tròn; viền pet theo pháp tuyến mượt; chỉ tải model pet của người trong phòng; vật lý giữ hộp 1 × 1.478.
-14. **Pet phản ứng**: AnimationMixer mỗi lá; tới lượt → gật, ăn bài → nhảy múa, bị ăn → lắc đầu, rớt bàn → ngã, chờ → đứng yên thở. Dừng hoạt cảnh khi lá úp (đỡ tốn máy).
-15. **Hiệu năng**: PERF-01 (warm-up shader trước trận), giới hạn số pet chuyển động, `qa/perf.mjs` với 4 lá (mục tiêu 60 FPS laptop, ≤ ~50 draw call, không khung > 50 ms trên máy chậm 4×), `qa/devices.mjs`.
-16. **Giữ nhãn ▲NGỬA / ▼ÚP** một thời gian; FTUE bước 1 + 3 vẽ lại theo lá mới.
+13. ✅ (15/10; `?classic` còn giữ lá cũ) **Thay `cards.js`** bằng lá stencil từ bước 1: mặt ngửa (khung màu ghế, ô cửa, dải tên pet, nhãn dép), mặt úp (hoạ tiết cáo + logo BillTheDev), khoảng không 3 lớp theo màu/hoa văn, bệ tròn; viền pet theo pháp tuyến mượt; chỉ tải model pet của người trong phòng; vật lý giữ hộp 1 × 1.478.
+14. ✅ (15/10) **Pet phản ứng**: AnimationMixer mỗi lá; tới lượt → gật, ăn bài → nhảy múa, bị ăn → lắc đầu, rớt bàn → ngã, chờ → đứng yên thở. Dừng hoạt cảnh khi lá úp (đỡ tốn máy).
+15. ✅ (15/10; máy chậm 6×: 60 FPS, cú đập max 117 ms, ≤ 50 draw call) **Hiệu năng**: PERF-01 (warm-up shader trước trận), giới hạn số pet chuyển động, `qa/perf.mjs` với 4 lá (mục tiêu 60 FPS laptop, ≤ ~50 draw call, không khung > 50 ms trên máy chậm 4×), `qa/devices.mjs`.
+16. ✅ (15/10; lá vẽ bằng CSS, `qa/ftue-art.mjs`) **Giữ nhãn ▲NGỬA / ▼ÚP** một thời gian; FTUE bước 1 + 3 vẽ lại theo lá mới.
 
 ### Mốc 5 · Ảnh và tài nguyên
-17. **Ảnh pet** 24 con (thumbnail 128 px, nền trong) chụp bằng shader game (`qa/render-assets.mjs` chạy trên game, không phải mockup).
-18. **Ảnh dép** 3 loại × màu mặc định cho màn chọn, chụp bằng shader game; xóa `public/deps/*.jpg` kiểu Blender (ART-02).
-19. **Mặt lá bài**: vẽ bằng canvas lúc chạy (khung, dải tên, nhãn dép, mặt sau từ `brand/*.svg`); không cần file ảnh lá. Kiểm tra chữ tên pet ở 11 ngôn ngữ vừa dải tên.
-20. **Biểu tượng giao diện** (SVG nét, không emoji): vương miện chủ phòng, dấu ✓ sẵn sàng, quả địa cầu, vòng xoay đang tìm, khóa Riêng tư, người (số người).
-21. **Âm thanh mới** (tạo bằng code như tiếng "bốp", không tải file): "đã tìm được trận", "sẵn sàng", "bị loại vì treo máy". Tắt theo thanh âm thanh hiện có.
-22. **Chữ mới** (tên 24 pet, tên màu, Sẵn sàng, phòng công khai, chơi ngay…): gom `STRINGS.md` → Bill duyệt/đưa AI viết lại → `i18n:check` → 11 ngôn ngữ trên iPhone SE.
-23. **Ghi công**: Kenney (pet, CC0) trong bảng Info; cập nhật `public/models/LICENSE-kenney.txt`.
+17. ✅ (15/10; `src/asset-studio.js`) **Ảnh pet** 24 con (thumbnail 128 px, nền trong) chụp bằng shader game (`qa/render-assets.mjs` chạy trên game, không phải mockup).
+18. ✅ (15/10) **Ảnh dép** 3 loại × màu mặc định cho màn chọn, chụp bằng shader game; xóa `public/deps/*.jpg` kiểu Blender (ART-02).
+19. ✅ (15/10; `qa/ribbon-fit.mjs`: mọi tên vừa ở cỡ 42 px, 10 ngôn ngữ) **Mặt lá bài**: vẽ bằng canvas lúc chạy (khung, dải tên, nhãn dép, mặt sau từ `brand/*.svg`); không cần file ảnh lá. Kiểm tra chữ tên pet ở 11 ngôn ngữ vừa dải tên.
+20. ✅ (15/10) **Biểu tượng giao diện** (SVG nét, không emoji): vương miện chủ phòng, dấu ✓ sẵn sàng, quả địa cầu, vòng xoay đang tìm, khóa Riêng tư, người (số người).
+21. ✅ (15/10; `sound.js` chime) **Âm thanh mới** (tạo bằng code như tiếng "bốp", không tải file): "đã tìm được trận", "sẵn sàng", "bị loại vì treo máy". Tắt theo thanh âm thanh hiện có.
+22. ⏳ (15/10: `docs/localization/STRINGS-NEW.md`, 107 chuỗi, chờ Bill duyệt) **Chữ mới** (tên 24 pet, tên màu, Sẵn sàng, phòng công khai, chơi ngay…): gom `STRINGS.md` → Bill duyệt/đưa AI viết lại → `i18n:check` → 11 ngôn ngữ trên iPhone SE.
+23. ✅ (15/10) **Ghi công**: Kenney (pet, CC0) trong bảng Info; cập nhật `public/models/LICENSE-kenney.txt`.
 
 ### Mốc 6 · QA lớn + phát hành
 24. **QA đầy đủ** (skill game-qa-strict + game-ux-scenario-review): 2/3/4 người thật bằng nhiều trình duyệt, ghép ngẫu nhiên với nhiều client giả, phòng công khai, tủ đồ, đổi đồ khi đã Sẵn sàng, rớt mạng ở từng màn, 2 tab, server khởi động lại; 5 máy + 11 ngôn ngữ; hiệu năng.
