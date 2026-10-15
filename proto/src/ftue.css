@@ -66,11 +66,14 @@
 }
 
 /* tutorial pictures (from mockup/ftue-preview) */
-.fa-c{position:absolute;--s:.44;--r:0deg;width:calc(92px*var(--s));height:calc(136px*var(--s));background:url(/cards.png) no-repeat;background-size:calc(1500px*var(--s)) calc(576px*var(--s));transform:translate(-50%,-50%) rotate(var(--r));filter:drop-shadow(0 3px 0 rgba(42,20,24,.35))}
-.fa-c.bf{background-position:calc(-1304px*var(--s)) calc(-292px*var(--s))}
-.fa-c.bb{background-position:calc(-1404px*var(--s)) calc(-292px*var(--s))}
-.fa-c.pf{background-position:calc(-1304px*var(--s)) calc(-436px*var(--s))}
-.fa-c.pb{background-position:calc(-1404px*var(--s)) calc(-436px*var(--s))}
+/* the new card (milestone 4), drawn in CSS: face = the pet in its window, back = the card colour */
+.fa-c{position:absolute;--s:.44;--r:0deg;--c:#ff5c9d;--room:#ffd6e6;--pet:url(/pets/thumbs/cat.png);width:calc(92px*var(--s));height:calc(136px*var(--s));box-sizing:border-box;border:calc(5px*var(--s)) solid var(--ink);border-radius:calc(13px*var(--s));background:var(--c);transform:translate(-50%,-50%) rotate(var(--r));filter:drop-shadow(0 3px 0 rgba(42,20,24,.35))}
+.fa-c.bf,.fa-c.bb{--c:#ff5c9d;--room:#ffd6e6;--pet:url(/pets/thumbs/cat.png)}
+.fa-c.pf,.fa-c.pb{--c:#2fa8ff;--room:#d3ecff;--pet:url(/pets/thumbs/panda.png)}
+.fa-c.bf::before,.fa-c.pf::before{content:"";position:absolute;inset:calc(5px*var(--s));border-radius:calc(8px*var(--s));background:linear-gradient(var(--c),var(--c)) no-repeat 50% 88%/78% 12%,var(--cream)}
+.fa-c.bf::after,.fa-c.pf::after{content:"";position:absolute;left:14%;right:14%;top:9%;height:60%;box-sizing:border-box;border:calc(4px*var(--s)) solid var(--ink);border-radius:calc(8px*var(--s));background:var(--pet) 50% 75%/118% no-repeat,radial-gradient(circle at 50% 35%,#fff8 0 30%,transparent 31%),var(--room)}
+.fa-c.bb,.fa-c.pb{background:url(/brand/bill-the-dev-mark-white.svg) 50% 42%/62% no-repeat,var(--c)}
+.fa-c.bb::before,.fa-c.pb::before{content:"";position:absolute;inset:calc(5px*var(--s));border:calc(3px*var(--s)) solid var(--cream);border-radius:calc(8px*var(--s))}
 .fa-c.fa-air{filter:drop-shadow(14px 26px 4px rgba(42,20,24,.25))}
 .fa-ring{position:absolute;border-radius:50%;transform:translate(-50%,-50%)}
 .fa-reach{border:3px dashed var(--ink);background:rgba(255,255,255,.25)}
