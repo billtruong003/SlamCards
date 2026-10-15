@@ -1,7 +1,7 @@
 // Edge cases: input validation, limits, invalid events per phase, match lifecycle.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startServer, connect, lobby, twoPlayerGame, faceDown, faceUp, near, sleep } from './harness.js';
+import { startFrom, startServer, connect, lobby, twoPlayerGame, faceDown, faceUp, near, sleep } from './harness.js';
 
 const quiet = async (client, ms = 250) => { await sleep(ms); return client.state; };
 
@@ -25,7 +25,7 @@ test('names: cleaned, trimmed to 16, defaulted and de-duplicated', async () => {
       assert.ok(!/[<>\u0000]/.test(n), `unsafe chars kept: ${n}`);
     }
     assert.equal(new Set(list).size, list.length, `duplicate names: ${list}`);
-    assert.ok(list.includes('Tí vô danh'), 'blank name falls back to default');
+    assert.ok(list.some((n) => /^Dép #\d\d$/.test(n)), `blank name falls back to a neutral default: ${list}`);
   } finally { srv.stop(); }
 });
 
@@ -37,8 +37,9 @@ test('room limits: 5th player refused, joining a running match refused, codes ar
     fifth.send({ t: 'join', code: players[0].code, name: 'X' });
     assert.match((await fifth.next((m) => m.t === 'error')).message, /đủ 4/);
 
-    const [a] = await lobby(srv.port, 2);
-    a.send({ t: 'start' });
+    const duo = await lobby(srv.port, 2);
+    const [a] = duo;
+    await startFrom(duo);
     await a.waitState((s) => s.phase !== 'lobby');
     const late = await connect(srv.port);
     late.send({ t: 'join', code: a.code.toLowerCase(), name: 'Late' });
@@ -60,8 +61,9 @@ test('join errors carry a stable code for the client to translate', async () => 
     fifth.send({ t: 'join', code: players[0].code, name: 'X' });
     assert.equal((await fifth.next((m) => m.t === 'error')).code, 'full');
 
-    const [a] = await lobby(srv.port, 2);
-    a.send({ t: 'start' });
+    const duo = await lobby(srv.port, 2);
+    const [a] = duo;
+    await startFrom(duo);
     await a.waitState((s) => s.phase !== 'lobby');
     const late = await connect(srv.port);
     late.send({ t: 'join', code: a.code, name: 'Late' });
@@ -78,7 +80,13 @@ test('start needs 2 players; a second start is ignored; only the rps winner choo
 
     const [a, b] = await lobby(srv.port, 2);
     a.send({ t: 'start' });
+    assert.equal((await quiet(a)).phase, 'lobby', 'host cannot start before the guest is ready');
+    b.send({ t: 'ready', ready: true });
+    await a.waitState((s) => s.ready?.pink === true);
     b.send({ t: 'start' });
+    assert.equal((await quiet(a)).phase, 'lobby', 'a guest cannot start');
+    a.send({ t: 'start' });
+    a.send({ t: 'start' });
     await a.waitState((s) => s.phase === 'rps');
     assert.equal(a.state.round, 1, 'double start must not skip a round');
     a.send({ t: 'rps', choice: 'bua' });
@@ -94,8 +102,9 @@ test('start needs 2 players; a second start is ignored; only the rps winner choo
 test('rps timeout picks for idle players and the match goes on', async () => {
   const srv = await startServer({ rps: 300, choose: 300 });
   try {
-    const [a] = await lobby(srv.port, 2);
-    a.send({ t: 'start' });
+    const duo = await lobby(srv.port, 2);
+    const [a] = duo;
+    await startFrom(duo);
     const s = await a.waitState((st) => st.phase === 'turn', 8000);
     assert.ok(['black', 'pink'].includes(s.turn));
   } finally { srv.stop(); }
@@ -246,7 +255,7 @@ test('full match to rematch: scores reset, a gone player is removed', async () =
   try {
     const players = await lobby(srv.port, 3);
     const [a, b, c] = players;
-    a.send({ t: 'start' });
+    await startFrom(players);
     // Different players may win rounds (1-1-1 with three players), so play until someone reaches the winning score.
     for (let round = 0; round < 6 && a.state.phase !== 'matchEnd'; round++) {
       const s = await a.waitState((st) => st.phase === 'turn' || st.phase === 'matchEnd', 5000);

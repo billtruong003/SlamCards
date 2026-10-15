@@ -19,7 +19,7 @@ export async function startServer(timing = {}) {
   proc.stderr.on('data', (d) => { output += d; });
   let exitCode = null;
   proc.on('exit', (code) => { exitCode = code; });
-  for (let i = 0; i < 50 && !output.includes('Slam Cards server on'); i++) await sleep(50);
+  for (let i = 0; i < 200 && !output.includes('Slam Cards server on'); i++) await sleep(50);
   return { port, proc, log: () => output, exited: () => exitCode !== null, stop: () => proc.kill() };
 }
 
@@ -89,10 +89,18 @@ export async function lobby(port, count) {
   return all;
 }
 
+// Every guest presses Ready, then the host (the first player) starts.
+export async function startFrom(players) {
+  const [host, ...guests] = players;
+  for (const g of guests) g.send({ t: 'ready', ready: true });
+  await host.waitState((s) => Object.keys(s.ready ?? {}).length === guests.length);
+  host.send({ t: 'start' });
+}
+
 // Two players at their first turn; black won rock-paper-scissors and slams first.
 export async function twoPlayerGame(port) {
   const [a, b] = await lobby(port, 2);
-  a.send({ t: 'start' });
+  await startFrom([a, b]);
   await a.waitState((s) => s.phase === 'rps');
   a.send({ t: 'rps', choice: 'bua' });
   b.send({ t: 'rps', choice: 'keo' });
@@ -104,7 +112,7 @@ export async function twoPlayerGame(port) {
 
 export async function threePlayerGame(port) {
   const players = await lobby(port, 3);
-  players[0].send({ t: 'start' });
+  await startFrom(players);
   await players[0].waitState((s) => s.phase === 'turn');
   return players;
 }

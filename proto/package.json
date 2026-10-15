@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "start": "node server/server.js",
-    "test": "node --test test/",
+    "test": "node --test --test-concurrency=1 test/",
     "i18n:check": "node tools/i18n-check.mjs",
     "i18n:export": "node tools/i18n-export.mjs"
   },

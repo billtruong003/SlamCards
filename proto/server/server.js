@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
+import { cleanName as cleanNameText } from './names.js';
 
 const PORT = Number(process.env.PORT) || 8097;
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
@@ -25,6 +26,9 @@ const TIMING = {
   roundEnd: 3200,
   disconnect: 60000,
   lobbyDisconnect: 5000,
+  quickStart: 1200,      // quick match: room made, then the first round starts
+  anyCountdown: 5000,    // quick match "any": 2 found, then wait this long for more
+  queueTick: 400,
 };
 // Tests shorten the clock: SLAM_TIMING='{"turn":500}'.
 Object.assign(TIMING, JSON.parse(process.env.SLAM_TIMING || '{}'));
@@ -79,10 +83,9 @@ const DEPS = ['dep_lao', 'dep_to_ong', 'dep_le'];
 const DEFAULT_DEP = { black: 'dep_lao', pink: 'dep_le', blue: 'dep_to_ong', green: 'dep_lao' };
 const cleanDep = (dep, seat) => (DEPS.includes(dep) ? dep : DEFAULT_DEP[seat]);
 
-function cleanName(name) {
-  const text = String(name ?? '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 16);
-  return text || 'Tí vô danh';
-}
+// Control characters and angle brackets out, 16 characters, and no swear words (names.js):
+// strangers see each other's names in quick matches.
+const cleanName = (name) => cleanNameText(name) || `Dép #${crypto.randomInt(10, 100)}`;
 
 // Two players with the same name get a number: "Tí vô danh", "Tí vô danh 2".
 function uniqueName(room, name) {
@@ -96,9 +99,19 @@ function log(room, text) {
   console.log(`[${room.code}] ${text}`);
 }
 
-function newRoom() {
+// kind: 'friends' (made with Create room: a lobby, a host, an invite link) or 'quick' (made by
+// the matchmaker: starts at once, never listed). visibility: 'private' (link only) or 'public'
+// (in the room list). cap: most players allowed, 2-4.
+function newRoom({ kind = 'friends', visibility = 'private', cap = MAX_PLAYERS } = {}) {
   const room = {
     code: newCode(),
+    kind,
+    visibility: kind === 'quick' ? 'private' : visibility,
+    cap,
+    host: null,
+    joinOrder: [],
+    ready: {},
+    timeouts: {},
     players: {},
     seats: [],
     alive: [],
@@ -153,6 +166,11 @@ function publicState(room, you) {
     result: room.result,
     event: room.event,
     rematch: room.rematch,
+    kind: room.kind,
+    visibility: room.visibility,
+    cap: room.cap,
+    host: room.host,
+    ready: room.ready,
     remainingMs: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
   };
 }
@@ -202,8 +220,10 @@ function startMatch(room) {
   room.round = 0;
   room.scores = Object.fromEntries(room.seats.map((s) => [s, 0]));
   room.rematch = {};
+  room.ready = {};
+  room.timeouts = Object.fromEntries(room.seats.map((s) => [s, 0]));
   room.nextFirst = null;
-  log(room, `match start with ${room.seats.length} players`);
+  log(room, `match start with ${room.seats.length} players (${room.kind})`);
   startRound(room);
 }
 
@@ -308,10 +328,31 @@ function scheduleTurnEnd(room, ms) {
 function registerPass(room, impact) {
   const by = room.turn;
   log(room, `pass by ${by}${impact ? '' : ' (timeout)'}`);
+  room.timeouts[by] = impact ? 0 : (room.timeouts[by] ?? 0) + 1;
+  // With strangers, two timeouts in a row means nobody is there: out of this round, so the
+  // others aren't held up 30 s a turn (friends' rooms keep waiting for each other).
+  if (!impact && room.kind === 'quick' && room.timeouts[by] >= 2) {
+    eliminateAfk(room, by);
+    return;
+  }
   room.passStreak[by] += 1;
   for (const p of others(room, by)) send(p.ws, { t: 'passed', by, impact, timeout: !impact });
   room.event = { type: impact ? 'pass' : 'timeout', by };
   room.turn = nextAlive(room, by);
+  startTurn(room);
+}
+
+function eliminateAfk(room, seat) {
+  log(room, `${seat} out for idling`);
+  room.timeouts[seat] = 0;
+  room.alive = room.alive.filter((s) => s !== seat);
+  room.cards = { ...room.cards, [seat]: PARKED };
+  room.event = { type: 'afk', by: seat, eliminated: [seat] };
+  if (room.alive.length <= 1) {
+    endRound(room, { winner: room.alive[0], reason: 'afk', by: seat, eliminated: [seat] });
+    return;
+  }
+  room.turn = nextAlive(room, seat);
   startTurn(room);
 }
 
@@ -321,6 +362,7 @@ function startSlam(room, impact, type) {
   const by = room.turn;
   log(room, `slam start by ${by}`);
   room.passStreak[by] = 0;
+  room.timeouts[by] = 0;
   const watchers = Object.entries(room.players).filter(([s, p]) => s !== by && p.connected).map(([s]) => s);
   room.slam = { by, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers) };
   room.phase = 'anim';
@@ -414,8 +456,13 @@ function dropPlayer(room, seat) {
   const player = room.players[seat];
   if (room.phase === 'lobby') {
     delete room.players[seat];
+    delete room.ready[seat];
+    room.joinOrder = room.joinOrder.filter((s) => s !== seat);
     if (!Object.keys(room.players).length) closeRoom(room);
-    else broadcast(room);
+    else {
+      passHost(room);
+      broadcast(room);
+    }
     return;
   }
   player.left = true;
@@ -447,6 +494,19 @@ function dropPlayer(room, seat) {
   } else {
     broadcast(room);
   }
+}
+
+// The host left: the player who came in earliest (and is still here) takes over.
+function passHost(room) {
+  if (room.kind !== 'friends' || (room.host && room.players[room.host] && !room.players[room.host].left)) return;
+  room.host = room.joinOrder.find((s) => room.players[s] && !room.players[s].left) ?? null;
+  if (room.host) delete room.ready[room.host];
+}
+
+// Every guest in the lobby is ready (the host starts, so never needs to be).
+function allReady(room) {
+  const guests = Object.keys(room.players).filter((s) => s !== room.host);
+  return guests.length >= 1 && guests.every((s) => room.ready[s]);
 }
 
 function closeRoom(room) {
@@ -524,7 +584,8 @@ function handle(ws, msg) {
       code,
       exists: Boolean(room),
       phase: room?.phase ?? null,
-      full: room ? Object.keys(room.players).length >= MAX_PLAYERS : false,
+      full: room ? Object.keys(room.players).length >= Math.min(MAX_PLAYERS, room.cap) : false,
+      quick: room?.kind === 'quick',
       mine,
     });
     return;
@@ -538,10 +599,33 @@ function handle(ws, msg) {
   }
 
   if (msg.t === 'create') {
-    const room = newRoom();
+    leaveQueue(ws);
+    const room = newRoom({
+      visibility: msg.visibility === 'public' ? 'public' : 'private',
+      cap: [2, 3, 4].includes(msg.cap) ? msg.cap : MAX_PLAYERS,
+    });
     const player = { token: crypto.randomUUID(), name: cleanName(msg.name), dep: cleanDep(msg.dep, 'black') };
     room.players.black = player;
+    room.host = 'black';
+    room.joinOrder = ['black'];
     attach(ws, room, 'black', player);
+    return;
+  }
+
+  if (msg.t === 'listRooms') {
+    send(ws, { t: 'rooms', rooms: publicRooms() });
+    return;
+  }
+
+  if (msg.t === 'queue') {
+    detach(ws, { leaving: true });
+    joinQueue(ws, msg);
+    return;
+  }
+
+  if (msg.t === 'unqueue') {
+    leaveQueue(ws);
+    send(ws, { t: 'queue', state: 'left' });
     return;
   }
 
@@ -562,12 +646,14 @@ function handle(ws, msg) {
       return;
     }
     const seat = SEATS.find((s) => !room.players[s]);
-    if (!seat || Object.keys(room.players).length >= MAX_PLAYERS) {
+    if (!seat || Object.keys(room.players).length >= Math.min(MAX_PLAYERS, room.cap)) {
       send(ws, { t: 'error', code: 'full', message: 'Phòng đủ 4 đứa rồi, vào không được!' });
       return;
     }
     const player = { token: crypto.randomUUID(), name: uniqueName(room, cleanName(msg.name)), dep: cleanDep(msg.dep, seat) };
+    leaveQueue(ws);
     room.players[seat] = player;
+    room.joinOrder.push(seat);
     attach(ws, room, seat, player);
     return;
   }
@@ -589,11 +675,28 @@ function handle(ws, msg) {
 
   if (msg.t === 'pickDep' && ['lobby', 'matchEnd'].includes(room.phase) && DEPS.includes(msg.dep)) {
     room.players[seat].dep = msg.dep;
+    delete room.ready[seat]; // changing your gear takes back your "ready"
     broadcast(room);
     return;
   }
 
-  if (msg.t === 'start' && room.phase === 'lobby' && Object.keys(room.players).length >= 2) {
+  if (msg.t === 'ready' && room.phase === 'lobby' && seat !== room.host) {
+    if (msg.ready) room.ready[seat] = true;
+    else delete room.ready[seat];
+    broadcast(room);
+    return;
+  }
+
+  if (msg.t === 'roomSettings' && room.phase === 'lobby' && seat === room.host) {
+    if (msg.visibility === 'public' || msg.visibility === 'private') room.visibility = msg.visibility;
+    // the cap can't drop below the players already in
+    if ([2, 3, 4].includes(msg.cap) && msg.cap >= Object.keys(room.players).length) room.cap = msg.cap;
+    broadcast(room);
+    return;
+  }
+
+  // Only the host starts, with 2+ players and every guest ready.
+  if (msg.t === 'start' && room.phase === 'lobby' && seat === room.host && allReady(room)) {
     startMatch(room);
     return;
   }
@@ -654,6 +757,102 @@ function handle(ws, msg) {
   }
 }
 
+// ---------- public room list ----------
+
+// Waiting rooms first, then by how full they are. Only pet + code + counts go out: no names.
+function publicRooms() {
+  return [...rooms.values()]
+    .filter((r) => r.kind === 'friends' && r.visibility === 'public' && Object.keys(r.players).length)
+    .map((r) => ({
+      code: r.code,
+      n: Object.keys(r.players).length,
+      cap: r.cap,
+      phase: r.phase === 'lobby' ? 'lobby' : 'playing',
+      pet: r.players[r.host]?.pet ?? null,
+      dep: r.players[r.host]?.dep ?? null,
+    }))
+    .sort((a, b) => (a.phase === 'lobby' ? 0 : 1) - (b.phase === 'lobby' ? 0 : 1) || b.n - a.n)
+    .slice(0, 50);
+}
+
+// ---------- quick match ----------
+// A waiting player asks for 'any' (2-4) or an exact size. Exact sizes fill first, topped up with
+// 'any' players; 'any' players on their own start once 2 are found and a short countdown runs
+// out (or 4 are found). Everyone in the queue hears who would come with them.
+
+const queue = []; // { ws, name, dep, size: 'any' | 2 | 3 | 4, at }
+let anyCountdownAt = 0;
+
+function joinQueue(ws, msg) {
+  leaveQueue(ws);
+  const size = [2, 3, 4].includes(msg.size) ? msg.size : 'any';
+  queue.push({ ws, name: cleanName(msg.name), dep: DEPS.includes(msg.dep) ? msg.dep : 'dep_lao', size, at: Date.now() });
+  matchQueue();
+}
+
+function leaveQueue(ws) {
+  const i = queue.findIndex((e) => e.ws === ws);
+  if (i >= 0) queue.splice(i, 1);
+}
+
+function startQuickRoom(entries) {
+  const room = newRoom({ kind: 'quick', cap: entries.length });
+  entries.forEach((e, i) => {
+    leaveQueue(e.ws);
+    const seat = SEATS[i];
+    const player = { token: crypto.randomUUID(), name: uniqueName(room, e.name), dep: e.dep };
+    room.players[seat] = player;
+    room.joinOrder.push(seat);
+    attach(e.ws, room, seat, player);
+  });
+  log(room, `quick match for ${entries.length}`);
+  schedule(room, TIMING.quickStart, () => startMatch(room));
+}
+
+function matchQueue() {
+  for (let i = queue.length - 1; i >= 0; i--) if (queue[i].ws.readyState !== queue[i].ws.OPEN) queue.splice(i, 1);
+  const any = queue.filter((e) => e.size === 'any');
+  // exact sizes, biggest first, topped up with 'any'
+  for (const n of [4, 3, 2]) {
+    const exact = queue.filter((e) => e.size === n);
+    if (exact.length && exact.length + any.length >= n) {
+      startQuickRoom([...exact, ...any].slice(0, n));
+      matchQueue();
+      return;
+    }
+  }
+  if (any.length >= 4) {
+    anyCountdownAt = 0;
+    startQuickRoom(any.slice(0, 4));
+    matchQueue();
+    return;
+  }
+  if (any.length >= 2) {
+    anyCountdownAt ||= Date.now() + TIMING.anyCountdown;
+    if (Date.now() >= anyCountdownAt) {
+      anyCountdownAt = 0;
+      startQuickRoom(any.slice(0, 4));
+      matchQueue();
+      return;
+    }
+  } else {
+    anyCountdownAt = 0;
+  }
+  // tell each waiting player who would come with them
+  for (const e of queue) {
+    const group = e.size === 'any' ? any : [...queue.filter((o) => o.size === e.size), ...any].slice(0, e.size);
+    send(e.ws, {
+      t: 'queue',
+      state: 'waiting',
+      size: e.size,
+      waitedMs: Date.now() - e.at,
+      peers: group.filter((o) => o !== e).map((o) => ({ name: o.name, dep: o.dep })),
+      startsInMs: e.size === 'any' && anyCountdownAt ? Math.max(0, anyCountdownAt - Date.now()) : 0,
+    });
+  }
+}
+setInterval(matchQueue, TIMING.queueTick);
+
 // Without these, `ws` throws its socket errors (e.g. "Max payload size exceeded" for a message over
 // maxPayload, or a broken frame) as uncaught exceptions and the whole server goes down (QA-01).
 // The library already closes the offending socket, so logging is all that's left to do.
@@ -680,6 +879,7 @@ wss.on('connection', (ws) => {
 
   ws.on('close', () => {
     try {
+      leaveQueue(ws);
       detach(ws);
     } catch (err) {
       console.error('disconnect failed', err);
