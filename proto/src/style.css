@@ -244,17 +244,20 @@ button{font:inherit;color:inherit;cursor:pointer}
 .or{display:flex;align-items:center;gap:10px;width:100%;color:#8a7a72;font-weight:800;font-size:13px}
 .or::before,.or::after{content:"";flex:1;height:3px;background:#e2d6c2;border-radius:2px}
 .row.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
-.row.two .btn{padding:4px 8px}
+.row.two .btn{padding:4px 8px;white-space:nowrap;font-size:clamp(14px,4.2vw,18px);min-width:0;overflow:hidden;text-overflow:ellipsis}
 .code-row{width:100%;flex-wrap:nowrap}
-.code-row label{flex:1;min-width:0}
-.code-row .input{width:100%;box-sizing:border-box}
+.code-row label{flex:1 1 auto;min-width:0}
+.code-row .btn{flex:0 0 auto}
+.code-row .input{width:100%;box-sizing:border-box;padding-left:12px;padding-right:12px}
+/* the hint must read whole on any phone and font fallback: smaller and without the code's wide spacing */
+.code-row .input::placeholder{letter-spacing:.02em;font-size:16px}
 .link-btn{background:none;border:0;font:700 15px var(--font);color:var(--muted);text-decoration:underline;min-height:44px}
 .rooms-card{max-width:min(600px,calc(100vw - 32px))!important;width:600px}
 .rooms-head{display:flex;align-items:center;gap:10px;width:100%}
 .room-list{display:flex;flex-direction:column;gap:8px;width:100%;min-height:80px;align-items:stretch}
 .room-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto 84px;gap:10px;align-items:center;background:var(--cream);border:3px solid var(--ink);border-radius:14px;padding:6px 10px;text-align:left}
 .room-row.off{opacity:.55}
-.room-av{width:46px;height:46px;border-radius:10px;border:2px solid var(--ink);object-fit:contain;background:var(--cream)}
+.room-av{width:46px;height:46px;border-radius:10px;border:2px solid var(--ink);object-fit:contain;background:none;border:0}
 .room-name{font-weight:800;font-size:17px;line-height:1.1;min-width:0}
 .room-name small{display:flex;gap:6px;align-items:center;font-weight:700;font-size:12px;color:var(--muted);margin-top:2px;flex-wrap:wrap}
 .tag{display:inline-flex;align-items:center;font-size:12px;font-weight:800;border:2px solid var(--ink);border-radius:999px;padding:0 8px;background:var(--cream);color:var(--ink);line-height:18px}
@@ -296,6 +299,11 @@ button{font:inherit;color:inherit;cursor:pointer}
   .home .quick-group{padding:8px 10px 10px;gap:6px}
   .home .input{min-height:42px}
 }
+@media (max-height:760px){
+  .gear-hero{width:130px;height:130px}
+  .gear-tile img{width:68px;height:56px}
+  .card-chip{width:42px;height:56px}
+}
 @media (max-height:600px){
   .home > .sub{display:none}
   .home .title{font-size:34px}
@@ -304,18 +312,20 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* ---------- wardrobe ---------- */
 .menu-bg.with-gear{flex-wrap:wrap;gap:24px;align-content:center}
-.gear-card{max-width:min(320px,calc(100vw - 32px));gap:8px}
-.gear-title{margin:0;font-weight:800;font-size:20px}
-.gear-hero{width:120px;height:120px;object-fit:contain;margin:-8px 0}
+.gear-card{width:380px;max-width:calc(100vw - 32px);gap:10px;box-sizing:border-box}
+.gear-title{margin:0;font-weight:800;font-size:24px}
+.gear-hero{width:180px;height:180px;object-fit:contain;margin:-6px 0}
 @media (min-width:900px){.gear-card{order:-1}}
-.gear-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
-.gear-tile{background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:4px 4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font:800 13px var(--font);color:var(--ink);min-height:44px;position:relative}
-.gear-tile img{width:64px;height:48px;object-fit:contain}
-.gear-tile small{font-size:11px;font-weight:700;color:var(--muted);line-height:1}
+.gear-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}
+.gear-tile{background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:8px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font:800 15px var(--font);color:var(--ink);min-height:44px;position:relative;cursor:pointer;box-shadow:0 4px 0 var(--ink);transition:transform .08s}
+.gear-tile:hover{transform:translateY(-2px)}
+.gear-tile:active{transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+.gear-tile img{width:84px;height:72px;object-fit:contain}
+.gear-tile small{font-size:12px;font-weight:700;color:var(--muted);line-height:1}
 .dep-dots{position:absolute;right:6px;top:6px;display:flex;gap:2px}
 .dep-dots i{width:10px;height:10px;border-radius:50%;border:2px solid var(--ink)}
-.card-chip{width:44px;height:48px;border-radius:8px;border:3px solid var(--ink);background:var(--c);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--cream);-webkit-text-stroke:1px var(--ink)}
-.slot-dep.pet{object-fit:contain;background:var(--cream)}
+.card-chip{width:50px;height:68px;margin:2px 0;border-radius:8px;border:3px solid var(--ink);background:var(--c);display:flex;align-items:center;justify-content:center;font-size:24px;box-sizing:border-box;color:var(--cream);-webkit-text-stroke:1px var(--ink)}
+.slot-dep.pet{object-fit:contain;background:none;border:0;width:56px;height:56px;margin:-4px auto 0}
 .wardrobe{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
 .ward-body{width:100%;overflow-y:auto;max-height:min(56vh,480px);display:flex;flex-direction:column;gap:8px;padding:4px 2px}
 .pet-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}

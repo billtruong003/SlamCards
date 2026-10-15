@@ -20,7 +20,7 @@ await page.waitForFunction(() => Boolean(window.slamDebug?.renderAssets));
 // slipper models load after boot
 await page.waitForTimeout(1500);
 const shots = await page.evaluate((o) => window.slamDebug.renderAssets(o), {
-  pets: PETS, deps: DEP_IDS.map((d) => [d, defaultDepColors(d)]), size: 128,
+  pets: PETS, deps: DEP_IDS.map((d) => [d, defaultDepColors(d)]), size: 256,
 });
 let n = 0;
 for (const [key, url] of Object.entries(shots)) {
