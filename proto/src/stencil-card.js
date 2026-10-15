@@ -3,9 +3,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { CARD_HALF_W, CARD_HALF_D, CARD_HALF_T } from './rules.js';
 import { toonGradient } from './toon.js';
-import { depModel } from './deps.js';
+import { depModelFor } from './deps.js';
+import { CARD_COLORS, SEAT_DEFAULTS, defaultDepColors } from './catalog.js';
+import { t } from './i18n.js';
 
-// Prototype (milestone 1, `?stencil`): a card whose face-up side is a window into a little 3D
+// The card (milestone 4; `?classic` brings back the old joker cards): a card whose face-up side is a window into a little 3D
 // space with the player's pet, drawn with the stencil buffer so it shows through the card even
 // though that space sits "under" the table.
 //
@@ -30,14 +32,6 @@ const STAGE_Y = -0.2; // floor of the stage, in the stage's own (camera-facing) 
 const STAGE_TILT = 0.25; // how far the stage tips its top toward the camera (a three-quarter view)
 const BASE_ORDER = 100;
 
-// Fixed looks until the wardrobe exists (milestone 3).
-const LOOKS = {
-  black: { color: '#ff5c9d', room: '#ffd6e6', floor: '#ffb3cf', pet: 'cat', petName: 'MÈO' },
-  pink: { color: '#2fa8ff', room: '#d3ecff', floor: '#a7d6ff', pet: 'panda', petName: 'GẤU TRÚC' },
-  blue: { color: '#ffc93c', room: '#fff2c4', floor: '#ffe08a', pet: 'chick', petName: 'GÀ CON' },
-  green: { color: '#3ccf6e', room: '#d6f7e0', floor: '#a9ebbd', pet: 'fox', petName: 'CÁO' },
-};
-
 // ---------- shared helpers ----------
 
 const toon = (opts) => new THREE.MeshToonMaterial({ gradientMap: toonGradient(), ...opts });
@@ -53,7 +47,8 @@ function bakeSmoothNormals(geo) {
   const pos = geo.attributes.position;
   const nor = geo.attributes.normal;
   const n = new THREE.Vector3();
-  const key = (a, i) => `${a.getX(i).toFixed(3)},${a.getY(i).toFixed(3)},${a.getZ(i).toFixed(3)}`;
+  // positions/normals quantised to 1/1000 and packed in a number: much cheaper than strings
+  const key = (a, i) => (Math.round(a.getX(i) * 1000) * 4194304 + Math.round(a.getY(i) * 1000)) * 4194304 + Math.round(a.getZ(i) * 1000);
   const sums = new Map();
   for (let i = 0; i < pos.count; i++) {
     const k = key(pos, i);
@@ -106,7 +101,7 @@ const INK = '#2a1418';
 const CREAM = '#fffbf0';
 const AMBER = '#ffb84d';
 const FONT = '"Baloo 2", system-ui, sans-serif';
-const S = 1024;
+const S = 512;
 const SH = Math.round(S * H);
 const K = S / 512;
 const BH = SH / K;
@@ -327,14 +322,15 @@ function preparePet(id, gltf, ref, height) {
   rig.position.y = -merged.box.min.y * s;
   const mixer = new THREE.AnimationMixer(rig);
   const idle = merged.clips.find((a) => a.name === 'idle') ?? merged.clips[0];
-  if (idle) mixer.clipAction(idle).play();
-  return { root, mixer };
+  const action = idle ? mixer.clipAction(idle).play() : null;
+  return { root, mixer, clips: merged.clips, action };
 }
 
 // ---------- the card ----------
 
-export function createStencilCard(seat, ref, depKind) {
-  const look = LOOKS[seat];
+// A seat's card. setLook({ pet, dep, depColors, cardColor }) dresses it (and re-dresses it when the
+// player changes gear); react(name) plays one of the pet's clips.
+export function createStencilCard(seat, ref) {
   const mesh = new THREE.Group();          // follows the physics body (face = +y)
   const face = new THREE.Group();          // card space: face = +z
   face.rotation.x = -Math.PI / 2;
@@ -342,13 +338,8 @@ export function createStencilCard(seat, ref, depKind) {
   const parts = { card: [], mask: [], reset: [], room: [], restore: [] };
   const add = (pass, obj, parent = face) => { parent.add(obj); parts[pass].push(obj); return obj; };
 
-  const frontMat = new THREE.MeshBasicMaterial();
-  const backMat = new THREE.MeshBasicMaterial();
-  marksReady.then(() => {
-    frontMat.map = frontTexture(look, depKind === 'dep_le' ? 'Dép lê' : depKind === 'dep_to_ong' ? 'Tổ ong' : 'Dép lào');
-    backMat.map = backTexture(look);
-    frontMat.needsUpdate = backMat.needsUpdate = true;
-  });
+  const frontMat = new THREE.MeshBasicMaterial({ color: 0xfffbf0 });
+  const backMat = new THREE.MeshBasicMaterial({ color: 0xfffbf0 });
   const frontShape = outerShape();
   frontShape.holes.push(roundRect(new THREE.Path(), WIN.cx, WIN.cy, WIN.hw, WIN.hh, WIN.r));
   const front = add('card', new THREE.Mesh(planarUV(new THREE.ShapeGeometry(frontShape, 16)), frontMat));
@@ -366,7 +357,7 @@ export function createStencilCard(seat, ref, depKind) {
   add('restore', new THREE.Mesh(winGeo, depthMaterial(ref, false))).position.z = CARD_HALF_T;
 
   const room = add('room', new THREE.Group());
-  const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.0), gate(spaceMaterial(look), ref));
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.0));
   box.position.set(0, WIN.cy + 0.2, -0.5 - CARD_HALF_T);
   room.add(box);
   // The stage (pet, slipper, round floor) turns to face the camera every frame: the card lies flat
@@ -376,37 +367,17 @@ export function createStencilCard(seat, ref, depKind) {
   stageRoot.position.set(WIN.cx, WIN.cy + 0.06, -0.24);
   room.add(stageRoot);
   const stageGeo = bakeSmoothNormals(new THREE.CylinderGeometry(0.34, 0.31, 0.05, 32));
-  const stage = new THREE.Mesh(stageGeo, gate(toon({ color: look.floor }), ref));
+  const stageMat = gate(toon({ color: 0xffffff }), ref);
+  const stage = new THREE.Mesh(stageGeo, stageMat);
   stage.add(new THREE.Mesh(stageGeo, gate(outline(0.012), ref)));
   stage.position.set(0, STAGE_Y - 0.025, 0);
   stageRoot.add(stage);
 
-  const mixers = [];
-  loadPet(look.pet).then((gltf) => {
-    const pet = preparePet(look.pet, gltf, ref, 0.4);
-    pet.root.position.set(-0.07, STAGE_Y, -0.05);
-    pet.root.rotation.y = 0.3;
-    stageRoot.add(pet.root);
-    mixers.push(pet.mixer);
-    setRank(rank);
-  }).catch((err) => console.warn('pet failed to load', err));
-
-  // the slipper models may still be loading when the card is built
-  let propAdded = false;
-  function addProp() {
-    const prop = depModel(depKind)?.clone();
-    if (!prop) return;
-    propAdded = true;
-    prop.traverse((o) => { if (o.material) o.material = gate(o.material.clone(), ref); });
-    prop.scale.multiplyScalar(0.32 / 1.3);
-    prop.position.set(0.17, STAGE_Y + 0.01, 0.1);
-    prop.rotation.set(0, -0.9, 0);
-    stageRoot.add(prop);
-    setRank(rank);
-  }
-
-  let rank = 0;
-  function setRank(r) {
+  let rank = -1;
+  // Walking the card's objects is not free on a slow phone: only when the rank changes (or new
+  // objects came in, `force`).
+  function setRank(r, force = false) {
+    if (r === rank && !force) return;
     rank = r;
     const base = BASE_ORDER + r * 10;
     const order = { card: 0, mask: 1, reset: 2, room: 3, restore: 4 };
@@ -416,7 +387,100 @@ export function createStencilCard(seat, ref, depKind) {
       for (const obj of objs) obj.traverse((o) => { if (!o.isGroup) o.renderOrder = base + order[pass]; });
     }
   }
-  setRank(0);
+
+  // ---------- dressing ----------
+  let look = null;
+  let pet = null;      // { root, mixer, clips, action }
+  let prop = null;
+  let petWanted = null;
+  let propKey = '';
+
+  function setLook(next) {
+    const d = SEAT_DEFAULTS[seat];
+    const n = {
+      pet: next?.pet ?? d.pet,
+      dep: next?.dep ?? 'dep_lao',
+      depColors: next?.depColors ?? defaultDepColors(next?.dep ?? 'dep_lao'),
+      cardColor: next?.cardColor ?? d.cardColor,
+    };
+    const key = JSON.stringify(n);
+    if (look && key === JSON.stringify(look)) return;
+    const old = look;
+    look = n;
+    const c = CARD_COLORS[n.cardColor];
+    const art = { ...c, petName: t(`pet.${n.pet}`).toUpperCase() };
+    if (!old || old.cardColor !== n.cardColor || old.pet !== n.pet || old.dep !== n.dep) {
+      marksReady.then(() => {
+        if (look !== n) return;
+        frontMat.map?.dispose();
+        frontMat.map = frontTexture(art, t(`dep.${n.dep}`));
+        if (!old || old.cardColor !== n.cardColor) {
+          backMat.map?.dispose();
+          backMat.map = backTexture(art);
+        }
+        frontMat.needsUpdate = backMat.needsUpdate = true;
+      });
+    }
+    if (!old || old.cardColor !== n.cardColor) {
+      box.material?.dispose?.();
+      box.material = gate(spaceMaterial(art), ref);
+      stageMat.color.set(c.floor);
+    }
+    if (!old || old.pet !== n.pet) loadPetFor(n.pet);
+    propKey = ''; // the slipper is rebuilt on the next update (its models may still be loading)
+    setRank(Math.max(rank, 0), true);
+  }
+
+  function loadPetFor(id) {
+    petWanted = id;
+    loadPet(id).then((gltf) => {
+      if (petWanted !== id) return;
+      if (pet) stageRoot.remove(pet.root);
+      pet = preparePet(id, gltf, ref, 0.4);
+      pet.root.position.set(-0.07, STAGE_Y, -0.05);
+      pet.root.rotation.y = 0.3;
+      stageRoot.add(pet.root);
+      setRank(Math.max(rank, 0), true);
+    }).catch((err) => console.warn('pet failed to load', err));
+  }
+
+  function updateProp() {
+    const key = look ? `${look.dep}|${look.depColors}` : '';
+    if (!look || key === propKey) return;
+    const model = depModelFor(look.dep, look.depColors);
+    if (!model) return;
+    propKey = key;
+    if (prop) stageRoot.remove(prop);
+    prop = model.clone();
+    prop.traverse((o) => { if (o.material) o.material = gate(o.material.clone(), ref); });
+    prop.scale.multiplyScalar(0.32 / 1.3);
+    prop.position.set(0.17, STAGE_Y + 0.01, 0.1);
+    prop.rotation.set(0, -0.9, 0);
+    stageRoot.add(prop);
+    setRank(Math.max(rank, 0), true);
+  }
+
+  // One-shot clips return to idle; 'run' and 'dance' loop until the next call.
+  function react(name) {
+    if (!pet) return;
+    const clip = pet.clips.find((c) => c.name === name) ?? pet.clips.find((c) => c.name === 'idle');
+    if (!clip) return;
+    const next = pet.mixer.clipAction(clip);
+    if (pet.action === next && next.isRunning()) return;
+    const once = !['idle', 'run', 'walk', 'dance'].includes(name);
+    next.reset().setLoop(once ? THREE.LoopOnce : THREE.LoopRepeat, Infinity);
+    next.clampWhenFinished = once;
+    if (pet.action) next.crossFadeFrom(pet.action, 0.2, false);
+    next.play();
+    pet.action = next;
+    if (once) {
+      const back = () => {
+        pet?.mixer.removeEventListener('finished', back);
+        if (pet?.action === next) react('idle');
+      };
+      pet.mixer.addEventListener('finished', back);
+    }
+  }
 
   const shadow = new THREE.Mesh(
     new THREE.PlaneGeometry(CARD_HALF_W * 2.1, CARD_HALF_D * 2.1).rotateX(-Math.PI / 2),
@@ -435,7 +499,7 @@ export function createStencilCard(seat, ref, depKind) {
   // window passes and the room cost nothing until the card shows its face.
   const toCam = new THREE.Vector3();
   function update(dt, camera) {
-    if (!propAdded) addProp();
+    updateProp();
     up.set(0, 1, 0).applyQuaternion(mesh.quaternion);
     const facing = camera ? up.dot(toCam.copy(camera.position).sub(mesh.position)) : up.y;
     const open = facing > 0 && mesh.visible;
@@ -443,7 +507,7 @@ export function createStencilCard(seat, ref, depKind) {
     for (const o of [front, ...parts.mask, ...parts.reset, ...parts.restore, room]) o.visible = open || edgeOn;
     back.visible = !open || edgeOn;
     if (!open) return false;
-    for (const m of mixers) m.update(dt);
+    pet?.mixer.update(dt);
     if (camera) {
       // basis in card space: +z toward the camera, +y = the screen's up, then tip the top toward us
       face.updateWorldMatrix(true, false);
@@ -456,10 +520,11 @@ export function createStencilCard(seat, ref, depKind) {
       stageRoot.quaternion.setFromRotationMatrix(basis);
       stageRoot.rotateX(STAGE_TILT);
     }
-    return mixers.length > 0;
+    return Boolean(pet);
   }
 
-  return { mesh, shadow, setRank, update, stencilRef: ref };
+  setLook(null);
+  return { mesh, shadow, setRank, update, setLook, react, stencilRef: ref };
 }
 
 // Lowest card first, so a card lying on another draws its window after the one below.

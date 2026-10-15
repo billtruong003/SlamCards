@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(new URL('../proto/package.json', import.meta.url));
 const WebSocket = require('ws');
-const BASE = 'http://localhost:8097';
+const BASE = process.env.SLAM_BASE || 'http://localhost:8097';
 const OUT = path.join(path.dirname(fileURLToPath(import.meta.url)), 'out', 'perf');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const until = async (pred, ms = 15000) => { const t = Date.now(); while (Date.now() - t < ms) { if (await pred()) return true; await sleep(100); } return false; };
@@ -106,7 +106,9 @@ async function run(browser, p) {
 
   await page.locator('#name').fill('Perf');
   await page.locator('#go').click();
-  await until(() => page.locator('#start').isVisible());
+  await until(() => page.locator('#ready').isVisible());
+  await page.locator('#ready').click();
+  await until(() => host.state?.ready?.pink === true);
   report.phases.lobby = await page.evaluate(SAMPLE, 3000);
 
   host.send({ t: 'start' });

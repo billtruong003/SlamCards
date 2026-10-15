@@ -2,10 +2,9 @@ import * as THREE from 'three';
 import { TUNE } from './config.js';
 import { createCardMesh, tintCardMesh } from './cards.js';
 import { createStencilCard, orderStencilCards, spaceTime } from './stencil-card.js';
-import { DEFAULT_DEP } from './deps.js';
-
-// Milestone 1 prototype: cards with a stencil window and a pet inside (see stencil-card.js).
-const STENCIL = new URLSearchParams(location.search).has('stencil');
+// Cards with a stencil window and the player's pet inside (stencil-card.js). `?classic` brings
+// back the old joker cards (a fallback if a device can't do the stencil passes).
+const STENCIL = !new URLSearchParams(location.search).has('classic');
 import { toonizeTree, toonize } from './toon.js';
 import { CARD_HALF_W, CARD_HALF_T, CARD_HALF_D, tableFor } from './rules.js';
 
@@ -221,7 +220,8 @@ export class World {
   }
 
   buildCard(seat, stencilRef) {
-    const made = STENCIL ? createStencilCard(seat, stencilRef, DEFAULT_DEP[seat]) : createCardMesh(seat);
+    const made = STENCIL ? createStencilCard(seat, stencilRef) : createCardMesh(seat);
+    if (STENCIL) made.setLook(this.looks?.[seat]);
     const { mesh, shadow } = made;
     this.scene.add(mesh);
     this.scene.add(shadow);
@@ -289,10 +289,47 @@ export class World {
     return out;
   }
 
-  // Card colour per seat (hex, the dark shade): tints the old cards; stencil cards come in milestone 4.
+  // Card colour per seat (hex, the dark shade): tints the old joker cards (`?classic`).
   setCardColors(colors) {
     this.cardColors = colors;
     for (const seat of this.seats) if (!STENCIL && colors[seat]) tintCardMesh(this.cards[seat].mesh, colors[seat]);
+    this.needsRender = true;
+  }
+
+  // What each seat's player wears ({ pet, dep, depColors, cardColor }); kept for cards built later.
+  setLooks(looks) {
+    this.looks = looks;
+    if (STENCIL) for (const seat of this.seats) this.cards[seat]?.stencil?.setLook(looks[seat]);
+    this.needsRender = true;
+  }
+
+  // PERF-01: compile every shader the match will need before it starts, instead of mid-slam
+  // (the first slam used to drop frames while the slipper, hit effects and card windows compiled).
+  // Everything in the scene is made visible for one compile, plus any extra objects (each
+  // player's recoloured slipper), then put back as it was.
+  warmUp(extra = []) {
+    const holder = new THREE.Group();
+    holder.position.set(0, -50, 0);
+    extra.filter(Boolean).forEach((o) => holder.add(o.clone()));
+    this.scene.add(holder);
+    const hidden = [];
+    this.scene.traverse((o) => { if (!o.visible) { hidden.push(o); o.visible = true; } });
+    try {
+      this.renderer.compile(this.scene, this.camera);
+      // and upload every texture now (the card faces would otherwise go up on the first flip)
+      this.scene.traverse((o) => {
+        for (const m of [].concat(o.material ?? [])) if (m?.map) this.renderer.initTexture(m.map);
+      });
+    } finally {
+      for (const o of hidden) o.visible = false;
+      this.scene.remove(holder);
+    }
+    this.needsRender = true;
+  }
+
+  // A pet clip on a seat's card (stencil cards only): 'dance', 'gesture-negative', 'run'…
+  react(seat, name) {
+    this.cards[seat]?.stencil?.react(name);
     this.needsRender = true;
   }
 

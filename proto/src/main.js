@@ -8,7 +8,7 @@ import { playMusic, refreshMusic } from './music.js';
 import { getLevel, setLevel } from './audio.js';
 import { mountMenuBackground } from './menu-bg.js';
 import { playIntro } from './intro.js';
-import { loadDeps, depModel, DEFAULT_DEP } from './deps.js';
+import { loadDeps, depModel, depModelFor, DEFAULT_DEP } from './deps.js';
 import { PETS, DEP_IDS, CARD_COLORS, SEAT_DEFAULTS, cleanLook } from './catalog.js';
 import { renderWardrobe, gearTiles, petThumb, stopPreview } from './wardrobe.js';
 import { showMeme, preloadMemes, setMemesEnabled, memesEnabled } from './memes.js';
@@ -482,6 +482,8 @@ function onState(next) {
 
   if (state.seats.length >= 2) world.setup(state.seats);
   applySeatColors();
+  applyLooks();
+  petReactions();
   applyStateCards();
 
   const gone = Object.keys(state.players).filter((s) => s !== me && !state.players[s].connected && !state.players[s].left);
@@ -548,6 +550,46 @@ function applySeatColors() {
     root.setProperty(`--seat-${seat}-ink`, c.dark);
   }
   world.setCardColors(Object.fromEntries(SEATS.map((seat) => [seat, CARD_COLORS[cardColorOf(seat)].dark])));
+}
+// The pets act out the match: a nod when their turn comes, running while cards fly (slam(),
+// startPlayback()), a dance for whoever takes a card or a round, a head shake for whoever is out.
+let petTurnKey = '';
+let petEventKey = '';
+let warmedMatch = '';
+function petReactions() {
+  const s = state;
+  // once per match, during the round-1 intro: compile everything the slams will use
+  const matchKey = `${s.code}-${s.seats.join()}`;
+  if (s.phase === 'roundIntro' && s.round === 1 && warmedMatch !== matchKey) {
+    warmedMatch = matchKey;
+    setTimeout(() => world.warmUp(s.seats.map((seat) => depModelFor(depOf(seat), depColorsOf(seat)))), 50);
+  }
+  if (s.phase === 'roundIntro') for (const seat of s.seats) world.react(seat, 'idle');
+  const turnKey = s.phase === 'turn' ? `${s.round}-${s.turn}-${s.remainingMs > 0}` : '';
+  if (turnKey && turnKey !== petTurnKey) {
+    for (const seat of s.alive) world.react(seat, seat === s.turn ? 'gesture-positive' : 'idle');
+  }
+  petTurnKey = turnKey;
+  const ev = s.phase === 'roundEnd' ? s.result : s.event;
+  const evKey = ev ? `${s.round}-${s.phase}-${ev.type ?? ev.reason}-${ev.by}-${ev.eliminated}` : '';
+  if (evKey && evKey !== petEventKey) {
+    for (const seat of ev.eliminated ?? []) world.react(seat, 'gesture-negative');
+    const kind = ev.type ?? ev.reason;
+    if (kind === 'capture') world.react(ev.by, 'dance');
+    if (kind === 'fall') world.react(ev.by, 'gesture-negative');
+    if (s.phase === 'roundEnd' && ev.winner) world.react(ev.winner, 'dance');
+  }
+  petEventKey = evKey;
+}
+const petsRun = () => { for (const seat of state?.alive ?? []) world.react(seat, 'run'); };
+
+function applyLooks() {
+  const looks = {};
+  for (const seat of SEATS) {
+    const p = state?.players[seat];
+    if (p) looks[seat] = { pet: p.pet, dep: p.dep, depColors: p.depColors, cardColor: p.cardColor };
+  }
+  world.setLooks(looks);
 }
 
 // The table shows the server's cards whenever no local slam or replay is moving them.
@@ -1439,6 +1481,7 @@ function slam(aim) {
     setTimeout(() => {
       world.applySlam(impact, type);
       sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, impact: impactMsg, type };
+      petsRun();
     }, TUNE.hitstopMs);
   }, depOf(me), depColorsOf(me));
 }
@@ -1484,6 +1527,7 @@ function stepSim(now) {
     send({ t: 'slamEnd', final });
     lastSlamStats = slamStats(sim.frames, me);
   }
+  for (const seat of state?.alive ?? []) world.react(seat, 'idle');
   sim = null;
   if (!local) resyncCards();
 }
@@ -1497,6 +1541,7 @@ function flushChunk() {
 // Other players' slams arrive in small chunks while still flying. Frames are played a few
 // behind the newest one; if the network stalls, playback holds and the buffer grows.
 function startPlayback(msg) {
+  petsRun();
   const impact = new THREE.Vector3(msg.impact.x, 0, msg.impact.z);
   const current = {
     by: msg.by, buffer: [], cursor: 0, ended: false, final: null, playing: false, impactDone: false,
@@ -1511,6 +1556,7 @@ function startPlayback(msg) {
 }
 
 function finishPlayback() {
+  for (const seat of state?.alive ?? []) world.react(seat, 'idle');
   lastSlamStats = slamStats(playback.buffer, playback.by);
   world.setCards(playback.final);
   playback = null;
