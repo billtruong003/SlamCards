@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TUNE } from './config.js';
-import { depModel } from './deps.js';
+import { depModel, depModelFor } from './deps.js';
 import { WindFX, HitFX, CardTrails } from './fx.js';
 
 const tmpDir = new THREE.Vector3();
@@ -147,8 +147,8 @@ export class Visuals {
     return this.dep.visible;
   }
 
-  dropDep(point, onImpact, kind) {
-    const model = depModel(kind) ?? this.fallbackDep;
+  dropDep(point, onImpact, kind, colors) {
+    const model = depModelFor(kind, colors) ?? depModel(kind) ?? this.fallbackDep;
     if (model.parent !== this.depTilt) {
       this.depTilt.clear();
       this.depTilt.add(model);

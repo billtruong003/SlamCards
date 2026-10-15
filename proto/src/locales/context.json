@@ -458,6 +458,231 @@
     "max": 12,
     "id": "B7"
   },
+  "pet.cat": {
+    "where": "Pet name (cat), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Kucing"
+  },
+  "pet.dog": {
+    "where": "Pet name (dog), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Anjing"
+  },
+  "pet.panda": {
+    "where": "Pet name (panda), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Panda"
+  },
+  "pet.fox": {
+    "where": "Pet name (fox), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Rubah"
+  },
+  "pet.pig": {
+    "where": "Pet name (pig), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Babi"
+  },
+  "pet.bunny": {
+    "where": "Pet name (bunny), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Kelinci"
+  },
+  "pet.chick": {
+    "where": "Pet name (chick), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Anak ayam"
+  },
+  "pet.penguin": {
+    "where": "Pet name (penguin), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Penguin"
+  },
+  "pet.tiger": {
+    "where": "Pet name (tiger), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Harimau"
+  },
+  "pet.lion": {
+    "where": "Pet name (lion), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Singa"
+  },
+  "pet.monkey": {
+    "where": "Pet name (monkey), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Monyet"
+  },
+  "pet.koala": {
+    "where": "Pet name (koala), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Koala"
+  },
+  "pet.cow": {
+    "where": "Pet name (cow), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Sapi"
+  },
+  "pet.deer": {
+    "where": "Pet name (deer), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Rusa"
+  },
+  "pet.elephant": {
+    "where": "Pet name (elephant), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Gajah"
+  },
+  "pet.giraffe": {
+    "where": "Pet name (giraffe), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Jerapah"
+  },
+  "pet.bee": {
+    "where": "Pet name (bee), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Lebah"
+  },
+  "pet.crab": {
+    "where": "Pet name (crab), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Kepiting"
+  },
+  "pet.fish": {
+    "where": "Pet name (fish), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Ikan"
+  },
+  "pet.parrot": {
+    "where": "Pet name (parrot), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Burung beo"
+  },
+  "pet.beaver": {
+    "where": "Pet name (beaver), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Berang-berang"
+  },
+  "pet.hog": {
+    "where": "Pet name (hog), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Babi hutan"
+  },
+  "pet.polar": {
+    "where": "Pet name (polar), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Beruang kutub"
+  },
+  "pet.caterpillar": {
+    "where": "Pet name (caterpillar), shown on pet tiles and on the card ribbon (upper-cased there)",
+    "max": 14,
+    "id": "Ulat"
+  },
+  "color.hong": {
+    "where": "Card colour name (hong), upper case, on seats, labels and the colour picker",
+    "max": 10,
+    "id": "PINK"
+  },
+  "color.xanh": {
+    "where": "Card colour name (xanh), upper case, on seats, labels and the colour picker",
+    "max": 10,
+    "id": "BIRU"
+  },
+  "color.vang": {
+    "where": "Card colour name (vang), upper case, on seats, labels and the colour picker",
+    "max": 10,
+    "id": "KUNING"
+  },
+  "color.la": {
+    "where": "Card colour name (la), upper case, on seats, labels and the colour picker",
+    "max": 10,
+    "id": "HIJAU"
+  },
+  "depPart.dep_lao.sole": {
+    "where": "Slipper part that can be recoloured (dep_lao.sole)",
+    "max": 16,
+    "id": "Alas"
+  },
+  "depPart.dep_lao.strap": {
+    "where": "Slipper part that can be recoloured (dep_lao.strap)",
+    "max": 16,
+    "id": "Tali + pinggir"
+  },
+  "depPart.dep_le.insole": {
+    "where": "Slipper part that can be recoloured (dep_le.insole)",
+    "max": 16,
+    "id": "Alas kaki"
+  },
+  "depPart.dep_le.sole": {
+    "where": "Slipper part that can be recoloured (dep_le.sole)",
+    "max": 16,
+    "id": "Sol"
+  },
+  "depPart.dep_le.strap": {
+    "where": "Slipper part that can be recoloured (dep_le.strap)",
+    "max": 16,
+    "id": "Tali"
+  },
+  "depPart.dep_to_ong.all": {
+    "where": "Slipper part that can be recoloured (dep_to_ong.all)",
+    "max": 16,
+    "id": "Semua"
+  },
+  "wardrobe.title": {
+    "where": "Wardrobe screen title",
+    "max": 14,
+    "id": "Lemari"
+  },
+  "wardrobe.pet": {
+    "where": "Wardrobe tab / tile label: pet",
+    "max": 10,
+    "id": "Pet"
+  },
+  "wardrobe.dep": {
+    "where": "Wardrobe tab / tile label: slipper",
+    "max": 10,
+    "id": "Sandal"
+  },
+  "wardrobe.card": {
+    "where": "Wardrobe tab / tile label: card colour",
+    "max": 12,
+    "id": "Warna kartu"
+  },
+  "wardrobe.done": {
+    "where": "Wardrobe: close button",
+    "max": 10,
+    "id": "Selesai"
+  },
+  "wardrobe.note": {
+    "where": "Under the wardrobe tiles on the home screen",
+    "max": 40,
+    "id": "Barangmu ikut tiap pertandingan"
+  },
+  "wardrobe.taken": {
+    "where": "Card colour already used by someone in the room",
+    "max": 18,
+    "id": "Udah diambil"
+  },
+  "wardrobe.preview": {
+    "where": "Wardrobe: caption under the card preview",
+    "max": 24,
+    "id": "Kartumu"
+  },
+  "wardrobe.pickType": {
+    "where": "Wardrobe slipper tab: label above the slipper types",
+    "max": 20,
+    "id": "Jenis sandal"
+  },
+  "lobby.myGear": {
+    "where": "Lobby: heading above the player's gear tiles",
+    "max": 16,
+    "id": "Barangmu"
+  },
+  "error.colorTaken": {
+    "where": "Toast when a card colour someone else has was picked",
+    "max": 40,
+    "id": "Warna itu udah dipakai orang!"
+  },
   "seat.black": {
     "where": "Card colour name: black (upper case; also used lower-cased in lobby.seatCard)",
     "max": 5,

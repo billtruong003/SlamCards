@@ -29,11 +29,11 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 6. ✅ (15/10, phần Tủ đồ ở màn chính nối ở bước 11) **Màn chính mới** theo bảng Home/HomePhone (Tủ đồ bên trái trên máy tính, khung "Chơi với người lạ", "hoặc chơi với bạn"). Phần Tủ đồ lúc này mở các màn chọn ở mốc 3.
 
 ### Mốc 3 · Tủ đồ (skin)
-7. **Dữ liệu đồ** `src/catalog.js` (dùng chung client + server): 24 pet (id, file model, tên → key ngôn ngữ), 3 dép (model, danh sách phần tô màu, màu mặc định), bảng 12 màu dép, 4 màu bài (màu, màu đậm, màu khoảng không, hoa văn, biểu tượng ♥ ◆ ★ ♣). Giao thức `pickLook { pet, dep, depColors, cardColor }`: lưu localStorage, gửi server; server kiểm tra hợp lệ, chặn trùng màu bài (trùng thì giữ màu cũ + báo; ghép ngẫu nhiên thì server tự đổi màu cho người vào sau). Đổi đồ ở phòng chờ → tự bỏ Sẵn sàng. Test.
-8. **Dép tô màu trong game**: đưa shader tô theo ô palette từ mockup vào `toon.js`; dép lào 2 phần, dép lê 3 phần, tổ ong 1 phần; dép người khác hiện đúng màu họ chọn. Màn chọn dép theo bảng PickDep (xem 3D xoay được). Sửa ART-01 (dải toon rõ).
-9. **Màu bài mới**: 4 màu + hoa văn + biểu tượng thay ĐEN/ĐỎ/XANH/LỤC ở mọi chỗ (ô ghế, chip HUD, dòng điểm, nhãn ▲/▼, lá bài cũ tạm tô theo màu mới). Màn chọn màu bài; màu đã có người lấy thì mờ. Hoa văn từng màu dùng cho nền khoảng không ở mốc 4.
-10. **Màn chọn pet** theo bảng PickPet: lưới 24 pet (tải ảnh nhỏ, không tải model khi chưa cần), xem pet trong lá bài.
-11. **Tủ đồ ở Màn chính + Phòng chờ** nối vào 8–10; lá của m to bên trái (máy tính).
+7. ✅ (15/10) **Dữ liệu đồ** `src/catalog.js` (dùng chung client + server): 24 pet (id, file model, tên → key ngôn ngữ), 3 dép (model, danh sách phần tô màu, màu mặc định), bảng 12 màu dép, 4 màu bài (màu, màu đậm, màu khoảng không, hoa văn, biểu tượng ♥ ◆ ★ ♣). Giao thức `pickLook { pet, dep, depColors, cardColor }`: lưu localStorage, gửi server; server kiểm tra hợp lệ, chặn trùng màu bài (trùng thì giữ màu cũ + báo; ghép ngẫu nhiên thì server tự đổi màu cho người vào sau). Đổi đồ ở phòng chờ → tự bỏ Sẵn sàng. Test.
+8. ✅ (15/10; xem trước 3D trong tủ đồ, ảnh dép trong ô vẫn là ảnh cũ tới bước 18) **Dép tô màu trong game**: đưa shader tô theo ô palette từ mockup vào `toon.js`; dép lào 2 phần, dép lê 3 phần, tổ ong 1 phần; dép người khác hiện đúng màu họ chọn. Màn chọn dép theo bảng PickDep (xem 3D xoay được). Sửa ART-01 (dải toon rõ).
+9. ✅ (15/10) **Màu bài mới**: 4 màu + hoa văn + biểu tượng thay ĐEN/ĐỎ/XANH/LỤC ở mọi chỗ (ô ghế, chip HUD, dòng điểm, nhãn ▲/▼, lá bài cũ tạm tô theo màu mới). Màn chọn màu bài; màu đã có người lấy thì mờ. Hoa văn từng màu dùng cho nền khoảng không ở mốc 4.
+10. ✅ (15/10; xem pet trong lá bài làm ở mốc 4) **Màn chọn pet** theo bảng PickPet: lưới 24 pet (tải ảnh nhỏ, không tải model khi chưa cần), xem pet trong lá bài.
+11. ✅ (15/10) **Tủ đồ ở Màn chính + Phòng chờ** nối vào 8–10; lá của m to bên trái (máy tính).
 12. **[DEPLOY 2]**: mốc 2 + mốc 3 (lá bài vẫn kiểu cũ nhưng màu, dép, pet đã chọn được).
 
 ### Mốc 4 · Lá bài mới trong game

@@ -88,6 +88,17 @@ function loadSheet() {
   return sheetTexture;
 }
 
+// The old joker card, recoloured to its player's card colour (until the stencil cards replace it):
+// the black-ink art for every seat, ink tinted.
+export function tintCardMesh(mesh, hex) {
+  const u = mesh.material.uniforms;
+  if (!u) return;
+  u.frontRect.value = cellRect(JOKER_COL, 2);
+  u.backRect.value = cellRect(BACK_COL, 2);
+  u.inkTint.value.set(hex);
+  u.useTint.value = 1;
+}
+
 export function createCardMesh(seat) {
   const style = STYLE[seat];
   const geometry = new THREE.PlaneGeometry(CARD_HALF_W * 2, CARD_HALF_D * 2);

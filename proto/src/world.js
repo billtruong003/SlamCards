@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { TUNE } from './config.js';
-import { createCardMesh } from './cards.js';
+import { createCardMesh, tintCardMesh } from './cards.js';
 import { createStencilCard, orderStencilCards, spaceTime } from './stencil-card.js';
 import { DEFAULT_DEP } from './deps.js';
 
@@ -287,6 +287,13 @@ export class World {
       out[seat] = { p: [t.x, t.y, t.z].map(round4), q: [r.x, r.y, r.z, r.w].map(round4) };
     }
     return out;
+  }
+
+  // Card colour per seat (hex, the dark shade): tints the old cards; stencil cards come in milestone 4.
+  setCardColors(colors) {
+    this.cardColors = colors;
+    for (const seat of this.seats) if (!STENCIL && colors[seat]) tintCardMesh(this.cards[seat].mesh, colors[seat]);
+    this.needsRender = true;
   }
 
   setCards(cards) {

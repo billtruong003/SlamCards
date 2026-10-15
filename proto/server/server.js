@@ -7,6 +7,7 @@ import { WebSocketServer } from 'ws';
 import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
 import { cleanName as cleanNameText } from './names.js';
+import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors } from '../src/catalog.js';
 
 const PORT = Number(process.env.PORT) || 8097;
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
@@ -87,6 +88,16 @@ const cleanDep = (dep, seat) => (DEPS.includes(dep) ? dep : DEFAULT_DEP[seat]);
 // strangers see each other's names in quick matches.
 const cleanName = (name) => cleanNameText(name) || `Dép #${crypto.randomInt(10, 100)}`;
 
+// A new player's look: their pick, with the card colour moved to a free one if it is taken
+// (seat order first) and a default pet for the seat when they have none yet.
+function makePlayer(room, seat, msg) {
+  const look = cleanLook(msg.look ?? { dep: msg.dep }, cleanDep(msg.dep, seat));
+  const taken = new Set(Object.values(room.players).map((p) => p.cardColor));
+  const wanted = look.cardColor && !taken.has(look.cardColor) ? look.cardColor : null;
+  const cardColor = wanted ?? [SEAT_DEFAULTS[seat].cardColor, ...CARD_COLOR_IDS].find((c) => !taken.has(c));
+  return { token: crypto.randomUUID(), name: uniqueName(room, cleanName(msg.name)), ...look, pet: look.pet ?? SEAT_DEFAULTS[seat].pet, cardColor };
+}
+
 // Two players with the same name get a number: "Tí vô danh", "Tí vô danh 2".
 function uniqueName(room, name) {
   const taken = new Set(Object.values(room.players).map((p) => p.name));
@@ -158,7 +169,10 @@ function publicState(room, you) {
     wind: room.wind,
     forced: room.turn ? room.passStreak[room.turn] >= 1 : false,
     cards: room.cards,
-    players: Object.fromEntries(Object.entries(room.players).map(([seat, p]) => [seat, { connected: p.connected, name: p.name, left: Boolean(p.left), dep: p.dep, tutorial: p.tutorial || 0 }])),
+    players: Object.fromEntries(Object.entries(room.players).map(([seat, p]) => [seat, {
+      connected: p.connected, name: p.name, left: Boolean(p.left), tutorial: p.tutorial || 0,
+      dep: p.dep, depColors: p.depColors, pet: p.pet, cardColor: p.cardColor,
+    }])),
     rpsChosen: Object.fromEntries(room.seats.map((s) => [s, Boolean(room.rps[s])])),
     rpsShow: room.phase === 'rpsReveal' ? room.rps : null,
     rpsWinner: room.rpsWinner,
@@ -604,7 +618,7 @@ function handle(ws, msg) {
       visibility: msg.visibility === 'public' ? 'public' : 'private',
       cap: [2, 3, 4].includes(msg.cap) ? msg.cap : MAX_PLAYERS,
     });
-    const player = { token: crypto.randomUUID(), name: cleanName(msg.name), dep: cleanDep(msg.dep, 'black') };
+    const player = makePlayer(room, 'black', msg);
     room.players.black = player;
     room.host = 'black';
     room.joinOrder = ['black'];
@@ -650,7 +664,7 @@ function handle(ws, msg) {
       send(ws, { t: 'error', code: 'full', message: 'Phòng đủ 4 đứa rồi, vào không được!' });
       return;
     }
-    const player = { token: crypto.randomUUID(), name: uniqueName(room, cleanName(msg.name)), dep: cleanDep(msg.dep, seat) };
+    const player = makePlayer(room, seat, msg);
     leaveQueue(ws);
     room.players[seat] = player;
     room.joinOrder.push(seat);
@@ -675,7 +689,25 @@ function handle(ws, msg) {
 
   if (msg.t === 'pickDep' && ['lobby', 'matchEnd'].includes(room.phase) && DEPS.includes(msg.dep)) {
     room.players[seat].dep = msg.dep;
+    room.players[seat].depColors = defaultDepColors(msg.dep);
     delete room.ready[seat]; // changing your gear takes back your "ready"
+    broadcast(room);
+    return;
+  }
+
+  // Pet, slipper + its colours, card colour. A colour someone else already has is refused.
+  if (msg.t === 'pickLook' && ['lobby', 'matchEnd'].includes(room.phase)) {
+    const player = room.players[seat];
+    const look = cleanLook(msg.look, player.dep);
+    const clash = look.cardColor && Object.entries(room.players).some(([s, p]) => s !== seat && p.cardColor === look.cardColor);
+    if (clash) send(ws, { t: 'lookRefused', reason: 'colorTaken' });
+    Object.assign(player, {
+      pet: look.pet ?? player.pet,
+      dep: look.dep,
+      depColors: look.depColors,
+      cardColor: !clash && look.cardColor ? look.cardColor : player.cardColor,
+    });
+    delete room.ready[seat];
     broadcast(room);
     return;
   }
@@ -769,6 +801,7 @@ function publicRooms() {
       cap: r.cap,
       phase: r.phase === 'lobby' ? 'lobby' : 'playing',
       pet: r.players[r.host]?.pet ?? null,
+      color: r.players[r.host]?.cardColor ?? null,
       dep: r.players[r.host]?.dep ?? null,
     }))
     .sort((a, b) => (a.phase === 'lobby' ? 0 : 1) - (b.phase === 'lobby' ? 0 : 1) || b.n - a.n)
@@ -786,7 +819,8 @@ let anyCountdownAt = 0;
 function joinQueue(ws, msg) {
   leaveQueue(ws);
   const size = [2, 3, 4].includes(msg.size) ? msg.size : 'any';
-  queue.push({ ws, name: cleanName(msg.name), dep: DEPS.includes(msg.dep) ? msg.dep : 'dep_lao', size, at: Date.now() });
+  const look = cleanLook(msg.look ?? { dep: msg.dep });
+  queue.push({ ws, name: cleanName(msg.name), dep: look.dep, look, size, at: Date.now() });
   matchQueue();
 }
 
@@ -800,7 +834,7 @@ function startQuickRoom(entries) {
   entries.forEach((e, i) => {
     leaveQueue(e.ws);
     const seat = SEATS[i];
-    const player = { token: crypto.randomUUID(), name: uniqueName(room, e.name), dep: e.dep };
+    const player = makePlayer(room, seat, { name: e.name, look: e.look });
     room.players[seat] = player;
     room.joinOrder.push(seat);
     attach(e.ws, room, seat, player);
@@ -846,7 +880,7 @@ function matchQueue() {
       state: 'waiting',
       size: e.size,
       waitedMs: Date.now() - e.at,
-      peers: group.filter((o) => o !== e).map((o) => ({ name: o.name, dep: o.dep })),
+      peers: group.filter((o) => o !== e).map((o) => ({ name: o.name, dep: o.dep, pet: o.look.pet })),
       startsInMs: e.size === 'any' && anyCountdownAt ? Math.max(0, anyCountdownAt - Date.now()) : 0,
     });
   }

@@ -29,8 +29,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 #labels{position:fixed;inset:0;pointer-events:none}
 .badge{position:absolute;left:0;top:0;will-change:transform;font-size:12px;font-weight:800;padding:0 8px;border-radius:999px;border:2px solid var(--ink);white-space:nowrap;line-height:18px}
-.badge.black{background:var(--ink);color:var(--cream)}
-.badge.pink{background:var(--pink-dark);color:#fff}
+.badge.black{background:var(--seat-black);color:var(--ink)}
+.badge.pink{background:var(--seat-pink);color:var(--ink)}
 .pop{position:absolute;font-weight:800;font-size:44px;color:var(--cream);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;transform:translate(-50%,-50%) rotate(-8deg);animation:pop .7s ease-out forwards}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(-8deg)}20%{opacity:1;transform:translate(-50%,-80%) scale(1.1) rotate(-8deg)}100%{opacity:0;transform:translate(-50%,-140%) scale(1) rotate(-8deg)}}
 
@@ -85,7 +85,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .menu-bg .menu-anim{position:fixed}
 .menu-card{margin:auto}
 
-:root{--seat-black:#2a1418;--seat-pink:#d63c6e;--seat-blue:#2f6fdb;--seat-green:#23955a}
+:root{--seat-black:#ff5c9d;--seat-pink:#2fa8ff;--seat-blue:#ffc93c;--seat-green:#3ccf6e;--seat-black-ink:#c2306b;--seat-pink-ink:#1a6fb3;--seat-blue-ink:#c98e00;--seat-green-ink:#1f8f45}
 #hud{align-items:flex-start}
 .players{display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100vw - 150px)}
 .chip{display:flex;align-items:center;gap:6px;background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:0 8px;height:34px;font-weight:800;font-size:15px;transition:opacity .2s}
@@ -97,20 +97,21 @@ button{font:inherit;color:inherit;cursor:pointer}
 .swatch.pink,.dot.pink{background:var(--seat-pink)}
 .swatch.blue,.dot.blue{background:var(--seat-blue)}
 .swatch.green,.dot.green{background:var(--seat-green)}
-.badge.blue{background:var(--seat-blue);color:#fff}
-.badge.green{background:var(--seat-green);color:#fff}
-.seat-black{color:var(--seat-black)}.seat-pink{color:var(--seat-pink)}.seat-blue{color:var(--seat-blue)}.seat-green{color:var(--seat-green)}
-.panel .sub .seat-black{color:var(--cream);text-decoration:underline}
+.badge.blue{background:var(--seat-blue);color:var(--ink)}
+.badge.green{background:var(--seat-green);color:var(--ink)}
+/* names in text use the dark shade of the card colour (readable on cream) */
+.seat-black{color:var(--seat-black-ink)}.seat-pink{color:var(--seat-pink-ink)}.seat-blue{color:var(--seat-blue-ink)}.seat-green{color:var(--seat-green-ink)}
+
 /* names inside lines of cream text over the dimmed table: a small cream tag keeps every seat colour readable */
 .panel .sub:not(.note) b[class^="seat-"]{background:var(--cream);border-radius:6px;padding:0 6px;text-decoration:none}
-.panel .sub:not(.note) b.seat-black{color:var(--seat-black)}
+
 .scores{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .score-chip{display:inline-flex;align-items:center;gap:6px;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:999px;padding:0 12px;min-height:34px;font-weight:800;font-size:17px;box-shadow:0 3px 0 var(--ink)}
 .score-chip .dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink)}
 .score-chip b{font-size:21px;margin-left:2px}
 .seats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:100%}
-.slot.seat{color:#fff;border-color:var(--ink)}
-.slot.seat small{color:rgba(255,255,255,.8)}
+.slot.seat{color:var(--ink);border-color:var(--ink)}
+.slot.seat small{color:var(--ink);opacity:.8}
 .slot.seat.black{background:var(--seat-black)}
 .slot.seat.pink{background:var(--seat-pink)}
 .slot.seat.blue{background:var(--seat-blue)}
@@ -118,7 +119,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .slot{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .order .arrow{font-weight:800;font-size:28px;color:var(--cream)}
 .sub.note{background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:10px;padding:0 12px}
-.sub.note .seat-black{color:var(--seat-black);text-decoration:none}
+
 .btn:disabled{background:#ddd;color:#777}
 
 #meme{position:fixed;inset:0;pointer-events:none;z-index:8}
@@ -299,3 +300,38 @@ button{font:inherit;color:inherit;cursor:pointer}
   .home .title{font-size:34px}
   .home .or{display:none}
 }
+
+/* ---------- wardrobe ---------- */
+.menu-bg.with-gear{flex-wrap:wrap;gap:24px;align-content:center}
+.gear-card{max-width:min(320px,calc(100vw - 32px));gap:8px}
+.gear-title{margin:0;font-weight:800;font-size:20px}
+.gear-hero{width:120px;height:120px;object-fit:contain;margin:-8px 0}
+@media (min-width:900px){.gear-card{order:-1}}
+.gear-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}
+.gear-tile{background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:4px 4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font:800 13px var(--font);color:var(--ink);min-height:44px;position:relative}
+.gear-tile img{width:64px;height:48px;object-fit:contain}
+.gear-tile small{font-size:11px;font-weight:700;color:var(--muted);line-height:1}
+.dep-dots{position:absolute;right:6px;top:6px;display:flex;gap:2px}
+.dep-dots i{width:10px;height:10px;border-radius:50%;border:2px solid var(--ink)}
+.card-chip{width:44px;height:48px;border-radius:8px;border:3px solid var(--ink);background:var(--c);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--cream);-webkit-text-stroke:1px var(--ink)}
+.slot-dep.pet{object-fit:contain;background:var(--cream)}
+.wardrobe{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
+.ward-body{width:100%;overflow-y:auto;max-height:min(56vh,480px);display:flex;flex-direction:column;gap:8px;padding:4px 2px}
+.pet-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pet-tile{background:#fff;border:3px solid var(--ink);border-radius:12px;display:flex;flex-direction:column;align-items:center;font:800 13px var(--font);color:var(--ink);padding:2px 2px 6px;min-height:44px}
+.pet-tile img{width:64px;height:64px;object-fit:contain}
+.pet-tile.on{background:var(--mint);box-shadow:0 3px 0 var(--ink);transform:translateY(-2px)}
+.dep-preview{display:flex;justify-content:center}
+.dep-preview canvas{width:240px;height:150px;background:#f6eedb;border:3px solid var(--ink);border-radius:14px}
+.swatches{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start}
+.swatches .sw{width:30px;height:30px;border-radius:50%;border:3px solid var(--ink);padding:0}
+.swatches .sw.on{box-shadow:0 0 0 3px var(--cream),0 0 0 6px var(--ink)}
+@media (pointer:coarse){.swatches .sw{width:40px;height:40px}}
+.color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.color-tile{background:var(--c);border:3px solid var(--ink);border-radius:14px;min-height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 17px var(--font);color:var(--ink)}
+.color-tile i{font-style:normal;font-size:28px;color:var(--cream);-webkit-text-stroke:2px var(--ink);paint-order:stroke fill}
+.color-tile.on{box-shadow:0 0 0 4px var(--cream),0 0 0 7px var(--ink)}
+.color-tile:disabled{opacity:.4}
+.color-tile small{font-size:12px}
+/* cards over the flying menu background, whatever their flex order */
+.menu-bg .menu-card{z-index:1}

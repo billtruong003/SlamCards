@@ -177,3 +177,48 @@ test('names: swear words are blocked in several languages, ordinary names pass',
     assert.ok(!isBadName(ok), `should allow: ${ok}`);
   }
 });
+
+test('looks: seat defaults, a taken card colour moves to a free one, bad picks fall back', async () => {
+  const srv = await startServer();
+  try {
+    const a = await connect(srv.port);
+    a.send({ t: 'create', name: 'A', look: { pet: 'tiger', dep: 'dep_le', depColors: ['#2a1418', '#ffc93c', '#2fa8ff'], cardColor: 'vang' } });
+    await a.next((m) => m.t === 'joined');
+    const b = await connect(srv.port);
+    b.send({ t: 'join', code: a.code, name: 'B', look: { pet: 'dragon', dep: 'dep_lao', depColors: ['#123456'], cardColor: 'vang' } });
+    await b.next((m) => m.t === 'joined');
+    const s = await a.waitState((st) => Object.keys(st.players).length === 2);
+    assert.deepEqual([s.players.black.pet, s.players.black.dep, s.players.black.cardColor], ['tiger', 'dep_le', 'vang']);
+    assert.deepEqual(s.players.black.depColors, ['#2a1418', '#ffc93c', '#2fa8ff']);
+    assert.equal(s.players.pink.pet, 'panda', 'unknown pet: seat default');
+    assert.deepEqual(s.players.pink.depColors, ['#fffaf0', '#4f8ff0'], 'bad colours: slipper defaults');
+    assert.equal(s.players.pink.cardColor, 'xanh', 'vang was taken: next free colour in seat order');
+  } finally { srv.stop(); }
+});
+
+test('pickLook: changes gear, takes back ready, refuses a colour someone has', async () => {
+  const srv = await startServer();
+  try {
+    const [a, b] = await lobby(srv.port, 2);
+    b.send({ t: 'ready', ready: true });
+    await a.waitState((s) => s.ready.pink === true);
+    b.send({ t: 'pickLook', look: { pet: 'koala', dep: 'dep_to_ong', depColors: ['#3ccf6e'], cardColor: 'la' } });
+    const s = await a.waitState((st) => st.players.pink.pet === 'koala');
+    assert.deepEqual([s.players.pink.dep, s.players.pink.depColors[0], s.players.pink.cardColor], ['dep_to_ong', '#3ccf6e', 'la']);
+    assert.equal(s.ready.pink, undefined);
+    b.send({ t: 'pickLook', look: { pet: 'koala', dep: 'dep_to_ong', depColors: ['#3ccf6e'], cardColor: 'hong' } });
+    assert.equal((await b.next((m) => m.t === 'lookRefused')).reason, 'colorTaken');
+    assert.equal((await quiet(a)).players.pink.cardColor, 'la');
+  } finally { srv.stop(); }
+});
+
+test('quick rooms give everyone a different card colour', async () => {
+  const srv = await startServer({ anyCountdown: 100, quickStart: 2000, queueTick: 50 });
+  try {
+    const [a, b, c] = await Promise.all([1, 2, 3].map(() => connect(srv.port)));
+    for (const [cl, n] of [[a, 'A'], [b, 'B'], [c, 'C']]) cl.send({ t: 'queue', size: 3, name: n, look: { cardColor: 'hong', pet: 'cat' } });
+    const s = await a.waitState((st) => Object.keys(st.players).length === 3, 4000);
+    const colors = Object.values(s.players).map((p) => p.cardColor);
+    assert.equal(new Set(colors).size, 3, colors.join());
+  } finally { srv.stop(); }
+});

@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 npx vite build
-tar czf /tmp/slam.tgz dist server src/rules.js src/config.js
+tar czf /tmp/slam.tgz dist server src/rules.js src/config.js src/catalog.js
 HOST="${SLAM_HOST:-hordecall}"
 scp /tmp/slam.tgz "$HOST":/tmp/slam.tgz
 ssh "$HOST" 'cd /opt/slam-cards && rm -rf dist server src && tar xzf /tmp/slam.tgz && rm /tmp/slam.tgz && pm2 restart slam-cards --update-env'

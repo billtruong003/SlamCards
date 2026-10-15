@@ -8,7 +8,9 @@ import { playMusic, refreshMusic } from './music.js';
 import { getLevel, setLevel } from './audio.js';
 import { mountMenuBackground } from './menu-bg.js';
 import { playIntro } from './intro.js';
-import { loadDeps, depModel, DEPS, DEFAULT_DEP } from './deps.js';
+import { loadDeps, depModel, DEFAULT_DEP } from './deps.js';
+import { PETS, DEP_IDS, CARD_COLORS, SEAT_DEFAULTS, cleanLook } from './catalog.js';
+import { renderWardrobe, gearTiles, petThumb, stopPreview } from './wardrobe.js';
 import { showMeme, preloadMemes, setMemesEnabled, memesEnabled } from './memes.js';
 import { createFtue } from './ftue.js';
 import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStatic } from './i18n.js';
@@ -133,7 +135,7 @@ const ftue = createFtue({
   },
 });
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
-const seatLabel = (seat) => t(`seat.${seat}`);
+const seatLabel = (seat) => t(`color.${cardColorOf(seat)}`);
 const list = (items) => items.join(t('common.listSep'));
 
 const nameOf = (seat) => state?.players[seat]?.name || seatLabel(seat);
@@ -200,20 +202,35 @@ const playerName = {
   set: (name) => { try { localStorage.setItem('slam-name', name); } catch { /* private mode */ } },
 };
 
-const playerDep = {
-  get: () => { try { return localStorage.getItem('slam-dep') || ''; } catch { return ''; } },
-  set: (dep) => { try { localStorage.setItem('slam-dep', dep); } catch { /* private mode */ } },
+// What this player wears (catalog.js): kept on the device, sent with create / join / queue.
+// The server fills in what is missing (seat defaults) and keeps card colours unique per room.
+const playerLook = {
+  get() {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem('slam-look') || '{}'); } catch { /* bad value */ }
+    let dep = saved.dep;
+    try { dep ??= localStorage.getItem('slam-dep') || undefined; } catch { /* private mode */ }
+    const look = cleanLook({ ...saved, dep });
+    return { ...look, pet: look.pet ?? 'cat', cardColor: look.cardColor ?? 'hong' };
+  },
+  set(look) {
+    try { localStorage.setItem('slam-look', JSON.stringify(cleanLook(look))); } catch { /* private mode */ }
+  },
 };
+const playerDep = { get: () => playerLook.get().dep };
 const SIZES = ['any', 2, 3, 4];
 const playerSize = {
   get: () => { try { const v = localStorage.getItem('slam-size'); return v === 'any' || !v ? 'any' : Number(v); } catch { return 'any'; } },
   set: (size) => { try { localStorage.setItem('slam-size', String(size)); } catch { /* private mode */ } },
 };
 const depOf = (seat) => state?.players[seat]?.dep ?? DEFAULT_DEP[seat];
+const depColorsOf = (seat) => state?.players[seat]?.depColors;
+const cardColorOf = (seat) => state?.players[seat]?.cardColor ?? SEAT_DEFAULTS[seat]?.cardColor ?? 'hong';
+const petOf = (seat) => state?.players[seat]?.pet ?? SEAT_DEFAULTS[seat]?.pet ?? 'cat';
 
 function joinRoom(code, token) {
   roomCode = code;
-  send({ t: 'join', code, token: token ?? undefined, name: playerName.get() || t('menu.defaultName'), dep: playerDep.get() || undefined });
+  send({ t: 'join', code, token: token ?? undefined, name: playerName.get() || t('menu.defaultName'), look: playerLook.get() });
 }
 
 // An invite link (or a reconnect) first asks whether the room is still there and whether this
@@ -443,13 +460,15 @@ function onMessage(msg) {
   } else if (msg.t === 'passed') {
     if (msg.impact) {
       const at = new THREE.Vector3(msg.impact.x, 0, msg.impact.z);
-      visuals.dropDep(at, () => impactFx(at, 0.25, 0.4), depOf(msg.by));
+      visuals.dropDep(at, () => impactFx(at, 0.25, 0.4), depOf(msg.by), depColorsOf(msg.by));
     }
     showToast(t(msg.timeout ? 'toast.timeout' : 'toast.pass', { name: nameOf(msg.by) }), 1500);
   } else if (msg.t === 'autoSlam') {
     autoSlam();
   } else if (msg.t === 'queue') {
     if (msg.state === 'waiting' && queueing && !roomCode) renderQueue(msg);
+  } else if (msg.t === 'lookRefused') {
+    showToast(t('error.colorTaken'), 2000);
   } else if (msg.t === 'rooms') {
     roomsList = msg.rooms;
     if (overlayKey === 'rooms') fillRoomList();
@@ -462,6 +481,7 @@ function onState(next) {
   if (awaitingServer && !(state.phase === 'turn' && state.turn === me)) awaitingServer = false;
 
   if (state.seats.length >= 2) world.setup(state.seats);
+  applySeatColors();
   applyStateCards();
 
   const gone = Object.keys(state.players).filter((s) => s !== me && !state.players[s].connected && !state.players[s].left);
@@ -475,6 +495,59 @@ function onState(next) {
   renderOverlay();
   ftue.onState(state, me);
   world.needsRender = true;
+}
+
+// ---------- wardrobe ----------
+
+// What I wear: the room's copy when I'm in one (the server may have moved my card colour),
+// otherwise what this device has saved.
+function myLook() {
+  const p = state && me ? state.players[me] : null;
+  return p ? { pet: p.pet, dep: p.dep, depColors: p.depColors, cardColor: p.cardColor } : playerLook.get();
+}
+
+function wireGearTiles() {
+  els.overlay.querySelectorAll('[data-ward]').forEach((b) => { b.onclick = () => openWardrobe(b.dataset.ward); });
+}
+
+function openWardrobe(tab) {
+  const inRoom = Boolean(state && me && ['lobby', 'matchEnd'].includes(state.phase));
+  const back = state && me ? 'room' : 'menu';
+  overlayKey = 'wardrobe';
+  stopRoomsPolling();
+  els.overlay.className = '';
+  els.overlay.innerHTML = '<div class="menu-bg"><div id="ward-root"></div></div>';
+  mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  const taken = state && me ? Object.entries(state.players).filter(([seat]) => seat !== me).map(([, p]) => p.cardColor) : [];
+  renderWardrobe($('ward-root'), {
+    look: myLook(),
+    taken,
+    tab,
+    onChange: (look) => {
+      playerLook.set(look);
+      if (inRoom) send({ t: 'pickLook', look });
+    },
+    onDone: () => {
+      overlayKey = '';
+      if (back === 'room' && state) renderOverlay();
+      else renderMenu();
+    },
+  });
+}
+
+// Each seat's colour (slots, chips, badges, names, the card itself) is its player's card colour.
+let seatColorsKey = '';
+function applySeatColors() {
+  const key = SEATS.map(cardColorOf).join();
+  if (key === seatColorsKey) return;
+  seatColorsKey = key;
+  const root = document.documentElement.style;
+  for (const seat of SEATS) {
+    const c = CARD_COLORS[cardColorOf(seat)];
+    root.setProperty(`--seat-${seat}`, c.color);
+    root.setProperty(`--seat-${seat}-ink`, c.dark);
+  }
+  world.setCardColors(Object.fromEntries(SEATS.map((seat) => [seat, CARD_COLORS[cardColorOf(seat)].dark])));
 }
 
 // The table shows the server's cards whenever no local slam or replay is moving them.
@@ -636,7 +709,7 @@ function renderMenu(error = '') {
   els.overlay.className = '';
   const size = playerSize.get();
   els.overlay.innerHTML = `
-    <div class="menu-bg"><div class="panel menu-card home">
+    <div class="menu-bg with-gear"><div class="panel menu-card home">
       ${logo()}
       <p class="sub">${t('menu.tagline')}</p>
       ${menuError(error)}
@@ -655,7 +728,14 @@ function renderMenu(error = '') {
         <label><input class="input" id="code" maxlength="4" placeholder="${escapeHtml(t('menu.codePlaceholder'))}" aria-label="${escapeHtml(t('menu.codePlaceholder'))}"></label>
         <button class="btn" id="join" aria-label="${escapeHtml(t('menu.join'))}">${t('rooms.join')}</button>
       </div>
+    </div>
+    <div class="panel menu-card gear-card">
+      <p class="gear-title">${t('wardrobe.title')}</p>
+      <img class="gear-hero" src="${petThumb(playerLook.get().pet)}" alt="">
+      ${gearTiles(playerLook.get())}
+      <p class="sub">${t('wardrobe.note')}</p>
     </div></div>`;
+  wireGearTiles();
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
   els.overlay.querySelectorAll('#size [data-size]').forEach((b) => {
     b.onclick = () => {
@@ -772,7 +852,7 @@ function renderCreate(preset = {}) {
   });
   pick('vis', 'vis', (v) => { visibility = v; });
   pick('cap', 'size', (v) => { cap = Number(v); });
-  $('create-go').onclick = () => sendFromMenu($('create-go'), { t: 'create', name: currentName(), dep: playerDep.get() || undefined, visibility, cap });
+  $('create-go').onclick = () => sendFromMenu($('create-go'), { t: 'create', name: currentName(), look: playerLook.get(), visibility, cap });
   $('create-cancel').onclick = () => renderMenu();
 }
 
@@ -861,7 +941,7 @@ function fillRoomList() {
 
 function sendQueue(size) {
   queueing = { size, since: Date.now() };
-  send({ t: 'queue', size, name: currentName(), dep: playerDep.get() || undefined });
+  send({ t: 'queue', size, name: currentName(), look: playerLook.get() });
   renderQueue(null);
 }
 
@@ -876,7 +956,7 @@ function renderQueue(msg) {
   const seatsShown = size === 'any' ? Math.max(4, peers.length + 1) : size;
   const startsIn = msg?.startsInMs ? Math.ceil(msg.startsInMs / 1000) : 0;
   const fewer = size !== 'any' && waited > 20000 && peers.length >= 1 && peers.length + 1 < size ? peers.length + 1 : 0;
-  const people = [{ name: currentName(), dep: playerDep.get() || 'dep_lao', you: true }, ...peers];
+  const people = [{ name: currentName(), pet: playerLook.get().pet, you: true }, ...peers];
   const key = `queue-${size}-${Math.floor(waited / 1000)}-${people.map((p) => p.name).join('|')}-${startsIn}-${fewer}`;
   if (!setOverlay(key, `
     <div class="menu-bg"><div class="panel menu-card queue-card">
@@ -886,7 +966,7 @@ function renderQueue(msg) {
         ${Array.from({ length: seatsShown }, (_, i) => {
     const p = people[i];
     if (!p) return `<div class="slot waiting"><span class="spin" aria-hidden="true"></span>${t('queue.slot')}</div>`;
-    return `<div class="slot seat ${SEATS[i]}"><img class="slot-dep" src="deps/${p.dep}.jpg" alt="">${escapeHtml(p.name)}<small>${p.you ? t('lobby.you') : t('queue.justIn')}</small></div>`;
+    return `<div class="slot seat ${SEATS[i]}"><img class="slot-dep pet" src="${petThumb(p.pet ?? 'cat')}" alt="">${escapeHtml(p.name)}<small>${p.you ? t('lobby.you') : t('queue.justIn')}</small></div>`;
   }).join('')}
       </div>
       ${startsIn ? `<p class="queue-go">${t('queue.startsIn', { n: people.length, secs: startsIn })}</p><p class="sub">${t('queue.anyNote')}</p>`
@@ -911,6 +991,11 @@ function scoreLine() {
 
 function renderOverlay() {
   const s = state;
+  // the wardrobe stays open over lobby updates; a match starting closes it
+  if (overlayKey === 'wardrobe') {
+    if (['lobby', 'matchEnd'].includes(s.phase)) return;
+    stopPreview();
+  }
   const myColor = `<b class="seat-${me}">${seatLabel(me)}</b>`;
   switch (s.phase) {
     case 'lobby': {
@@ -924,7 +1009,7 @@ function renderOverlay() {
       const guests = Object.keys(s.players).filter((seat) => seat !== s.host);
       const readyCount = guests.filter((seat) => s.ready[seat]).length;
       const canStart = guests.length >= 1 && readyCount === guests.length;
-      const roster = `${s.host}-${s.visibility}-${s.cap}-${JSON.stringify(s.ready)}-${SEATS.map((seat) => `${s.players[seat]?.name ?? ''}:${s.players[seat]?.dep ?? ''}:${s.players[seat]?.tutorial ?? 0}`).join('|')}`;
+      const roster = `${s.host}-${s.visibility}-${s.cap}-${JSON.stringify(s.ready)}-${SEATS.map((seat) => { const p = s.players[seat]; return p ? `${p.name}:${p.dep}:${p.depColors}:${p.pet}:${p.cardColor}:${p.tutorial}` : ''; }).join('|')}`;
       const seatTag = (seat) => (seat === s.host ? `<span class="seat-tag">${CROWN}${t('lobby.host')}</span>`
         : `<span class="seat-tag${s.ready[seat] ? ' ok' : ''}">${s.ready[seat] ? `${CHECK}${t('lobby.isReady')}` : t('lobby.notReady')}</span>`);
       const tags = `<div class="room-tags">
@@ -950,14 +1035,11 @@ function renderOverlay() {
           </div>
           <div class="seats">
             ${SEATS.slice(0, Math.max(s.cap, count)).map((seat) => (s.players[seat] ? `
-              <div class="slot seat ${seat}">${seatTag(seat)}<img class="slot-dep" src="deps/${depOf(seat)}.jpg" alt="">${escapeHtml(s.players[seat].name)}<small>${t('lobby.seatCard', { color: seatLabel(seat).toLowerCase() })}${seat === me ? ` · ${t('lobby.you')}` : ''}</small>${reading(seat)}</div>`
+              <div class="slot seat ${seat}">${seatTag(seat)}<img class="slot-dep pet" src="${petThumb(petOf(seat))}" alt="">${escapeHtml(s.players[seat].name)}<small>${t('lobby.seatCard', { color: seatLabel(seat).toLowerCase() })}${seat === me ? ` · ${t('lobby.you')}` : ''}</small>${reading(seat)}</div>`
     : `<div class="slot waiting">${t('lobby.waiting')}<small>${t('lobby.empty')}</small></div>`)).join('')}
           </div>
-          <p class="sub dep-title">${t('lobby.depTitle')}</p>
-          <div class="dep-picker">
-            ${DEPS.map((d) => `<button class="dep-choice${d.id === mine ? ' sel' : ''}" data-dep="${d.id}">
-              <img src="deps/${d.id}.jpg" alt=""><span>${t(`dep.${d.id}`)}</span></button>`).join('')}
-          </div>
+          <p class="sub dep-title">${t('lobby.myGear')}</p>
+          ${gearTiles(myLook())}
           ${action}
         </div></div>`);
       if (fresh) {
@@ -978,12 +1060,7 @@ function renderOverlay() {
         } else {
           $('ready').onclick = () => send({ t: 'ready', ready: !s.ready[me] });
         }
-        els.overlay.querySelectorAll('[data-dep]').forEach((b) => {
-          b.onclick = () => {
-            playerDep.set(b.dataset.dep);
-            send({ t: 'pickDep', dep: b.dataset.dep });
-          };
-        });
+        wireGearTiles();
       }
       ftue.decorateLobby();
       break;
@@ -1098,7 +1175,7 @@ function renderOverlay() {
           ${quick && !alone ? `<p class="sub">${t('match.quickNote')}</p>` : ''}
           ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">${t('match.waitingFor', { names: list(waitingFor.map(htmlName)) })}</p>` : ''}
         </div>`)) {
-        if ($('new-room')) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), dep: playerDep.get() || undefined });
+        if ($('new-room')) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), look: playerLook.get() });
         if ($('rematch')) $('rematch').onclick = () => send({ t: 'rematch' });
         if ($('find-new')) {
           $('find-new').onclick = () => {
@@ -1350,7 +1427,7 @@ function slam(aim) {
     visuals.dropDep(impact, () => {
       impactFx(impact, 0.25, 0.4);
       send({ t: 'pass', impact: impactMsg });
-    }, depOf(me));
+    }, depOf(me), depColorsOf(me));
     return;
   }
 
@@ -1363,7 +1440,7 @@ function slam(aim) {
       world.applySlam(impact, type);
       sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, impact: impactMsg, type };
     }, TUNE.hitstopMs);
-  }, depOf(me));
+  }, depOf(me), depColorsOf(me));
 }
 
 function autoSlam() {
@@ -1430,7 +1507,7 @@ function startPlayback(msg) {
     impactFx(impact, 0.8, 0.8);
     popText(impact, t('card.pop'));
     setTimeout(() => { current.impactDone = true; }, TUNE.hitstopMs);
-  }, depOf(msg.by));
+  }, depOf(msg.by), depColorsOf(msg.by));
 }
 
 function finishPlayback() {
