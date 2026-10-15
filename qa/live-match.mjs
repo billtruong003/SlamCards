@@ -39,6 +39,7 @@ try {
   await host.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
   await host.fill('#name', 'Bill');
   await host.click('#create');
+  await host.click('#create-go');
   await host.waitForSelector('#link', { timeout: 15000 });
   const link = await host.inputValue('#link');
   step('host creates room', /room=/.test(link), { link });
@@ -49,6 +50,8 @@ try {
   await guest.click('#go');
   await host.waitForFunction(() => slamDebug.state && Object.keys(slamDebug.state.players).length === 2, null, { timeout: 15000 });
   step('guest joins by link', true);
+  await guest.click('#ready');
+  await host.waitForFunction(() => slamDebug.state.ready?.pink === true, null, { timeout: 5000 });
   await shot(host, '01-lobby');
 
   await host.click('#start');

@@ -44,6 +44,206 @@
     "max": 12,
     "id": "A8"
   },
+  "home.quickTitle": {
+    "where": "Home: label above the player-count choice for matchmaking with strangers",
+    "max": 36,
+    "id": "Main sama orang lain · berapa?"
+  },
+  "home.any": {
+    "where": "Home: player-count option meaning 2 to 4, whatever is found first",
+    "max": 8,
+    "id": "Bebas"
+  },
+  "home.play": {
+    "where": "Home: big button that starts matchmaking",
+    "max": 14,
+    "id": "Main sekarang"
+  },
+  "home.orFriends": {
+    "where": "Home: divider text before the friends options",
+    "max": 24,
+    "id": "atau main sama teman"
+  },
+  "home.publicRooms": {
+    "where": "Home: button opening the public room list",
+    "max": 16,
+    "id": "Room publik"
+  },
+  "create.title": {
+    "where": "Create-room dialog title",
+    "max": 14,
+    "id": "Bikin room"
+  },
+  "create.who": {
+    "where": "Create-room dialog: label above private/public",
+    "max": 24,
+    "id": "Siapa boleh masuk?"
+  },
+  "create.private": {
+    "where": "Room visibility option: only people with the link",
+    "max": 12,
+    "id": "Privat"
+  },
+  "create.privateSub": {
+    "where": "Under the Private option",
+    "max": 20,
+    "id": "Cuma yang punya link"
+  },
+  "create.public": {
+    "where": "Room visibility option: shown in the public list",
+    "max": 12,
+    "id": "Publik"
+  },
+  "create.publicSub": {
+    "where": "Under the Public option",
+    "max": 22,
+    "id": "Muncul di daftar"
+  },
+  "create.cap": {
+    "where": "Create-room dialog: label above the max-players choice",
+    "max": 24,
+    "id": "Maksimal berapa orang?"
+  },
+  "create.go": {
+    "where": "Create-room dialog: confirm button",
+    "max": 10,
+    "id": "Bikin"
+  },
+  "create.cancel": {
+    "where": "Create-room dialog: cancel link",
+    "max": 10,
+    "id": "Gak jadi"
+  },
+  "common.players": {
+    "where": "A count of players, e.g. on filter buttons. {n} = number",
+    "max": 12,
+    "id": "{n} orang"
+  },
+  "rooms.title": {
+    "where": "Public room list title",
+    "max": 18,
+    "id": "Room publik"
+  },
+  "rooms.all": {
+    "where": "Room list filter: all sizes",
+    "max": 8,
+    "id": "Semua"
+  },
+  "rooms.room": {
+    "where": "Room list row title. {code} = room code",
+    "max": 14,
+    "id": "Room {code}"
+  },
+  "rooms.count": {
+    "where": "Room list row: players in / max",
+    "max": 14,
+    "id": "{n}/{cap} orang"
+  },
+  "rooms.waiting": {
+    "where": "Room list row tag: lobby open",
+    "max": 10,
+    "id": "Nunggu"
+  },
+  "rooms.playing": {
+    "where": "Room list row tag: match running, cannot join",
+    "max": 10,
+    "id": "Lagi main"
+  },
+  "rooms.join": {
+    "where": "Room list row button",
+    "max": 6,
+    "id": "Masuk"
+  },
+  "rooms.note": {
+    "where": "Under the room list",
+    "max": 50,
+    "id": "Room yang nunggu di atas. Daftar update sendiri."
+  },
+  "rooms.create": {
+    "where": "Room list button: make a public room",
+    "max": 22,
+    "id": "Bikin room publik"
+  },
+  "rooms.emptyTitle": {
+    "where": "Room list when no room is open",
+    "max": 32,
+    "id": "Belum ada room yang nunggu"
+  },
+  "rooms.emptySub": {
+    "where": "Room list empty state, second line",
+    "max": 60,
+    "id": "Bikin room buat orang lain, atau biar game yang cariin."
+  },
+  "common.back": {
+    "where": "Back button",
+    "max": 8,
+    "id": "Balik"
+  },
+  "queue.title": {
+    "where": "Matchmaking screen title",
+    "max": 24,
+    "id": "Lagi cari lawan…"
+  },
+  "queue.sizeAny": {
+    "where": "Matchmaking: which size was asked, any size",
+    "max": 22,
+    "id": "Berapa aja"
+  },
+  "queue.size": {
+    "where": "Matchmaking: exact size asked. {n} = number",
+    "max": 18,
+    "id": "Main {n} orang"
+  },
+  "queue.waited": {
+    "where": "Matchmaking: time waited. {time} = m:ss",
+    "max": 16,
+    "id": "nunggu {time}"
+  },
+  "queue.startsIn": {
+    "where": "Matchmaking any-size: enough found, short countdown. {n} players, {secs} seconds",
+    "max": 36,
+    "id": "Udah {n} orang! Mulai {secs} detik lagi…"
+  },
+  "queue.anyNote": {
+    "where": "Matchmaking any-size countdown note",
+    "max": 50,
+    "id": "Nunggu bentar siapa tahu ada yang masuk lagi."
+  },
+  "queue.fullNote": {
+    "where": "Matchmaking exact size note",
+    "max": 36,
+    "id": "Begitu {n} orang langsung mulai."
+  },
+  "queue.fewer": {
+    "where": "Matchmaking: button after 20 s to settle for fewer players. {n} = number",
+    "max": 24,
+    "id": "Main {n} orang aja"
+  },
+  "queue.cancel": {
+    "where": "Matchmaking: cancel button",
+    "max": 10,
+    "id": "Batal"
+  },
+  "queue.slot": {
+    "where": "Matchmaking: empty seat still searching",
+    "max": 14,
+    "id": "Nyari…"
+  },
+  "queue.justIn": {
+    "where": "Matchmaking: under a player who just turned up",
+    "max": 12,
+    "id": "baru masuk"
+  },
+  "queue.lost": {
+    "where": "Home error after the connection dropped while matchmaking",
+    "max": 50,
+    "id": "Koneksi putus pas nyari lawan. Coba lagi!"
+  },
+  "queue.found": {
+    "where": "Short screen right after a quick match is found, before round 1",
+    "max": 18,
+    "id": "Dapet lawan!"
+  },
   "invite.sub": {
     "where": "Invite-link screen: you were invited to room {code}. {code} is pre-escaped HTML markup; keep the placeholder.",
     "max": 40,
@@ -167,6 +367,81 @@
     "where": "Start button with {n} players",
     "max": 20,
     "id": "B9"
+  },
+  "lobby.host": {
+    "where": "Lobby seat tag: this player is the host",
+    "max": 12,
+    "id": "Host"
+  },
+  "lobby.isReady": {
+    "where": "Lobby seat tag: guest is ready",
+    "max": 12,
+    "id": "Siap"
+  },
+  "lobby.notReady": {
+    "where": "Lobby seat tag: guest not ready yet",
+    "max": 14,
+    "id": "Belum siap"
+  },
+  "lobby.readyBtn": {
+    "where": "Guest's main lobby button",
+    "max": 16,
+    "id": "Siap!"
+  },
+  "lobby.unready": {
+    "where": "Guest's lobby button after pressing Ready",
+    "max": 16,
+    "id": "Batal siap"
+  },
+  "lobby.startReady": {
+    "where": "Host's start button, with how many guests are ready. {ready}/{guests}",
+    "max": 30,
+    "id": "Gas! ({ready}/{guests} siap)"
+  },
+  "lobby.waitGuests": {
+    "where": "Under the host's start button: who still has to press Ready. {names}",
+    "max": 50,
+    "id": "Nunggu {names} siap"
+  },
+  "lobby.waitHost": {
+    "where": "Under the guest's Ready button. {name} = host",
+    "max": 50,
+    "id": "{name} mulai kalau semua siap"
+  },
+  "lobby.capTag": {
+    "where": "Lobby tag: max players. {n}",
+    "max": 16,
+    "id": "Maks {n} orang"
+  },
+  "match.findNew": {
+    "where": "Match end (quick match): back into matchmaking",
+    "max": 18,
+    "id": "Cari lawan baru"
+  },
+  "match.rematchCount": {
+    "where": "Match end (quick match): rematch with a count. {n}/{m}",
+    "max": 20,
+    "id": "Main lagi ({n}/{m})"
+  },
+  "match.quickNote": {
+    "where": "Match end (quick match) note",
+    "max": 60,
+    "id": "Main lagi cuma jalan kalau semua pencet."
+  },
+  "toast.afk": {
+    "where": "Toast: a quick-match player timed out twice and is out of the round. {name}",
+    "max": 50,
+    "id": "{name} AFK, keluar ronde ini!"
+  },
+  "result.afk": {
+    "where": "Round-end title when the last opponent was out for idling",
+    "max": 14,
+    "id": "AFK!"
+  },
+  "result.afkHow": {
+    "where": "Round-end explanation: idle player. {name}",
+    "max": 50,
+    "id": "{name} 2x kehabisan waktu, keluar!"
   },
   "dep.dep_lao": {
     "where": "Slipper name: classic flip-flop",

@@ -119,7 +119,7 @@ async function runProfile(p) {
     await page.locator('#name').tap();
     await page.locator('#name').fill('Tí');
     await page.locator('#go').tap();
-    const inLobby = await until(() => page.locator('#start').isVisible());
+    const inLobby = await until(() => page.locator('#ready').isVisible());
     await page.evaluate(() => { const bg = document.querySelector('.menu-bg'); if (bg) bg.scrollTop = 0; });
     await sleep(300);
     await shot(page, '02-lobby-top');
@@ -149,6 +149,9 @@ async function runProfile(p) {
       await page.locator('.ftue-next').tap();
     }
 
+    // guests ready up, then the host (the bot) starts
+    await page.locator('#ready').tap();
+    await until(() => host.state?.ready?.pink === true);
     host.send({ t: 'start' });
     await until(() => host.state?.phase === 'rps');
     await page.locator('[data-rps="bua"]').tap();

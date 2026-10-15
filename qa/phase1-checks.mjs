@@ -35,7 +35,8 @@ try {
   // QA-08: no Web Audio at all
   const silent = await page({ noAudio: true });
   await boot(silent, '&noftue');
-  check('QA-08 boots without Web Audio', await silent.isVisible('#create'), silent.errors.join(' | '));
+  const silentHome = await silent.waitForSelector('#play', { timeout: 15000 }).then(() => true).catch(() => false);
+  check('QA-08 boots without Web Audio', silentHome, silent.errors.join(' | '));
 
   // UX-07: first visit gets a name already filled in
   const fresh = await page({ seen: false });
@@ -68,6 +69,7 @@ try {
   });
   await host.fill('#name', 'Bill');
   await host.click('#create');
+  await host.click('#create-go');
   await host.waitForSelector('#link', { timeout: 15000 });
   const kept = await host.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('slam-token-')).length);
   check('QA-04 at most 5 room tokens kept', tokens && kept <= 5, `${kept} tokens`);
@@ -80,6 +82,8 @@ try {
   await guest.fill('#name', 'Tèo');
   await guest.click('#go');
   await host.waitForFunction(() => Object.keys(slamDebug.state.players).length === 2, null, { timeout: 15000 });
+  await guest.click('#ready');
+  await host.waitForFunction(() => slamDebug.state.ready?.pink === true, null, { timeout: 5000 });
   await host.click('#start');
   const turnOf = async () => {
     for (let i = 0; i < 60; i++) {

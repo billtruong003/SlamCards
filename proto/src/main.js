@@ -54,6 +54,8 @@ els.windText.textContent = t('hud.wind', { n: 0 });
 // phones) opening a panel of native names. Shown once a second language ships; picking reloads.
 const LANG_SHORT = { 'zh-Hans': '简', 'zh-Hant': '繁', 'pt-BR': 'PT' };
 const GLOBE = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6.5"/><path d="M1.5 8h13M8 1.5c2 2 2.8 4.2 2.8 6.5S10 12.5 8 14.5M8 1.5C6 3.5 5.2 5.7 5.2 8S6 12.5 8 14.5"/></svg>';
+const CROWN = '<svg width="14" height="12" viewBox="0 0 14 12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M1 10 L2 3 L5 6 L7 1.5 L9 6 L12 3 L13 10 Z"/></svg>';
+const CHECK = '<svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5.5 L4.5 8.5 L10.5 1.5"/></svg>';
 const langs = availableLangs();
 const langPanel = $('lang-panel');
 if (langs.length > 1) {
@@ -111,6 +113,10 @@ let memePhaseKey = '';
 let flippedRound = 0;
 let lastSlamStats = null;
 let memesPreloaded = false;
+let queueing = null;      // { size, since } while waiting for a quick match
+let roomsTimer = 0;
+let roomsFilter = 'all';
+let roomsList = null;
 
 const TOUCH = matchMedia('(pointer: coarse)').matches;
 els.flat.textContent = TOUCH ? t('turn.flat') : `${t('turn.flat')} · Q`;
@@ -198,6 +204,11 @@ const playerDep = {
   get: () => { try { return localStorage.getItem('slam-dep') || ''; } catch { return ''; } },
   set: (dep) => { try { localStorage.setItem('slam-dep', dep); } catch { /* private mode */ } },
 };
+const SIZES = ['any', 2, 3, 4];
+const playerSize = {
+  get: () => { try { const v = localStorage.getItem('slam-size'); return v === 'any' || !v ? 'any' : Number(v); } catch { return 'any'; } },
+  set: (size) => { try { localStorage.setItem('slam-size', String(size)); } catch { /* private mode */ } },
+};
 const depOf = (seat) => state?.players[seat]?.dep ?? DEFAULT_DEP[seat];
 
 function joinRoom(code, token) {
@@ -235,7 +246,7 @@ function onPeek(msg) {
   // a typed code that matches nothing is most likely a typo, not an expired room (QA-02)
   if (!msg.exists) refuse(t(typed ? 'error.typedNotFound' : 'error.roomGone', { code }));
   else if (msg.mine) joinRoom(code, token);
-  else if (msg.phase !== 'lobby') refuse(t('error.inMatchWait', { code })); // UX-08: say when to come back
+  else if (msg.phase !== 'lobby' || msg.quick) refuse(t('error.inMatchWait', { code })); // UX-08: say when to come back
   else if (msg.full) refuse(t('error.full'));
   else if (playerName.get()) joinRoom(code, null);
   else renderNamePrompt(code);
@@ -331,12 +342,16 @@ function connect() {
   clearTimeout(retryTimer);
   ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${location.pathname.replace(/[^/]*$/, '')}ws`);
   ws.onopen = () => {
+    const downFor = lostAt ? Date.now() - lostAt : 0;
     everConnected = true;
     failures = 0;
     lostAt = 0;
     hideNetFail();
     if (roomCode) openRoom(roomCode);
+    else if (queueing && downFor < 10000) sendQueue(queueing.size); // a short blip: back in line
     else {
+      if (queueing) menuNotice = t('queue.lost');
+      queueing = null;
       renderMenu(menuNotice);
       menuNotice = '';
     }
@@ -390,6 +405,8 @@ function send(msg) {
 
 function onMessage(msg) {
   if (msg.t === 'joined') {
+    queueing = null;
+    stopRoomsPolling();
     me = msg.color;
     roomCode = msg.code;
     saveToken(roomCode, msg.token);
@@ -431,6 +448,11 @@ function onMessage(msg) {
     showToast(t(msg.timeout ? 'toast.timeout' : 'toast.pass', { name: nameOf(msg.by) }), 1500);
   } else if (msg.t === 'autoSlam') {
     autoSlam();
+  } else if (msg.t === 'queue') {
+    if (msg.state === 'waiting' && queueing && !roomCode) renderQueue(msg);
+  } else if (msg.t === 'rooms') {
+    roomsList = msg.rooms;
+    if (overlayKey === 'rooms') fillRoomList();
   }
 }
 
@@ -480,7 +502,8 @@ function announceEvent() {
   if (!event?.eliminated?.length || state.phase === 'roundEnd') return;
   const out = list(event.eliminated.map(nameOf));
   const text = event.type === 'fall' ? t('toast.fall', { name: nameOf(event.by) })
-    : event.type === 'left' ? t('toast.left', { out }) : t('toast.capture', { by: nameOf(event.by), out });
+    : event.type === 'afk' ? t('toast.afk', { name: nameOf(event.by) })
+      : event.type === 'left' ? t('toast.left', { out }) : t('toast.capture', { by: nameOf(event.by), out });
   showToast(text, 2500);
 }
 
@@ -598,26 +621,65 @@ function showMenuError(text) {
 const logo = () => `<h1 class="stamp title">${escapeHtml(t('menu.logo')).replace(/\n/g, '<br>')}</h1>`;
 const menuError = (error) => `<p class="menu-error" ${error ? '' : 'hidden'}>${escapeHtml(error)}</p>`;
 
+// Player-count picker: "any" plus 2/3/4, each with a row of dots (seats).
+const sizeButtons = (sel, sizes = SIZES) => sizes.map((n) => {
+  const dots = '<b></b>'.repeat(n === 'any' ? 2 : n) + (n === 'any' ? '<em>…</em>' : '');
+  return `<button type="button" class="${n === sel ? 'on' : ''}" data-size="${n}" aria-pressed="${n === sel}">
+    <span class="${n === 'any' ? 'seg-word' : ''}">${n === 'any' ? t('home.any') : n}</span><i>${dots}</i></button>`;
+}).join('');
+
+// Home: name, quick match with strangers (any / 2 / 3 / 4), then the friends options.
 function renderMenu(error = '') {
   overlayKey = 'menu';
+  stopRoomsPolling();
   playMusic('menu');
   els.overlay.className = '';
+  const size = playerSize.get();
   els.overlay.innerHTML = `
-    <div class="menu-bg"><div class="panel menu-card">
+    <div class="menu-bg"><div class="panel menu-card home">
       ${logo()}
       <p class="sub">${t('menu.tagline')}</p>
       ${menuError(error)}
       ${nameField()}
-      <button class="btn pri wide" id="create">${t('menu.create')}</button>
-      <div class="row">
+      <div class="quick-group">
+        <p class="group-label">${t('home.quickTitle')}</p>
+        <div class="seg" id="size">${sizeButtons(size)}</div>
+        <button class="btn pri wide big" id="play">${t('home.play')}</button>
+      </div>
+      <div class="or">${t('home.orFriends')}</div>
+      <div class="row two">
+        <button class="btn" id="create">${t('menu.create')}</button>
+        <button class="btn" id="rooms">${t('home.publicRooms')}</button>
+      </div>
+      <div class="row code-row">
         <label><input class="input" id="code" maxlength="4" placeholder="${escapeHtml(t('menu.codePlaceholder'))}" aria-label="${escapeHtml(t('menu.codePlaceholder'))}"></label>
-        <button class="btn" id="join">${t('menu.join')}</button>
+        <button class="btn" id="join" aria-label="${escapeHtml(t('menu.join'))}">${t('rooms.join')}</button>
       </div>
     </div></div>`;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  els.overlay.querySelectorAll('#size [data-size]').forEach((b) => {
+    b.onclick = () => {
+      const v = b.dataset.size === 'any' ? 'any' : Number(b.dataset.size);
+      playerSize.set(v);
+      els.overlay.querySelectorAll('#size [data-size]').forEach((x) => {
+        x.classList.toggle('on', x === b);
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+    };
+  });
+  $('play').onclick = () => {
+    if (!readName()) return;
+    if (ws?.readyState !== WebSocket.OPEN) {
+      showMenuError(t('error.reconnecting'));
+      return;
+    }
+    sendQueue(playerSize.get());
+  };
   $('create').onclick = () => {
-    const name = readName();
-    if (name) sendFromMenu($('create'), { t: 'create', name, dep: playerDep.get() || undefined });
+    if (readName()) renderCreate();
+  };
+  $('rooms').onclick = () => {
+    if (readName()) renderRooms();
   };
   const join = () => {
     const code = $('code').value.trim().toUpperCase();
@@ -666,6 +728,181 @@ function renderNamePrompt(code) {
   $('name').focus();
 }
 
+// A name for screens that have no name box: the saved one, else a random one (then saved).
+function currentName() {
+  let name = playerName.get();
+  if (!name) {
+    name = randomName();
+    playerName.set(name);
+  }
+  return name;
+}
+
+// ---------- create room ----------
+
+function renderCreate(preset = {}) {
+  overlayKey = 'create';
+  stopRoomsPolling();
+  let visibility = preset.visibility ?? 'private';
+  let cap = preset.cap ?? 4;
+  els.overlay.className = '';
+  els.overlay.innerHTML = `
+    <div class="menu-bg"><div class="panel menu-card">
+      <h1 class="stamp" style="font-size:40px">${t('create.title')}</h1>
+      ${menuError('')}
+      <p class="group-label">${t('create.who')}</p>
+      <div class="seg two" id="vis">
+        ${['private', 'public'].map((v) => `<button type="button" class="${v === visibility ? 'on' : ''}" data-vis="${v}" aria-pressed="${v === visibility}">
+          <span class="seg-big">${t(`create.${v}`)}</span><small>${t(`create.${v}Sub`)}</small></button>`).join('')}
+      </div>
+      <p class="group-label">${t('create.cap')}</p>
+      <div class="seg three" id="cap">${sizeButtons(cap, [2, 3, 4])}</div>
+      <button class="btn pri wide big" id="create-go">${t('create.go')}</button>
+      <button class="link-btn" id="create-cancel">${t('create.cancel')}</button>
+    </div></div>`;
+  mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  const pick = (group, attr, set) => els.overlay.querySelectorAll(`#${group} [data-${attr}]`).forEach((b) => {
+    b.onclick = () => {
+      set(b.dataset[attr]);
+      els.overlay.querySelectorAll(`#${group} [data-${attr}]`).forEach((x) => {
+        x.classList.toggle('on', x === b);
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+    };
+  });
+  pick('vis', 'vis', (v) => { visibility = v; });
+  pick('cap', 'size', (v) => { cap = Number(v); });
+  $('create-go').onclick = () => sendFromMenu($('create-go'), { t: 'create', name: currentName(), dep: playerDep.get() || undefined, visibility, cap });
+  $('create-cancel').onclick = () => renderMenu();
+}
+
+// ---------- public rooms ----------
+
+function stopRoomsPolling() {
+  clearInterval(roomsTimer);
+  roomsTimer = 0;
+}
+
+function renderRooms() {
+  overlayKey = 'rooms';
+  els.overlay.className = '';
+  els.overlay.innerHTML = `
+    <div class="menu-bg"><div class="panel menu-card rooms-card">
+      <div class="rooms-head">
+        <button class="btn small" id="rooms-back">← ${t('common.back')}</button>
+        <h1 class="stamp" style="font-size:34px">${t('rooms.title')}</h1>
+      </div>
+      ${menuError('')}
+      <div class="seg four" id="rooms-filter">
+        ${['all', 2, 3, 4].map((f) => `<button type="button" class="${f === roomsFilter ? 'on' : ''}" data-filter="${f}">${f === 'all' ? t('rooms.all') : t('common.players', { n: f })}</button>`).join('')}
+      </div>
+      <div class="room-list" id="room-list"><span class="spin" aria-hidden="true"></span></div>
+    </div></div>`;
+  mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  $('rooms-back').onclick = () => renderMenu();
+  els.overlay.querySelectorAll('[data-filter]').forEach((b) => {
+    b.onclick = () => {
+      roomsFilter = b.dataset.filter === 'all' ? 'all' : Number(b.dataset.filter);
+      els.overlay.querySelectorAll('[data-filter]').forEach((x) => x.classList.toggle('on', x === b));
+      fillRoomList();
+    };
+  });
+  roomsList = null;
+  send({ t: 'listRooms' });
+  stopRoomsPolling();
+  roomsTimer = setInterval(() => {
+    if (overlayKey !== 'rooms') stopRoomsPolling();
+    else send({ t: 'listRooms' });
+  }, 3000);
+}
+
+function fillRoomList() {
+  const box = $('room-list');
+  if (!box || !roomsList) return;
+  const shown = roomsList.filter((r) => roomsFilter === 'all' || r.cap === roomsFilter);
+  if (!shown.length) {
+    box.innerHTML = `
+      <div class="rooms-empty">
+        <p class="rooms-empty-title">${t('rooms.emptyTitle')}</p>
+        <p class="sub">${t('rooms.emptySub')}</p>
+        <div class="row two">
+          <button class="btn" id="rooms-create">${t('rooms.create')}</button>
+          <button class="btn pri" id="rooms-play">${t('home.play')}</button>
+        </div>
+      </div>`;
+    $('rooms-play').onclick = () => sendQueue(playerSize.get());
+  } else {
+    box.innerHTML = `${shown.map((r) => {
+      const open = r.phase === 'lobby' && r.n < r.cap;
+      const slots = Array.from({ length: r.cap }, (_, i) => `<b class="${i < r.n ? 'full' : ''}"></b>`).join('');
+      return `<div class="room-row${open ? '' : ' off'}">
+        <img class="room-av" src="deps/${r.dep ?? 'dep_lao'}.jpg" alt="">
+        <span class="room-name">${t('rooms.room', { code: escapeHtml(r.code) })}
+          <small>${t('rooms.count', { n: r.n, cap: r.cap })} <span class="tag ${open ? 'ok' : 'busy'}">${t(open ? 'rooms.waiting' : 'rooms.playing')}</span></small></span>
+        <span class="room-slots" aria-hidden="true">${slots}</span>
+        ${open ? `<button class="btn pri small" data-join="${escapeHtml(r.code)}">${t('rooms.join')}</button>` : '<span></span>'}
+      </div>`;
+    }).join('')}
+      <p class="sub rooms-note">${t('rooms.note')}</p>
+      <button class="btn wide" id="rooms-create">${t('rooms.create')}</button>`;
+    box.querySelectorAll('[data-join]').forEach((b) => {
+      b.onclick = () => {
+        currentName();
+        b.disabled = true;
+        roomCode = b.dataset.join;
+        openRoom(roomCode, true);
+      };
+    });
+  }
+  $('rooms-create').onclick = () => renderCreate({ visibility: 'public' });
+}
+
+// ---------- quick match ----------
+
+function sendQueue(size) {
+  queueing = { size, since: Date.now() };
+  send({ t: 'queue', size, name: currentName(), dep: playerDep.get() || undefined });
+  renderQueue(null);
+}
+
+const mmss = (ms) => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`;
+
+// While waiting: me, whoever would come along, empty seats still searching. An exact size
+// waiting 20 s with at least one other player can settle for fewer.
+function renderQueue(msg) {
+  const size = queueing.size;
+  const peers = msg?.peers ?? [];
+  const waited = msg?.waitedMs ?? Date.now() - queueing.since;
+  const seatsShown = size === 'any' ? Math.max(4, peers.length + 1) : size;
+  const startsIn = msg?.startsInMs ? Math.ceil(msg.startsInMs / 1000) : 0;
+  const fewer = size !== 'any' && waited > 20000 && peers.length >= 1 && peers.length + 1 < size ? peers.length + 1 : 0;
+  const people = [{ name: currentName(), dep: playerDep.get() || 'dep_lao', you: true }, ...peers];
+  const key = `queue-${size}-${Math.floor(waited / 1000)}-${people.map((p) => p.name).join('|')}-${startsIn}-${fewer}`;
+  if (!setOverlay(key, `
+    <div class="menu-bg"><div class="panel menu-card queue-card">
+      <h1 class="stamp" style="font-size:36px">${t('queue.title')}</h1>
+      <p class="sub">${size === 'any' ? t('queue.sizeAny') : t('queue.size', { n: size })} · ${t('queue.waited', { time: mmss(waited) })}</p>
+      <div class="queue-seats">
+        ${Array.from({ length: seatsShown }, (_, i) => {
+    const p = people[i];
+    if (!p) return `<div class="slot waiting"><span class="spin" aria-hidden="true"></span>${t('queue.slot')}</div>`;
+    return `<div class="slot seat ${SEATS[i]}"><img class="slot-dep" src="deps/${p.dep}.jpg" alt="">${escapeHtml(p.name)}<small>${p.you ? t('lobby.you') : t('queue.justIn')}</small></div>`;
+  }).join('')}
+      </div>
+      ${startsIn ? `<p class="queue-go">${t('queue.startsIn', { n: people.length, secs: startsIn })}</p><p class="sub">${t('queue.anyNote')}</p>`
+    : size === 'any' ? '' : `<p class="sub">${t('queue.fullNote', { n: size })}</p>`}
+      ${fewer ? `<button class="btn pri wide" id="queue-fewer">${t('queue.fewer', { n: fewer })}</button>` : ''}
+      <button class="btn wide" id="queue-cancel">${t('queue.cancel')}</button>
+    </div></div>`)) return;
+  mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  $('queue-cancel').onclick = () => {
+    send({ t: 'unqueue' });
+    queueing = null;
+    renderMenu();
+  };
+  if (fewer) $('queue-fewer').onclick = () => sendQueue(fewer);
+}
+
 // One cream chip per player (UX-02/UX-13): seat colours on the dimmed table were close to 1:1
 // contrast, and a bare text line got lost against the winning card behind it.
 function scoreLine() {
@@ -677,22 +914,43 @@ function renderOverlay() {
   const myColor = `<b class="seat-${me}">${seatLabel(me)}</b>`;
   switch (s.phase) {
     case 'lobby': {
+      if (s.kind === 'quick') {
+        setOverlay('quick-found', `<div class="panel"><h1 class="stamp" style="font-size:52px">${t('queue.found')}</h1></div>`);
+        break;
+      }
       const link = `${location.origin}${location.pathname}?room=${s.code}`;
       const count = Object.keys(s.players).length;
-      const roster = SEATS.map((seat) => `${s.players[seat]?.name ?? ''}:${s.players[seat]?.dep ?? ''}:${s.players[seat]?.tutorial ?? 0}`).join('|');
+      const isHost = s.host === me;
+      const guests = Object.keys(s.players).filter((seat) => seat !== s.host);
+      const readyCount = guests.filter((seat) => s.ready[seat]).length;
+      const canStart = guests.length >= 1 && readyCount === guests.length;
+      const roster = `${s.host}-${s.visibility}-${s.cap}-${JSON.stringify(s.ready)}-${SEATS.map((seat) => `${s.players[seat]?.name ?? ''}:${s.players[seat]?.dep ?? ''}:${s.players[seat]?.tutorial ?? 0}`).join('|')}`;
+      const seatTag = (seat) => (seat === s.host ? `<span class="seat-tag">${CROWN}${t('lobby.host')}</span>`
+        : `<span class="seat-tag${s.ready[seat] ? ' ok' : ''}">${s.ready[seat] ? `${CHECK}${t('lobby.isReady')}` : t('lobby.notReady')}</span>`);
+      const tags = `<div class="room-tags">
+          <button class="tag-btn" id="vis-toggle" ${isHost ? '' : 'disabled'}>${t(`create.${s.visibility}`)}${isHost ? ' ▾' : ''}</button>
+          <button class="tag-btn" id="cap-toggle" ${isHost ? '' : 'disabled'}>${t('lobby.capTag', { n: s.cap })}${isHost ? ' ▾' : ''}</button>
+        </div>`;
+      const waitingNames = guests.filter((seat) => !s.ready[seat]).map((seat) => escapeHtml(nameOf(seat)));
+      const action = isHost
+        ? `<button class="btn pri wide" id="start" ${canStart ? '' : 'disabled'}>${count < 2 ? t('lobby.needMore') : t('lobby.startReady', { ready: readyCount, guests: guests.length })}</button>
+           ${count >= 2 && waitingNames.length ? `<p class="sub lobby-note">${t('lobby.waitGuests', { names: list(waitingNames) })}</p>` : ''}`
+        : `<button class="btn ${s.ready[me] ? '' : 'pri'} wide" id="ready">${s.ready[me] ? t('lobby.unready') : t('lobby.readyBtn')}</button>
+           <p class="sub lobby-note">${t('lobby.waitHost', { name: escapeHtml(nameOf(s.host)) })}</p>`;
       const reading = (seat) => (s.players[seat].tutorial ? `<span class="slot-tag">${t('lobby.reading', { n: s.players[seat].tutorial, total: 5 })}</span>` : '');
       const mine = depOf(me);
       const fresh = setOverlay(`lobby-${roster}`, `
         <div class="menu-bg"><div class="panel menu-card">
           <h1 class="stamp" style="font-size:44px">${t('lobby.title', { code: `<span class="code">${s.code}</span>` })}</h1>
           <p class="sub">${t('lobby.sub')}</p>
+          ${tags}
           <div class="row">
             <label><input class="input" style="width:min(340px,70vw);text-transform:none" id="link" value="${link}" readonly aria-label="${escapeHtml(t('lobby.linkLabel'))}"></label>
             <button class="btn" id="copy">${t('lobby.copy')}</button>
           </div>
           <div class="seats">
-            ${SEATS.map((seat) => (s.players[seat] ? `
-              <div class="slot seat ${seat}"><img class="slot-dep" src="deps/${depOf(seat)}.jpg" alt="">${escapeHtml(s.players[seat].name)}<small>${t('lobby.seatCard', { color: seatLabel(seat).toLowerCase() })}${seat === me ? ` · ${t('lobby.you')}` : ''}</small>${reading(seat)}</div>`
+            ${SEATS.slice(0, Math.max(s.cap, count)).map((seat) => (s.players[seat] ? `
+              <div class="slot seat ${seat}">${seatTag(seat)}<img class="slot-dep" src="deps/${depOf(seat)}.jpg" alt="">${escapeHtml(s.players[seat].name)}<small>${t('lobby.seatCard', { color: seatLabel(seat).toLowerCase() })}${seat === me ? ` · ${t('lobby.you')}` : ''}</small>${reading(seat)}</div>`
     : `<div class="slot waiting">${t('lobby.waiting')}<small>${t('lobby.empty')}</small></div>`)).join('')}
           </div>
           <p class="sub dep-title">${t('lobby.depTitle')}</p>
@@ -700,17 +958,26 @@ function renderOverlay() {
             ${DEPS.map((d) => `<button class="dep-choice${d.id === mine ? ' sel' : ''}" data-dep="${d.id}">
               <img src="deps/${d.id}.jpg" alt=""><span>${t(`dep.${d.id}`)}</span></button>`).join('')}
           </div>
-          <button class="btn pri wide" id="start" ${count < 2 ? 'disabled' : ''}>${count < 2 ? t('lobby.needMore') : t('lobby.start', { n: count })}</button>
+          ${action}
         </div></div>`);
       if (fresh) {
         mountMenuBackground(els.overlay.querySelector('.menu-bg'));
         $('copy').onclick = async () => {
           $('copy').textContent = await copyText(link, $('link')) ? t('lobby.copied') : t('lobby.copyManual');
         };
-        $('start').onclick = () => {
-          const go = () => send({ t: 'start' });
-          if (!ftue.confirmStart(go, nameOf)) go();
-        };
+        if (isHost) {
+          $('start').onclick = () => {
+            const go = () => send({ t: 'start' });
+            if (!ftue.confirmStart(go, nameOf)) go();
+          };
+          $('vis-toggle').onclick = () => send({ t: 'roomSettings', visibility: s.visibility === 'public' ? 'private' : 'public' });
+          $('cap-toggle').onclick = () => {
+            const caps = [2, 3, 4].filter((c) => c >= count);
+            send({ t: 'roomSettings', cap: caps[(caps.indexOf(s.cap) + 1) % caps.length] });
+          };
+        } else {
+          $('ready').onclick = () => send({ t: 'ready', ready: !s.ready[me] });
+        }
         els.overlay.querySelectorAll('[data-dep]').forEach((b) => {
           b.onclick = () => {
             playerDep.set(b.dataset.dep);
@@ -794,10 +1061,11 @@ function renderOverlay() {
       break;
     case 'roundEnd': {
       const { winner, reason, by, eliminated = [] } = s.result;
-      const head = t(reason === 'fall' ? 'result.fall' : reason === 'left' ? 'result.left' : 'result.capture');
+      const head = t(reason === 'fall' ? 'result.fall' : reason === 'left' ? 'result.left' : reason === 'afk' ? 'result.afk' : 'result.capture');
       const out = list(eliminated.map(htmlName));
       const how = reason === 'fall' ? t('result.fallHow', { name: htmlName(by) })
-        : reason === 'left' ? t('result.leftHow', { out }) : t('result.captureHow', { by: htmlName(by), out });
+        : reason === 'afk' ? t('result.afkHow', { name: htmlName(by) })
+          : reason === 'left' ? t('result.leftHow', { out }) : t('result.captureHow', { by: htmlName(by), out });
       setOverlay(`end-${s.round}`, `
         <div class="panel">
           <h1 class="stamp ${winner === me ? '' : 'pink'}">${head}</h1>
@@ -813,20 +1081,31 @@ function renderOverlay() {
       const waitingFor = present.filter((seat) => !s.rematch[seat]);
       // Alone at the table: a rematch would wait forever, so offer a fresh room instead (UX-03).
       const alone = present.length < 2;
+      const quick = s.kind === 'quick';
+      const rematchCount = Object.keys(s.rematch).filter((seat) => present.includes(seat)).length;
       if (setOverlay(`match-${JSON.stringify(s.rematch)}-${present.join()}`, `
         <div class="panel">
           <h1 class="stamp ${iWon ? '' : 'pink'}">${iWon ? t('match.youWin') : t('match.theyWin', { name: escapeHtml(nameOf(winner)).toUpperCase() })}</h1>
           ${scoreLine()}
           ${s.result?.matchReason === 'disconnect' ? `<p class="sub">${t('match.allLeft')}</p>` : ''}
           <div class="row">
-            ${alone ? `<button class="btn pri" id="new-room">${t('match.newRoom')}</button>`
-    : `<button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? t('match.rematchWaiting') : t('match.rematch')}</button>`}
+            ${quick ? `<button class="btn pri" id="find-new">${t('match.findNew')}</button>` : ''}
+            ${quick && !alone ? `<button class="btn" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${t('match.rematchCount', { n: rematchCount, m: present.length })}</button>` : ''}
+            ${!quick && alone ? `<button class="btn pri" id="new-room">${t('match.newRoom')}</button>` : ''}
+            ${!quick && !alone ? `<button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? t('match.rematchWaiting') : t('match.rematch')}</button>` : ''}
             <button class="btn" id="menu">${t('match.menu')}</button>
           </div>
+          ${quick && !alone ? `<p class="sub">${t('match.quickNote')}</p>` : ''}
           ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">${t('match.waitingFor', { names: list(waitingFor.map(htmlName)) })}</p>` : ''}
         </div>`)) {
-        if (alone) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), dep: playerDep.get() || undefined });
-        else $('rematch').onclick = () => send({ t: 'rematch' });
+        if ($('new-room')) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), dep: playerDep.get() || undefined });
+        if ($('rematch')) $('rematch').onclick = () => send({ t: 'rematch' });
+        if ($('find-new')) {
+          $('find-new').onclick = () => {
+            leaveRoom();
+            sendQueue(playerSize.get());
+          };
+        }
         $('menu').onclick = () => { location.href = location.pathname; };
       }
       break;

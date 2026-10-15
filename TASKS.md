@@ -22,11 +22,11 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
    - Mô tả gốc: **Prototype lá stencil trên bàn thật** (cờ `?stencil` trong game, pet + dép cố định). Renderer `stencil: true`; mỗi lá 1 cặp mã (ngửa/úp), tối đa 4 lá. Ô cửa ghi stencil + đặt lại depth, khoảng không/bệ/pet/dép vẽ theo stencil; vẽ lá từ thấp lên cao để lá đè lá đúng; mặt úp đúng khi bài bay/lật; viền bàn không đè. Đo draw call + FPS (`qa/perf.mjs`), chạy WebKit/iPhone SE. **Xong khi**: 4 lá chồng/lật/bay đều đúng trên 5 máy giả lập, ≤ ~50 draw call. **Không đạt** → đổi sang vẽ khoảng không + pet ra texture (render-to-texture) rồi dán lên lá, ghi lại lý do.
 
 ### Mốc 2 · Phòng và vào trận
-2. **Chủ phòng + Sẵn sàng** (server + client, gộp QA-07): host = người tạo, rời thì chuyển cho người vào sớm nhất; khách Sẵn sàng / Hủy sẵn sàng; chủ phòng chỉ bắt đầu được khi ≥ 2 người và mọi khách sẵn sàng; tái đấu theo cùng luật. Vương miện, nhãn trạng thái trên ô ghế. Test từng luật.
-3. **Tạo phòng có tùy chọn + phòng công khai**: Riêng tư/Công khai, tối đa 2/3/4 (chủ phòng đổi được ở phòng chờ); server giữ danh sách (đang chờ lên đầu, lọc 2/3/4, chỉ gửi pet + mã); màn Phòng công khai tự cập nhật + trạng thái trống. Bảng: CreateRoom, Rooms, RoomsEmpty, RoomsPhone, Main. Test.
-4. **Chơi ngay**: hàng chờ server theo Bất kỳ/2/3/4; Bất kỳ đủ 2 → đếm 5 giây chờ thêm; 20 giây gợi ý ít người hơn; đủ người → phòng ẩn (không link), vào luôn; hủy; mất mạng > 10 giây khi chờ → về Màn chính. Màn hết trận ghép ngẫu nhiên: Tìm trận mới / Tái đấu (khi tất cả bấm) / Về menu. Bảng: Matching, MatchingPhone, MatchEndRandom. Test nhiều client giả (ghép đúng số, đếm ngược, hủy, rớt mạng, 2 tab).
-5. **Luật cho người lạ**: ghép ngẫu nhiên hết giờ 2 lượt liền = bị loại khỏi ván (server, test); lọc từ xấu trong tên (danh sách từ cho 10 ngôn ngữ ở server, tên bị chặn → tên ngẫu nhiên; test).
-6. **Màn chính mới** theo bảng Home/HomePhone (Tủ đồ bên trái trên máy tính, khung "Chơi với người lạ", "hoặc chơi với bạn"). Phần Tủ đồ lúc này mở các màn chọn ở mốc 3.
+2. ✅ (15/10) **Chủ phòng + Sẵn sàng** (server + client, gộp QA-07): host = người tạo, rời thì chuyển cho người vào sớm nhất; khách Sẵn sàng / Hủy sẵn sàng; chủ phòng chỉ bắt đầu được khi ≥ 2 người và mọi khách sẵn sàng; tái đấu theo cùng luật. Vương miện, nhãn trạng thái trên ô ghế. Test từng luật.
+3. ✅ (15/10) **Tạo phòng có tùy chọn + phòng công khai**: Riêng tư/Công khai, tối đa 2/3/4 (chủ phòng đổi được ở phòng chờ); server giữ danh sách (đang chờ lên đầu, lọc 2/3/4, chỉ gửi pet + mã); màn Phòng công khai tự cập nhật + trạng thái trống. Bảng: CreateRoom, Rooms, RoomsEmpty, RoomsPhone, Main. Test.
+4. ✅ (15/10) **Chơi ngay**: hàng chờ server theo Bất kỳ/2/3/4; Bất kỳ đủ 2 → đếm 5 giây chờ thêm; 20 giây gợi ý ít người hơn; đủ người → phòng ẩn (không link), vào luôn; hủy; mất mạng > 10 giây khi chờ → về Màn chính. Màn hết trận ghép ngẫu nhiên: Tìm trận mới / Tái đấu (khi tất cả bấm) / Về menu. Bảng: Matching, MatchingPhone, MatchEndRandom. Test nhiều client giả (ghép đúng số, đếm ngược, hủy, rớt mạng, 2 tab).
+5. ✅ (15/10) **Luật cho người lạ**: ghép ngẫu nhiên hết giờ 2 lượt liền = bị loại khỏi ván (server, test); lọc từ xấu trong tên (danh sách từ cho 10 ngôn ngữ ở server, tên bị chặn → tên ngẫu nhiên; test).
+6. ✅ (15/10, phần Tủ đồ ở màn chính nối ở bước 11) **Màn chính mới** theo bảng Home/HomePhone (Tủ đồ bên trái trên máy tính, khung "Chơi với người lạ", "hoặc chơi với bạn"). Phần Tủ đồ lúc này mở các màn chọn ở mốc 3.
 
 ### Mốc 3 · Tủ đồ (skin)
 7. **Dữ liệu đồ** `src/catalog.js` (dùng chung client + server): 24 pet (id, file model, tên → key ngôn ngữ), 3 dép (model, danh sách phần tô màu, màu mặc định), bảng 12 màu dép, 4 màu bài (màu, màu đậm, màu khoảng không, hoa văn, biểu tượng ♥ ◆ ★ ♣). Giao thức `pickLook { pet, dep, depColors, cardColor }`: lưu localStorage, gửi server; server kiểm tra hợp lệ, chặn trùng màu bài (trùng thì giữ màu cũ + báo; ghép ngẫu nhiên thì server tự đổi màu cho người vào sau). Đổi đồ ở phòng chờ → tự bỏ Sẵn sàng. Test.
@@ -143,7 +143,7 @@ Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state establishe
   - Sửa: trên màn dọc đưa meme lên dải trên (dưới HUD) hoặc thu nhỏ; không che vùng bàn.
 - [x] **UX-06 · Người bấm "Biết chơi rồi" vẫn bị chỉ tay lượt đầu + mẹo trong 3 trận đầu.** Bill chốt: tắt cả hai. Xong 14/10: bấm "Biết chơi rồi" đặt số trận đã chơi lên 3, chỉ tay và mẹo đều tắt. Kiểm tra: `node qa/ux06-check.mjs`.
 - [x] **UX-07 · Người được mời phải gõ tên trước khi vào phòng.** Đề xuất điền sẵn một tên ngẫu nhiên đúng giọng game (vd "Tí sún", "Tèo mũi"), sửa sau được. Chữ cần duyệt.
-- [ ] **QA-07 (L6) · Ai trong phòng chờ cũng bấm được "Chiến thôi".** Có từ đầu. Đọc code. Làm chung với Tủ đồ mục A.
+- [x] **QA-07 (L6) · Ai trong phòng chờ cũng bấm được "Chiến thôi".** Có từ đầu. Đọc code. Làm chung với Tủ đồ mục A.
 - [x] **UX-08 (C5) · Bạn đến muộn bấm link khi phòng đang đánh thì bị đuổi về menu.** Có từ đầu (C5). Tối thiểu: báo "Phòng đang đánh, đợi hết trận rồi bấm lại link". Tốt hơn: cho ngồi xem và vào luôn ở trận sau.
 
 ## P3

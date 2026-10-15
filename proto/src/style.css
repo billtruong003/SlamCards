@@ -221,3 +221,81 @@ button{font:inherit;color:inherit;cursor:pointer}
 .intro-glare{position:absolute;top:-30%;width:12%;height:160%;margin-left:-6%;background:rgba(255,255,255,.75);left:-41%;transform:rotate(-24deg)}
 .intro-name{min-height:1.2em;font-family:var(--font);font-weight:800;font-size:min(7vh,11vw);color:#F5F5F5;letter-spacing:.01em;white-space:nowrap}
 .intro-name .cursor{color:#FFB84D}
+
+/* ---------- home, create room, public rooms, quick match ---------- */
+.group-label{margin:0;font-weight:800;font-size:15px;text-align:left;width:100%}
+.quick-group{width:100%;box-sizing:border-box;border:3px solid var(--ink);border-radius:16px;background:#ffe9f0;padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%}
+.seg.two{grid-template-columns:1fr 1fr}
+.seg.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.seg.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg button{border:3px solid var(--ink);border-radius:12px;background:var(--cream);color:var(--ink);font-weight:800;font-size:15px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1;padding:4px}
+.seg button span{font-size:22px}
+.seg button .seg-big{font-size:17px}
+.seg button small{font-size:12px;font-weight:700;opacity:.85}
+.seg button.on{background:var(--mint);box-shadow:0 3px 0 var(--ink);transform:translateY(-2px)}
+.seg i{font-style:normal;display:inline-flex;gap:3px;align-items:center}
+.seg i b{width:8px;height:8px;border-radius:50%;border:2px solid var(--ink);background:var(--cream)}
+.seg button.on i b{background:var(--ink)}
+.seg i em{font-style:normal;font-size:11px}
+.btn.big{min-height:58px;font-size:24px;border-radius:14px}
+.btn.small{min-height:40px;font-size:15px;padding:0 12px}
+.or{display:flex;align-items:center;gap:10px;width:100%;color:#8a7a72;font-weight:800;font-size:13px}
+.or::before,.or::after{content:"";flex:1;height:3px;background:#e2d6c2;border-radius:2px}
+.row.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.row.two .btn{padding:4px 8px}
+.code-row{width:100%;flex-wrap:nowrap}
+.code-row label{flex:1;min-width:0}
+.code-row .input{width:100%;box-sizing:border-box}
+.link-btn{background:none;border:0;font:700 15px var(--font);color:var(--muted);text-decoration:underline;min-height:44px}
+.rooms-card{max-width:min(600px,calc(100vw - 32px))!important;width:600px}
+.rooms-head{display:flex;align-items:center;gap:10px;width:100%}
+.room-list{display:flex;flex-direction:column;gap:8px;width:100%;min-height:80px;align-items:stretch}
+.room-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto 84px;gap:10px;align-items:center;background:var(--cream);border:3px solid var(--ink);border-radius:14px;padding:6px 10px;text-align:left}
+.room-row.off{opacity:.55}
+.room-av{width:46px;height:46px;border-radius:10px;border:2px solid var(--ink);object-fit:cover;background:#fff}
+.room-name{font-weight:800;font-size:17px;line-height:1.1;min-width:0}
+.room-name small{display:flex;gap:6px;align-items:center;font-weight:700;font-size:12px;color:var(--muted);margin-top:2px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;font-size:12px;font-weight:800;border:2px solid var(--ink);border-radius:999px;padding:0 8px;background:var(--cream);color:var(--ink);line-height:18px}
+.tag.ok{background:var(--mint)}
+.tag.busy{background:#e2d6c2;color:var(--muted);border-color:#8a7a72}
+.room-slots{display:flex;gap:3px}
+.room-slots b{width:12px;height:18px;border-radius:4px;border:2px solid var(--ink);background:var(--cream)}
+.room-slots b.full{background:var(--ink)}
+.rooms-empty{border:3px dashed #8a7a72;border-radius:16px;padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rooms-empty-title{margin:0;font-weight:800;font-size:19px}
+.menu-bg .rooms-note{font-size:13px;color:var(--muted)}
+.spin{display:inline-block;width:20px;height:20px;border-radius:50%;border:4px solid #e2d6c2;border-top-color:var(--pink-dark);animation:spin .9s linear infinite;align-self:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.queue-seats{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+.queue-seats .slot.waiting{display:flex;flex-direction:column;align-items:center;gap:4px}
+.queue-go{margin:0;font-weight:800;font-size:18px;color:var(--pink-dark)}
+.room-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.tag-btn{border:2px solid var(--ink);border-radius:999px;background:var(--cream);font:800 13px var(--font);padding:0 10px;min-height:30px;color:var(--ink)}
+.tag-btn:disabled{opacity:1;color:var(--ink);cursor:default}
+.slot.seat{position:relative;overflow:visible}
+.seat-tag{position:absolute;right:6px;top:-11px;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;border:2px solid var(--ink);border-radius:999px;padding:0 7px;background:var(--cream);color:var(--ink);line-height:18px;white-space:nowrap}
+.seat-tag.ok{background:var(--mint)}
+.menu-bg .lobby-note{font-size:13px;color:var(--muted)}
+@media (pointer:coarse){.tag-btn{min-height:44px}}
+@media (max-width:520px){.room-row{grid-template-columns:44px minmax(0,1fr) 76px}.room-slots{display:none}}
+
+.seg button span.seg-word{font-size:16px;white-space:nowrap}
+/* small phones: the home card has to fit above the corner buttons without scrolling */
+@media (max-width:420px),(max-height:700px){
+  .home .title{font-size:40px}
+  .home .sub{font-size:14px}
+  .home.menu-card{gap:8px;padding:12px 14px}
+  .home .seg button{min-height:46px}
+  .home .seg button span{font-size:19px}
+  .home .seg button span.seg-word{font-size:14px}
+  .home .btn.big{min-height:50px;font-size:21px}
+  .home .quick-group{padding:8px 10px 10px;gap:6px}
+  .home .input{min-height:42px}
+}
+@media (max-height:600px){
+  .home > .sub{display:none}
+  .home .title{font-size:34px}
+  .home .or{display:none}
+}
