@@ -3,6 +3,7 @@
 // (takes back Ready), and the falling slipper wears its owner's colours.
 // Run with the game server on :8097:  node qa/m3-ui.mjs   → qa/out/m3/*.png
 import { chromium, devices } from 'playwright';
+import { CARD_COLORS } from '../proto/src/catalog.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -92,7 +93,7 @@ try {
   await host.waitForTimeout(300);
   await shot(host, '07-lobby-host');
   const seatVar = await host.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--seat-pink').trim());
-  check('seat colour follows the card colour', seatVar.toLowerCase() === '#3ccf6e', seatVar);
+  check('seat colour follows the card colour', seatVar.toLowerCase() === CARD_COLORS.la.color, seatVar);
 
   // start and slam once: the falling slipper uses the host's colours
   await guest.click('#ready');

@@ -553,6 +553,7 @@ function applySeatColors() {
     const c = CARD_COLORS[cardColorOf(seat)];
     root.setProperty(`--seat-${seat}`, c.color);
     root.setProperty(`--seat-${seat}-ink`, c.dark);
+    root.setProperty(`--seat-${seat}-deep`, c.deep);
   }
   world.setCardColors(Object.fromEntries(SEATS.map((seat) => [seat, CARD_COLORS[cardColorOf(seat)].dark])));
 }
@@ -1337,6 +1338,7 @@ function badgeFor(seat) {
 }
 
 const labelScreen = {};
+const LABEL_DROP = 0.9; // a little more than the card's half diagonal (0.89)
 function updateLabels() {
   const inRound = Boolean(state) && !['lobby', 'matchEnd'].includes(state.phase);
   for (const seat of SEATS) {
@@ -1351,9 +1353,12 @@ function updateLabels() {
     const owner = seat === me ? t('hud.meTag') : t('card.owner', { name: nameOf(seat) });
     const text = `${t(y < FALL_Y ? 'card.fallen' : faceUp ? 'card.up' : 'card.down')} ${owner}`;
     if (el.textContent !== text) el.textContent = text;
-    // just under the card on screen, whichever way the camera faces the table
+    // under the card on screen, clear of its window: below the point a card's half diagonal
+    // toward the camera, whichever way the card lies
     world.toScreen(x, y, z, labelScreen);
-    const transform = `translate(${labelScreen.x.toFixed(1)}px, ${(labelScreen.y + 30).toFixed(1)}px) translate(-50%, 0)`;
+    const lx = labelScreen.x;
+    world.toScreen(x, y, z + LABEL_DROP, labelScreen);
+    const transform = `translate(${lx.toFixed(1)}px, ${(labelScreen.y + 4).toFixed(1)}px) translate(-50%, 0)`;
     if (el.dataset.at !== transform) {
       el.dataset.at = transform;
       el.style.transform = transform;

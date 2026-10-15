@@ -19,11 +19,13 @@ export const defaultDepColors = (dep) => DEP_PARTS[dep].map((p) => p.def);
 
 // Card colours: the card frame, the room behind the window, its stage, a suit mark so colours
 // can be told apart without seeing colour.
+// Muted print-like colours (OKLCH chroma <= 0.12, about 1.5x the wooden table) that differ in lightness
+// as well as hue, so they stay apart for red-green colour blindness. `deep` carries white text (>= 4.5:1).
 export const CARD_COLORS = {
-  hong: { color: '#ff5c9d', dark: '#c2306b', room: '#ffd6e6', floor: '#ffb3cf', suit: '♥' },
-  xanh: { color: '#2fa8ff', dark: '#1a6fb3', room: '#d3ecff', floor: '#a7d6ff', suit: '◆' },
-  vang: { color: '#ffc93c', dark: '#c98e00', room: '#fff2c4', floor: '#ffe08a', suit: '★' },
-  la: { color: '#3ccf6e', dark: '#1f8f45', room: '#d6f7e0', floor: '#a9ebbd', suit: '♣' },
+  hong: { color: '#a34e71', deep: '#974e66', dark: '#693449', room: '#fae0e8', floor: '#ecbbcc', suit: '♥' },
+  xanh: { color: '#2f6e9e', deep: '#1c719a', dark: '#1c4b70', room: '#d8ebfb', floor: '#abcff0', suit: '◆' },
+  vang: { color: '#d4a14a', deep: '#886116', dark: '#5f4106', room: '#f3e6d2', floor: '#e0c69f', suit: '★' },
+  la: { color: '#5d9d6b', deep: '#307a4f', dark: '#235430', room: '#dbeede', floor: '#b0d6b6', suit: '♣' },
 };
 export const CARD_COLOR_IDS = Object.keys(CARD_COLORS);
 

@@ -27,7 +27,8 @@ import { t } from './i18n.js';
 const W = CARD_HALF_W * 2;
 const H = CARD_HALF_D * 2;
 const CORNER = 0.085;
-const WIN = { cx: 0, cy: 0.155, hw: 0.38, hh: 0.445, r: 0.07 };
+// The window: 0.1 from the top and the sides; below it the name plate (see frontTexture).
+const WIN = { cx: 0, cy: 0.1267, hw: 0.4, hh: 0.5123, r: 0.07 };
 const STAGE_Y = -0.2; // floor of the stage, in the stage's own (camera-facing) space
 const STAGE_TILT = 0.25; // how far the stage tips its top toward the camera (a three-quarter view)
 const BASE_ORDER = 100;
@@ -99,7 +100,6 @@ const windowShape = () => roundRect(new THREE.Shape(), WIN.cx, WIN.cy, WIN.hw, W
 
 const INK = '#2a1418';
 const CREAM = '#fffbf0';
-const AMBER = '#ffb84d';
 const FONT = '"Baloo 2", system-ui, sans-serif';
 const S = 512;
 const SH = Math.round(S * H);
@@ -123,61 +123,50 @@ function cardCanvas(fill) {
   g.fillStyle = fill; g.fillRect(0, 0, 512, BH);
   return { c, g };
 }
-function stamp(g, str, x, y, size, fill = CREAM, align = 'center', maxW = 999) {
-  let s = size;
-  do { g.font = `800 ${s}px ${FONT}`; s -= 2; } while (g.measureText(str).width > maxW && s > 18);
-  g.textAlign = align; g.textBaseline = 'alphabetic'; g.lineJoin = 'round';
-  g.strokeStyle = INK; g.lineWidth = Math.max(6, s * 0.16); g.fillStyle = INK;
-  g.strokeText(str, x, y + s * 0.09); g.fillText(str, x, y + s * 0.09);
-  g.strokeText(str, x, y); g.fillStyle = fill; g.fillText(str, x, y);
-}
 function toTex(c) { const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; }
 
-function frontTexture(look, depName) {
+// Face: the colour frame, a cream panel, the window's ink rim and a name plate. Every line is laid
+// out from the window hole itself, so the rim hugs the hole and the plate lines up with the rim.
+const PANEL = 24;          // cream panel inset from the card edge (px of the 512-wide canvas)
+const RIM = 9;             // window rim, drawn just outside the hole
+const GAP = 18;            // cream between panel edge, rim and plate, the same everywhere
+function frontTexture(look) {
   const { c, g } = cardCanvas(look.color);
-  const wx = bx(WIN.cx - WIN.hw); const wy = by(WIN.cy + WIN.hh);
-  const ww = WIN.hw * 2 * 512; const wh = WIN.hh * 2 * 512; const wr = WIN.r * 512;
-  const inset = 24;
-  g.fillStyle = CREAM; rr(g, inset, inset, 512 - 2 * inset, BH - 2 * inset, CORNER * 512 - inset); g.fill();
-  g.lineWidth = 5; g.strokeStyle = INK; g.stroke();
-  g.lineWidth = 9; rr(g, wx - 4.5, wy - 4.5, ww + 9, wh + 9, wr + 4.5); g.stroke();
-  const ry = wy + wh + 58; const rw = ww - 10; const rh = 64;
-  g.fillStyle = look.color; rr(g, 256 - rw / 2, ry - rh / 2 + 4, rw, rh, 18); g.fill();
-  g.lineWidth = 6; g.stroke();
-  stamp(g, look.petName, 256, ry + 16, 42, CREAM, 'center', rw - 30);
-  const cy = ry + 70;
-  g.font = `800 19px ${FONT}`;
-  const label = depName.toUpperCase();
-  const cw = g.measureText(label).width + 52;
-  const cx0 = 256 - 22;
-  g.fillStyle = '#fff'; rr(g, cx0 - cw / 2, cy - 19, cw, 36, 18); g.fill(); g.lineWidth = 4; g.stroke();
-  g.fillStyle = look.color; g.beginPath(); g.arc(cx0 - cw / 2 + 20, cy - 1, 7, 0, 7); g.fill(); g.lineWidth = 2.5; g.stroke();
-  g.fillStyle = INK; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillText(label, cx0 - cw / 2 + 34, cy + 1);
-  if (marks.color) g.drawImage(marks.color, cx0 + cw / 2 + 8, cy - 20, 38, 38);
+  const hx0 = bx(WIN.cx - WIN.hw); const hx1 = bx(WIN.cx + WIN.hw);
+  const hy0 = by(WIN.cy + WIN.hh); const hy1 = by(WIN.cy - WIN.hh);
+  const hr = WIN.r * 512;
+  g.fillStyle = CREAM; rr(g, PANEL, PANEL, 512 - 2 * PANEL, BH - 2 * PANEL, CORNER * 512 - PANEL); g.fill();
+  g.strokeStyle = INK;
+  g.lineWidth = RIM; rr(g, hx0 - RIM / 2, hy0 - RIM / 2, hx1 - hx0 + RIM, hy1 - hy0 + RIM, hr + RIM / 2); g.stroke();
+  // plate: as wide as the rim, from the rim + GAP down to the panel edge - GAP
+  const px0 = hx0 - RIM; const pw = hx1 - hx0 + 2 * RIM;
+  const py0 = hy1 + RIM + GAP; const ph = BH - PANEL - GAP - py0;
+  g.fillStyle = look.deep;
+  rr(g, px0, py0, pw, ph, hr + RIM); g.fill();
+  g.lineWidth = 6; rr(g, px0 + 3, py0 + 3, pw - 6, ph - 6, hr + RIM - 3); g.stroke();
+  // the pet's name, white only, shrunk to fit the plate
+  let size = Math.min(70, ph * 0.62);
+  const maxW = pw - 56;
+  do { g.font = `800 ${size}px ${FONT}`; size -= 2; } while (g.measureText(look.petName).width > maxW && size > 20);
+  g.fillStyle = '#ffffff'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const m = g.measureText(look.petName);
+  // centre on the glyphs' real box, not the font's line box (accents and Thai marks differ)
+  g.fillText(look.petName, 256, py0 + ph / 2 + (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2, maxW);
   g.restore();
   return toTex(c);
 }
+// Back: the colour, fine diagonal pinstripes, a cream line on the same inset as the face's panel and
+// one white mark.
 function backTexture(look) {
   const { c, g } = cardCanvas(look.color);
-  if (marks.white) {
-    g.save(); g.globalAlpha = 0.24;
-    for (let row = 0, y = -10; y < BH + 40; row++, y += 74) {
-      for (let col = 0, x = (row % 2) * 44 - 20; x < 540; col++, x += 88) {
-        g.save(); g.translate(x + 28, y + 28); g.rotate(((row + col) % 2 ? 1 : -1) * 0.22); g.drawImage(marks.white, -26, -26, 52, 52); g.restore();
-      }
-    }
-    g.restore();
-  }
-  g.lineWidth = 7; g.strokeStyle = CREAM; rr(g, 26, 26, 460, BH - 52, CORNER * 512 - 26); g.stroke();
-  const ms = 250; const my = BH / 2 - 50;
-  if (marks.color) g.drawImage(marks.color, 256 - ms / 2, my - ms / 2, ms, ms);
-  const ty = my + ms / 2 + 56; const fs = 54;
-  g.font = `800 ${fs}px ${FONT}`;
-  const parts = [['Bill', '#ffffff'], ['The', '#c9c3bf'], ['Dev', AMBER]];
-  const gap = g.measureText(' ').width;
-  const widths = parts.map(([s]) => g.measureText(s).width);
-  let x = 256 - (widths.reduce((a, b) => a + b) + gap * 2) / 2;
-  parts.forEach(([s, col], i) => { stamp(g, s, x, ty, fs, col, 'left'); x += widths[i] + gap; });
+  g.save();
+  g.strokeStyle = 'rgba(255,251,240,0.16)'; g.lineWidth = 4;
+  for (let x = -BH; x < 512 + BH; x += 20) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x + BH, BH); g.stroke(); }
+  g.restore();
+  g.strokeStyle = 'rgba(255,251,240,0.8)'; g.lineWidth = 6;
+  rr(g, PANEL + 3, PANEL + 3, 512 - 2 * PANEL - 6, BH - 2 * PANEL - 6, CORNER * 512 - PANEL - 3); g.stroke();
+  const ms = 230;
+  if (marks.white) g.drawImage(marks.white, 256 - ms / 2, BH / 2 - ms / 2, ms, ms);
   g.restore();
   return toTex(c);
 }
@@ -357,8 +346,8 @@ export function createStencilCard(seat, ref) {
   add('restore', new THREE.Mesh(winGeo, depthMaterial(ref, false))).position.z = CARD_HALF_T;
 
   const room = add('room', new THREE.Group());
-  const box = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.0));
-  box.position.set(0, WIN.cy + 0.2, -0.5 - CARD_HALF_T);
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.9, 1.0));
+  box.position.set(0, WIN.cy + 0.15, -0.5 - CARD_HALF_T);
   room.add(box);
   // The stage (pet, slipper, round floor) turns to face the camera every frame: the card lies flat
   // and in any direction on the table, but the pet should always stand upright and look at the
@@ -366,7 +355,7 @@ export function createStencilCard(seat, ref) {
   const stageRoot = new THREE.Group();
   stageRoot.position.set(WIN.cx, WIN.cy + 0.06, -0.24);
   room.add(stageRoot);
-  const stageGeo = bakeSmoothNormals(new THREE.CylinderGeometry(0.34, 0.31, 0.05, 32));
+  const stageGeo = bakeSmoothNormals(new THREE.CylinderGeometry(0.38, 0.35, 0.05, 32));
   const stageMat = gate(toon({ color: 0xffffff }), ref);
   const stage = new THREE.Mesh(stageGeo, stageMat);
   stage.add(new THREE.Mesh(stageGeo, gate(outline(0.012), ref)));
@@ -414,10 +403,10 @@ export function createStencilCard(seat, ref) {
     // what is actually painted, not with the previous look (that one may never have been painted).
     marksReady.then(() => {
       if (look !== n) return;
-      const frontKey = `${n.cardColor}|${n.pet}|${n.dep}`;
+      const frontKey = `${n.cardColor}|${n.pet}`;
       if (painted.front !== frontKey) {
         frontMat.map?.dispose();
-        frontMat.map = frontTexture(art, t(`dep.${n.dep}`));
+        frontMat.map = frontTexture(art);
         frontMat.needsUpdate = true;
         painted.front = frontKey;
       }
@@ -443,7 +432,7 @@ export function createStencilCard(seat, ref) {
     loadPet(id).then((gltf) => {
       if (petWanted !== id) return;
       if (pet) stageRoot.remove(pet.root);
-      pet = preparePet(id, gltf, ref, 0.4);
+      pet = preparePet(id, gltf, ref, 0.48);
       pet.root.position.set(-0.07, STAGE_Y, -0.05);
       pet.root.rotation.y = 0.3;
       stageRoot.add(pet.root);
