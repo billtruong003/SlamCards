@@ -111,7 +111,7 @@ try {
     await new Promise((res) => setTimeout(res, 60));
     return [...document.querySelectorAll('#labels .pop')].map((e) => e.textContent);
   });
-  check('UX-09 late tap shows a message', late.some((x) => /giờ|late/i.test(x)), JSON.stringify(late));
+  check('UX-09 late tap shows a message', late.some((x) => /giờ|muộn|late/i.test(x)), JSON.stringify(late));
 
   // QA-05: after a first slam, a reload in round 1 shows no pointer
   await mover.evaluate(() => localStorage.setItem('slam-ftue-slammed', '1'));

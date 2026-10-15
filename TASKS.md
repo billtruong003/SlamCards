@@ -48,7 +48,7 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 19. ✅ (15/10; `qa/ribbon-fit.mjs`: mọi tên vừa ở cỡ 42 px, 10 ngôn ngữ) **Mặt lá bài**: vẽ bằng canvas lúc chạy (khung, dải tên, nhãn dép, mặt sau từ `brand/*.svg`); không cần file ảnh lá. Kiểm tra chữ tên pet ở 11 ngôn ngữ vừa dải tên.
 20. ✅ (15/10) **Biểu tượng giao diện** (SVG nét, không emoji): vương miện chủ phòng, dấu ✓ sẵn sàng, quả địa cầu, vòng xoay đang tìm, khóa Riêng tư, người (số người).
 21. ✅ (15/10; `sound.js` chime) **Âm thanh mới** (tạo bằng code như tiếng "bốp", không tải file): "đã tìm được trận", "sẵn sàng", "bị loại vì treo máy". Tắt theo thanh âm thanh hiện có.
-22. ⏳ (15/10: `docs/localization/STRINGS-NEW.md`, 107 chuỗi, chờ Bill duyệt) **Chữ mới** (tên 24 pet, tên màu, Sẵn sàng, phòng công khai, chơi ngay…): gom `STRINGS.md` → Bill duyệt/đưa AI viết lại → `i18n:check` → 11 ngôn ngữ trên iPhone SE.
+22. ✅ (15/10: Bill duyệt gói dep-lao-localization (1), merge 107 key `updates/`; i18n + 5 máy × 10 ngôn ngữ sạch) **Chữ mới** (tên 24 pet, tên màu, Sẵn sàng, phòng công khai, chơi ngay…): gom `STRINGS.md` → Bill duyệt/đưa AI viết lại → `i18n:check` → 11 ngôn ngữ trên iPhone SE.
 23. ✅ (15/10) **Ghi công**: Kenney (pet, CC0) trong bảng Info; cập nhật `public/models/LICENSE-kenney.txt`.
 
 ### Mốc 6 · QA lớn + phát hành
