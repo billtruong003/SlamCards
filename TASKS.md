@@ -64,8 +64,9 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 ### Mốc 8 · Biểu cảm nhanh + chat + mời bạn (mockup đã duyệt 16/10: canvas trang "Biểu cảm + chat + mời bạn")
 30. ✅ (16/10) Server: `react` (sticker / câu nhanh theo danh mục `catalog.js`), `chat` (chỉ phòng bạn bè, ≤ 80 ký tự, lọc từ xấu bằng `cleanChat`, giữ 30 dòng cho người vào sau), chống spam 3 lần / 5 giây mỗi loại; `test/social.test.js`.
 31. ✅ (16/10) Client `src/social.js` + `social.css`: bảng biểu cảm (Mặt / Mèo / Câu nhanh, hàng gợi ý theo tình huống, phím T và 1–8), bong bóng trên lá người gửi (trên → cạnh → dưới lá, tránh dải HUD), dải chat (máy tính), khung soạn trong trận tự đóng khi tới lượt, chat phòng chờ (cột phải màn rộng / thanh + tấm trượt màn hẹp), chạm chip tên để ẩn một người, công tắc trong Âm thanh; nút "Mời bạn" (bảng chia sẻ trên điện thoại, copy trên máy tính); 35 chuỗi × 10 ngôn ngữ; `qa/social-ui.mjs`.
-32. ⏳ **Ảnh sticker cho bản công khai**: 32 sticker trong `public/stickers/` là bộ tạm lọc từ các gói emoji.gg Bill gửi (không ghi giấy phép, ảnh gốc 56–230 px nên mờ khi phóng). Trước khi deploy công khai: vẽ lại theo nét game (viền mực, toon, ≥ 256 px) hoặc Bill chấp nhận rủi ro. Thay ảnh = thay file cùng tên.
+32. ⏳ (16/10: đã lên live bằng bộ tạm theo lệnh Bill "deploy luôn") **Ảnh sticker cho bản công khai**: 32 sticker trong `public/stickers/` là bộ tạm lọc từ các gói emoji.gg Bill gửi (không ghi giấy phép, ảnh gốc 56–230 px nên mờ khi phóng). Trước khi deploy công khai: vẽ lại theo nét game (viền mực, toon, ≥ 256 px) hoặc Bill chấp nhận rủi ro. Thay ảnh = thay file cùng tên.
 33. Mã QR trong phòng chờ (mockup có, chưa làm).
+34. ✅ (16/10 10:03) **[DEPLOY]** biểu cảm + chat + mời bạn, link mời sống qua chuyển app, responsive 18 độ phân giải; backup `/root/slam-cards-backup-20261016-1003-pre-social.tgz`; QA live sạch.
 
 ### Để sau (chưa làm)
 - G4 số liệu (không chặn game) → LU1–LU5 bảng số Lucy.
