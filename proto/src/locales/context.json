@@ -1628,6 +1628,11 @@
     "where": "Artist credit (corner and info panel)",
     "max": 30
   },
+  "info.idea": {
+    "where": "Info panel credit for the game idea; {name} is a link to the person's LinkedIn",
+    "max": 34,
+    "id": "Ide game: {name}"
+  },
   "info.petArt": {
     "where": "Credit for the 3D pets and slippers' style source (info panel); {name} is 'Kenney (CC0)'",
     "max": 34,

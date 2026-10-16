@@ -329,6 +329,7 @@
   "info.portfolio": "Portofolio",
   "info.contact": "Kontak",
   "info.cardArt": "Ilustrasi kartu: {name}",
+  "info.idea": "Ide game: {name}",
   "info.petArt": "Pet 3D: {name}",
   "common.close": "Tutup",
   "common.listSep": ", ",

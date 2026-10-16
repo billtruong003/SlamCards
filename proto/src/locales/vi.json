@@ -329,6 +329,7 @@
   "info.portfolio": "Portfolio",
   "info.contact": "Liên hệ",
   "info.cardArt": "Tranh bài: {name}",
+  "info.idea": "Ý tưởng game: {name}",
   "info.petArt": "Pet 3D: {name}",
   "common.close": "Đóng",
   "common.listSep": ", ",

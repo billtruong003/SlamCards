@@ -329,6 +329,7 @@
   "info.portfolio": "포트폴리오",
   "info.contact": "문의",
   "info.cardArt": "카드 그림: {name}",
+  "info.idea": "게임 아이디어: {name}",
   "info.petArt": "3D 펫: {name}",
   "common.close": "닫기",
   "common.listSep": ", ",

@@ -52,6 +52,8 @@ applyStatic();
 $('info-by').innerHTML = t('info.by', { name: '<b>BillTheDev</b>' });
 for (const id of ['credit', 'info-credit']) $(id).textContent = t('info.cardArt', { name: 'Dani Maccari' });
 $('info-pets').textContent = t('info.petArt', { name: 'Kenney (CC0)' });
+// the game idea came from ThuanBui (David)
+$('info-idea').innerHTML = t('info.idea', { name: '<a href="https://www.linkedin.com/in/thuaniub1203/" target="_blank" rel="noopener">ThuanBui (David)</a>' });
 els.windText.textContent = t('hud.wind', { n: 0 });
 
 // Language: a small globe button in the corner (short code only, so it fits beside ?/Info/Sound on

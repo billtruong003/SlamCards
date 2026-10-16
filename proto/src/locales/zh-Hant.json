@@ -329,6 +329,7 @@
   "info.portfolio": "作品集",
   "info.contact": "聯絡",
   "info.cardArt": "卡牌插畫：{name}",
+  "info.idea": "遊戲創意：{name}",
   "info.petArt": "3D 寵物：{name}",
   "common.close": "關閉",
   "common.listSep": "、",

@@ -329,6 +329,7 @@
   "info.portfolio": "Portfólio",
   "info.contact": "Contato",
   "info.cardArt": "Arte das cartas: {name}",
+  "info.idea": "Ideia do jogo: {name}",
   "info.petArt": "Pets 3D: {name}",
   "common.close": "Fechar",
   "common.listSep": ", ",
