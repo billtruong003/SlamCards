@@ -115,7 +115,8 @@ try {
   for (let i = 0; i < 5; i++) await host.keyboard.press('1');
   await host.waitForTimeout(500);
   const sentAfter = await guest.evaluate(() => document.querySelectorAll('#cp-log .cl').length);
-  check('spam limit: at most 3 in 5 s', sentAfter - sentBefore <= 2, `${sentAfter - sentBefore} more`);
+  // 5 presses in a row: at most 3 get through (fewer if an earlier one is still in the 5 s window)
+  check('spam limit: at most 3 in 5 s', sentAfter - sentBefore <= 3 && sentAfter - sentBefore >= 1, `${sentAfter - sentBefore} of 5 got through`);
   // the composer closes itself on the player's turn
   const mover = (await host.evaluate(() => slamDebug.state.turn === slamDebug.me)) ? host : guest;
   const waiter = mover === host ? guest : host;
