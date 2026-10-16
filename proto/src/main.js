@@ -401,6 +401,38 @@ function connect() {
   };
 }
 
+// Back from another app: phones suspend a hidden page and its socket dies or goes silent (a player
+// switching to a chat app to send the invite link). Check at once instead of waiting for the next
+// retry: a dead socket reconnects now, an open one must answer a ping within 3 s or is replaced.
+// Reconnecting rejoins the room by its token (openRoom), so the player is back in their seat.
+let wakeProbe = 0;
+function wakeUp() {
+  if (document.visibilityState !== 'visible') return;
+  if (!ws || ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+    failures = 0;
+    connect();
+    return;
+  }
+  if (ws.readyState !== WebSocket.OPEN) return;
+  const sentAt = performance.now();
+  send({ t: 'ping', at: sentAt });
+  clearTimeout(wakeProbe);
+  wakeProbe = setTimeout(() => {
+    if (lastPong >= sentAt || ws?.readyState !== WebSocket.OPEN) return;
+    // a silent socket can take long to report its close: drop it and open a new one now
+    const dead = ws;
+    dead.onclose = null;
+    dead.onmessage = null;
+    try { dead.close(); } catch { /* already gone */ }
+    failures = 0;
+    connect();
+  }, 3000);
+}
+document.addEventListener('visibilitychange', wakeUp);
+addEventListener('pageshow', wakeUp);
+addEventListener('online', wakeUp);
+addEventListener('focus', wakeUp);
+
 function showNetFail() {
   const card = $('netfail');
   if (!card.hidden) return;
@@ -1639,9 +1671,39 @@ let lastFrameAt = performance.now();
 let timeScale = 1; // debug only: slow motion to inspect effects
 let windClock = 0;
 const IDLE_FRAME = 1 / 30;
+// The HUD's top and bottom bands, measured from the page itself (they move with the screen size,
+// the orientation and the number of players), so the camera frames the table between them.
+// Hidden pieces count where they will appear (the turn banner, the hint).
+let safeAt = 0;
+function updateSafeArea(now) {
+  if (now - safeAt < 400) return;
+  safeAt = now;
+  const hud = document.getElementById('hud');
+  if (hud.hidden) { world.setSafeArea(0, 0); return; }
+  const h = innerHeight;
+  const rect = (id) => { const el = document.getElementById(id); return el && !el.hidden ? el.getBoundingClientRect() : null; };
+  const reserve = (id, size) => {
+    const cs = getComputedStyle(document.getElementById(id));
+    const top = parseFloat(cs.top); const bottom = parseFloat(cs.bottom);
+    return Number.isFinite(top) && top < h / 2 ? { top: top + size } : Number.isFinite(bottom) ? { bottom: bottom + size } : {};
+  };
+  let top = 0; let bottom = 0;
+  for (const r of [rect('players'), rect('wind'), rect('corner'), rect('toggle')]) {
+    if (!r || r.height === 0) continue;
+    if (r.top < h / 2) top = Math.max(top, r.bottom);
+    else bottom = Math.max(bottom, h - r.top);
+  }
+  const banner = reserve('banner', 34);
+  const hint = reserve('hint', 40);
+  top = Math.max(top, banner.top ?? 0, hint.top ?? 0);
+  bottom = Math.max(bottom, banner.bottom ?? 0, hint.bottom ?? 0);
+  world.setSafeArea(top + 6, bottom + 6);
+}
+
 function frame(now) {
   // schedule first: an error below must never stop the render loop
   requestAnimationFrame(frame);
+  updateSafeArea(now);
   const dt = Math.min((now - lastFrameAt) / 1000, 0.1) * timeScale;
   lastFrameAt = now;
   visuals.lastFrameAt = now;

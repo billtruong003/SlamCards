@@ -254,10 +254,24 @@ export class World {
 
   // Frames the whole table for any screen. On portrait screens the camera looks along X,
   // so the table's long side runs up the screen instead of being squeezed sideways.
+  // The HUD bands at the top and bottom of the screen (px): the table is framed in the space
+  // between them, so no card ever sits under the names, the wind, the banner or the slam buttons.
+  setSafeArea(top, bottom) {
+    if (Math.abs(top - (this.safe?.top ?? 0)) < 4 && Math.abs(bottom - (this.safe?.bottom ?? 0)) < 4) return;
+    this.safe = { top, bottom };
+    this.fitCamera();
+    this.needsRender = true;
+  }
+
   fitCamera() {
     if (!this.table) return;
     const { hx, hz } = this.table;
+    const { clientWidth: w, clientHeight: h } = this.renderer.domElement.parentElement;
+    const top = this.safe?.top ?? 0; const bottom = this.safe?.bottom ?? 0;
+    // the free band must keep at least half the screen, whatever the HUD says
+    const free = Math.max(h * 0.5, h - top - bottom);
     const aspect = this.camera.aspect;
+    const fit = free / h; // the table is fitted as if the screen were only the free band tall
     this.portrait = aspect < 0.95;
     const margin = 1.0;
     const halfAcross = (this.portrait ? hz : hx) + margin;
@@ -265,10 +279,15 @@ export class World {
     this.camera.fov = 42;
     const vHalf = THREE.MathUtils.degToRad(this.camera.fov / 2);
     const hHalf = Math.atan(Math.tan(vHalf) * aspect);
-    const distance = Math.max(halfAcross / Math.tan(hHalf), (halfDeep * 0.9) / Math.tan(vHalf)) * 1.22;
+    const vFree = Math.atan(Math.tan(vHalf) * fit);
+    const distance = Math.max(halfAcross / Math.tan(hHalf), (halfDeep * 0.9) / Math.tan(vFree)) * 1.22;
     const dir = this.portrait ? new THREE.Vector3(8.5, 13.5, 0) : new THREE.Vector3(0, 13.5, 8.5);
     this.cameraBase.copy(dir.normalize().multiplyScalar(distance));
     this.lookTarget.set(this.portrait ? 0.6 : 0, 0, this.portrait ? 0 : 0.6);
+    // centre the picture on the free band instead of the whole screen
+    const shift = (top - bottom) / 2;
+    if (Math.abs(shift) > 1 && w > 0 && h > 0) this.camera.setViewOffset(w, h, 0, -shift, w, h);
+    else this.camera.clearViewOffset();
     this.camera.updateProjectionMatrix();
   }
 
