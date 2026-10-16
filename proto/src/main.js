@@ -102,6 +102,8 @@ const MENU_CARDS = {
 let ws = null;
 let me = null;
 let roomCode = new URLSearchParams(location.search).get('room')?.toUpperCase() || null;
+// ?clean: for recording videos, no ping/fps line and no small credit in the corner
+if (new URLSearchParams(location.search).has('clean')) document.body.classList.add('clean');
 let state = null;
 let stateAt = 0;
 let slamType = 'flat';

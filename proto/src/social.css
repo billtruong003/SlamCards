@@ -159,3 +159,4 @@
   body[data-social="lobby"]:not([data-chat="off"]) .menu-bg.with-invite .menu-card:not(.ftue-invite){margin:auto 0}
 }
 @media (max-width:420px){.keyhint{display:none}}
+body.clean #netstat,body.clean .credit{display:none!important}
