@@ -6,7 +6,7 @@
 // Short ones (under 5 letters) only count as a whole word, so "Edith" or "Long" stay fine.
 const LATIN = [
   // vi
-  'dit', 'djt', 'lon', 'cac', 'buoi', 'duma', 'dume', 'dmm', 'dcm', 'vcl', 'vkl', 'clgt', 'deo', 'chode', 'occho', 'concac', 'dittmemay', 'ditme', 'ditmemay',
+  'dit', 'djt', 'dm', 'vl', 'lon', 'cac', 'buoi', 'duma', 'dume', 'dmm', 'dcm', 'vcl', 'vkl', 'clgt', 'deo', 'chode', 'occho', 'concac', 'dittmemay', 'ditme', 'ditmemay',
   // en
   'fuck', 'shit', 'bitch', 'cunt', 'dick', 'pussy', 'nigger', 'nigga', 'faggot', 'whore', 'slut', 'rape', 'rapist', 'nazi', 'hitler', 'porn', 'asshole', 'bastard', 'retard',
   // es / pt
@@ -44,4 +44,15 @@ export function isBadName(name) {
 export function cleanName(name) {
   const text = String(name ?? '').replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 16);
   return text && !isBadName(text) ? text : '';
+}
+
+// Chat lines (friends rooms only): control characters and angle brackets out, trimmed to `max`,
+// and any word the name filter would block is masked, so the line still reads but the word does not.
+export function cleanChat(text, max = 80) {
+  let line = String(text ?? '').replace(/[\u0000-\u001f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, max);
+  for (const bad of OTHER) line = line.split(bad).join('*'.repeat([...bad].length));
+  line = line.split(' ').map((word) => (isBadName(word) ? '*'.repeat(Math.min(word.length, 6)) : word)).join(' ');
+  // a word spelled out across spaces ("đ i t", "f u c k")
+  if (isBadName(line.replace(/\s/g, '')) && line.replace(/[^\p{L}]/gu, '').length <= 8) return '';
+  return line;
 }

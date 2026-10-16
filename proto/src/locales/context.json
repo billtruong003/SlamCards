@@ -318,6 +318,181 @@
     "max": 10,
     "id": "B3"
   },
+  "phrase.eat": {
+    "where": "Quick phrase sent in a match: I just took your card",
+    "max": 14,
+    "id": "Kena kau!"
+  },
+  "phrase.lucky": {
+    "where": "Quick phrase: that was only luck",
+    "max": 14,
+    "id": "Hoki doang"
+  },
+  "phrase.hurry": {
+    "where": "Quick phrase: hurry up",
+    "max": 14,
+    "id": "Cepetan!"
+  },
+  "phrase.oops": {
+    "where": "Quick phrase: oops / whoa",
+    "max": 14,
+    "id": "Lho kok"
+  },
+  "phrase.scared": {
+    "where": "Quick phrase, teasing: scared yet?",
+    "max": 14,
+    "id": "Takut ya?"
+  },
+  "phrase.wait": {
+    "where": "Quick phrase: wait a moment",
+    "max": 14,
+    "id": "Bentar"
+  },
+  "phrase.comeon": {
+    "where": "Quick phrase in the lobby: come on, join quickly",
+    "max": 14,
+    "id": "Masuk sini!"
+  },
+  "phrase.gg": {
+    "where": "Quick phrase: good game",
+    "max": 8,
+    "id": "GG"
+  },
+  "social.react": {
+    "where": "Button / panel name: stickers and quick phrases",
+    "max": 14,
+    "id": "Reaksi"
+  },
+  "social.chat": {
+    "where": "Button that opens the chat",
+    "max": 10,
+    "id": "Chat"
+  },
+  "social.chatTitle": {
+    "where": "Chat panel title",
+    "max": 16,
+    "id": "Chat room"
+  },
+  "social.tabFace": {
+    "where": "Sticker tab: smiley faces",
+    "max": 10,
+    "id": "Wajah"
+  },
+  "social.tabCat": {
+    "where": "Sticker tab: cat memes",
+    "max": 10,
+    "id": "Kucing"
+  },
+  "social.tabPhrase": {
+    "where": "Sticker tab: quick phrases",
+    "max": 12,
+    "id": "Kalimat"
+  },
+  "social.placeholder": {
+    "where": "Chat input placeholder",
+    "max": 22,
+    "id": "Ketik sesuatu…"
+  },
+  "social.send": {
+    "where": "Chat send button (screen readers)",
+    "max": 10,
+    "id": "Kirim"
+  },
+  "social.autoClose": {
+    "where": "Note in the in-match composer",
+    "max": 26,
+    "id": "Tutup saat giliranmu"
+  },
+  "social.empty": {
+    "where": "Empty chat",
+    "max": 40,
+    "id": "Belum ada pesan. Sapa semua!"
+  },
+  "social.sentSticker": {
+    "where": "Chat preview line for a sticker",
+    "max": 18,
+    "id": "kirim stiker"
+  },
+  "social.newCount": {
+    "where": "Unread chat lines pill; {n} = count",
+    "max": 8,
+    "id": "{n} baru"
+  },
+  "social.people": {
+    "where": "Chat header: players in the room; {n} = count",
+    "max": 12,
+    "id": "{n} pemain"
+  },
+  "social.muted": {
+    "where": "Toast after tapping a player chip; {name}",
+    "max": 44,
+    "id": "Reaksi & chat {name} disembunyikan"
+  },
+  "social.unmuted": {
+    "where": "Toast after tapping a muted chip; {name}",
+    "max": 44,
+    "id": "Reaksi & chat {name} muncul lagi"
+  },
+  "social.muteAria": {
+    "where": "Screen-reader label of a player chip; {name}",
+    "max": 44,
+    "id": "Sembunyikan reaksi & chat {name}"
+  },
+  "social.unmuteAria": {
+    "where": "Screen-reader label of a muted chip; {name}",
+    "max": 44,
+    "id": "Tampilkan reaksi & chat {name}"
+  },
+  "social.showReacts": {
+    "where": "Sound panel checkbox",
+    "max": 34,
+    "id": "Tampilkan reaksi pemain lain"
+  },
+  "social.invite": {
+    "where": "Lobby main button: invite friends (share sheet on phones)",
+    "max": 14,
+    "id": "Ajak teman"
+  },
+  "social.inviteText": {
+    "where": "Message pre-filled in the share sheet; {code} = room code",
+    "max": 40,
+    "id": "Ayo main tepok sandal! Room {code}"
+  },
+  "social.copied": {
+    "where": "Toast after the invite link was copied (computers)",
+    "max": 48,
+    "id": "Link disalin, tempel ke temanmu!"
+  },
+  "social.ctx.ate": {
+    "where": "Suggestion row caption: you just took a card",
+    "max": 26,
+    "id": "Kamu baru makan kartu"
+  },
+  "social.ctx.eaten": {
+    "where": "Suggestion row caption: your card was taken",
+    "max": 26,
+    "id": "Kartumu dimakan"
+  },
+  "social.ctx.fall": {
+    "where": "Suggestion row caption: a card fell off",
+    "max": 26,
+    "id": "Ada yang jatuh"
+  },
+  "social.ctx.slow": {
+    "where": "Suggestion row caption: the other player takes long",
+    "max": 26,
+    "id": "Lama banget mikirnya"
+  },
+  "social.ctx.won": {
+    "where": "Suggestion row caption: you won",
+    "max": 26,
+    "id": "Kamu menang!"
+  },
+  "social.ctx.lobby": {
+    "where": "Suggestion row caption in the lobby",
+    "max": 26,
+    "id": "Sapa semua"
+  },
   "lobby.copied": {
     "where": "Copy button after copying",
     "max": 10,

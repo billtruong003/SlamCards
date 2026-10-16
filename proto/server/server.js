@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
-import { cleanName as cleanNameText } from './names.js';
-import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors } from '../src/catalog.js';
+import { cleanName as cleanNameText, cleanChat } from './names.js';
+import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
 const PORT = Number(process.env.PORT) || 8097;
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
@@ -195,6 +195,27 @@ function publicState(room, you) {
 function broadcast(room) {
   for (const [seat, player] of Object.entries(room.players)) send(player.ws, publicState(room, seat));
 }
+
+function sendAll(room, msg) {
+  for (const player of Object.values(room.players)) send(player.ws, msg);
+}
+
+// Reactions and chat lines: at most 3 of each in 5 s per player, whatever the client says.
+const SPAM_WINDOW = 5000;
+const SPAM_MAX = 3;
+function allowed(player, kind) {
+  const now = Date.now();
+  player.recent ??= {};
+  const recent = (player.recent[kind] ?? []).filter((at) => now - at < SPAM_WINDOW);
+  if (recent.length >= SPAM_MAX) {
+    player.recent[kind] = recent;
+    return false;
+  }
+  recent.push(now);
+  player.recent[kind] = recent;
+  return true;
+}
+const CHAT_KEEP = 30;
 
 function others(room, seat) {
   return Object.entries(room.players).filter(([s]) => s !== seat).map(([, p]) => p);
@@ -553,6 +574,7 @@ function attach(ws, room, seat, player) {
   clearTimeout(player.discTimer);
   ws.ctx = { room, seat };
   send(ws, { t: 'joined', code: room.code, color: seat, token: player.token });
+  if (room.chat?.length) send(ws, { t: 'chatLog', lines: room.chat });
   broadcast(room);
 }
 
@@ -680,6 +702,23 @@ function handle(ws, msg) {
   if (!ctx) return;
   const { room, seat } = ctx;
   if (room.players[seat]?.ws !== ws || rooms.get(room.code) !== room) return;
+
+  // A sticker or quick phrase (ids from catalog.js), shown over the sender's card. Any room, any phase.
+  if (msg.t === 'react') {
+    if (REACTIONS.has(msg.id) && allowed(room.players[seat], 'react')) sendAll(room, { t: 'react', seat, id: msg.id });
+    return;
+  }
+
+  // Typed chat: friends rooms only (strangers get stickers and quick phrases), filtered, kept for late joiners.
+  if (msg.t === 'chat') {
+    const text = room.kind === 'friends' ? cleanChat(msg.text, CHAT_MAX) : '';
+    if (text && allowed(room.players[seat], 'chat')) {
+      const line = { seat, name: room.players[seat].name, text, at: Date.now() };
+      room.chat = [...(room.chat ?? []).slice(-(CHAT_KEEP - 1)), line];
+      sendAll(room, { t: 'chat', ...line });
+    }
+    return;
+  }
 
   if (msg.t === 'ftue') {
     const step = Math.trunc(Number(msg.step));

@@ -50,3 +50,28 @@ export function cleanLook(look, fallbackDep = 'dep_lao') {
     cardColor: CARD_COLOR_IDS.includes(look?.cardColor) ? look.cardColor : null,
   };
 }
+
+// ---------- reactions ----------
+// Stickers (public/stickers/<id>.<ext>) in two tabs, and quick phrases (locale keys phrase.<id>).
+// Placeholder art from emoji.gg packs, filtered by Bill: to be redrawn in the game's style before a
+// public release (no licence on those packs). Swapping the art only means replacing the files.
+const GIFS = new Set(['dance', 'pop', 'crazy', 'aww', 'happy', 'hello', 'sob', 'hellochat']);
+export const STICKER_TABS = {
+  face: ['haha', 'bonk', 'wow', 'sly', 'sad', 'dead', 'flushed', 'like', 'scheme', 'waiting', 'shh', 'boo', 'shrug', 'stare', 'wail', 'laughpray'],
+  cat: ['redcard', 'scream', 'plot', 'cool', 'sadcat', 'dance', 'nope', 'pop', 'crazy', 'hush', 'aww', 'happy', 'hello', 'sob', 'cry', 'hellochat'],
+};
+export const STICKERS = [...STICKER_TABS.face, ...STICKER_TABS.cat];
+export const stickerFile = (id) => `stickers/${id}.${GIFS.has(id) ? 'gif' : 'png'}`;
+export const PHRASES = ['eat', 'lucky', 'hurry', 'oops', 'scared', 'wait', 'comeon', 'gg'];
+// What a reaction message may carry: a sticker id, or "p:" + a phrase id.
+export const REACTIONS = new Set([...STICKERS, ...PHRASES.map((p) => `p:${p}`)]);
+// Suggestions for the moment (the row on top of the picker), by what just happened to me.
+export const SUGGEST = {
+  ate: ['haha', 'sly', 'cool', 'p:eat'],
+  eaten: ['sadcat', 'wail', 'nope', 'p:lucky'],
+  fall: ['scream', 'dead', 'bonk', 'p:oops'],
+  slow: ['waiting', 'stare', 'p:hurry'],
+  won: ['dance', 'like', 'p:gg'],
+  lobby: ['hello', 'hellochat', 'p:comeon', 'p:wait'],
+};
+export const CHAT_MAX = 80;

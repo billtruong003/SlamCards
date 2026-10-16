@@ -13,6 +13,7 @@ import { PETS, DEP_IDS, CARD_COLORS, SEAT_DEFAULTS, cleanLook } from './catalog.
 import { renderWardrobe, gearTiles, petThumb, stopPreview } from './wardrobe.js';
 import { showMeme, preloadMemes, setMemesEnabled, memesEnabled } from './memes.js';
 import { createFtue } from './ftue.js';
+import { createSocial } from './social.js';
 import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStatic } from './i18n.js';
 
 const $ = (id) => document.getElementById(id);
@@ -125,8 +126,9 @@ let roomsFilter = 'all';
 let roomsList = null;
 
 const TOUCH = matchMedia('(pointer: coarse)').matches;
-els.flat.textContent = TOUCH ? t('turn.flat') : `${t('turn.flat')} · Q`;
-els.tilt.textContent = TOUCH ? t('turn.tilt') : `${t('turn.tilt')} · E`;
+// the key hint is its own span so narrow screens can drop it (no room next to the reaction button)
+els.flat.innerHTML = TOUCH ? t('turn.flat') : `${t('turn.flat')}<span class="keyhint"> · Q</span>`;
+els.tilt.innerHTML = TOUCH ? t('turn.tilt') : `${t('turn.tilt')}<span class="keyhint"> · E</span>`;
 const ftue = createFtue({
   send,
   world,
@@ -275,6 +277,7 @@ function onPeek(msg) {
 
 // Back to a clean menu: no room, no leftover HUD, labels or toasts from the last match.
 function leaveRoom() {
+  social.closeAll();
   state = null;
   me = null;
   roomCode = null;
@@ -324,6 +327,51 @@ els.panel.querySelectorAll('[data-vol]').forEach((input) => {
   };
 });
 $('memes-on').onchange = (e) => setMemesEnabled(e.target.checked);
+
+// ---------- stickers, quick phrases, chat (social.js) ----------
+const cardTopPoint = {};
+const social = createSocial({
+  send,
+  getState: () => state,
+  getMe: () => me,
+  nameOf,
+  // a seat's ink for names on cream, or its deep tone for white text
+  inkOf: (seat, deep = false) => CARD_COLORS[cardColorOf(seat)]?.[deep ? 'deep' : 'dark'] ?? '#2a1418',
+  // the top of a seat's card on screen (null when it is not on the table)
+  cardTop: (seat) => {
+    const card = world.cards[seat];
+    if (!card?.mesh.visible || !card.body.isEnabled()) return null;
+    const { x, y, z } = card.mesh.position;
+    world.toScreen(x, y, z, cardTopPoint);
+    const cx = cardTopPoint.x;
+    let top = cardTopPoint.y;
+    let bottom = top;
+    let left = cx;
+    let right = cx;
+    for (const [dx, dz] of [[0.9, 0], [-0.9, 0], [0, 0.9], [0, -0.9]]) {
+      world.toScreen(x + dx, y, z + dz, cardTopPoint);
+      top = Math.min(top, cardTopPoint.y);
+      bottom = Math.max(bottom, cardTopPoint.y);
+      left = Math.min(left, cardTopPoint.x);
+      right = Math.max(right, cardTopPoint.x);
+    }
+    return { x: cx, y: top, bottom, left, right, mid: (top + bottom) / 2 };
+  },
+  safeTop: () => world.safe?.top ?? 0,
+  isMyTurn: () => state?.phase === 'turn' && state.turn === me,
+  showToast,
+});
+els.panel.querySelector('#close-panel').insertAdjacentHTML('beforebegin', `<label class="check"><input type="checkbox" id="reacts-on" ${social.showOthers() ? 'checked' : ''}> ${t('social.showReacts')}</label>`);
+$('reacts-on').onchange = (e) => social.setShowOthers(e.target.checked);
+// tapping a player's chip mutes (or unmutes) their stickers and chat
+els.players.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  const seat = chip && SEATS.find((s) => chip.classList.contains(s));
+  if (!seat) return;
+  social.toggleMute(seat);
+  hudKey = '';
+  renderHud();
+});
 els.settings.onclick = () => {
   els.panel.hidden = !els.panel.hidden;
   els.infoPanel.hidden = true;
@@ -476,6 +524,8 @@ function onMessage(msg) {
   } else if (msg.t === 'error') {
     leaveRoom();
     renderMenu(msg.code && has(`error.${msg.code}`) ? t(`error.${msg.code}`) : msg.message);
+  } else if (social.onMessage(msg)) {
+    // react / chat / chatLog
   } else if (msg.t === 'state') {
     onState(msg);
   } else if (msg.t === 'playStart') {
@@ -671,6 +721,10 @@ function announceEvent() {
   const key = event ? `${state.round}-${event.type}-${event.by}-${event.eliminated}` : '';
   if (key === lastEventKey) return;
   lastEventKey = key;
+  if (event?.type === 'fall') social.setContext('fall');
+  else if (event?.by === me && event.eliminated?.length) social.setContext('ate');
+  else if (event?.eliminated?.includes(me)) social.setContext('eaten');
+  if (['roundEnd', 'matchEnd'].includes(state.phase) && state.result?.winner === me) social.setContext('won');
   if (!event?.eliminated?.length || state.phase === 'roundEnd') return;
   const out = list(event.eliminated.map(nameOf));
   const text = event.type === 'fall' ? t('toast.fall', { name: nameOf(event.by) })
@@ -1126,12 +1180,13 @@ function renderOverlay() {
       const reading = (seat) => (s.players[seat].tutorial ? `<span class="slot-tag">${t('lobby.reading', { n: s.players[seat].tutorial, total: 5 })}</span>` : '');
       const mine = depOf(me);
       const fresh = setOverlay(`lobby-${roster}`, `
-        <div class="menu-bg"><div class="panel menu-card">
+        <div class="menu-bg"><div class="panel menu-card lobby-card">
           <h1 class="stamp" style="font-size:44px">${t('lobby.title', { code: `<span class="code">${s.code}</span>` })}</h1>
           <p class="sub">${t('lobby.sub')}</p>
           ${tags}
-          <div class="row">
-            <label><input class="input" style="width:min(340px,70vw);text-transform:none" id="link" value="${link}" readonly aria-label="${escapeHtml(t('lobby.linkLabel'))}"></label>
+          <button class="btn pri wide invite" id="invite"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>${t('social.invite')}</button>
+          <div class="row link-row">
+            <label><input class="input" style="text-transform:none" id="link" value="${link}" readonly aria-label="${escapeHtml(t('lobby.linkLabel'))}"></label>
             <button class="btn" id="copy">${t('lobby.copy')}</button>
           </div>
           <div class="seats">
@@ -1147,6 +1202,18 @@ function renderOverlay() {
         mountMenuBackground(els.overlay.querySelector('.menu-bg'));
         $('copy').onclick = async () => {
           $('copy').textContent = await copyText(link, $('link')) ? t('lobby.copied') : t('lobby.copyManual');
+        };
+        $('invite').onclick = async () => {
+          // phones: the system share sheet (Zalo, Messenger...); computers: copy and say so
+          if (navigator.share && matchMedia('(pointer: coarse)').matches) {
+            try { await navigator.share({ title: t('menu.title'), text: t('social.inviteText', { code: s.code }), url: link }); } catch { /* closed */ }
+            return;
+          }
+          // said on the button itself: a toast would sit on the room's tags
+          const btn = $('invite');
+          const copied = await copyText(link, $('link'));
+          btn.lastChild.textContent = copied ? t('lobby.copied') : t('lobby.copyManual');
+          setTimeout(() => { if (btn.isConnected) btn.lastChild.textContent = t('social.invite'); }, 2200);
         };
         if (isHost) {
           $('start').onclick = () => {
@@ -1302,13 +1369,13 @@ function renderHud() {
   els.wind.dataset.level = String(strength);
   visuals.setWind(state.wind, world.table, ['turn', 'anim'].includes(state.phase));
   els.toggle.hidden = !(state.phase === 'turn' && state.turn === me);
-  const key = JSON.stringify([state.seats, state.scores, state.alive, state.turn, state.players]);
+  const key = JSON.stringify([state.seats, state.scores, state.alive, state.turn, state.players, SEATS.map((s) => social.isMuted(s))]);
   if (key === hudKey) return;
   hudKey = key;
   els.players.innerHTML = state.seats.map((seat) => {
     const out = !state.alive.includes(seat) && ['turn', 'anim'].includes(state.phase);
     const dots = Array.from({ length: ROUNDS_TO_WIN }, (_, i) => `<span class="dot ${i < (state.scores[seat] ?? 0) ? seat : ''}"></span>`).join('');
-    return `<div class="chip ${seat}${out ? ' out' : ''}${state.turn === seat ? ' turn' : ''}">
+    return `<div class="chip ${seat}${out ? ' out' : ''}${state.turn === seat ? ' turn' : ''}${social.isMuted(seat) ? ' muted' : ''}" ${seat === me ? '' : `role="button" tabindex="0" aria-label="${escapeHtml(t(social.isMuted(seat) ? 'social.unmuteAria' : 'social.muteAria', { name: nameOf(seat) }))}"`}>
       <span class="swatch ${seat}"></span><span class="name">${escapeHtml(nameOf(seat))}${seat === me ? ` ${t('hud.meTag')}` : ''}</span><span class="dots">${dots}</span>
     </div>`;
   }).join('');
@@ -1688,7 +1755,7 @@ function updateSafeArea(now) {
     return Number.isFinite(top) && top < h / 2 ? { top: top + size } : Number.isFinite(bottom) ? { bottom: bottom + size } : {};
   };
   let top = 0; let bottom = 0;
-  for (const r of [rect('players'), rect('wind'), rect('corner'), rect('toggle')]) {
+  for (const r of [rect('players'), rect('wind'), rect('corner'), rect('toggle'), rect('social-fabs')]) {
     if (!r || r.height === 0) continue;
     if (r.top < h / 2) top = Math.max(top, r.bottom);
     else bottom = Math.max(bottom, h - r.top);
@@ -1704,6 +1771,8 @@ function frame(now) {
   // schedule first: an error below must never stop the render loop
   requestAnimationFrame(frame);
   updateSafeArea(now);
+  social.update();
+  social.frame(now);
   const dt = Math.min((now - lastFrameAt) / 1000, 0.1) * timeScale;
   lastFrameAt = now;
   visuals.lastFrameAt = now;

@@ -28,6 +28,7 @@ const TONES = {
   found: [[523, 0], [659, 0.09], [784, 0.18], [1047, 0.27]],
   ready: [[880, 0], [1175, 0.07]],
   out: [[392, 0], [330, 0.14], [262, 0.28]],
+  react: [[988, 0], [1319, 0.05]],
 };
 export function chime(kind, volume = 1) {
   if (!ctx || !TONES[kind]) return;
@@ -40,7 +41,7 @@ export function chime(kind, volume = 1) {
       osc.frequency.setValueAtTime(freq, now + at);
       if (kind === 'out') osc.frequency.exponentialRampToValueAtTime(freq * 0.94, now + at + 0.16);
       const gain = ctx.createGain();
-      const len = kind === 'found' && at > 0.2 ? 0.35 : 0.16;
+      const len = kind === 'found' && at > 0.2 ? 0.35 : kind === 'react' ? 0.09 : 0.16;
       gain.gain.setValueAtTime(0.0001, now + at);
       gain.gain.exponentialRampToValueAtTime(0.32 * volume, now + at + 0.012);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + at + len);
