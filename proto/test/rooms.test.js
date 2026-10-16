@@ -33,7 +33,7 @@ test('host and ready: only the host starts, guests must be ready, gear changes u
 });
 
 test('host leaves the lobby: the earliest guest takes over', async () => {
-  const srv = await startServer({ lobbyDisconnect: 100 });
+  const srv = await startServer({ lobbyDisconnect: 100, lobbyHostDisconnect: 100 });
   try {
     const [a, b, c] = await lobby(srv.port, 3);
     c.send({ t: 'ready', ready: true });
@@ -220,5 +220,42 @@ test('quick rooms give everyone a different card colour', async () => {
     const s = await a.waitState((st) => Object.keys(st.players).length === 3, 4000);
     const colors = Object.values(s.players).map((p) => p.cardColor);
     assert.equal(new Set(colors).size, 3, colors.join());
+  } finally { srv.stop(); }
+});
+
+// Phone players switch to a chat app to send the invite link, which drops the connection at once.
+test('lobby: the host away longer than a guest grace keeps the room, the link and the seat', async () => {
+  const srv = await startServer({ lobbyDisconnect: 200, lobbyHostDisconnect: 3000 });
+  try {
+    const host = await connect(srv.port);
+    host.send({ t: 'create', name: 'Host' });
+    await host.next((m) => m.t === 'joined');
+    const { code, token } = host;
+    host.close();
+    await new Promise((r) => setTimeout(r, 1000)); // well past a guest's grace
+    const friend = await connect(srv.port);
+    friend.send({ t: 'join', code, name: 'Friend' });
+    const joined = await friend.next((m) => m.t === 'joined' || m.t === 'error');
+    assert.equal(joined.t, 'joined', 'the invite link still works');
+    const back = await connect(srv.port);
+    back.send({ t: 'join', code, token, name: 'Host' });
+    const again = await back.next((m) => m.t === 'joined');
+    assert.equal(again.color, 'black', 'the host gets their own seat back');
+    const s = await back.waitState((st) => st.players.black?.connected && st.players.pink);
+    assert.equal(s.host, 'black');
+  } finally { srv.stop(); }
+});
+
+test('lobby: a guest who dropped does not hold the start back and is left out of the match', async () => {
+  const srv = await startServer({ lobbyDisconnect: 60000 });
+  try {
+    const [a, b, c] = await lobby(srv.port, 3);
+    b.send({ t: 'ready', ready: true });
+    await a.waitState((s) => s.ready.pink === true);
+    c.close();
+    await a.waitState((s) => s.players.blue && !s.players.blue.connected);
+    a.send({ t: 'start' });
+    const s = await a.waitState((st) => st.phase !== 'lobby');
+    assert.deepEqual(s.seats, ['black', 'pink']);
   } finally { srv.stop(); }
 });

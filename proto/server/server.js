@@ -26,7 +26,10 @@ const TIMING = {
   watchMaxMs: 4000,
   roundEnd: 3200,
   disconnect: 60000,
-  lobbyDisconnect: 5000,
+  // Lobby seats wait a long time: on a phone, switching to a chat app to send the invite link
+  // drops the connection at once, and the room must still be there when the player comes back.
+  lobbyDisconnect: 60000,
+  lobbyHostDisconnect: 180000,
   quickStart: 1200,      // quick match: room made, then the first round starts
   anyCountdown: 5000,    // quick match "any": 2 found, then wait this long for more
   queueTick: 400,
@@ -518,8 +521,9 @@ function passHost(room) {
 }
 
 // Every guest in the lobby is ready (the host starts, so never needs to be).
+// A guest who lost the connection does not hold the start back (they are dropped when it starts).
 function allReady(room) {
-  const guests = Object.keys(room.players).filter((s) => s !== room.host);
+  const guests = Object.keys(room.players).filter((s) => s !== room.host && room.players[s].connected);
   return guests.length >= 1 && guests.every((s) => room.ready[s]);
 }
 
@@ -575,7 +579,7 @@ function detach(ws, { leaving = false } = {}) {
     return;
   }
   broadcast(room);
-  const grace = room.phase === 'lobby' ? TIMING.lobbyDisconnect : TIMING.disconnect;
+  const grace = room.phase !== 'lobby' ? TIMING.disconnect : seat === room.host ? TIMING.lobbyHostDisconnect : TIMING.lobbyDisconnect;
   clearTimeout(player.discTimer);
   player.discTimer = setTimeout(() => {
     if (!player.connected && rooms.has(room.code)) dropPlayer(room, seat);
@@ -729,6 +733,7 @@ function handle(ws, msg) {
 
   // Only the host starts, with 2+ players and every guest ready.
   if (msg.t === 'start' && room.phase === 'lobby' && seat === room.host && allReady(room)) {
+    for (const s of Object.keys(room.players)) if (!room.players[s].connected) dropPlayer(room, s);
     startMatch(room);
     return;
   }

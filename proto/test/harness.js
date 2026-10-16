@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import WebSocket from 'ws';
 
 export const SERVER = process.env.SLAM_SERVER || fileURLToPath(new URL('../server/server.js', import.meta.url));
-export const FAST = { roundIntro: 50, rps: 3000, rpsReveal: 50, choose: 3000, order: 50, turn: 3000, forcedGrace: 500, slamMaxMs: 1500, watchMaxMs: 300, roundEnd: 1500, disconnect: 300, lobbyDisconnect: 200 };
+export const FAST = { roundIntro: 50, rps: 3000, rpsReveal: 50, choose: 3000, order: 50, turn: 3000, forcedGrace: 500, slamMaxMs: 1500, watchMaxMs: 300, roundEnd: 1500, disconnect: 300, lobbyDisconnect: 200, lobbyHostDisconnect: 200 };
 // Test files run in parallel processes, so each picks its own port range.
 let nextPort = 20000 + Math.floor(Math.random() * 30000);
 
