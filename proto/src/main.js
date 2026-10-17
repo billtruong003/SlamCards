@@ -1865,6 +1865,23 @@ if (new URLSearchParams(location.search).has('debug')) {
       world.applySlam(new THREE.Vector3(x, 0, z), type);
       sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, local: true, type };
     },
+    // Filming the launch videos (qa/film): a slam that looks and sounds like a real one (slipper drop, hit, pop, shake,
+    // the pets running) but only runs here and tells the server nothing, so a posed take can be tried again and again.
+    filmSlam: (x, z, type = 'flat') => {
+      const impact = new THREE.Vector3(x, 0, z);
+      const effects = world.slamEffects(impact, type);
+      visuals.dropDep(impact, () => {
+        const strength = effects.length ? Math.max(...effects.map((e) => e.strength)) : 0.25;
+        impactFx(impact, strength, 0.5 + strength * 0.5);
+        if (effects.length) popText(impact, t('card.pop'));
+        setTimeout(() => {
+          world.applySlam(impact, type);
+          sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, local: true, type };
+          petsRun();
+        }, TUNE.hitstopMs);
+      }, depOf(me), depColorsOf(me));
+    },
+    get simulating() { return Boolean(sim); },
     slamAt: (x, z) => {
       const point = new THREE.Vector3(x, 0, z);
       if (!myTurnToAim() || !isValidAim(point)) return false;
