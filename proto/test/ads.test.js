@@ -6,7 +6,9 @@ import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { startServer, httpGet } from './harness.js';
 import { createAds, readAdsConfig, adDue, prerollAllowed, countMatch, loadStats } from '../src/ads.js';
-import { adsConfig, withAds, adsTxt } from '../server/ads.js';
+import os from 'node:os';
+import path from 'node:path';
+import { adsConfig, adsFileClient, withAds, adsTxt } from '../server/ads.js';
 import { ADS } from '../src/config.js';
 
 const DIST_INDEX = fileURLToPath(new URL('../dist/index.html', import.meta.url));
@@ -168,4 +170,16 @@ test('preroll: an ad blocker (script error) gives the sound back at once', async
   doc.added[0].onerror();
   assert.equal(await pending, 'error');
   assert.deepEqual(muted, [true, false]);
+});
+
+test('the publisher id can live in data/ads.json; a missing or broken file means none', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'slam-ads-'));
+  const file = path.join(dir, 'ads.json');
+  assert.equal(adsFileClient(file), undefined);
+  fs.writeFileSync(file, '{oops');
+  assert.equal(adsFileClient(file), undefined);
+  fs.writeFileSync(file, JSON.stringify({ client: 'ca-pub-1234567890123456' }));
+  assert.equal(adsFileClient(file), 'ca-pub-1234567890123456');
+  assert.equal(adsConfig({ SLAM_ADSENSE_CLIENT: adsFileClient(file) }).client, 'ca-pub-1234567890123456');
+  fs.rmSync(dir, { recursive: true });
 });

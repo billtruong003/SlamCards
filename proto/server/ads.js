@@ -2,6 +2,7 @@
 // (the AdSense publisher id) to turn ads on; SLAM_ADS_TEST=1 adds Google's test mode (fake ads,
 // no money, for checking the flow before approval). Unset or malformed = no ads: the page gets no
 // tag and /ads.txt does not exist.
+import fs from 'node:fs';
 import { CLIENT_ID } from '../src/ads.js';
 
 export function adsConfig(env = process.env) {
@@ -12,6 +13,11 @@ export function adsConfig(env = process.env) {
     return null;
   }
   return { client, test: env.SLAM_ADS_TEST === '1' };
+}
+
+// The publisher id saved in a JSON file ({"client": "ca-pub-…"}), or undefined when there is none.
+export function adsFileClient(file) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')).client; } catch { return undefined; }
 }
 
 // index.html with the switch the client reads; unchanged when ads are off.

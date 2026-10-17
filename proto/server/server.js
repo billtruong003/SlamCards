@@ -8,7 +8,7 @@ import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '
 import { TUNE } from '../src/config.js';
 import { cleanName as cleanNameText, cleanChat } from './names.js';
 import { withMeta } from './meta.js';
-import { adsConfig, withAds, adsTxt } from './ads.js';
+import { adsConfig, adsFileClient, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
@@ -47,8 +47,9 @@ const MIME = {
 
 // Where players come from (refs.js), read with the key from SLAM_STATS_KEY; without one the page does not exist.
 const STATS_KEY = process.env.SLAM_STATS_KEY || '';
-// Ads: off unless SLAM_ADSENSE_CLIENT is set (server/ads.js).
-const ADS = adsConfig();
+// Ads: off unless SLAM_ADSENSE_CLIENT is set, either in the environment or in data/ads.json ({"client": "ca-pub-…"},
+// kept on the VPS next to refs.json so deploys and pm2 restarts never drop it); the environment wins (server/ads.js).
+const ADS = adsConfig({ SLAM_ADSENSE_CLIENT: adsFileClient(path.join(path.dirname(refs.REFS_FILE), 'ads.json')), ...process.env });
 if (ADS) console.log(`[ads] on: ${ADS.client}${ADS.test ? ' (test mode)' : ''}`);
 
 const server = http.createServer((req, res) => {
