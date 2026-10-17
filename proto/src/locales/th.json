@@ -331,6 +331,7 @@
   "info.cardArt": "ภาพไพ่: {name}",
   "info.idea": "ไอเดียเกม: {name}",
   "info.petArt": "สัตว์เลี้ยง 3D: {name}",
+  "info.privacy": "นโยบายความเป็นส่วนตัว",
   "common.close": "ปิด",
   "common.listSep": ", ",
   "fatal.title": "เปิดเกมไม่ได้!",

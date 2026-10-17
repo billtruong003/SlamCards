@@ -331,6 +331,7 @@
   "info.cardArt": "카드 그림: {name}",
   "info.idea": "게임 아이디어: {name}",
   "info.petArt": "3D 펫: {name}",
+  "info.privacy": "개인정보 처리방침",
   "common.close": "닫기",
   "common.listSep": ", ",
   "fatal.title": "게임을 실행할 수 없어!",

@@ -331,6 +331,7 @@
   "info.cardArt": "Card art: {name}",
   "info.idea": "Game idea: {name}",
   "info.petArt": "3D pets: {name}",
+  "info.privacy": "Privacy policy",
   "common.close": "Close",
   "common.listSep": ", ",
   "fatal.title": "Can't run the game!",

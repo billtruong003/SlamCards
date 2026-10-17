@@ -331,6 +331,7 @@
   "info.cardArt": "Arte das cartas: {name}",
   "info.idea": "Ideia do jogo: {name}",
   "info.petArt": "Pets 3D: {name}",
+  "info.privacy": "Política de privacidade",
   "common.close": "Fechar",
   "common.listSep": ", ",
   "fatal.title": "Não deu pra abrir o jogo!",

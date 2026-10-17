@@ -331,6 +331,7 @@
   "info.cardArt": "カードイラスト：{name}",
   "info.idea": "ゲームのアイデア：{name}",
   "info.petArt": "3Dペット：{name}",
+  "info.privacy": "プライバシーポリシー",
   "common.close": "閉じる",
   "common.listSep": "、",
   "fatal.title": "ゲームを起動できない！",

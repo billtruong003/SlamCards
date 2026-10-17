@@ -1638,6 +1638,10 @@
     "max": 34,
     "id": "Pet 3D: {name}"
   },
+  "info.privacy": {
+    "where": "Link to the privacy policy page (info panel)",
+    "max": 34
+  },
   "common.close": {
     "where": "Close button of the info, sound and quick-rules panels",
     "max": 8,
