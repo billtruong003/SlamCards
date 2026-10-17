@@ -11,9 +11,9 @@ let nextPort = 20000 + Math.floor(Math.random() * 30000);
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export async function startServer(timing = {}) {
+export async function startServer(timing = {}, env = {}) {
   const port = nextPort++;
-  const proc = spawn(process.execPath, [SERVER], { env: { ...process.env, PORT: String(port), SLAM_TIMING: JSON.stringify({ ...FAST, ...timing }) } });
+  const proc = spawn(process.execPath, [SERVER], { env: { ...process.env, ...env, PORT: String(port), SLAM_TIMING: JSON.stringify({ ...FAST, ...timing }) } });
   let output = '';
   proc.stdout.on('data', (d) => { output += d; });
   proc.stderr.on('data', (d) => { output += d; });

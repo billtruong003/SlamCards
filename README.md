@@ -109,6 +109,10 @@ Script build client, nén `dist` + `server`, đẩy lên VPS rồi `pm2 restart`
 
 DNS của domain quản lý ở PA Vietnam: bản ghi A `@` và `www` trỏ về `14.225.255.73`.
 
+### Quảng cáo (đang tắt)
+
+Google H5 Games Ads qua AdSense (`src/ads.js`, `server/ads.js`). Bật bằng biến môi trường của server: `SLAM_ADSENSE_CLIENT=ca-pub-<16 số>` (thêm `SLAM_ADS_TEST=1` để xem quảng cáo thử). Không có biến thì trang không có thẻ quảng cáo, không tải script Google, `/ads.txt` là 404. Chỉ có một chỗ: preroll lúc mở trang cho người đã chơi xong 2 trận, không bao giờ khi link có `?room=`. Các bước Bill cần làm: TASKS.md mục G3.
+
 ---
 
 ## Model dép

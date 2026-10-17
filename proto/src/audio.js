@@ -38,7 +38,20 @@ export function setLevel(name, value) {
   try { localStorage.setItem('slam-volume', JSON.stringify(levels)); } catch { /* private mode */ }
 }
 
-const unlock = () => { if (ctx && ctx.state !== 'running') ctx.resume(); };
+// Ad breaks (ads.js) silence everything: the Web Audio buses by suspending the context, the music
+// (plain <audio>, music.js) through the listeners. A tap during the ad does not wake the sound.
+let muted = false;
+const muteListeners = new Set();
+export const isMuted = () => muted;
+export const onMuteChange = (fn) => muteListeners.add(fn);
+export function setMuted(on) {
+  if (muted === on) return;
+  muted = on;
+  if (ctx) (on ? ctx.suspend() : ctx.resume()).catch(() => {});
+  muteListeners.forEach((fn) => fn());
+}
+
+const unlock = () => { if (ctx && !muted && ctx.state !== 'running') ctx.resume(); };
 addEventListener('pointerdown', unlock);
 addEventListener('keydown', unlock);
 

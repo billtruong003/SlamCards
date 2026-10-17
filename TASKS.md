@@ -72,7 +72,7 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 ### Để sau (chưa làm)
 - G4 số liệu (không chặn game) → LU1–LU5 bảng số Lucy.
 - G6 nút "Báo lỗi" (cần hộp `support@`, A1).
-- Quảng cáo (Q3, ADS-01/02, WS3, WS4, A4), web studio (WS1/2/5/6), Android (AdMob), cổng game (CrazyGames…), khóa đồ / mở bằng quảng cáo.
+- Quảng cáo: code xong, đang tắt (G3/ADS-01); còn ADS-02, WS3, WS4, A4. Web studio (WS1/2/5/6), Android (AdMob), cổng game (CrazyGames…), khóa đồ / mở bằng quảng cáo.
 - VPS: V1 ưu tiên CPU, V2 tin Telegram thử, V3 reboot (chờ Bill). OPS-01 alias ssh.
 - Bill: A1 hộp mail, A2/A3/A5/A6.
 
@@ -179,10 +179,25 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
 - [ ] **G2** · Ủng hộ trong game theo canvas trang "Dép Lào · Ủng hộ": dải mời ở màn hết trận, nút "Ủng hộ" cạnh Info/Âm thanh, bảng QR (máy tính), tấm trượt có nút "Lưu ảnh mã QR" (điện thoại). Không hiện tên chủ tài khoản. Có danh sách người ủng hộ công khai (Q7). QR gốc: `C:\Users\ducnq\Downloads\77375854_download.webp`, cắt x 324–845, y 360–911. Chữ mới vào TEXTS.md.
 - [ ] **G5** · Ảnh xem trước khi dán link phòng (Open Graph) cho Zalo/Messenger.
 - [ ] **G6** · Nút "Báo lỗi" (về `support@` hoặc Lucy).
-- [ ] **G3** · Quảng cáo. Chờ Q3 + Bill đăng ký AdSense. Không chặn nút copy link; không bao giờ trong ván.
-  - Kênh (Bill chốt 14/10): bản web prototype dùng Google H5 Games Ads (Ad Placement API, phải xin duyệt) cho quảng cáo nhận thưởng + toàn màn; banner để sau. Android (AdMob) và cổng game (CrazyGames…) để sau, xem mục "Để sau".
-  - [ ] **ADS-01** · Gắn Ad Placement API ở chế độ test (`data-adbreak-test="on"`) sau cờ bật/tắt: `adBreak` lúc bấm "Về menu" (giới hạn 1 lần / 3 trận hoặc 5 phút), rewarded cho màu dép có khóa. Tắt tiếng game khi quảng cáo chạy. Bật thật khi AdSense duyệt.
-  - [ ] **ADS-02** · Trước khi bật thật: trang chính sách riêng tư (WS3), `ads.txt` (WS4), và bảng hỏi đồng ý của một CMP được Google chứng nhận cho khách châu Âu/Anh/Thụy Sĩ.
+- [ ] **G3** · Quảng cáo. Code xong (17/10, chưa deploy, đang TẮT); chờ Bill đăng ký AdSense + xin duyệt H5 Games Ads. Không chặn nút copy link; không bao giờ trong ván.
+  - Kênh (Bill chốt 14/10, xem lại 17/10 vẫn giữ): **Google H5 Games Ads** (Ad Placement API qua AdSense). Lý do: chạy trên tên miền của mình, tiền về thẳng AdSense, Google lo đấu giá + giới hạn tần suất + bảng hỏi đồng ý EU. AdinPlay (Venatus) nhắm cổng game lớn, phải liên hệ, ngưỡng lượt xem không công khai → để sau khi có traffic. GameMonetize / GameDistribution / CrazyGames / Poki: SDK của họ chỉ trả tiền khi game nằm trên cổng/mạng của họ → để mục "Cổng game".
+  - [x] **ADS-01** · (17/10) `src/ads.js` + `server/ads.js`, test `test/ads.test.js`. **Tắt** khi không có biến `SLAM_ADSENSE_CLIENT` trên server: trang không có thẻ, không tải script Google, `/ads.txt` trả 404, game y như cũ. Chỗ đặt duy nhất: **preroll lúc mở trang** (che menu, chưa ở phòng nào nên không ai phải chờ, không có đồng hồ lượt nào chạy):
+    - không bao giờ khi địa chỉ có `?room=` (link mời: bạn mới lần đầu thấy game, chủ phòng đang chờ; hoặc tải lại trang để về ghế giữa trận); không khi `?noads` / `?clean`;
+    - người chưa xong 2 trận trên máy này không thấy quảng cáo (buổi chơi đầu của người được rủ sạch quảng cáo);
+    - tối đa 1 lần / 3 trận hoặc 5 phút, không bao giờ trong 2 phút sau lần trước; thêm `data-ad-frequency-hint="120s"` của Google. Số trong `ADS` ở `src/config.js`.
+    - "Về menu" ở màn hết trận tải lại trang nên đa số quảng cáo hiện ở đó, lúc kết nối cũ đã đóng (bàn không thấy m còn ngồi, tái đấu không phải chờ). "Tìm trận mới" và "Tái đấu" không bao giờ có quảng cáo vì người khác đang chờ.
+    - Tắt toàn bộ tiếng (Web Audio + nhạc) từ lúc gọi tới `adBreakDone`; script bị chặn (ad blocker) thì trả tiếng ngay; tối đa 60 giây.
+    - **Không làm rewarded**: mọi đồ đang miễn phí, chưa có gì để thưởng. Khi nào khóa đồ thì thêm `type: 'reward'` ở tủ đồ.
+  - [ ] **ADS-02** · Trước khi bật thật: trang chính sách riêng tư (WS3, phải nhắc quảng cáo Google + cookie), `ads.txt` (server tự sinh, cần chép khối `location = /ads.txt` từ `proto/deploy/nginx-slam-domain.conf` vào nginx live), và bảng hỏi đồng ý cho khách châu Âu/Anh/Thụy Sĩ (dùng CMP của chính Google trong AdSense, không cần code).
+  - **Bill làm để bật quảng cáo** (Claude không tạo/đăng nhập tài khoản):
+    1. Tạo tài khoản AdSense bằng truongbill003@gmail.com (https://adsense.google.com), thêm site `billthedevstudio.io.vn`, điền thông tin thanh toán + thuế.
+    2. Lấy mã nhà xuất bản dạng `ca-pub-` + 16 số (AdSense → Tài khoản → Thông tin tài khoản).
+    3. Nhờ Claude deploy với biến đó (chỉ khi Bill cho phép deploy): `SLAM_ADSENSE_CLIENT=ca-pub-… pm2 restart slam-cards --update-env && pm2 save` trên VPS, chép khối `/ads.txt` vào nginx (`nginx -t && systemctl reload nginx`). Kiểm tra `https://billthedevstudio.io.vn/ads.txt` ra `google.com, pub-…, DIRECT, f08c47fec0942fa0`.
+    4. Làm trang chính sách riêng tư (WS3) trước khi gửi duyệt.
+    5. AdSense → Trang web → gửi duyệt site; xin **H5 Games Ads** ở https://adsense.google.com/start/h5-games-ads/ (form đăng ký, Google duyệt thủ công, không chắc được).
+    6. AdSense → Quyền riêng tư và thông báo → tạo + xuất bản thông báo "Quy định của Châu Âu" (GDPR) cho site. Thẻ `adsbygoogle.js` tự hiện nó cho khách EEA/Anh/Thụy Sĩ.
+    7. Thử trước khi duyệt xong: thêm `SLAM_ADS_TEST=1` (quảng cáo giả của Google, không tính tiền). Mở game không có `?room=`, sau khi đã chơi xong 2 trận: thấy quảng cáo thử lúc mở trang, tiếng tắt rồi bật lại. Duyệt xong thì bỏ `SLAM_ADS_TEST`.
+    8. Sửa câu "miễn phí, không quảng cáo" ở phần ủng hộ (G2) nếu đã viết.
 
 ## Web studio (cổng game ở `billthedevstudio.io.vn`)
 

@@ -8,6 +8,7 @@ import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '
 import { TUNE } from '../src/config.js';
 import { cleanName as cleanNameText, cleanChat } from './names.js';
 import { withMeta } from './meta.js';
+import { adsConfig, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
@@ -46,6 +47,9 @@ const MIME = {
 
 // Where players come from (refs.js), read with the key from SLAM_STATS_KEY; without one the page does not exist.
 const STATS_KEY = process.env.SLAM_STATS_KEY || '';
+// Ads: off unless SLAM_ADSENSE_CLIENT is set (server/ads.js).
+const ADS = adsConfig();
+if (ADS) console.log(`[ads] on: ${ADS.client}${ADS.test ? ' (test mode)' : ''}`);
 
 const server = http.createServer((req, res) => {
   let urlPath;
@@ -64,6 +68,12 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify(refs.snapshot(), null, 1));
     return;
   }
+  if (urlPath === '/ads.txt') {
+    const body = adsTxt(ADS);
+    res.writeHead(body ? 200 : 404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
+    res.end(body ?? 'not found');
+    return;
+  }
   let file = path.join(DIST, urlPath);
   if (!file.startsWith(DIST + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
     file = path.join(DIST, 'index.html');
@@ -75,7 +85,7 @@ const server = http.createServer((req, res) => {
       return;
     }
     // the page itself carries the link preview tags for this address (meta.js)
-    if (file.endsWith(`${path.sep}index.html`)) data = withMeta(data.toString('utf8'), query);
+    if (file.endsWith(`${path.sep}index.html`)) data = withAds(withMeta(data.toString('utf8'), query), ADS);
     const immutable = urlPath.startsWith('/assets/');
     const media = urlPath.startsWith('/audio/') || urlPath.startsWith('/memes/') || urlPath.endsWith('.png');
     res.writeHead(200, {

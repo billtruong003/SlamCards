@@ -41,3 +41,16 @@ export const TUNE = {
 
   threatRange: 4.6,
 };
+
+// Ads (src/ads.js). Off unless the server is started with SLAM_ADSENSE_CLIENT=ca-pub-<16 digits>;
+// the id is not kept here so the same build runs with and without ads. Only one placement: the
+// page load of a player who has finished at least `minMatches` matches, never with ?room= in the
+// address (an invite link, or a reload back into a seat), so a live turn is never interrupted.
+export const ADS = {
+  minMatches: 2,           // a new player's first matches (an invited friend's first session) stay ad-free
+  matchesPerAd: 3,         // an ad is due after this many finished matches...
+  minutesPerAd: 5,         // ...or this long since the last one
+  floorMinutes: 2,         // and never sooner than this after the last one, whatever the count
+  frequencyHint: '120s',   // Google's own cap (data-ad-frequency-hint); 120s is its default
+  safetyMs: 60000,         // sound comes back after this even if the ad script never answers
+};

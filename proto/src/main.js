@@ -5,7 +5,7 @@ import { TUNE } from './config.js';
 import { SEATS, ROUNDS_TO_WIN, FALL_Y, MAX_PLAYERS } from './rules.js';
 import { thump, chime } from './sound.js';
 import { playMusic, refreshMusic } from './music.js';
-import { getLevel, setLevel } from './audio.js';
+import { getLevel, setLevel, setMuted } from './audio.js';
 import { mountMenuBackground } from './menu-bg.js';
 import { playIntro } from './intro.js';
 import { loadDeps, depModel, depModelFor, DEFAULT_DEP } from './deps.js';
@@ -16,6 +16,7 @@ import { createFtue } from './ftue.js';
 import { createSocial } from './social.js';
 import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStatic } from './i18n.js';
 import { helloMessage } from './ref.js';
+import { createAds } from './ads.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -46,6 +47,10 @@ function showFatal() {
       <p class="sub">${escapeHtml(t('fatal.body'))}</p>
     </div></div>`;
 }
+
+// Off (no script, no change) unless the server set an AdSense id; see ads.js for when an ad may show.
+const ads = createAds({ doc: document, storage: (() => { try { return localStorage; } catch { return null; } })(), search: location.search, mute: setMuted });
+if (ads.enabled) ads.preroll();
 
 await loadLang(detectLang());
 document.title = t('menu.title');
@@ -568,6 +573,8 @@ function onMessage(msg) {
 }
 
 function onState(next) {
+  // a match I played just ended (a reload that lands on the end screen does not count it twice)
+  if (next.phase === 'matchEnd' && state && state.phase !== 'matchEnd' && next.seats.includes(me)) ads.matchFinished();
   state = next;
   stateAt = performance.now();
   if (awaitingServer && !(state.phase === 'turn' && state.turn === me)) awaitingServer = false;
