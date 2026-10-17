@@ -7,6 +7,8 @@ import { WebSocketServer } from 'ws';
 import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
 import { cleanName as cleanNameText, cleanChat } from './names.js';
+import { withMeta } from './meta.js';
+import * as refs from './refs.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
 const PORT = Number(process.env.PORT) || 8097;
@@ -42,13 +44,24 @@ const MIME = {
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.mp3': 'audio/mpeg', '.svg': 'image/svg+xml', '.wasm': 'application/wasm', '.ico': 'image/x-icon',
 };
 
+// Where players come from (refs.js), read with the key from SLAM_STATS_KEY; without one the page does not exist.
+const STATS_KEY = process.env.SLAM_STATS_KEY || '';
+
 const server = http.createServer((req, res) => {
   let urlPath;
+  let query;
   try {
-    urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    const url = new URL(req.url, 'http://x');
+    urlPath = decodeURIComponent(url.pathname);
+    query = url.searchParams;
   } catch {
     res.writeHead(400);
     res.end('bad request');
+    return;
+  }
+  if (urlPath === '/__refs' && STATS_KEY && query.get('key') === STATS_KEY) {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify(refs.snapshot(), null, 1));
     return;
   }
   let file = path.join(DIST, urlPath);
@@ -61,6 +74,8 @@ const server = http.createServer((req, res) => {
       res.end('not found');
       return;
     }
+    // the page itself carries the link preview tags for this address (meta.js)
+    if (file.endsWith(`${path.sep}index.html`)) data = withMeta(data.toString('utf8'), query);
     const immutable = urlPath.startsWith('/assets/');
     const media = urlPath.startsWith('/audio/') || urlPath.startsWith('/memes/') || urlPath.endsWith('.png');
     res.writeHead(200, {
@@ -614,6 +629,11 @@ function handle(ws, msg) {
     return;
   }
 
+  if (msg.t === 'hello') {
+    refs.hello(ws, msg);
+    return;
+  }
+
   // Lets a client opening an invite link know whether the room is still there before asking for a name.
   if (msg.t === 'peek') {
     const code = String(msg.code || '').toUpperCase();
@@ -645,6 +665,7 @@ function handle(ws, msg) {
       cap: [2, 3, 4].includes(msg.cap) ? msg.cap : MAX_PLAYERS,
     });
     const player = makePlayer(room, 'black', msg);
+    refs.joined(ws);
     room.players.black = player;
     room.host = 'black';
     room.joinOrder = ['black'];
@@ -691,6 +712,7 @@ function handle(ws, msg) {
       return;
     }
     const player = makePlayer(room, seat, msg);
+    refs.joined(ws);
     leaveQueue(ws);
     room.players[seat] = player;
     room.joinOrder.push(seat);
@@ -879,6 +901,7 @@ function startQuickRoom(entries) {
     leaveQueue(e.ws);
     const seat = SEATS[i];
     const player = makePlayer(room, seat, { name: e.name, look: e.look });
+    refs.joined(e.ws);
     room.players[seat] = player;
     room.joinOrder.push(seat);
     attach(e.ws, room, seat, player);
@@ -975,5 +998,19 @@ setInterval(() => {
     ws.ping();
   }
 }, 20000);
+
+// Ref counts: one line an hour in the pm2 log, and saved before a restart (pm2 sends SIGINT).
+let lastRefLine = '';
+setInterval(() => {
+  const line = refs.summary();
+  if (line !== lastRefLine) console.log(`[refs] ${line}`);
+  lastRefLine = line;
+}, 3600e3).unref();
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.once(signal, () => {
+    refs.save();
+    process.exit(0);
+  });
+}
 
 server.listen(PORT, '127.0.0.1', () => console.log(`Slam Cards server on http://127.0.0.1:${PORT}`));

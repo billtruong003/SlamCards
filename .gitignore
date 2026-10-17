@@ -31,3 +31,6 @@ Thumbs.db
 # QA device runs
 qa/out/
 qa/node_modules/
+
+# Server data (ref counts) written by a local server
+proto/data/

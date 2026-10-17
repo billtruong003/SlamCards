@@ -15,6 +15,7 @@ import { showMeme, preloadMemes, setMemesEnabled, memesEnabled } from './memes.j
 import { createFtue } from './ftue.js';
 import { createSocial } from './social.js';
 import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStatic } from './i18n.js';
+import { helloMessage } from './ref.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -415,6 +416,7 @@ function connect() {
   clearTimeout(retryTimer);
   ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${location.pathname.replace(/[^/]*$/, '')}ws`);
   ws.onopen = () => {
+    send(helloMessage());
     const downFor = lostAt ? Date.now() - lostAt : 0;
     everConnected = true;
     failures = 0;

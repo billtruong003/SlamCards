@@ -56,7 +56,8 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 25. ✅ (15/10 15:50; backup VPS `/root/slam-cards-backup-20261015-1548-pre-deploy3.tgz`; QA live: 5 máy, phase1, m2, m3, trận đầy đủ, FTUE sạch; pm2 0 lỗi) **[DEPLOY 3]** Tủ đồ + lá bài mới + vào trận mới.
 
 ### Mốc 7 · Thêm cho game (sau phát hành)
-26. G5 ảnh xem trước khi gửi link phòng (Open Graph 1200 × 630, theo ngôn ngữ, có lá bài + tên phòng).
+26. ✅ (17/10, chưa deploy) **G5 ảnh xem trước khi dán link** (Open Graph + Twitter card): server ghi thẻ vào trang theo từng địa chỉ (`server/meta.js`, vì Zalo/Messenger/Facebook không chạy JS): mặc định tiếng Việt, `?lang=<khác vi>` ra bản tiếng Anh, link phòng `?room=ABCD` có mã phòng trong tiêu đề. Ảnh `public/og/og-vi.jpg`, `og-en.jpg` 1200 × 630, phong cách "vở học trò" (P2), dựng từ `video/media/og.html` (`node qa/capture/media-render.mjs og.html` rồi lưu JPEG). Tên phòng chưa vẽ vào ảnh (một ảnh chung). Đổi ảnh thì tăng `IMAGE_VERSION` trong `meta.js` để các trang tải lại. Sau deploy: dán link vào https://developers.facebook.com/tools/debug/ (bấm "Scrape Again"), Zalo, Discord để kiểm tra.
+    - **Đo nguồn `?ref=`** (17/10, chưa deploy): link quảng cáo `?ref=tt|fb|yt|ig|dc|web`; link phòng không có ref tính là `invite`, còn lại `direct`. Client (`src/ref.js`) gửi `hello` khi mở socket; server (`server/refs.js`) đếm theo ngày giờ VN: `visits` (1 lần mỗi tab) và `joined` (vào ghế trong phòng hoặc ghép trận, tối đa 1 lần mỗi kết nối). Lưu `/opt/slam-cards/data/refs.json` (120 ngày, không IP, không tên), mỗi giờ in 1 dòng `[refs]` vào log pm2, và `GET /slam-cards/__refs?key=<SLAM_STATS_KEY>` khi có đặt biến này. Test: `test/share.test.js`.
 27. G2 ủng hộ: dải mời hết trận, nút góc, bảng QR / tấm trượt "Lưu ảnh mã QR", danh sách người ủng hộ công khai.
 28. UX-08 bản đầy đủ: bạn đến muộn ngồi xem rồi vào trận sau.
 29. **[DEPLOY 4]**.

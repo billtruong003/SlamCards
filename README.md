@@ -72,6 +72,8 @@ Mở http://localhost:8097. Muốn đổi cổng thì đặt biến `PORT`.
 
 Mở 2 tab cùng một link phòng để tự chơi với mình. Thêm `?debug` vào URL để có `window.slamDebug` trong console (xem state, đặt bài, slow-mo hiệu ứng…). Thêm `?noftue` để tắt hướng dẫn người mới khi test. Muốn xem lại hướng dẫn như người mới thì xóa `slam-ftue` và `slam-ftue-matches` trong localStorage.
 
+Link quảng cáo thêm `?ref=tt` (TikTok), `fb`, `yt`, `ig`, `dc` (Discord), `web` (web studio); đi chung được với `?lang=` và `?room=`. Server đếm lượt mở và số người vào phòng theo nguồn, mỗi ngày, vào `data/refs.json` (đổi chỗ bằng `SLAM_DATA`). Xem: `cat /opt/slam-cards/data/refs.json` trên VPS, dòng `[refs]` mỗi giờ trong `pm2 logs slam-cards`, hoặc `/__refs?key=…` nếu đặt `SLAM_STATS_KEY`. Ảnh xem trước khi dán link (Open Graph) do `server/meta.js` ghi vào trang; ảnh ở `public/og/`.
+
 Test server (chạy server thật, giả lập nhiều người chơi qua WebSocket):
 
 ```bash
