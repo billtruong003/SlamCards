@@ -333,6 +333,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .gear-row span.gr-label small{display:block;font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gear-row svg{flex:none}
 @media (max-width:899px){.home .gear-row{display:flex}.menu-bg.with-gear .gear-card{display:none}}
+/* the room: on phones and short screens the gear is the same one-row button, so Start stays in sight */
+@media (max-width:899px),(max-height:760px){.lobby-card .gear-row{display:flex}.lobby-card .gear-tiles,.lobby-card .dep-title{display:none}}
+.lobby-card .gear-row span.gr-label small{white-space:normal}  /* the lobby card is narrower: the gear line wraps instead of cutting */
 .gear-card{width:380px;max-width:calc(100vw - 32px);gap:10px;box-sizing:border-box}
 .gear-title{margin:0;font-weight:800;font-size:24px}
 .gear-hero{width:180px;height:180px;object-fit:contain;margin:-6px 0}
@@ -348,8 +351,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .dep-dots i{width:10px;height:10px;border-radius:50%;border:2px solid var(--ink)}
 .card-chip{width:50px;height:68px;margin:2px 0;border-radius:8px;border:3px solid var(--ink);background:var(--c);display:flex;align-items:center;justify-content:center;font-size:24px;box-sizing:border-box;color:var(--cream);-webkit-text-stroke:1px var(--ink)}
 .slot-dep.pet{object-fit:contain;background:none;border:0;width:56px;height:56px;margin:-4px auto 0}
-.wardrobe{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
-.ward-body{width:100%;overflow-y:auto;max-height:min(56vh,480px);display:flex;flex-direction:column;gap:8px;padding:4px 2px}
+.wardrobe{width:min(560px,calc(100vw - 32px));max-height:calc(100vh - var(--band) - 32px);max-height:calc(100dvh - var(--band) - 32px)}
+/* the body takes what the card has left (the card fits the menu area above the corner band), so only the body
+   scrolls, and only when the screen is short: the slipper tab fits whole down to ~650 px of height */
+.ward-body{width:100%;overflow-y:auto;flex:1 1 auto;min-height:0;max-height:480px;display:flex;flex-direction:column;gap:8px;padding:4px 2px}
 .pet-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 @media (max-width:380px){.pet-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .pet-tile{background:#fff;border:3px solid var(--ink);border-radius:12px;display:flex;flex-direction:column;align-items:center;font:800 13px var(--font);color:var(--ink);padding:2px 2px 6px;min-height:44px}
@@ -357,16 +362,26 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pet-tile.on{background:var(--mint);box-shadow:0 3px 0 var(--ink);transform:translateY(-2px)}
 .dep-preview{display:flex;justify-content:center}
 .dep-preview canvas{width:240px;height:150px;background:#f6eedb;border:3px solid var(--ink);border-radius:14px}
-.swatches{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start}
+/* padding: the selected swatch's ring (and the card colour's) sits outside the circle; the scrolling body clips anything past its edge */
+.swatches{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;padding:6px}
 .swatches .sw{width:30px;height:30px;border-radius:50%;border:3px solid var(--ink);padding:0}
 .swatches .sw.on{box-shadow:0 0 0 3px var(--cream),0 0 0 6px var(--ink)}
 @media (pointer:coarse){.swatches .sw{width:40px;height:40px}}
-.color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+/* mouse: the 12 colours in one row (two rows pushed the slipper tab past a laptop's height) */
+@media (pointer:fine){.swatches{display:grid;grid-template-columns:repeat(12,minmax(0,30px));gap:4px}.swatches .sw{width:100%;height:auto;aspect-ratio:1}.swatches .sw.on{box-shadow:0 0 0 2px var(--cream),0 0 0 4px var(--ink)}}
+.color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:8px}
 .color-tile{background:var(--c);border:3px solid var(--ink);border-radius:14px;min-height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:800 17px var(--font);color:var(--ink)}
 .color-tile i{font-style:normal;font-size:28px;color:var(--cream);-webkit-text-stroke:2px var(--ink);paint-order:stroke fill}
 .color-tile.on{box-shadow:0 0 0 4px var(--cream),0 0 0 7px var(--ink)}
 .color-tile:disabled{opacity:.4}
 .color-tile small{font-size:12px}
+/* short screens (a laptop at 1366x657 once the browser bar is in): the slipper tab still fits whole */
+@media (max-height:720px){
+  .wardrobe{gap:8px;padding-top:14px;padding-bottom:14px}
+  .wardrobe .stamp{font-size:30px!important}
+  .ward-body{gap:6px}
+}
+@media (max-height:640px){.dep-preview canvas{height:104px}}
 /* cards over the flying menu background, whatever their flex order */
 .menu-bg .menu-card{z-index:1}
 /* Phone on its side, menus: height is what is short, so the corner buttons become a column of icons
@@ -383,3 +398,9 @@ button{font:inherit;color:inherit;cursor:pointer}
   #hud[hidden] ~ .panel-box{right:62px;bottom:auto;top:50%;transform:translateY(-50%)}
   .credit,#netstat{display:none}
 }
+
+/* scroll areas inside the game's cards: a thin ink thumb on no track, not the system's grey bar */
+.menu-bg,.ward-body,.sgrid,.cp-log,.ftue-modal{scrollbar-width:thin;scrollbar-color:rgba(42,20,24,.42) transparent}
+/* the quick-phrase chips scroll sideways by swipe or wheel: no bar under them */
+.cp-chips{scrollbar-width:none}
+.cp-chips::-webkit-scrollbar{display:none}

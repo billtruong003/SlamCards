@@ -1209,6 +1209,7 @@ function renderOverlay() {
           </div>
           <p class="sub dep-title">${t('lobby.myGear')}</p>
           ${gearTiles(myLook())}
+          ${gearRow(myLook())}
           ${action}
         </div></div>`);
       if (fresh) {
