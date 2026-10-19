@@ -408,7 +408,6 @@ const social = createSocial({
     return { x: cx, y: top, bottom, left, right, mid: (top + bottom) / 2 };
   },
   safeTop: () => world.safe?.top ?? 0,
-  isMyTurn: () => state?.phase === 'turn' && state.turn === me,
   showToast,
 });
 els.panel.querySelector('#close-panel').insertAdjacentHTML('beforebegin', `<label class="check"><input type="checkbox" id="reacts-on" ${social.showOthers() ? 'checked' : ''}> ${t('social.showReacts')}</label>`);

@@ -69,7 +69,6 @@
 .cp-head{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:3px solid var(--ink);background:#f3ead7}
 .cp-head h2{margin:0;font-size:19px;font-weight:800;flex:1;white-space:nowrap}
 .cp-head small{font-size:12px;font-weight:700;color:var(--muted)}
-.cp-note{display:none;font-size:12px;font-weight:700;color:var(--muted)}
 .sib{width:42px;height:42px;box-sizing:border-box;border:3px solid var(--ink);border-radius:12px;background:var(--cream);display:flex;align-items:center;justify-content:center;color:var(--ink);padding:0;flex:none}
 .sib.send{background:var(--pink-dark)}
 .sib[aria-pressed="true"]{background:var(--mint)}
@@ -106,10 +105,15 @@
 #chat-panel[data-mode="sheet"]{z-index:30;left:0;right:0;bottom:0;top:max(8vh,40px);border-width:3px 0 0;border-radius:22px 22px 0 0;box-shadow:0 0 0 100vmax rgba(20,12,14,.45);overflow:hidden}
 #chat-panel[data-mode="sheet"] .cp-handle{display:block}
 @media (min-width:700px){#chat-panel[data-mode="sheet"]{left:50%;width:560px;transform:translateX(-50%);border-width:3px 3px 0}}
-/* in a match: a compact composer (quick phrases + input), no history; it closes on the player's turn */
+/* in a match: a compact panel, the last few lines over the quick phrases (and the box, where typing is
+   possible); open on any turn, the player's own included */
 #chat-panel[data-mode="compose"]{z-index:30;left:0;right:0;bottom:0;border-width:3px 0 0;border-radius:20px 20px 0 0}
-#chat-panel[data-mode="compose"] .cp-log{display:none}
-#chat-panel[data-mode="compose"] .cp-note{display:block}
+#chat-panel[data-mode="compose"] .cp-log{flex:none;max-height:min(120px,18vh);padding:6px 12px}
+/* touch screens: no text box, the phrases and stickers are the way to talk */
+#chat-panel.no-typing .cp-inp,#chat-panel.no-typing #cp-send,#chat-panel.no-typing #cp-stk{display:none}
+#chat-panel.no-typing .cp-bar{padding:0}
+#chat-panel.no-typing .cp-chips{flex-wrap:wrap;padding-bottom:6px}
+#chat-panel.no-typing .cp-stickers{max-height:min(150px,22vh);overflow-y:auto}
 #chat-panel[data-mode="compose"] .cp-head{background:var(--cream);border-bottom:0;padding-bottom:0}
 #chat-panel[data-mode="compose"] .cp-head h2{font-size:16px}
 @media (min-width:700px){#chat-panel[data-mode="compose"]{left:auto;right:76px;bottom:12px;width:400px;border-width:3px;border-radius:18px;box-shadow:0 6px 0 var(--ink)}}

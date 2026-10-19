@@ -410,11 +410,6 @@
     "max": 10,
     "id": "Kirim"
   },
-  "social.autoClose": {
-    "where": "Note in the in-match composer",
-    "max": 26,
-    "id": "Tutup saat giliranmu"
-  },
   "social.empty": {
     "where": "Empty chat",
     "max": 40,

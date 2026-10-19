@@ -6,7 +6,9 @@ import { chime } from './sound.js';
 // - Reactions (sticker / phrase) work in every room; typed chat only in friends rooms.
 // - In a match everything shows as a bubble over the sender's card; the full chat lives in the lobby
 //   (a docked panel on wide screens, a bar that opens a sheet on narrow ones). In a match the chat
-//   is a compact composer that closes itself when the turn comes to the player.
+//   is a compact panel with the last lines, open whenever the player likes, their own turn included.
+// - Touch screens get no text box (the keyboard would cover half the game): quick phrases and
+//   stickers only, and they still read what others typed (B-03).
 // - The server limits each player to 3 reactions and 3 lines per 5 s; the picker mirrors that.
 // The elements are created once, outside the overlay, so a lobby redraw never eats a half-typed line.
 
@@ -28,7 +30,7 @@ const storage = {
   set(key, value) { try { localStorage.setItem(key, value); } catch { /* private mode */ } },
 };
 
-export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, safeTop, isMyTurn, showToast }) {
+export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, safeTop, showToast }) {
   const root = document.body;
   root.insertAdjacentHTML('beforeend', `
     <div id="bubbles" aria-hidden="true"></div>
@@ -54,7 +56,7 @@ export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, sa
     </button>
     <div id="chat-panel" hidden role="dialog" aria-label="${esc(t('social.chatTitle'))}">
       <div class="cp-handle"></div>
-      <div class="cp-head"><h2>${t('social.chatTitle')} <small id="cp-count"></small></h2><span class="cp-note" id="cp-note">${t('social.autoClose')}</span><button type="button" class="sib" id="chat-close" aria-label="${esc(t('common.close'))}">${CLOSE}</button></div>
+      <div class="cp-head"><h2>${t('social.chatTitle')} <small id="cp-count"></small></h2><button type="button" class="sib" id="chat-close" aria-label="${esc(t('common.close'))}">${CLOSE}</button></div>
       <div class="cp-log" id="cp-log"></div>
       <div class="cp-chips" id="cp-chips"></div>
       <div class="cp-bar">
@@ -83,6 +85,10 @@ export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, sa
   let showOthers = storage.get('slam-reacts') !== '0';
 
   const friends = () => getState()?.kind === 'friends';
+  const canType = matchMedia('(pointer: fine)').matches;
+  els.chat.classList.toggle('no-typing', !canType);
+  els.stickers.hidden = canType; // without a text box the stickers are always there
+  if (!canType) $('react-chat').querySelector('span').textContent = t('social.chatTitle');
   const label = (id) => (id.startsWith('p:') ? t(`phrase.${id.slice(2)}`) : '');
   // lazy only in the pickers: a bubble is created at the corner of the screen and must show at once
   const stickerImg = (id, cls = '', lazy = true) => `<img class="${cls}" src="${stickerFile(id)}" alt="" ${lazy ? 'loading="lazy" ' : ''}draggable="false">`;
@@ -149,7 +155,8 @@ export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, sa
 
   // ---------- chat panel ----------
   function drawChips() {
-    const ids = mode === 'match' ? ['p:lucky', 'p:eat', 'p:hurry', 'p:oops'] : ['p:comeon', 'p:wait', 'p:gg'];
+    // with no text box, every phrase is a chip; with one, a few for the moment
+    const ids = !canType ? PHRASES.map((p) => `p:${p}`) : mode === 'match' ? ['p:lucky', 'p:eat', 'p:hurry', 'p:oops'] : ['p:comeon', 'p:wait', 'p:gg'];
     els.chips.innerHTML = ids.map((id) => `<button type="button" class="${mode === 'match' ? 'say' : ''}" data-react="${id}">${esc(label(id))}</button>`).join('');
   }
   els.chips.addEventListener('click', (e) => { const r = e.target.closest('[data-react]'); if (r) react(r.dataset.react); });
@@ -177,7 +184,7 @@ export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, sa
     layout();
     drawLog();
     els.log.scrollTop = els.log.scrollHeight;
-    if (mode === 'match' || matchMedia('(pointer: fine)').matches) els.input.focus({ preventScroll: true });
+    if (canType) els.input.focus({ preventScroll: true });
   }
   function closeChat() {
     if (!chatOpen) return;
@@ -295,10 +302,6 @@ export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, sa
     const key = `${state?.phase}|${state?.kind}|${getMe()}|${chatOpen}|${state ? Object.keys(state.players).length : 0}`;
     if (key !== lastKey) { lastKey = key; layout(); }
     if (mode !== 'match') return;
-    const mine = isMyTurn();
-    // the composer gets out of the way when it is the player's turn
-    if (mine && chatOpen) closeChat();
-    els.chatFab.disabled = mine;
     if (state.phase === 'turn' && state.turn !== getMe() && context !== 'slow' && state.remainingMs < 20000) setContext('slow');
   }
   function frame(now) {
