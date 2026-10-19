@@ -17,7 +17,9 @@ export function tableFor(count) {
 
 const SPOTS = {
   2: [[-4.5, 0], [4.5, 0]],
-  3: [[-5.8, -2.6], [5.8, -2.6], [0, 3.6]],
+  // an equal-sided triangle, ~7.2 apart: the seat at the head used to be everyone's nearest target
+  // while the other two sat 11.6 apart (V-27); measured, falls 4.8% -> 3.0% a slam, captures 0.7 -> 0.9%
+  3: [[-3.6, -2.6], [3.6, -2.6], [0, 3.6]],
   4: [[-5.8, 0], [0, -3.6], [5.8, 0], [0, 3.6]],
 };
 

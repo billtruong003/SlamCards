@@ -2219,6 +2219,8 @@ if (new URLSearchParams(location.search).has('debug')) {
     renderAssets: (opts) => import('./asset-studio.js').then((m) => m.renderAssets(opts)),
     meme: showMeme,
     visuals,
+    // the tunables, for measuring changes before making them (qa/_ux-fall-rate.mjs SLAM_SCALE)
+    tune: TUNE,
     set timeScale(v) { timeScale = v; },
     previewDeps: (seats = ['black', 'pink', 'blue']) => {
       seats.forEach((seat, i) => {
