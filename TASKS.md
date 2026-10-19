@@ -86,7 +86,7 @@ Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (
 - [x] **1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S
 - [x] **1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)
 - [x] **1.04** Tắt meme mặc định, bỏ ảnh có bản quyền và mặt người thật — S
-- [ ] **1.05** Báo bảo trì trước deploy, chặn trận mới; xem số phòng/người theo pha; báo khi server khởi động lại — M
+- [x] **1.05** Báo bảo trì trước deploy, chặn trận mới; xem số phòng/người theo pha; báo khi server khởi động lại — M. Cổng quản trị 127.0.0.1:8197 (`/status`, `/drain`, `/undrain`); deploy.sh tự drain và chờ hết trận
 - [ ] **1.06** Phản hồi khi mất WebGL hoặc mạng chặn WebSocket — S
 - [ ] **1.07** Server kiểm kết quả cú đập có hợp lý (cần trước Phase 2) (V-23) — M–L
 - [ ] **1.08** Sự kiện đo lường: cú đập đầu, trận đầu, xem hướng dẫn, thời gian chờ, độ dài trận, quay lại ngày 2 — M

@@ -276,8 +276,11 @@ function onPeek(msg) {
     leaveRoom();
     renderMenu(text);
   };
-  // a typed code that matches nothing is most likely a typo, not an expired room (QA-02)
-  if (!msg.exists) refuse(t(typed ? 'error.typedNotFound' : 'error.roomGone', { code }));
+  // a typed code that matches nothing is most likely a typo, not an expired room (QA-02);
+  // right after an update, the update is why the room is gone
+  const gone = restartNotice ? 'error.serverRestarted' : typed ? 'error.typedNotFound' : 'error.roomGone';
+  restartNotice = false;
+  if (!msg.exists) refuse(t(gone, { code }));
   else if (msg.mine) joinRoom(code, token);
   else if (msg.phase !== 'lobby' || msg.quick) refuse(t('error.inMatchWait', { code })); // UX-08: say when to come back
   else if (msg.full) refuse(t('error.full'));
@@ -515,8 +518,48 @@ function send(msg) {
   if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify(msg));
 }
 
+// ---------- server restarts and maintenance ----------
+
+// A deploy changes the client: a page on the old build reloads, once per build (a page that cannot
+// remember having tried, in a private window, stays put rather than risk a reload loop).
+// After that reload, or after a restart seen on this page, a room that is gone is explained as the update.
+let serverBoot = null;
+let restartNotice = (() => {
+  try {
+    const back = sessionStorage.getItem('slam-updated') === '1';
+    sessionStorage.removeItem('slam-updated');
+    return back;
+  } catch { return false; }
+})();
+function reloadForBuild(build) {
+  try {
+    if (sessionStorage.getItem('slam-reload-for') === build) return false;
+    sessionStorage.setItem('slam-reload-for', build);
+    sessionStorage.setItem('slam-updated', '1');
+  } catch { return false; }
+  location.reload();
+  return true;
+}
+function onServerInfo(msg) {
+  if (msg.build && __BUILD__ !== 'dev' && msg.build !== __BUILD__ && reloadForBuild(msg.build)) return;
+  if (serverBoot && msg.boot !== serverBoot) restartNotice = true;
+  serverBoot = msg.boot;
+  if (restartNotice) setMaintenance(false);
+}
+function setMaintenance(on) {
+  $('maint').textContent = on ? t('maintenance.banner') : '';
+  $('maint').hidden = !on;
+}
+
 function onMessage(msg) {
-  if (msg.t === 'joined') {
+  if (msg.t === 'server') {
+    onServerInfo(msg);
+  } else if (msg.t === 'maintenance') {
+    setMaintenance(msg.on);
+  } else if (msg.t === 'notice') {
+    if (has(`error.${msg.code}`)) showToast(t(`error.${msg.code}`), 3000);
+  } else if (msg.t === 'joined') {
+    restartNotice = false;
     queueing = null;
     stopRoomsPolling();
     me = msg.color;

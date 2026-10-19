@@ -10,10 +10,18 @@ import { cleanName, cleanChat } from './names.js';
 import { withMeta } from './meta.js';
 import { adsConfig, adsFileClient, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
+import { startAdmin } from './ops.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
 const PORT = Number(process.env.PORT) || 8097;
+const ADMIN_PORT = Number(process.env.SLAM_ADMIN_PORT) || PORT + 100;
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
+// Which client build is being served (written by the vite build) and which run of the server this
+// is: a client whose build is older reloads, and one whose room vanished learns it was a restart.
+const BUILD = (() => {
+  try { return JSON.parse(fs.readFileSync(path.join(DIST, 'build.json'), 'utf8')).build ?? null; } catch { return null; }
+})();
+const BOOT = crypto.randomUUID().slice(0, 8);
 const TUTORIAL_STEPS = 5;
 
 const TIMING = {
@@ -693,6 +701,13 @@ function handle(ws, msg) {
     return;
   }
 
+  // before anything below moves the socket out of the room it is in
+  if (draining && (msg.t === 'create' || msg.t === 'queue')) {
+    leaveQueue(ws);
+    send(ws, { t: 'error', code: 'maintenance', message: 'Sắp bảo trì, chưa mở trận mới.' });
+    return;
+  }
+
   if (msg.t === 'create' || msg.t === 'join') {
     const ctx = ws.ctx;
     const rejoin = msg.t === 'join' && ctx && ctx.room.code === String(msg.code || '').toUpperCase()
@@ -746,6 +761,10 @@ function handle(ws, msg) {
     }
     if (room.phase !== 'lobby') {
       send(ws, { t: 'error', code: 'inMatch', message: 'Phòng đang đánh dở, tạo phòng mới đi!' });
+      return;
+    }
+    if (draining) {
+      send(ws, { t: 'error', code: 'maintenance', message: 'Sắp bảo trì, chưa mở trận mới.' });
       return;
     }
     const seat = SEATS.find((s) => !room.players[s]);
@@ -834,6 +853,12 @@ function handle(ws, msg) {
     return;
   }
 
+  // A match that starts now would be cut by the deploy: the room stays, the start waits.
+  if (draining && (msg.t === 'start' || msg.t === 'rematch')) {
+    send(ws, { t: 'notice', code: 'maintenance' });
+    return;
+  }
+
   // Only the host starts, with 2+ players and every guest ready.
   if (msg.t === 'start' && room.phase === 'lobby' && seat === room.host && allReady(room)) {
     for (const s of Object.keys(room.players)) if (!room.players[s].connected) removePlayer(room, s);
@@ -915,6 +940,57 @@ function publicRooms() {
     .sort((a, b) => (a.phase === 'lobby' ? 0 : 1) - (b.phase === 'lobby' ? 0 : 1) || b.n - a.n)
     .slice(0, 50);
 }
+
+// ---------- maintenance (ops.js) ----------
+// Before a deploy: matches in play finish, nothing new starts, every player sees a banner.
+// The deploy waits for status().playing to reach 0.
+
+let draining = null; // { until } while draining
+
+function sendEveryone(msg) {
+  for (const ws of wss.clients) send(ws, msg);
+}
+
+function drain(ms) {
+  draining = { until: Date.now() + ms };
+  for (const e of queue.splice(0)) send(e.ws, { t: 'error', code: 'maintenance', message: 'Sắp bảo trì, chưa mở trận mới.' });
+  anyCountdownAt = 0;
+  sendEveryone(maintenanceMessage());
+  console.log(`[ops] draining, restart in about ${Math.round(ms / 60000)} min; ${status().playing} matches in play`);
+}
+
+function undrain() {
+  draining = null;
+  sendEveryone(maintenanceMessage());
+  console.log('[ops] drain cancelled');
+}
+
+const maintenanceMessage = () => ({ t: 'maintenance', on: Boolean(draining), inMs: draining ? Math.max(0, draining.until - Date.now()) : 0 });
+
+// A match is in play from the moment it is set to start (a quick room's short wait included) until matchEnd.
+const inPlay = (room) => (room.phase === 'lobby' ? room.kind === 'quick' : room.phase !== 'matchEnd');
+
+function status() {
+  const all = [...rooms.values()];
+  const players = all.reduce((n, r) => n + Object.values(r.players).filter((p) => p.connected).length, 0);
+  return {
+    boot: BOOT,
+    build: BUILD,
+    uptimeS: Math.round(process.uptime()),
+    draining: draining ? { inMs: Math.max(0, draining.until - Date.now()) } : null,
+    playing: all.filter(inPlay).length,
+    rooms: {
+      lobby: all.filter((r) => r.phase === 'lobby' && r.kind === 'friends').length,
+      inPlay: all.filter(inPlay).length,
+      matchEnd: all.filter((r) => r.phase === 'matchEnd').length,
+    },
+    players,
+    queue: queue.length,
+    sockets: wss.clients.size,
+  };
+}
+
+startAdmin({ port: ADMIN_PORT, status, drain, undrain });
 
 // ---------- quick match ----------
 // A waiting player asks for 'any' (2-4) or an exact size. Exact sizes fill first, topped up with
@@ -1004,6 +1080,8 @@ wss.on('error', (err) => console.error('websocket server error', err));
 
 wss.on('connection', (ws) => {
   ws.isAlive = true;
+  send(ws, { t: 'server', boot: BOOT, build: BUILD });
+  if (draining) send(ws, maintenanceMessage());
   ws.on('error', (err) => console.error('socket error', err.message));
   ws.on('pong', () => { ws.isAlive = true; });
   ws.on('message', (data) => {

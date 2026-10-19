@@ -279,6 +279,14 @@
     "max": 100,
     "id": "K1"
   },
+  "error.maintenance": {
+    "where": "Menu error: a deploy is coming, so new matches are refused for a few minutes",
+    "max": 90
+  },
+  "error.serverRestarted": {
+    "where": "Menu error: the server restarted for an update, so the room the player was in is gone",
+    "max": 90
+  },
   "error.typedNotFound": {
     "where": "Menu error after typing a room code that matches no room (likely a typo). {code} = the 4 letters typed",
     "max": 45,
@@ -1133,6 +1141,10 @@
   "toast.nameBlocked": {
     "where": "Toast after joining: the typed name was blocked by the swear-word filter; {name} is the neutral stand-in the game uses instead",
     "max": 90
+  },
+  "maintenance.banner": {
+    "where": "Small banner at the top of every screen while a deploy is coming: matches in play continue, new ones are paused",
+    "max": 100
   },
   "net.lost": {
     "where": "Toast: your connection dropped, reconnecting",
