@@ -87,6 +87,7 @@ const langPanel = $('lang-panel');
 if (langs.length > 1) {
   const btn = $('lang');
   btn.innerHTML = `${GLOBE}<span>${LANG_SHORT[lang()] ?? lang().toUpperCase()}</span>`;
+  btn.dataset.short = LANG_SHORT[lang()] ?? lang().toUpperCase();
   btn.hidden = false;
   langPanel.innerHTML = `
     <h2>${t('corner.lang')}</h2>
@@ -95,6 +96,11 @@ if (langs.length > 1) {
   langPanel.querySelectorAll('[data-lang]').forEach((b) => { b.onclick = () => (b.dataset.lang === lang() ? (langPanel.hidden = true) : setLang(b.dataset.lang)); });
   $('close-lang').onclick = () => { langPanel.hidden = true; };
 }
+
+// The rules button says what it is ("? Luật chơi"), and every corner button carries a short word
+// (data-short) that shows under its icon where the row shrinks to icons (a phone in a match).
+$('help').innerHTML = `<b aria-hidden="true">?</b><span>${escapeHtml(t('corner.help'))}</span>`;
+for (const [id, key] of [['help', 'corner.help'], ['info', 'corner.info'], ['settings', 'sound.title'], ['leave', 'corner.leave']]) $(id).dataset.short = t(key);
 
 playIntro();
 let world;

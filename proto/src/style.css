@@ -132,6 +132,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 :root{--band:74px}
 @media (pointer:coarse){:root{--band:88px}}
 @media (max-width:820px){:root{--band:52px}}
+/* a narrow phone held upright in a match: the wind's bars go (its number stays), names get the room */
+@media (max-width:440px) and (orientation:portrait){
+  #hud .wind .bars{display:none}
+  #hud .players{max-width:calc(100vw - 96px)}
+}
 @media (max-width:820px) and (pointer:coarse){:root{--band:66px}}
 /* "safe" centring: auto margins centre a screen when it fits and fall to 0 when it is taller than
    the viewport, so its top never ends up above the scroll origin (unreachable on a phone) */
@@ -211,7 +216,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 /* ---------- sound settings ---------- */
 #corner{position:fixed;right:10px;bottom:36px;display:flex;gap:6px;z-index:9}
 #corner button{background:var(--cream);border:2px solid var(--ink);border-radius:8px;font-weight:800;font-size:13px;padding:0 10px;min-height:30px;color:var(--ink)}
-#leave{display:inline-flex;align-items:center;gap:5px}
+#leave,#help{display:inline-flex;align-items:center;gap:5px}
+#help b{font-size:15px}
 #leave[hidden]{display:none}
 #leave.armed{background:#e06a4e;color:#fff}
 #lang{display:inline-flex;align-items:center;gap:4px}
@@ -235,7 +241,9 @@ button{font:inherit;color:inherit;cursor:pointer}
   #hud{top:6px;left:6px;right:6px;gap:6px}
   .players{max-width:calc(100vw - 120px);gap:4px}
   .chip{height:28px;font-size:12px;padding:0 6px;gap:4px;border-width:2px}
-  .chip .name{max-width:64px}
+  /* names get the room there is: chips share the row and shrink (with an ellipsis) only when it is full */
+  .chip{flex:0 1 auto;min-width:0}
+  .chip .name{max-width:none;min-width:0}
   .dot{width:10px;height:10px}
   .wind{font-size:14px;min-height:34px;padding:0 8px}
   #wind-arrow{font-size:22px}
@@ -443,7 +451,7 @@ button{font:inherit;color:inherit;cursor:pointer}
   .menu-bg{border-right:62px solid #f6eedb}
   #hud[hidden] ~ #corner{flex-direction:column;top:50%;bottom:auto;right:8px;transform:translateY(-50%)}
   #hud[hidden] ~ #corner button{min-width:44px;min-height:40px}
-  #hud[hidden] ~ #corner #lang span,#hud[hidden] ~ #corner #leave:not(.armed) span{display:none}
+  #hud[hidden] ~ #corner #lang span,#hud[hidden] ~ #corner #help span,#hud[hidden] ~ #corner #leave:not(.armed) span{display:none}
   #hud[hidden] ~ #corner #info,#hud[hidden] ~ #corner #settings{font-size:0;padding:0}
   #hud[hidden] ~ #corner #info::before{content:"i";font-size:19px;font-family:Georgia,serif;font-weight:700}
   #hud[hidden] ~ #corner #settings::before{content:"♪";font-size:18px}

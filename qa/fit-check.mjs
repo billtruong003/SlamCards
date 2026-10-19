@@ -96,7 +96,7 @@ for (const vp of Object.keys(VIEWPORTS).filter((v) => !only || only.includes(v))
   await click(fresh, '#go');
 
   const guests = [fresh];
-  for (const n of ['Tèo', 'Tí Sún']) {
+  for (const n of ['Thằng Tèo Dài', 'Tí Sún']) {
     const g = await player(vp, n);
     await boot(g, `${link}&debug`);
     guests.push(g);
@@ -136,6 +136,8 @@ for (const vp of Object.keys(VIEWPORTS).filter((v) => !only || only.includes(v))
   await turner.waitForFunction(() => slamDebug.state?.phase === 'turn' && !document.querySelector('#overlay .panel'), null, { timeout: 10000 }).catch(() => {});
   await sleep(500);
   await check(turner, vp, 'turn', ['#type-flat', '#type-tilt', '~#players .chip', '#leave']);
+  const cut = await turner.evaluate(() => [...document.querySelectorAll('#players .chip .name')].filter((n) => n.scrollWidth > n.clientWidth + 1).map((n) => n.textContent));
+  console.log(`${vp.padEnd(11)} names cut  ${cut.length ? cut.join(', ') : 'none'}`);
 
   // everyone else leaves: the host is alone, the match ends
   for (const g of guests) {
