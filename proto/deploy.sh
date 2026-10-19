@@ -5,7 +5,9 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 npx vite build
-tar czf /tmp/slam.tgz dist server deploy src/rules.js src/config.js src/catalog.js src/ads.js
+# all of src: the server imports shared modules from it (rules, config, catalog, ads, tutorial...),
+# and a list kept by hand here once missed a new one
+tar czf /tmp/slam.tgz dist server deploy src
 HOST="${SLAM_HOST:-hordecall}"
 
 # Stop new matches and wait for the ones in play to finish (server/ops.js, loopback port 8197).
