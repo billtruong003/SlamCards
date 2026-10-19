@@ -1136,7 +1136,7 @@ function renderNamePrompt(code) {
   playMusic('menu');
   els.overlay.className = '';
   els.overlay.innerHTML = `
-    <div class="menu-bg"><div class="panel menu-card">
+    <div class="menu-bg"><div class="panel menu-card name-card">
       ${logo()}
       <p class="sub">${t('invite.sub', { code: `<span class="code">${escapeHtml(code)}</span>` })}</p>
       ${menuError('')}
@@ -1392,7 +1392,7 @@ function renderOverlay() {
           <p class="sub dep-title">${t('lobby.myGear')}</p>
           ${gearTiles(myLook())}
           ${gearRow(myLook())}
-          ${action}
+          <div class="lobby-actions">${action}</div>
         </div></div>`);
       if (fresh) {
         mountMenuBackground(els.overlay.querySelector('.menu-bg'));

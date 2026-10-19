@@ -82,7 +82,7 @@ Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1t
 Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
 
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
-Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.10.
+Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.12 (1.11 chờ mockup).
 - [x] ~~**1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S~~
 - [x] ~~**1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S~~
 - [x] ~~**1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)~~
@@ -92,7 +92,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [x] ~~**1.07** Server kiểm cú đập: client gửi chỗ ngắm trước, server quyết rung tay + seed may rủi; từng khung hình bị kiểm (tốc độ, chỉ bài bị chạm mới được di chuyển, không xuyên bàn, không bay, ≤7 giây), kết quả phải trùng khung cuối; sai thì trả bài về, qua lượt (V-23). Đo 747 cú đập thật: 0 bị chặn nhầm — M–L~~
 - [x] ~~**1.08** Sự kiện đo lường: cú đập đầu, trận đầu, xem hướng dẫn, thời gian chờ, độ dài trận, quay lại ngày 2 — M. Xem: `curl -s 127.0.0.1:8197/metrics?days=7` trên VPS~~
 - [x] ~~**1.09** Feedback 19/10 (Bill + người chơi): tuỳ chọn ẩn tên trên bàn, bài m viền xanh / bài địch viền đỏ (lưu trên máy); nút "Rời" ở góc (chạm 2 lần); người treo máy bị loại sau 2 lần hết giờ ở mọi phòng (trước chỉ ghép ngẫu nhiên); logo menu giống trailer (ruy băng FLIP FLOP SLAM, lá bài hổ, dép); tutorial: ảnh pet mất trên live (đường dẫn trong biến CSS), nhãn trang 1 nằm đúng cạnh lá bài — S–M~~
-- [ ] **1.10** Mọi màn vừa 1 màn hình 360×640 → 430×932 và laptop 1366×768 (cả Windows 125%): màn chính, sảnh 4 người (nút Bắt đầu), hàng chờ, trận, kết quả (B-02) — L
+- [x] ~~**1.10** Mọi màn vừa 1 màn hình 360×640 → 430×932 và laptop 1366×768 (cả Windows 125%): màn chính, sảnh 4 người (nút Bắt đầu), hàng chờ, trận, kết quả (B-02) — L~~ Đo bằng `qa/fit-check.mjs`: 8 cỡ màn × 9 màn = 72/72 vừa
 - [ ] **1.11** Hướng dẫn 4 ô bắt buộc lần đầu, có luật hết giờ 2 lần là thua; hiện cả ở Chơi ngay lúc chờ; mockup cho Bill duyệt trước (B-01, B-04, F-02..F-08) — M. *Đã xong một phần ở 1.09: ảnh pet trong hướng dẫn hiện lại trên live, nhãn trang 1 đúng chỗ.*
 - [ ] **1.12** Lượt đầu: bong bóng không che bài mình; nói mục tiêu trước cú đập đầu; trận đầu ẩn gió/kiểu đập (F-01, F-04, F-05) — S
 - [ ] **1.13** Nút xem luật to có chữ; nút góc trên điện thoại có chữ; tên không bị cắt (F-12) — S
