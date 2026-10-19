@@ -39,13 +39,24 @@ async function copyText(text, field) {
 
 const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
+// The game could not start. Without WebGL it is the browser's 3D (in-app browsers and old phones turn
+// it off); with WebGL it is a file that did not load (the physics engine), which a reload can fix.
+const hasWebGL = () => {
+  try {
+    const canvas = document.createElement('canvas');
+    return Boolean(canvas.getContext('webgl2') || canvas.getContext('webgl'));
+  } catch { return false; }
+};
 function showFatal() {
+  const noGl = !hasWebGL();
   els.overlay.className = '';
   els.overlay.innerHTML = `
     <div class="menu-bg"><div class="panel menu-card">
       <h1 class="stamp title fatal-title">${escapeHtml(t('fatal.title'))}</h1>
-      <p class="sub">${escapeHtml(t('fatal.body'))}</p>
+      <p class="sub">${escapeHtml(t(noGl ? 'fatal.body' : 'fatal.loadBody'))}</p>
+      ${noGl ? '' : `<button class="btn pri" id="fatal-reload">${escapeHtml(t('common.reload'))}</button>`}
     </div></div>`;
+  if (!noGl) $('fatal-reload').onclick = () => location.reload();
 }
 
 // Off (no script, no change) unless the server set an AdSense id; see ads.js for when an ad may show.
@@ -96,6 +107,22 @@ try {
   throw err;
 }
 window.slamBooted = true;
+// The GPU can drop the 3D context (a phone short on memory, a driver reset). three.js takes it back
+// when the browser restores it; if that has not happened in a few seconds the table would stay
+// frozen, so offer a reload, which rejoins the room by its saved token.
+{
+  let lostTimer = 0;
+  const canvas = world.renderer.domElement;
+  canvas.addEventListener('webglcontextlost', () => {
+    clearTimeout(lostTimer);
+    lostTimer = setTimeout(() => { $('gl-lost').hidden = false; }, 5000);
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    clearTimeout(lostTimer);
+    $('gl-lost').hidden = true;
+  });
+  $('gl-lost-reload').onclick = () => location.reload();
+}
 // On a slow connection the 20 s "still loading?" card (index.html) can show just before boot
 // finishes; it would then sit on top of the menu and block it.
 $('boot-fail').hidden = true;
@@ -495,11 +522,25 @@ addEventListener('pageshow', wakeUp);
 addEventListener('online', wakeUp);
 addEventListener('focus', wakeUp);
 
+// Why the game cannot connect, as far as the page can tell: no network at all; the page's own server
+// answering plain requests while the game socket never opened (a school or office network, a VPN
+// or an ad blocker stopping WebSockets); otherwise the server is down or the network too weak.
+async function netFailReason() {
+  if (navigator.onLine === false) return 'net.offlineBody';
+  if (everConnected) return 'net.failBody';
+  try {
+    const res = await fetch(`./build.json?t=${Date.now()}`, { cache: 'no-store' });
+    return res.ok ? 'net.blockedBody' : 'net.failBody';
+  } catch { return 'net.failBody'; }
+}
+
 function showNetFail() {
   const card = $('netfail');
   if (!card.hidden) return;
   hideToast();
   card.hidden = false;
+  setText($('netfail-body'), t('net.failBody'));
+  netFailReason().then((key) => setText($('netfail-body'), t(key)));
   $('netfail-retry').onclick = () => {
     failures = 0;
     connect();

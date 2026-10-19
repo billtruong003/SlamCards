@@ -234,6 +234,8 @@
   "net.lag": "Bit of lag…",
   "net.failTitle": "Can't reach the server!",
   "net.failBody": "Still can't connect. Check your connection, or wait a bit and try again.",
+  "net.offlineBody": "You're offline. Turn on Wi-Fi or mobile data and try again.",
+  "net.blockedBody": "The page loaded, but this network blocks the game connection (common on school or office Wi-Fi, VPNs and ad blockers). Try mobile data or another network.",
   "net.retry": "Try again",
   "net.retryIn": "Trying again in {secs}s…",
   "net.retrying": "Trying again…",
@@ -338,8 +340,12 @@
   "info.petArt": "3D pets: {name}",
   "info.privacy": "Privacy policy",
   "common.close": "Close",
+  "common.reload": "Reload",
   "common.listSep": ", ",
   "fatal.title": "Can't run the game!",
   "fatal.body": "3D graphics failed. Try Chrome, or enable \"hardware acceleration\" in your browser settings.",
+  "fatal.loadBody": "The game didn't finish loading. Check your connection and reload.",
+  "gl.lostTitle": "Graphics stopped",
+  "gl.lostBody": "Your device switched off the game’s 3D. Reload to get back into the same room.",
   "boot.slow": "Still loading? Reload the page, or try the latest Chrome or Safari!"
 }

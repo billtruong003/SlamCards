@@ -234,6 +234,8 @@
   "net.lag": "조금 끊기네…",
   "net.failTitle": "서버에 연결할 수 없어!",
   "net.failBody": "아직 연결이 안 돼. 인터넷을 확인하거나 잠시 후 다시 시도해 줘.",
+  "net.offlineBody": "인터넷이 끊겼어요. 와이파이나 모바일 데이터를 켜고 다시 해 보세요.",
+  "net.blockedBody": "페이지는 열렸지만 이 네트워크가 게임 연결을 막고 있어요(학교·회사 와이파이, VPN, 광고 차단기에서 흔해요). 모바일 데이터나 다른 네트워크로 해 보세요.",
   "net.retry": "다시 시도",
   "net.retryIn": "{secs}초 후 다시 시도…",
   "net.retrying": "다시 시도 중…",
@@ -338,8 +340,12 @@
   "info.petArt": "3D 펫: {name}",
   "info.privacy": "개인정보 처리방침",
   "common.close": "닫기",
+  "common.reload": "새로고침",
   "common.listSep": ", ",
   "fatal.title": "게임을 실행할 수 없어!",
   "fatal.body": "브라우저에서 3D 그래픽을 시작하지 못했어. Chrome을 쓰거나 브라우저 설정에서 \"하드웨어 가속\"을 켜 줘.",
+  "fatal.loadBody": "게임을 다 불러오지 못했어요. 인터넷을 확인하고 새로고침해 주세요.",
+  "gl.lostTitle": "그래픽이 멈췄어요",
+  "gl.lostBody": "기기가 게임의 3D를 껐어요. 새로고침하면 같은 방으로 돌아가요.",
   "boot.slow": "로딩이 너무 길어? 새로고침하거나 최신 Chrome 또는 Safari로 열어 봐!"
 }

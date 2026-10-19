@@ -4,14 +4,34 @@
     {
       "name": "mockup",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5173", "--directory", "mockup"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5173",
+        "--directory",
+        "mockup"
+      ],
       "port": 5173
     },
     {
       "name": "slam-server",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["proto/server/server.js"],
+      "runtimeArgs": [
+        "proto/server/server.js"
+      ],
       "port": 8097
+    },
+    {
+      "name": "dist-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8099",
+        "--directory",
+        "proto/dist"
+      ],
+      "port": 8099
     }
   ]
 }

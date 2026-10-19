@@ -234,6 +234,8 @@
   "net.lag": "Hay algo de lag…",
   "net.failTitle": "¡No conecta al servidor!",
   "net.failBody": "Sigue sin conectar. Revisa tu conexión o espera un poco y vuelve a intentar.",
+  "net.offlineBody": "No tienes conexión. Activa el Wi-Fi o los datos y vuelve a intentarlo.",
+  "net.blockedBody": "La página cargó, pero esta red bloquea la conexión del juego (pasa en Wi-Fi de escuelas u oficinas, VPN y bloqueadores). Prueba con datos móviles u otra red.",
   "net.retry": "Reintentar",
   "net.retryIn": "Reintentando en {secs}s…",
   "net.retrying": "Reintentando…",
@@ -338,8 +340,12 @@
   "info.petArt": "Mascotas 3D: {name}",
   "info.privacy": "Política de privacidad",
   "common.close": "Cerrar",
+  "common.reload": "Recargar",
   "common.listSep": ", ",
   "fatal.title": "¡No se puede abrir!",
   "fatal.body": "Falló el 3D. Prueba Chrome o activa la \"aceleración de hardware\" en tu navegador.",
+  "fatal.loadBody": "El juego no terminó de cargar. Revisa tu conexión y recarga.",
+  "gl.lostTitle": "Gráficos detenidos",
+  "gl.lostBody": "Tu dispositivo apagó el 3D del juego. Recarga para volver a la misma sala.",
   "boot.slow": "¿Tarda demasiado? ¡Recarga la página o usa la versión más reciente de Chrome o Safari!"
 }

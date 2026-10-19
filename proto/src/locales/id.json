@@ -234,6 +234,8 @@
   "net.lag": "Agak lag nih…",
   "net.failTitle": "Nggak bisa terhubung!",
   "net.failBody": "Masih gagal terhubung. Cek koneksi, atau tunggu sebentar lalu coba lagi.",
+  "net.offlineBody": "Perangkat sedang offline. Nyalakan Wi-Fi atau data seluler lalu coba lagi.",
+  "net.blockedBody": "Halaman termuat, tapi jaringan ini memblokir koneksi game (sering terjadi di Wi-Fi sekolah, kantor, VPN atau pemblokir iklan). Coba data seluler atau jaringan lain.",
   "net.retry": "Coba lagi",
   "net.retryIn": "Coba lagi dalam {secs} detik…",
   "net.retrying": "Mencoba lagi…",
@@ -338,8 +340,12 @@
   "info.petArt": "Pet 3D: {name}",
   "info.privacy": "Kebijakan privasi",
   "common.close": "Tutup",
+  "common.reload": "Muat ulang",
   "common.listSep": ", ",
   "fatal.title": "Game nggak bisa jalan!",
   "fatal.body": "Grafis 3D gagal. Coba Chrome, atau aktifkan \"akselerasi hardware\" di pengaturan browser.",
+  "fatal.loadBody": "Game belum selesai dimuat. Cek koneksi lalu muat ulang ya.",
+  "gl.lostTitle": "Grafis terhenti",
+  "gl.lostBody": "Perangkatmu mematikan grafis 3D game. Muat ulang untuk kembali ke room yang sama.",
   "boot.slow": "Lama banget? Muat ulang halaman, atau pakai Chrome atau Safari versi terbaru!"
 }

@@ -234,6 +234,8 @@
   "net.lag": "Mạng hơi lag…",
   "net.failTitle": "Không nối được server!",
   "net.failBody": "Vẫn chưa kết nối được. Kiểm tra mạng hoặc đợi một chút rồi thử lại nhé.",
+  "net.offlineBody": "Máy đang không có mạng. Bật wifi hoặc 4G rồi thử lại nhé.",
+  "net.blockedBody": "Trang tải được nhưng mạng này đang chặn kết nối của game (hay gặp ở wifi trường, công ty, VPN hoặc trình chặn quảng cáo). Thử 4G hoặc mạng khác nhé.",
   "net.retry": "Thử lại",
   "net.retryIn": "Thử lại sau {secs} giây…",
   "net.retrying": "Đang thử lại…",
@@ -338,8 +340,12 @@
   "info.petArt": "Pet 3D: {name}",
   "info.privacy": "Chính sách riêng tư",
   "common.close": "Đóng",
+  "common.reload": "Tải lại",
   "common.listSep": ", ",
   "fatal.title": "Máy chưa chạy được game!",
   "fatal.body": "Không bật được đồ họa 3D. Thử Chrome hoặc bật \"tăng tốc phần cứng\" trong cài đặt trình duyệt.",
+  "fatal.loadBody": "Tải game chưa xong. Kiểm tra mạng rồi tải lại trang nhé.",
+  "gl.lostTitle": "Đồ hoạ bị gián đoạn",
+  "gl.lostBody": "Máy vừa tắt đồ hoạ 3D của game. Tải lại trang là vào lại đúng phòng.",
   "boot.slow": "Tải lâu quá? Thử tải lại trang hoặc dùng Chrome, Safari bản mới nhé!"
 }

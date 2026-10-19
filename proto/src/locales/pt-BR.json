@@ -234,6 +234,8 @@
   "net.lag": "Tá dando lag…",
   "net.failTitle": "Não conectou ao servidor!",
   "net.failBody": "Ainda não conectou. Confira sua conexão ou espere um pouco e tente de novo.",
+  "net.offlineBody": "Você está sem internet. Ligue o Wi-Fi ou os dados e tente de novo.",
+  "net.blockedBody": "A página carregou, mas esta rede bloqueia a conexão do jogo (comum em Wi-Fi de escola ou trabalho, VPN e bloqueadores). Tente os dados móveis ou outra rede.",
   "net.retry": "Tentar",
   "net.retryIn": "Nova tentativa em {secs}s…",
   "net.retrying": "Tentando de novo…",
@@ -338,8 +340,12 @@
   "info.petArt": "Pets 3D: {name}",
   "info.privacy": "Política de privacidade",
   "common.close": "Fechar",
+  "common.reload": "Recarregar",
   "common.listSep": ", ",
   "fatal.title": "Não deu pra abrir o jogo!",
   "fatal.body": "O 3D falhou. Tente no Chrome ou ative a \"aceleração de hardware\" no navegador.",
+  "fatal.loadBody": "O jogo não terminou de carregar. Confira sua conexão e recarregue.",
+  "gl.lostTitle": "Gráficos pararam",
+  "gl.lostBody": "Seu aparelho desligou o 3D do jogo. Recarregue para voltar à mesma sala.",
   "boot.slow": "Demorando demais? Recarregue a página ou use o Chrome ou Safari atualizado!"
 }

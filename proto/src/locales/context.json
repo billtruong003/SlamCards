@@ -1166,6 +1166,14 @@
     "max": 80,
     "id": "K3"
   },
+  "net.offlineBody": {
+    "where": "Cannot connect: the device has no network at all",
+    "max": 100
+  },
+  "net.blockedBody": {
+    "where": "Cannot connect: the page loads but the network blocks the game's live connection (WebSocket); suggest mobile data",
+    "max": 180
+  },
   "net.retry": {
     "where": "Connection-failed card: retry button",
     "max": 10,
@@ -1667,6 +1675,10 @@
     "max": 8,
     "id": "J6"
   },
+  "common.reload": {
+    "where": "Button: reload the page",
+    "max": 14
+  },
   "common.listSep": {
     "where": "Separator between names in a list (e.g. \"A, B\")",
     "max": 3
@@ -1680,6 +1692,18 @@
     "where": "3D failed: explanation (\"hardware acceleration\" setting)",
     "max": 100,
     "id": "K6"
+  },
+  "fatal.loadBody": {
+    "where": "Start failed although 3D works: a game file did not load; a reload button follows",
+    "max": 100
+  },
+  "gl.lostTitle": {
+    "where": "Card heading: the device dropped the game's 3D graphics mid-game",
+    "max": 25
+  },
+  "gl.lostBody": {
+    "where": "Card text: 3D was dropped by the device; reloading puts the player back in the same room",
+    "max": 100
   },
   "boot.slow": {
     "where": "Browser too old / game took too long to load (static HTML copy stays Vietnamese if JS never runs)",

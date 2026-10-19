@@ -234,6 +234,8 @@
   "net.lag": "有點卡…",
   "net.failTitle": "連不上伺服器！",
   "net.failBody": "還是連不上。檢查網路，或等一下再試。",
+  "net.offlineBody": "裝置沒有連網。打開 Wi-Fi 或行動數據後再試。",
+  "net.blockedBody": "頁面打開了，但這個網路攔截了遊戲連線（學校、公司 Wi-Fi、VPN 或廣告攔截器常見）。換行動數據或其他網路試試。",
   "net.retry": "重試",
   "net.retryIn": "{secs}秒後自動重試…",
   "net.retrying": "重試中…",
@@ -338,8 +340,12 @@
   "info.petArt": "3D 寵物：{name}",
   "info.privacy": "隱私權政策",
   "common.close": "關閉",
+  "common.reload": "重新載入",
   "common.listSep": "、",
   "fatal.title": "遊戲跑不起來！",
   "fatal.body": "瀏覽器無法啟動3D畫面。試試Chrome，或在瀏覽器設定中開啟「硬體加速」。",
+  "fatal.loadBody": "遊戲沒載入完。檢查網路後重新載入吧。",
+  "gl.lostTitle": "畫面中斷了",
+  "gl.lostBody": "裝置關閉了遊戲的3D畫面。重新載入就能回到同一個房間。",
   "boot.slow": "載入太久了？重新整理網頁，或用最新版Chrome、Safari開啟試試！"
 }

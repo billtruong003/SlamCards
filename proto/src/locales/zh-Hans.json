@@ -234,6 +234,8 @@
   "net.lag": "有点卡…",
   "net.failTitle": "连不上服务器！",
   "net.failBody": "还是连不上。检查网络，或等一会儿再试。",
+  "net.offlineBody": "设备没有联网。打开 Wi-Fi 或移动数据后再试。",
+  "net.blockedBody": "页面打开了，但这个网络拦截了游戏连接（学校、公司 Wi-Fi、VPN 或广告拦截器常见）。换移动数据或其他网络试试。",
   "net.retry": "重试",
   "net.retryIn": "{secs}秒后自动重试…",
   "net.retrying": "正在重试…",
@@ -338,8 +340,12 @@
   "info.petArt": "3D 宠物：{name}",
   "info.privacy": "隐私政策",
   "common.close": "关闭",
+  "common.reload": "重新加载",
   "common.listSep": "、",
   "fatal.title": "游戏跑不起来！",
   "fatal.body": "浏览器无法启动3D画面。试试Chrome，或在浏览器设置中开启“硬件加速”。",
+  "fatal.loadBody": "游戏没加载完。检查网络后重新加载吧。",
+  "gl.lostTitle": "画面中断了",
+  "gl.lostBody": "设备关闭了游戏的3D画面。重新加载就能回到同一个房间。",
   "boot.slow": "加载太久了？刷新页面，或用最新版Chrome、Safari打开试试！"
 }

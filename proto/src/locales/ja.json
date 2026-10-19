@@ -234,6 +234,8 @@
   "net.lag": "ちょっとラグい…",
   "net.failTitle": "サーバーにつながらない！",
   "net.failBody": "まだつながらないよ。通信環境を確認するか、少し待ってからもう一度試してね。",
+  "net.offlineBody": "オフラインだよ。Wi-Fiかモバイル通信をオンにしてもう一度試してね。",
+  "net.blockedBody": "ページは開けたけど、このネットワークがゲームの接続をブロックしているよ（学校や会社のWi-Fi、VPN、広告ブロッカーでよくある）。モバイル通信か別のネットワークで試してね。",
   "net.retry": "再試行",
   "net.retryIn": "{secs}秒後に再試行…",
   "net.retrying": "再試行中…",
@@ -338,8 +340,12 @@
   "info.petArt": "3Dペット：{name}",
   "info.privacy": "プライバシーポリシー",
   "common.close": "閉じる",
+  "common.reload": "再読み込み",
   "common.listSep": "、",
   "fatal.title": "ゲームを起動できない！",
   "fatal.body": "ブラウザで3D表示を開始できないよ。Chromeで開くか、ブラウザ設定の「ハードウェア アクセラレーション」をオンにしてね。",
+  "fatal.loadBody": "読み込みが終わらなかったよ。通信を確認して再読み込みしてね。",
+  "gl.lostTitle": "画面が止まった",
+  "gl.lostBody": "端末がゲームの3D表示を止めたよ。再読み込みすると同じルームに戻れるよ。",
   "boot.slow": "読み込みが長い？ 再読み込みするか、最新版のChromeやSafariで開いてみて！"
 }
