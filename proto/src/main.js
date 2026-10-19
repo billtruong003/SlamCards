@@ -152,6 +152,7 @@ let playback = null;
 let awaitingServer = false;
 let appliedCardsKey = '';
 let overlayKey = '';
+let rpsDrawRound = null; // the round whose rock-paper-scissors just ended in a draw
 let hudKey = '';
 let lastWindKey = '';
 let lastEventKey = '';
@@ -741,7 +742,8 @@ function onState(next) {
   petReactions();
   applyStateCards();
 
-  const gone = Object.keys(state.players).filter((s) => s !== me && !state.players[s].connected && !state.players[s].left);
+  // a lost connection mid-match waits up to 60 s for them; on the results screen nobody waits
+  const gone = state.phase === 'matchEnd' ? [] : Object.keys(state.players).filter((s) => s !== me && !state.players[s].connected && !state.players[s].left);
   if (gone.length) showToast(t('toast.dropped', { names: list(gone.map(nameOf)) }));
   else if (els.toast.dataset.sticky) hideToast();
 
@@ -1312,11 +1314,13 @@ function renderQueue(msg) {
   const startsIn = msg?.startsInMs ? Math.ceil(msg.startsInMs / 1000) : 0;
   const fewer = size !== 'any' && waited > 20000 && peers.length >= 1 && peers.length + 1 < size ? peers.length + 1 : 0;
   const people = [{ name: currentName(), pet: playerLook.get().pet, you: true }, ...peers];
-  const key = `queue-${size}-${Math.floor(waited / 1000)}-${people.map((p) => p.name).join('|')}-${startsIn}-${fewer}`;
-  if (!setOverlay(key, `
+  // built again only when who is there changes (it was every second, and a tap could be lost, F-07);
+  // the clock and the countdown are updated in place
+  const key = `queue-${size}-${people.map((p) => p.name).join('|')}-${Boolean(startsIn)}-${fewer}`;
+  const fresh = setOverlay(key, `
     <div class="menu-bg"><div class="panel menu-card queue-card">
       <h1 class="stamp" style="font-size:36px">${t('queue.title')}</h1>
-      <p class="sub">${size === 'any' ? t('queue.sizeAny') : t('queue.size', { n: size })} · ${t('queue.waited', { time: mmss(waited) })}</p>
+      <p class="sub">${size === 'any' ? t('queue.sizeAny') : t('queue.size', { n: size })} · <span id="queue-waited"></span></p>
       <div class="queue-seats">
         ${Array.from({ length: seatsShown }, (_, i) => {
     const p = people[i];
@@ -1324,11 +1328,14 @@ function renderQueue(msg) {
     return `<div class="slot seat ${SEATS[i]}"><img class="slot-dep pet" src="${petThumb(p.pet ?? 'cat')}" alt="">${escapeHtml(p.name)}<small>${p.you ? t('lobby.you') : t('queue.justIn')}</small></div>`;
   }).join('')}
       </div>
-      ${startsIn ? `<p class="queue-go">${t('queue.startsIn', { n: people.length, secs: startsIn })}</p><p class="sub">${t('queue.anyNote')}</p>`
+      ${startsIn ? `<p class="queue-go" id="queue-go"></p><p class="sub">${t('queue.anyNote')}</p>`
     : size === 'any' ? '' : `<p class="sub">${t('queue.fullNote', { n: size })}</p>`}
       ${fewer ? `<button class="btn pri wide" id="queue-fewer">${t('queue.fewer', { n: fewer })}</button>` : ''}
       <button class="btn wide" id="queue-cancel">${t('queue.cancel')}</button>
-    </div></div>`)) return;
+    </div></div>`);
+  setText($('queue-waited'), t('queue.waited', { time: mmss(waited) }));
+  if (startsIn) setText($('queue-go'), t('queue.startsIn', { n: people.length, secs: startsIn }));
+  if (!fresh) return;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
   $('queue-cancel').onclick = () => {
     send({ t: 'unqueue' });
@@ -1447,20 +1454,27 @@ function renderOverlay() {
         setOverlay(`rps-watch-${s.round}`, `<div class="panel"><h1 class="stamp" style="font-size:44px">${t('rps.watching')}</h1></div>`);
         break;
       }
+      // Built again only when the player's own pick changes: the other player choosing used to redraw
+      // the buttons, and a tap in that moment was lost (F-07). The status line updates in place.
       const opp = opponentsOf(me)[0];
       const chosen = s.rpsChosen[me];
-      setOverlay(`rps-${s.round}-${chosen}-${s.rpsChosen[opp]}`, `
+      const again = rpsDrawRound === s.round;
+      if (setOverlay(`rps-${s.round}-${chosen}-${again}`, `
         <div class="panel">
+          ${again && !chosen ? `<p class="sub rps-again">${t('rps.again')}</p>` : ''}
           <h1 class="stamp" style="font-size:52px">${t('rps.title')}</h1>
           ${chosen ? `<p class="sub">${t('rps.locked')}</p>` : `
           <div class="row">
             ${Object.keys(RPS_ICON).map((k) => `<button class="rps" data-rps="${k}"><span class="icon">${RPS_ICON[k]}</span>${t(`rps.${k}`)}</button>`).join('')}
           </div>`}
-          <p class="sub">${t(s.rpsChosen[opp] ? 'rps.oppLocked' : 'rps.oppChoosing', { name: htmlName(opp) })} · <span id="rps-timer"></span></p>
-        </div>`);
-      els.overlay.querySelectorAll('[data-rps]').forEach((b) => {
-        b.onclick = () => send({ t: 'rps', choice: b.dataset.rps });
-      });
+          <p class="sub"><span id="rps-status"></span> · <span id="rps-timer"></span></p>
+        </div>`)) {
+        els.overlay.querySelectorAll('[data-rps]').forEach((b) => {
+          b.onclick = () => send({ t: 'rps', choice: b.dataset.rps });
+        });
+      }
+      // what the player is waiting for: their own pick first, then the other's
+      $('rps-status').innerHTML = !chosen ? t('rps.pickNow') : t(s.rpsChosen[opp] ? 'rps.oppLocked' : 'rps.oppChoosing', { name: htmlName(opp) });
       break;
     }
     case 'rpsReveal': {
@@ -1468,6 +1482,7 @@ function renderOverlay() {
       const left = s.alive.includes(me) ? me : a;
       const right = left === a ? b : a;
       const title = !s.rpsWinner ? t('rps.draw') : s.rpsWinner === me ? t('rps.youWin') : t('rps.theyWin', { name: escapeHtml(nameOf(s.rpsWinner)).toUpperCase() });
+      rpsDrawRound = s.rpsWinner ? null : s.round; // the next pick says it is a replay
       setOverlay(`reveal-${s.round}-${s.rpsShow[a]}-${s.rpsShow[b]}-${s.rpsWinner}`, `
         <div class="panel">
           <div class="row">
@@ -1489,12 +1504,13 @@ function renderOverlay() {
               <button class="btn" id="yield">${t('choose.yield')}</button>
             </div>
             <p class="sub" style="font-weight:500">${t('choose.note')}</p>
+            <p class="sub"><span id="rps-timer"></span></p>
           </div>`)) {
           $('first').onclick = () => send({ t: 'choose', first: true });
           $('yield').onclick = () => send({ t: 'choose', first: false });
         }
       } else {
-        setOverlay(`choose-wait-${s.round}`, `<div class="panel"><h1 class="stamp" style="font-size:40px">${t('choose.wait', { name: escapeHtml(nameOf(s.rpsWinner)) })}</h1></div>`);
+        setOverlay(`choose-wait-${s.round}`, `<div class="panel"><h1 class="stamp" style="font-size:40px">${t('choose.wait', { name: escapeHtml(nameOf(s.rpsWinner)) })}</h1><p class="sub"><span id="rps-timer"></span></p></div>`);
       }
       break;
     case 'order':
@@ -1611,7 +1627,12 @@ function updateBannerAndHint() {
     return;
   }
   const secs = remainingSeconds();
-  if (mine) {
+  if (state.autoSlam) {
+    // the forced turn ran out: the game slams for the player (it used to show "0s" for 10 s)
+    setText(els.banner, t('turn.autoSlam', { name: (mine ? t('rps.you') : nameOf(state.turn)).toUpperCase() }));
+    setClass(els.banner, 'pink');
+    setText(els.hint, '');
+  } else if (mine) {
     setText(els.banner, t(state.forced ? 'turn.forced' : 'turn.mine', { secs }));
     setClass(els.banner, state.forced ? 'pink' : '');
     setText(els.hint, t(state.forced ? 'turn.hintForced' : TOUCH ? 'turn.hintTouch' : 'turn.hintMouse'));

@@ -939,6 +939,14 @@
     "max": 25,
     "id": "C6"
   },
+  "rps.pickNow": {
+    "where": "Rock-paper-scissors status line before the player has picked (a countdown follows)",
+    "max": 20
+  },
+  "rps.again": {
+    "where": "Above rock-paper-scissors when the last round was a draw and the pick starts over",
+    "max": 26
+  },
   "rps.timer": {
     "where": "Seconds left, short unit",
     "max": 5
@@ -1026,6 +1034,10 @@
     "where": "Banner: you must slam (passed last turn)",
     "max": 22,
     "id": "D5"
+  },
+  "turn.autoSlam": {
+    "where": "Turn banner when a forced turn ran out and the game slams for that player; {name} is the player (or 'M'/'YOU' for oneself), upper case",
+    "max": 30
   },
   "turn.other": {
     "where": "Banner: {name}'s turn ({name} upper-cased)",
@@ -1607,9 +1619,12 @@
     "id": "I17e"
   },
   "rules.r6": {
-    "where": "Quick rule 6: 30 s timeout = lose the turn",
-    "max": 35,
-    "id": "I17f"
+    "where": "Rules panel line 6: a turn that times out is lost; on a forced (must-slam) turn the game slams for the player",
+    "max": 80
+  },
+  "rules.r7": {
+    "where": "Rules panel line 7: two timeouts in a row put the player out of that round",
+    "max": 55
   },
   "rules.replay": {
     "where": "Quick-rules button: replay the tutorial",

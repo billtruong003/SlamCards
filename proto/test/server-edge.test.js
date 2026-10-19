@@ -192,6 +192,9 @@ test('timeouts: plain turn passes, forced turn gets autoSlam, a second timeout p
     const s1 = await b.waitState((s) => s.turn === 'pink', 2000);
     assert.equal(s1.event.type, 'timeout');
     await autoSlam;
+    // the other player is told the game is slamming for black, not shown a clock stuck at 0
+    const told = await b.waitState((s) => s.autoSlam === true, 2000);
+    assert.equal(told.turn, 'black');
     const out = await a.waitState((s) => s.phase === 'roundEnd', 4000);
     assert.equal(out.result.reason, 'afk');
     assert.equal(out.result.winner, 'pink');

@@ -61,7 +61,7 @@ const pages = () => [
   },
 ];
 
-const RULES = [['ok', '✓'], ['bad', '✗'], ['bad', '✗'], ['no', '–'], ['no', '!'], ['no', '!']];
+const RULES = [['ok', '✓'], ['bad', '✗'], ['bad', '✗'], ['no', '–'], ['no', '!'], ['no', '!'], ['bad', '✗']];
 
 // track(name): a first-steps moment for the server's counts (server/metrics.js CLIENT_EVENTS).
 export function createFtue({ send, track = () => {}, world, touch, toastVisible, hidePanels }) {

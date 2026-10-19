@@ -214,6 +214,7 @@ function publicState(room, you) {
     turn: room.turn,
     wind: room.wind,
     forced: room.turn ? room.passStreak[room.turn] >= 1 : false,
+    autoSlam: Boolean(room.autoSlam),
     cards: room.cards,
     players: Object.fromEntries(Object.entries(room.players).map(([seat, p]) => [seat, {
       connected: p.connected, name: p.name, left: Boolean(p.left), tutorial: p.tutorial || 0,
@@ -422,6 +423,7 @@ function newWind() {
 }
 
 function startTurn(room) {
+  room.autoSlam = false;
   const forced = room.passStreak[room.turn] >= 1;
   log(room, `turn ${room.turn} forced=${forced}`);
   room.phase = 'turn';
@@ -442,7 +444,9 @@ function scheduleTurnEnd(room, ms) {
       return;
     }
     send(player.ws, { t: 'autoSlam' });
+    room.autoSlam = true; // everyone sees "slamming for them" instead of a clock stuck at 0
     schedule(room, TIMING.forcedGrace, () => registerPass(room, null));
+    broadcast(room);
   });
 }
 
