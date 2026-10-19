@@ -1101,6 +1101,14 @@
     "max": 45,
     "id": "D14"
   },
+  "out.text": {
+    "where": "Card shown to a player knocked out mid-round (3-4 players): how many are still in, and that they play again next round",
+    "max": 90
+  },
+  "out.watch": {
+    "where": "Button on that card: put it away and watch the round",
+    "max": 18
+  },
   "turn.tooLate": {
     "where": "Pop text where the player tapped in the last ~0.6 s of their turn, when a slam can no longer be sent",
     "max": 10,

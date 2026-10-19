@@ -222,6 +222,8 @@
   "turn.hintWatching": "{name} 타격 보는 중",
   "turn.hintAiming": "{name} 조준 중…",
   "turn.hintOut": "탈락했어! 남은 승부 구경하자.",
+  "out.text": "이번 판은 탈락! 아직 {n}명이 남았고, 다음 판에 다시 들어와요.",
+  "out.watch": "계속 보기",
   "turn.tooLate": "늦었어!",
   "card.up": "▲ 앞면",
   "card.down": "▼ 뒷면",

@@ -222,6 +222,8 @@
   "turn.hintWatching": "Nonton {name} gebuk",
   "turn.hintAiming": "{name} lagi membidik…",
   "turn.hintOut": "Kamu tersingkir! Nonton lanjut aja.",
+  "out.text": "Kamu gugur di babak ini. Masih {n} pemain; kamu main lagi babak depan!",
+  "out.watch": "Tonton terus",
   "turn.tooLate": "Telat!",
   "card.up": "▲ BUKA",
   "card.down": "▼ TUTUP",

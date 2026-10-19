@@ -717,6 +717,17 @@ function dropPlayer(room, seat) {
     }
     return;
   }
+  // A quick match keeps its size for the people still in it: a computer player takes the seat (a
+  // new name, the same cards on the table), and the old token no longer opens it.
+  if (room.kind === 'quick' && !['lobby', 'matchEnd'].includes(room.phase) && !player.bot && peopleIn(room).some((s) => s !== seat)) {
+    clearTimeout(player.discTimer);
+    Object.assign(player, { bot: true, connected: true, ws: null, token: crypto.randomUUID(), tutorial: 0, skill: 0.3 + Math.random() * 0.5 });
+    player.name = uniqueName(room, botName());
+    log(room, `${seat} left, a computer player takes the seat`);
+    broadcast(room);
+    driveBots(room);
+    return;
+  }
   player.left = true;
   // only computer players left: nobody to play for
   if (!peopleIn(room).length) {

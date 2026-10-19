@@ -222,6 +222,8 @@
   "turn.hintWatching": "正在看{name}拍卡",
   "turn.hintAiming": "{name}正在瞄准…",
   "turn.hintOut": "你出局了！留下来看戏吧。",
+  "out.text": "你本局出局了。还剩 {n} 人在拍，下一局你回来！",
+  "out.watch": "继续看",
   "turn.tooLate": "来不及了！",
   "card.up": "▲ 正面",
   "card.down": "▼ 背面",

@@ -222,6 +222,8 @@
   "turn.hintWatching": "{name}のプレイを見てる",
   "turn.hintAiming": "{name}が狙ってる…",
   "turn.hintOut": "脱落！ あとは勝負を見届けよう。",
+  "out.text": "このラウンドは脱落。あと{n}人が勝負中、次のラウンドで復活！",
+  "out.watch": "観戦する",
   "turn.tooLate": "間に合わない！",
   "card.up": "▲ 表",
   "card.down": "▼ 裏",

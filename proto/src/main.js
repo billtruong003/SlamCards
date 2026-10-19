@@ -337,6 +337,7 @@ function leaveRoom() {
   social.closeAll();
   $('leave').hidden = true;
   disarmLeave();
+  $('out-card').hidden = true;
   state = null;
   me = null;
   roomCode = null;
@@ -1671,7 +1672,35 @@ const setText = (el, text) => { if (el.textContent !== text) el.textContent = te
 const setClass = (el, name) => { if (el.className !== name) el.className = name; };
 const setHidden = (el, hidden) => { if (el.hidden !== hidden) el.hidden = hidden; };
 
+// Knocked out while the round goes on (3-4 players): the card says who is still in and that the
+// next round brings them back, and offers to watch on or (quick match) find a new one. "Xem tiếp"
+// puts it away for the round.
+let outPutAwayRound = null;
+function updateOutCard() {
+  const out = Boolean(state && me) && ['order', 'turn', 'anim'].includes(state.phase) && state.seats.includes(me)
+    && !state.alive.includes(me) && outPutAwayRound !== state.round;
+  setHidden($('out-card'), !out);
+  if (!out) return;
+  setText($('out-text'), t('out.text', { n: state.alive.length }));
+  setHidden($('out-new'), state.kind !== 'quick');
+}
+$('out-watch').textContent = t('out.watch');
+$('out-new').textContent = t('match.findNew');
+$('out-watch').onclick = () => {
+  outPutAwayRound = state?.round ?? null;
+  updateOutCard();
+};
+$('out-new').onclick = () => {
+  send({ t: 'leave' });
+  const code = roomCode;
+  leaveRoom();
+  forgetToken(code);
+  history.replaceState(null, '', location.pathname);
+  sendQueue(playerSize.get());
+};
+
 function updateBannerAndHint() {
+  updateOutCard();
   if (!state || !['turn', 'anim'].includes(state.phase)) {
     setHidden(els.banner, true);
     setHidden(els.hint, true);

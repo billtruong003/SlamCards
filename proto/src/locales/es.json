@@ -222,6 +222,8 @@
   "turn.hintWatching": "Viendo jugar a {name}",
   "turn.hintAiming": "{name} está apuntando…",
   "turn.hintOut": "¡Quedaste fuera! Quédate a ver el resto.",
+  "out.text": "Quedaste fuera esta ronda. Quedan {n} jugadores; ¡vuelves en la siguiente!",
+  "out.watch": "Seguir viendo",
   "turn.tooLate": "¡Tarde!",
   "card.up": "▲ ARRIBA",
   "card.down": "▼ ABAJO",

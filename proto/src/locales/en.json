@@ -222,6 +222,8 @@
   "turn.hintWatching": "Watching {name} slam",
   "turn.hintAiming": "{name} is aiming…",
   "turn.hintOut": "You're out! Stay for the show.",
+  "out.text": "You're out this round. {n} players are still slamming; you're back next round!",
+  "out.watch": "Keep watching",
   "turn.tooLate": "Too late!",
   "card.up": "▲ UP",
   "card.down": "▼ DOWN",

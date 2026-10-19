@@ -80,3 +80,26 @@ test('alone in the queue: a computer player fills the table, plays its turns thr
     assert.equal((await peek.next((m) => m.t === 'peek')).exists, false);
   } finally { srv.stop(); }
 });
+
+test('someone leaving a quick match mid-way: a computer player takes the seat and the others play on', async () => {
+  const srv = await startServer({ queueTick: 50, quickStart: 100, anyCountdown: 60000, turn: 20000 });
+  try {
+    const players = await Promise.all([1, 2, 3].map(() => connect(srv.port)));
+    players.forEach((p, i) => p.send({ t: 'queue', size: 3, name: `P${i}` }));
+    await Promise.all(players.map((p) => p.next((m) => m.t === 'joined', 3000)));
+    const [a, b, c] = players;
+    await a.waitState((s) => s.phase !== 'lobby', 3000);
+    const before = a.state;
+    c.send({ t: 'leave' });
+    const s = await a.waitState((st) => st.players[c.seat].name !== before.players[c.seat].name, 2000);
+    assert.equal(Object.keys(s.players).length, 3, 'still three at the table');
+    assert.equal(s.players[c.seat].connected, true);
+    assert.ok(!s.players[c.seat].left);
+    assert.match(srv.log(), /a computer player takes the seat/);
+    // the leaver's link no longer opens the seat
+    const back = await connect(srv.port);
+    back.send({ t: 'join', code: c.code, token: c.token, name: 'P2' });
+    assert.equal((await back.next((m) => m.t === 'error' || m.t === 'joined')).t, 'error');
+    void b;
+  } finally { srv.stop(); }
+});

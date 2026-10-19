@@ -222,6 +222,8 @@
   "turn.hintWatching": "Vendo {name} bater",
   "turn.hintAiming": "{name} tá mirando…",
   "turn.hintOut": "Você tá fora! Fica pra ver o resto.",
+  "out.text": "Você saiu desta rodada. Ainda há {n} jogadores; você volta na próxima!",
+  "out.watch": "Continuar vendo",
   "turn.tooLate": "Tarde!",
   "card.up": "▲ CIMA",
   "card.down": "▼ BAIXO",

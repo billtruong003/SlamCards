@@ -222,6 +222,8 @@
   "turn.hintWatching": "Đang xem {name} đập",
   "turn.hintAiming": "{name} đang ngắm…",
   "turn.hintOut": "M bị loại rồi! Ngồi hóng tiếp thôi.",
+  "out.text": "M bị loại ván này. Còn {n} người đang đập, ván sau m vào lại!",
+  "out.watch": "Xem tiếp",
   "turn.tooLate": "Muộn rồi!",
   "card.up": "▲ NGỬA",
   "card.down": "▼ ÚP",

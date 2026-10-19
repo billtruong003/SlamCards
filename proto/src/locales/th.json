@@ -222,6 +222,8 @@
   "turn.hintWatching": "ดู {name} ตบ",
   "turn.hintAiming": "{name} กำลังเล็ง…",
   "turn.hintOut": "เธอตกรอบแล้ว! อยู่ดูต่อได้เลย",
+  "out.text": "คุณตกรอบนี้ ยังเหลือ {n} คน รอบหน้ากลับมาเล่นได้!",
+  "out.watch": "ดูต่อ",
   "turn.tooLate": "ช้าไปแล้ว!",
   "card.up": "▲ หงาย",
   "card.down": "▼ คว่ำ",
