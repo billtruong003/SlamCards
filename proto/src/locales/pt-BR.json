@@ -43,7 +43,7 @@
   "queue.startsIn": "Já tem {n}! Começa em {secs}s…",
   "queue.anyNote": "Mais uns segundos pra ver se chega alguém.",
   "queue.fullNote": "Começa assim que tiver {n} pessoas.",
-  "queue.fewer": "Começar com {n}",
+  "queue.flexNote": "Está vazio, agora você entra numa mesa de qualquer tamanho.",
   "queue.cancel": "Cancelar",
   "queue.slot": "Procurando…",
   "queue.justIn": "chegou agora",

@@ -43,7 +43,7 @@
   "queue.startsIn": "Ada {n} orang! Mulai {secs} detik lagi…",
   "queue.anyNote": "Tunggu sebentar lagi, siapa tahu ada yang ikut.",
   "queue.fullNote": "Begitu ada {n} orang, langsung mulai.",
-  "queue.fewer": "Mulai {n} orang aja",
+  "queue.flexNote": "Lagi sepi, sekarang kamu masuk meja berapa pun pemainnya.",
   "queue.cancel": "Batal",
   "queue.slot": "Nyari…",
   "queue.justIn": "baru masuk",

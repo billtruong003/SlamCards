@@ -1323,19 +1323,19 @@ function sendQueue(size) {
 
 const mmss = (ms) => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`;
 
-// While waiting: me, whoever would come along, empty seats still searching. An exact size
-// waiting 20 s with at least one other player can settle for fewer.
+// While waiting: me, whoever would come along, empty seats still searching. After 15 s an exact
+// size takes any table (the server's queueFlex) and the screen says so.
 function renderQueue(msg) {
   const size = queueing.size;
   const peers = msg?.peers ?? [];
   const waited = msg?.waitedMs ?? Date.now() - queueing.since;
   const seatsShown = size === 'any' ? Math.max(4, peers.length + 1) : size;
   const startsIn = msg?.startsInMs ? Math.ceil(msg.startsInMs / 1000) : 0;
-  const fewer = size !== 'any' && waited > 20000 && peers.length >= 1 && peers.length + 1 < size ? peers.length + 1 : 0;
   const people = [{ name: currentName(), pet: playerLook.get().pet, you: true }, ...peers];
   // built again only when who is there changes (it was every second, and a tap could be lost, F-07);
   // the clock and the countdown are updated in place
-  const key = `queue-${size}-${people.map((p) => p.name).join('|')}-${Boolean(startsIn)}-${fewer}`;
+  const flexible = Boolean(msg?.flexible);
+  const key = `queue-${size}-${people.map((p) => p.name).join('|')}-${Boolean(startsIn)}-${flexible}`;
   const fresh = setOverlay(key, `
     <div class="menu-bg"><div class="panel menu-card queue-card">
       <h1 class="stamp" style="font-size:36px">${t('queue.title')}</h1>
@@ -1348,8 +1348,7 @@ function renderQueue(msg) {
   }).join('')}
       </div>
       ${startsIn ? `<p class="queue-go" id="queue-go"></p><p class="sub">${t('queue.anyNote')}</p>`
-    : size === 'any' ? '' : `<p class="sub">${t('queue.fullNote', { n: size })}</p>`}
-      ${fewer ? `<button class="btn pri wide" id="queue-fewer">${t('queue.fewer', { n: fewer })}</button>` : ''}
+    : size === 'any' ? '' : `<p class="sub">${t(flexible ? 'queue.flexNote' : 'queue.fullNote', { n: size })}</p>`}
       <button class="btn wide" id="queue-cancel">${t('queue.cancel')}</button>
     </div></div>`);
   setText($('queue-waited'), t('queue.waited', { time: mmss(waited) }));
@@ -1361,7 +1360,6 @@ function renderQueue(msg) {
     queueing = null;
     renderMenu();
   };
-  if (fewer) $('queue-fewer').onclick = () => sendQueue(fewer);
 }
 
 // The match in a few lines under the scores: each round, who won it and how; then how long it took.

@@ -43,7 +43,7 @@
   "queue.startsIn": "Got {n} players! Starting in {secs}s…",
   "queue.anyNote": "Waiting a few more seconds for others to join.",
   "queue.fullNote": "Starts as soon as {n} players are in.",
-  "queue.fewer": "Start with {n}",
+  "queue.flexNote": "It's quiet, so you'll join a table of any size now.",
   "queue.cancel": "Cancel",
   "queue.slot": "Searching…",
   "queue.justIn": "just joined",

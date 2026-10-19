@@ -43,7 +43,7 @@
   "queue.startsIn": "找到{n}人！{secs}秒後開始…",
   "queue.anyNote": "再等幾秒，說不定還有人來。",
   "queue.fullNote": "湊齊 {n} 人就開始。",
-  "queue.fewer": "就{n}人開打",
+  "queue.flexNote": "人太少了，現在幾個人的桌都可以進。",
   "queue.cancel": "取消",
   "queue.slot": "尋找中…",
   "queue.justIn": "剛加入",

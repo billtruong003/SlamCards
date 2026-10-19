@@ -45,6 +45,7 @@ const TIMING = {
   lobbyHostDisconnect: 180000,
   quickStart: 1200,      // quick match: room made, then the first round starts
   anyCountdown: 5000,    // quick match "any": 2 found, then wait this long for more
+  queueFlex: 15000,      // a player waiting for an exact size takes any table after this long
   queueTick: 400,
 };
 // Tests shorten the clock: SLAM_TIMING='{"turn":500}'.
@@ -1134,12 +1135,17 @@ function startQuickRoom(entries) {
   schedule(room, TIMING.quickStart, () => startMatch(room));
 }
 
+// After waiting queueFlex, a player who asked for an exact size takes any table: a "2" and a "3"
+// used to sit in separate lines and both wait forever when the game was quiet (V-18).
+const flexible = (e, now) => e.size === 'any' || now - e.at >= TIMING.queueFlex;
+
 function matchQueue() {
   for (const e of queue.filter((q) => q.ws.readyState !== q.ws.OPEN)) leaveQueue(e.ws);
-  const any = queue.filter((e) => e.size === 'any');
-  // exact sizes, biggest first, topped up with 'any'
+  const now = Date.now();
+  const any = queue.filter((e) => flexible(e, now));
+  // exact sizes, biggest first, topped up with whoever takes any table
   for (const n of [4, 3, 2]) {
-    const exact = queue.filter((e) => e.size === n);
+    const exact = queue.filter((e) => e.size === n && !flexible(e, now));
     if (exact.length && exact.length + any.length >= n) {
       startQuickRoom([...exact, ...any].slice(0, n));
       matchQueue();
@@ -1165,14 +1171,17 @@ function matchQueue() {
   }
   // tell each waiting player who would come with them
   for (const e of queue) {
-    const group = e.size === 'any' ? any : [...queue.filter((o) => o.size === e.size), ...any].slice(0, e.size);
+    const flex = flexible(e, now);
+    const group = flex ? any : [...queue.filter((o) => o.size === e.size && !flexible(o, now)), ...any].slice(0, e.size);
     send(e.ws, {
       t: 'queue',
       state: 'waiting',
       size: e.size,
-      waitedMs: Date.now() - e.at,
+      // an exact-size wait that now takes any table: the screen says so
+      flexible: flex && e.size !== 'any',
+      waitedMs: now - e.at,
       peers: group.filter((o) => o !== e).map((o) => ({ name: o.name, dep: o.dep, pet: o.look.pet })),
-      startsInMs: e.size === 'any' && anyCountdownAt ? Math.max(0, anyCountdownAt - Date.now()) : 0,
+      startsInMs: flex && anyCountdownAt ? Math.max(0, anyCountdownAt - now) : 0,
     });
   }
 }

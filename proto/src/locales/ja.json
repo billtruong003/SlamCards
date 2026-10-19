@@ -43,7 +43,7 @@
   "queue.startsIn": "{n}人集まった！あと{secs}秒で開始…",
   "queue.anyNote": "もう少し誰か来るか、あと数秒待つよ。",
   "queue.fullNote": "{n}人そろったらすぐ開始。",
-  "queue.fewer": "{n}人で始める",
+  "queue.flexNote": "人が少ないので、人数に関係なく卓に入るよ。",
   "queue.cancel": "キャンセル",
   "queue.slot": "さがし中…",
   "queue.justIn": "来たよ",

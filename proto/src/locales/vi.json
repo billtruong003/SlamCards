@@ -43,7 +43,7 @@
   "queue.startsIn": "Có {n} người! Bắt đầu sau {secs}s…",
   "queue.anyNote": "Đợi thêm vài giây, biết đâu có người vào nữa.",
   "queue.fullNote": "Đủ {n} người là bắt đầu.",
-  "queue.fewer": "Chơi luôn {n} người",
+  "queue.flexNote": "Vắng người quá, giờ ghép luôn bàn bao nhiêu người cũng được.",
   "queue.cancel": "Hủy",
   "queue.slot": "Đang tìm…",
   "queue.justIn": "mới vào",

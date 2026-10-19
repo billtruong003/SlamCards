@@ -43,7 +43,7 @@
   "queue.startsIn": "มี {n} คนแล้ว! เริ่มใน {secs} วิ…",
   "queue.anyNote": "รออีกนิด เผื่อมีคนมาเพิ่ม",
   "queue.fullNote": "ครบ {n} คนก็เริ่มเลย",
-  "queue.fewer": "เล่น {n} คนเลย",
+  "queue.flexNote": "คนน้อย ตอนนี้จะจับโต๊ะกี่คนก็ได้",
   "queue.cancel": "ยกเลิก",
   "queue.slot": "กำลังหา…",
   "queue.justIn": "เพิ่งเข้ามา",

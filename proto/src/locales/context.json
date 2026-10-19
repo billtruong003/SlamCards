@@ -218,10 +218,9 @@
     "max": 36,
     "id": "Begitu {n} orang langsung mulai."
   },
-  "queue.fewer": {
-    "where": "Matchmaking: button after 20 s to settle for fewer players. {n} = number",
-    "max": 24,
-    "id": "Main {n} orang aja"
+  "queue.flexNote": {
+    "where": "Matchmaking screen: the player asked for an exact number of players, waited 15 s, and is now matched with any table size",
+    "max": 70
   },
   "queue.cancel": {
     "where": "Matchmaking: cancel button",

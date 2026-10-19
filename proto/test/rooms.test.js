@@ -143,6 +143,23 @@ test('quick match exact size waits for that many, "any" players top it up; unque
   } finally { srv.stop(); }
 });
 
+test('quick match: a "2" and a "3" meet once they have waited long enough (V-18)', async () => {
+  const srv = await startServer({ queueFlex: 600, anyCountdown: 200, quickStart: 100, queueTick: 50 });
+  try {
+    const [two, three] = await Promise.all([1, 2].map(() => connect(srv.port)));
+    two.send({ t: 'queue', size: 2, name: 'Hai' });
+    three.send({ t: 'queue', size: 3, name: 'Ba' });
+    const early = await two.next((m) => m.t === 'queue');
+    assert.equal(early.flexible, false);
+    assert.equal(early.peers.length, 0, 'a different size: not together yet');
+    const flex = await three.next((m) => m.t === 'queue' && m.flexible, 2000);
+    assert.equal(flex.peers.length, 1, 'now they see each other');
+    await two.next((m) => m.t === 'joined', 3000);
+    const s = await two.waitState((st) => st.phase !== 'lobby', 3000);
+    assert.deepEqual(Object.values(s.players).map((p) => p.name).sort(), ['Ba', 'Hai']);
+  } finally { srv.stop(); }
+});
+
 test('quick match: two timeouts in a row put an idle player out of the round', async () => {
   const srv = await startServer({ anyCountdown: 100, quickStart: 50, queueTick: 50, turn: 300, rps: 300, choose: 200, roundIntro: 50, order: 50 });
   try {

@@ -43,7 +43,7 @@
   "queue.startsIn": "{n}명 모였어! {secs}초 뒤 시작…",
   "queue.anyNote": "몇 초만 더 기다려 볼게. 다른 사람도 올 수 있으니까.",
   "queue.fullNote": "{n}명 모이면 바로 시작해.",
-  "queue.fewer": "{n}명으로 시작",
+  "queue.flexNote": "사람이 적어서 이제 인원 상관없이 들어가요.",
   "queue.cancel": "취소",
   "queue.slot": "찾는 중…",
   "queue.justIn": "방금 합류",
