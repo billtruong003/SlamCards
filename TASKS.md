@@ -90,6 +90,7 @@ Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (
 - [x] **1.06** Phản hồi khi mất WebGL hoặc mạng chặn WebSocket — S
 - [x] **1.07** Server kiểm cú đập: client gửi chỗ ngắm trước, server quyết rung tay + seed may rủi; từng khung hình bị kiểm (tốc độ, chỉ bài bị chạm mới được di chuyển, không xuyên bàn, không bay, ≤7 giây), kết quả phải trùng khung cuối; sai thì trả bài về, qua lượt (V-23). Đo 747 cú đập thật: 0 bị chặn nhầm — M–L
 - [x] **1.08** Sự kiện đo lường: cú đập đầu, trận đầu, xem hướng dẫn, thời gian chờ, độ dài trận, quay lại ngày 2 — M. Xem: `curl -s 127.0.0.1:8197/metrics?days=7` trên VPS
+- [x] **1.09** Feedback 19/10 (Bill + người chơi): tuỳ chọn ẩn tên trên bàn, bài m viền xanh / bài địch viền đỏ (lưu trên máy); nút "Rời" ở góc (chạm 2 lần); người treo máy bị loại sau 2 lần hết giờ ở mọi phòng (trước chỉ ghép ngẫu nhiên); logo menu giống trailer (ruy băng FLIP FLOP SLAM, lá bài hổ, dép); tutorial: ảnh pet mất trên live (đường dẫn trong biến CSS), nhãn trang 1 nằm đúng cạnh lá bài — S–M
 - [ ] **1.10** Mọi màn vừa 1 màn hình 360×640 → 430×932 và laptop 1366×768 (cả Windows 125%): màn chính, sảnh 4 người (nút Bắt đầu), hàng chờ, trận, kết quả (B-02) — L
 - [ ] **1.11** Hướng dẫn 4 ô bắt buộc lần đầu, có luật hết giờ 2 lần là thua; hiện cả ở Chơi ngay lúc chờ; mockup cho Bill duyệt trước (B-01, B-04, F-02..F-08) — M
 - [ ] **1.12** Lượt đầu: bong bóng không che bài mình; nói mục tiêu trước cú đập đầu; trận đầu ẩn gió/kiểu đập (F-01, F-04, F-05) — S
