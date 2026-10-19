@@ -247,17 +247,28 @@ function others(room, seat) {
   return Object.entries(room.players).filter(([s]) => s !== seat).map(([, p]) => p);
 }
 
-function schedule(room, ms, fn) {
-  clearTimeout(room.timer);
-  room.deadline = Date.now() + ms;
-  room.timer = setTimeout(() => {
-    room.deadline = 0;
+// Every timer goes through here: an exception inside one is logged, never an uncaught crash
+// that takes every room down with it (V-01).
+function later(label, ms, fn) {
+  return setTimeout(() => {
     try {
       fn();
     } catch (err) {
-      console.error(`[${room.code}] timer failed`, err);
+      console.error(`${label} timer failed`, err);
     }
   }, ms);
+}
+
+// A room object is only live while the code still points at it (a closed room's code can be reused).
+const isLive = (room) => rooms.get(room.code) === room;
+
+function schedule(room, ms, fn) {
+  clearTimeout(room.timer);
+  room.deadline = Date.now() + ms;
+  room.timer = later(`[${room.code}]`, ms, () => {
+    room.deadline = 0;
+    fn();
+  });
 }
 
 // Cards of players who are out of the round always stay parked, whatever a slammer reports.
@@ -515,13 +526,24 @@ function endMatch(room, winner, reason = 'score') {
   broadcast(room);
 }
 
+// The only way a seat leaves room.players: its pending timers go with it, so nothing fires later
+// for a seat that is empty or belongs to someone else by then (V-01).
+function removePlayer(room, seat) {
+  const player = room.players[seat];
+  if (!player) return;
+  clearTimeout(player.discTimer);
+  delete room.players[seat];
+  delete room.ready[seat];
+  delete room.rematch[seat];
+  room.joinOrder = room.joinOrder.filter((s) => s !== seat);
+}
+
 // A player gone for too long is out of the match; the others keep playing.
 function dropPlayer(room, seat) {
   const player = room.players[seat];
+  if (!player) return;
   if (room.phase === 'lobby') {
-    delete room.players[seat];
-    delete room.ready[seat];
-    room.joinOrder = room.joinOrder.filter((s) => s !== seat);
+    removePlayer(room, seat);
     if (!Object.keys(room.players).length) closeRoom(room);
     else {
       passHost(room);
@@ -576,7 +598,8 @@ function allReady(room) {
 
 function closeRoom(room) {
   clearTimeout(room.timer);
-  rooms.delete(room.code);
+  for (const player of Object.values(room.players)) clearTimeout(player.discTimer);
+  if (isLive(room)) rooms.delete(room.code);
 }
 
 function validCards(room, cards) {
@@ -612,7 +635,7 @@ function detach(ws, { leaving = false } = {}) {
   if (!ctx) return;
   const { room, seat } = ctx;
   const player = room.players[seat];
-  if (!player || player.ws !== ws || !rooms.has(room.code)) return;
+  if (!player || player.ws !== ws || !isLive(room)) return;
   player.connected = false;
   player.ws = null;
   player.tutorial = 0;
@@ -629,9 +652,9 @@ function detach(ws, { leaving = false } = {}) {
   broadcast(room);
   const grace = room.phase !== 'lobby' ? TIMING.disconnect : seat === room.host ? TIMING.lobbyHostDisconnect : TIMING.lobbyDisconnect;
   clearTimeout(player.discTimer);
-  player.discTimer = setTimeout(() => {
-    if (!player.connected && rooms.has(room.code)) dropPlayer(room, seat);
-  }, grace);
+  player.discTimer = later(`[${room.code}] ${seat} grace`, grace, () => {
+    if (!player.connected && isLive(room) && room.players[seat] === player) dropPlayer(room, seat);
+  });
 }
 
 function handle(ws, msg) {
@@ -805,7 +828,7 @@ function handle(ws, msg) {
 
   // Only the host starts, with 2+ players and every guest ready.
   if (msg.t === 'start' && room.phase === 'lobby' && seat === room.host && allReady(room)) {
-    for (const s of Object.keys(room.players)) if (!room.players[s].connected) dropPlayer(room, s);
+    for (const s of Object.keys(room.players)) if (!room.players[s].connected) removePlayer(room, s);
     startMatch(room);
     return;
   }
@@ -858,7 +881,7 @@ function handle(ws, msg) {
     room.rematch[seat] = true;
     const ready = connectedSeats(room);
     if (ready.length >= 2 && ready.every((s) => room.rematch[s])) {
-      for (const s of Object.keys(room.players)) if (!room.players[s].connected || room.players[s].left) delete room.players[s];
+      for (const s of Object.keys(room.players)) if (!room.players[s].connected || room.players[s].left) removePlayer(room, s);
       startMatch(room);
     } else {
       broadcast(room);
