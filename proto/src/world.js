@@ -276,14 +276,17 @@ export class World {
     const aspect = this.camera.aspect;
     const fit = free / h; // the table is fitted as if the screen were only the free band tall
     this.portrait = aspect < 0.95;
-    const margin = 1.0;
+    // a phone held upright keeps room around the table; a wide screen frames it closer (F-11: on a
+    // laptop the table was small in the middle of the screen)
+    const margin = this.portrait ? 1.0 : 0.7;
+    const slack = this.portrait ? 1.22 : 1.1;
     const halfAcross = (this.portrait ? hz : hx) + margin;
     const halfDeep = (this.portrait ? hx : hz) + margin;
     this.camera.fov = 42;
     const vHalf = THREE.MathUtils.degToRad(this.camera.fov / 2);
     const hHalf = Math.atan(Math.tan(vHalf) * aspect);
     const vFree = Math.atan(Math.tan(vHalf) * fit);
-    const distance = Math.max(halfAcross / Math.tan(hHalf), (halfDeep * 0.9) / Math.tan(vFree)) * 1.22;
+    const distance = Math.max(halfAcross / Math.tan(hHalf), (halfDeep * 0.9) / Math.tan(vFree)) * slack;
     const dir = this.portrait ? new THREE.Vector3(8.5, 13.5, 0) : new THREE.Vector3(0, 13.5, 8.5);
     this.cameraBase.copy(dir.normalize().multiplyScalar(distance));
     this.lookTarget.set(this.portrait ? 0.6 : 0, 0, this.portrait ? 0 : 0.6);

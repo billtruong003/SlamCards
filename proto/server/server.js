@@ -333,6 +333,7 @@ function startMatch(room) {
   room.startedAt = Date.now();
   room.slamCount = 0;
   room.outAt = {};
+  room.history = []; // one line per round for the results screen: who won it and how
   log(room, `match start with ${room.seats.length} players (${room.kind})`);
   startRound(room);
 }
@@ -584,6 +585,7 @@ function endRound(room, result) {
   room.slam = null;
   room.scores[result.winner] += 1;
   room.result = result;
+  room.history?.push({ round: room.round, winner: result.winner, reason: result.reason, by: result.by, eliminated: result.eliminated ?? [] });
   room.nextFirst = room.firstOut;
   room.phase = 'roundEnd';
   log(room, `round ${room.round} won by ${result.winner}`);
@@ -597,14 +599,15 @@ function endRound(room, result) {
 function endMatch(room, winner, reason = 'score') {
   clearTimeout(room.timer);
   countOutWaits(room);
+  const ms = room.startedAt ? Date.now() - room.startedAt : 0;
   if (room.startedAt) {
-    metrics.matchEnd({ players: room.seats.length, ms: Date.now() - room.startedAt, rounds: room.round, slams: room.slamCount, reason });
+    metrics.matchEnd({ players: room.seats.length, ms, rounds: room.round, slams: room.slamCount, reason });
     room.startedAt = 0;
   }
   room.slam = null;
   room.phase = 'matchEnd';
   room.deadline = 0;
-  room.result = { ...room.result, matchWinner: winner, matchReason: reason };
+  room.result = { ...room.result, matchWinner: winner, matchReason: reason, history: room.history ?? [], ms, slams: room.slamCount ?? 0 };
   broadcast(room);
 }
 

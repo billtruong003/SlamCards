@@ -262,6 +262,8 @@
   "match.newRoom": "Tạo phòng mới",
   "match.menu": "Về menu",
   "match.waitingFor": "Đang đợi: {names}",
+  "match.stats": "Trận dài {time} · {slams} cú đập",
+  "home.howto": "Xem cách chơi",
   "sound.title": "Âm thanh",
   "sound.aria": "Chỉnh âm thanh",
   "sound.music": "Nhạc nền",

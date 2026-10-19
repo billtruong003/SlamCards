@@ -262,6 +262,8 @@
   "match.newRoom": "สร้างห้องใหม่",
   "match.menu": "กลับเมนู",
   "match.waitingFor": "กำลังรอ: {names}",
+  "match.stats": "เล่นไป {time} · ตี {slams} ครั้ง",
+  "home.howto": "วิธีเล่น",
   "sound.title": "เสียง",
   "sound.aria": "ตั้งค่าเสียง",
   "sound.music": "เพลง",

@@ -262,6 +262,8 @@
   "match.newRoom": "Bikin room baru",
   "match.menu": "Ke menu",
   "match.waitingFor": "Nunggu: {names}",
+  "match.stats": "Durasi {time} · {slams} gebrakan",
+  "home.howto": "Cara main",
   "sound.title": "Suara",
   "sound.aria": "Pengaturan suara",
   "sound.music": "Musik",

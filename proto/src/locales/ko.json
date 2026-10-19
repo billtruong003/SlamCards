@@ -262,6 +262,8 @@
   "match.newRoom": "새 방 만들기",
   "match.menu": "메뉴로",
   "match.waitingFor": "기다리는 중: {names}",
+  "match.stats": "경기 시간 {time} · {slams}번 내리침",
+  "home.howto": "게임 방법",
   "sound.title": "소리",
   "sound.aria": "소리 설정",
   "sound.music": "배경 음악",

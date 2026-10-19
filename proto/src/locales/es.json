@@ -262,6 +262,8 @@
   "match.newRoom": "Sala nueva",
   "match.menu": "Menú",
   "match.waitingFor": "Esperando: {names}",
+  "match.stats": "Partida de {time} · {slams} golpes",
+  "home.howto": "Cómo se juega",
   "sound.title": "Sonido",
   "sound.aria": "Ajustes de sonido",
   "sound.music": "Música",

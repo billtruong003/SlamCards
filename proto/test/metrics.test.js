@@ -100,7 +100,12 @@ test('a played match: length, rounds, slams, how it ended, and each slam outcome
       }
       await a.waitState((st) => st !== s, 5000).catch(() => {});
     }
-    await a.waitState((st) => st.phase === 'matchEnd', 5000);
+    const end = await a.waitState((st) => st.phase === 'matchEnd', 5000);
+    // the results screen gets the story of the match
+    assert.deepEqual(end.result.history.map((r) => [r.round, r.reason]), [[1, 'capture'], [2, 'capture']]);
+    assert.ok(end.result.history.every((r) => r.winner && r.eliminated.length === 1));
+    assert.equal(end.result.slams, 2);
+    assert.ok(end.result.ms > 0);
     const m = await today();
     assert.equal(m.matches['2p'].n, 1);
     assert.equal(m.matches['2p'].slams, 2);

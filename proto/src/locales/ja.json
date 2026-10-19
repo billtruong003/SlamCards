@@ -262,6 +262,8 @@
   "match.newRoom": "新しい部屋",
   "match.menu": "メニューへ",
   "match.waitingFor": "待ってる人：{names}",
+  "match.stats": "試合時間 {time} · {slams}回叩いた",
+  "home.howto": "遊び方",
   "sound.title": "サウンド",
   "sound.aria": "サウンド設定",
   "sound.music": "BGM",

@@ -262,6 +262,8 @@
   "match.newRoom": "新開房間",
   "match.menu": "回主選單",
   "match.waitingFor": "正在等：{names}",
+  "match.stats": "對局 {time} · 拍了 {slams} 次",
+  "home.howto": "怎麼玩",
   "sound.title": "音效",
   "sound.aria": "聲音設定",
   "sound.music": "背景音樂",

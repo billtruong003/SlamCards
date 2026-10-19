@@ -352,6 +352,7 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
 
   return {
     decorateLobby, confirmStart, onState, frame, onSlam, leaveRoom, closeHelp: () => toggleHelp(false),
+    openTutorial: () => openTutorial(0),
     // a player's very first match: wind and slam types stay out of the way until they know the basics
     get firstMatch() { return matches === 0 && !disabled; },
   };

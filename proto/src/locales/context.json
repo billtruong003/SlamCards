@@ -1296,6 +1296,14 @@
     "max": 40,
     "id": "F9"
   },
+  "match.stats": {
+    "where": "Results screen, under the round list: how long the match took (m:ss) and how many slams were made",
+    "max": 40
+  },
+  "home.howto": {
+    "where": "Button on the PC home screen (wardrobe card) that opens the how-to-play steps",
+    "max": 18
+  },
   "sound.title": {
     "where": "Corner button and sound panel heading",
     "max": 10,

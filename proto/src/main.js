@@ -1094,9 +1094,11 @@ function renderMenu(error = '') {
       <img class="gear-hero" src="${petThumb(playerLook.get().pet)}" alt="">
       ${gearTiles(playerLook.get())}
       <p class="sub">${t('wardrobe.note')}</p>
+      <div class="howto"><p>${t('ftue.pointerGoal')}</p><button class="btn" id="home-howto">${t('home.howto')}</button></div>
     </div></div>`;
   wireGearTiles();
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  $('home-howto').onclick = () => ftue.openTutorial();
   els.overlay.querySelectorAll('#size [data-size]').forEach((b) => {
     b.onclick = () => {
       const v = b.dataset.size === 'any' ? 'any' : Number(b.dataset.size);
@@ -1348,6 +1350,23 @@ function renderQueue(msg) {
   if (fewer) $('queue-fewer').onclick = () => sendQueue(fewer);
 }
 
+// The match in a few lines under the scores: each round, who won it and how; then how long it took.
+function matchStory(result) {
+  const rounds = result?.history ?? [];
+  if (!rounds.length) return '';
+  const how = (r) => {
+    const out = list((r.eliminated ?? []).map(htmlName));
+    if (r.reason === 'capture') return t('result.captureHow', { by: htmlName(r.by), out });
+    if (r.reason === 'fall') return t('result.fallHow', { name: htmlName(r.by) });
+    if (r.reason === 'afk') return t('result.afkHow', { name: htmlName(r.by) });
+    if (r.reason === 'left') return t('result.leftHow', { out });
+    return '';
+  };
+  const lines = rounds.map((r) => `<li><b>${t('round.title', { n: r.round })}</b> ${t('result.roundWinner', { name: htmlName(r.winner) })} <span>${how(r)}</span></li>`).join('');
+  const stats = result.ms ? `<p class="sub match-stats">${t('match.stats', { time: mmss(result.ms), slams: result.slams ?? 0 })}</p>` : '';
+  return `<ol class="match-story">${lines}</ol>${stats}`;
+}
+
 // One cream chip per player (UX-02/UX-13): seat colours on the dimmed table were close to 1:1
 // contrast, and a bare text line got lost against the winning card behind it.
 function scoreLine() {
@@ -1549,9 +1568,10 @@ function renderOverlay() {
       const quick = s.kind === 'quick';
       const rematchCount = Object.keys(s.rematch).filter((seat) => present.includes(seat)).length;
       if (setOverlay(`match-${JSON.stringify(s.rematch)}-${present.join()}`, `
-        <div class="panel">
+        <div class="panel menu-card result-card">
           <h1 class="stamp ${iWon ? '' : 'pink'}">${iWon ? t('match.youWin') : t('match.theyWin', { name: escapeHtml(nameOf(winner)).toUpperCase() })}</h1>
           ${scoreLine()}
+          ${matchStory(s.result)}
           ${s.result?.matchReason === 'disconnect' ? `<p class="sub">${t('match.allLeft')}</p>` : ''}
           <div class="row">
             ${quick ? `<button class="btn pri" id="find-new">${t('match.findNew')}</button>` : ''}

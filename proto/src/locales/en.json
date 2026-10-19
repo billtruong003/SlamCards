@@ -262,6 +262,8 @@
   "match.newRoom": "New room",
   "match.menu": "Main menu",
   "match.waitingFor": "Waiting on: {names}",
+  "match.stats": "Match time {time} · {slams} slams",
+  "home.howto": "How to play",
   "sound.title": "Sound",
   "sound.aria": "Sound settings",
   "sound.music": "Music",
