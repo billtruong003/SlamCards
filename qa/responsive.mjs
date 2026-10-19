@@ -66,7 +66,7 @@ const AUDIT = () => {
     return { left, top, right, bottom, width: Math.max(0, right - left), height: Math.max(0, bottom - top) };
   };
   // pieces under a dialog that covers the screen are not "overlapped", they are behind it
-  const MODAL = '.ftue-modal, .ftue-confirm, .netfail';
+  const MODAL = '.ftue-modal, .netfail';
   const layer = (el) => (el.closest(MODAL) ? 2 : el.closest('#labels') ? 0 : 1);
   const vis = (el) => {
     if (el.closest('.menu-anim, #stage, [hidden]')) return false;
@@ -227,18 +227,20 @@ try {
   await guest.context().close();
   await host.context().close();
 
-  // the tutorial (fresh player, invite card in the lobby, then the steps)
+  // the tutorial (a fresh player): the seven steps from "?", and rotating beside the quick-match queue
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 720 }, locale: 'vi-VN', hasTouch: TOUCH, isMobile: TOUCH });
   await ctx.addInitScript(() => { localStorage.setItem('slam-volume', '{"music":0,"meme":0,"sfx":0}'); localStorage.setItem('slam-name', 'Mới'); });
   const fresh = await ctx.newPage();
   await fresh.goto(`${BASE}/?debug`);
   await fresh.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
   await fresh.evaluate(() => document.getElementById('intro')?.remove());
-  await fresh.click('#create'); await fresh.click('#create-go');
-  await fresh.waitForSelector('#ftue-yes', { timeout: 10000 });
-  await audit(fresh, 'ftue-invite');
-  await fresh.click('#ftue-yes');
-  await audit(fresh, 'ftue-step1');
+  await fresh.click('#help');
+  await fresh.waitForSelector('#ftue-modal video', { timeout: 10000 });
+  await audit(fresh, 'tutorial-step1');
+  await fresh.click('#ftue-modal .ftue-skip');
+  await fresh.click('#play');
+  await fresh.waitForSelector('.tut-queue video', { timeout: 10000 });
+  await audit(fresh, 'queue-tutorial');
   await ctx.close();
 } catch (err) {
   console.log('SCRIPT ERROR', err.message.split('\n')[0]);

@@ -13,6 +13,7 @@ import { PETS, DEP_IDS, CARD_COLORS, SEAT_DEFAULTS, cleanLook } from './catalog.
 import { renderWardrobe, gearTiles, petThumb, stopPreview } from './wardrobe.js';
 import { showMeme, preloadMemes, setMemesEnabled, memesEnabled } from './memes.js';
 import { createFtue } from './ftue.js';
+import { STEPS as TUTORIAL } from './tutorial.js';
 import { createSocial } from './social.js';
 import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStatic } from './i18n.js';
 import { helloMessage } from './ref.js';
@@ -97,12 +98,15 @@ if (langs.length > 1) {
   $('close-lang').onclick = () => { langPanel.hidden = true; };
 }
 
+// a finger, not a mouse: no key hints, touch wording
+const TOUCH = matchMedia('(pointer: coarse)').matches;
+
 // iOS Safari only shows :active (the pressed look of every button) on pages listening for touches
 addEventListener('touchstart', () => {}, { passive: true });
 
 // The rules button says what it is ("? Luật chơi"), and every corner button carries a short word
 // (data-short) that shows under its icon where the row shrinks to icons (a phone in a match).
-$('help').innerHTML = `<b aria-hidden="true">?</b><span>${escapeHtml(t('corner.help'))}</span>`;
+$('help').innerHTML = `<b aria-hidden="true">?</b><span>${escapeHtml(t('corner.help'))}${TOUCH ? '' : '<span class="keyhint"> · H</span>'}</span>`;
 for (const [id, key] of [['help', 'corner.help'], ['info', 'corner.info'], ['settings', 'sound.title'], ['leave', 'corner.leave']]) $(id).dataset.short = t(key);
 
 playIntro();
@@ -172,10 +176,9 @@ let roomsTimer = 0;
 let roomsFilter = 'all';
 let roomsList = null;
 
-const TOUCH = matchMedia('(pointer: coarse)').matches;
 // the key hint is its own span so narrow screens can drop it (no room next to the reaction button)
-els.flat.innerHTML = TOUCH ? t('turn.flat') : `${t('turn.flat')}<span class="keyhint"> · Q</span>`;
-els.tilt.innerHTML = TOUCH ? t('turn.tilt') : `${t('turn.tilt')}<span class="keyhint"> · E</span>`;
+els.flat.innerHTML = `${t('turn.flat')}${TOUCH ? '' : '<span class="keyhint"> · Q</span>'}<small>${t('turn.flatNote')}</small>`;
+els.tilt.innerHTML = `${t('turn.tilt')}${TOUCH ? '' : '<span class="keyhint"> · E</span>'}<small>${t('turn.tiltNote')}</small>`;
 const ftue = createFtue({
   send,
   track: (name) => send({ t: 'event', name }),
@@ -459,19 +462,16 @@ els.settings.onclick = () => {
   els.panel.hidden = !els.panel.hidden;
   els.infoPanel.hidden = true;
   langPanel.hidden = true;
-  ftue.closeHelp();
 };
 els.info.onclick = () => {
   els.infoPanel.hidden = !els.infoPanel.hidden;
   els.panel.hidden = true;
   langPanel.hidden = true;
-  ftue.closeHelp();
 };
 $('lang').onclick = () => {
   langPanel.hidden = !langPanel.hidden;
   els.panel.hidden = true;
   els.infoPanel.hidden = true;
-  ftue.closeHelp();
 };
 $('close-info').onclick = () => { els.infoPanel.hidden = true; };
 $('close-panel').onclick = () => { els.panel.hidden = true; };
@@ -652,6 +652,8 @@ function onMessage(msg) {
     history.replaceState(null, '', `?room=${roomCode}`);
     lastPong = performance.now();
     hideToast();
+    ftue.queueStop();
+    ftue.joined();
     // the server refused the name (swear-word filter): keep its stand-in so the next room gets it too
     if (msg.nameBlocked && msg.name) {
       playerName.set(msg.name);
@@ -1109,7 +1111,7 @@ function renderMenu(error = '') {
       <img class="gear-hero" src="${petThumb(playerLook.get().pet)}" alt="">
       ${gearTiles(playerLook.get())}
       <p class="sub">${t('wardrobe.note')}</p>
-      <div class="howto"><p>${t('ftue.pointerGoal')}</p><button class="btn" id="home-howto">${t('home.howto')}</button></div>
+      <div class="howto"><p>${t('ftue.pointerGoal')}</p><button class="btn wide" id="home-howto"><b class="q" aria-hidden="true">?</b>${t('home.howto', { n: TUTORIAL.length })}</button></div>
     </div></div>`;
   wireGearTiles();
   wireInAppNote();
@@ -1343,7 +1345,7 @@ function renderQueue(msg) {
   const flexible = Boolean(msg?.flexible);
   const key = `queue-${size}-${people.map((p) => p.name).join('|')}-${Boolean(startsIn)}-${flexible}`;
   const fresh = setOverlay(key, `
-    <div class="menu-bg"><div class="panel menu-card queue-card">
+    <div class="menu-bg with-tut"><div class="panel menu-card queue-card">
       <h1 class="stamp" style="font-size:36px">${t('queue.title')}</h1>
       <p class="sub">${size === 'any' ? t('queue.sizeAny') : t('queue.size', { n: size })} · <span id="queue-waited"></span></p>
       <div class="queue-seats">
@@ -1356,14 +1358,16 @@ function renderQueue(msg) {
       ${startsIn ? `<p class="queue-go" id="queue-go"></p><p class="sub">${t('queue.anyNote')}</p>`
     : size === 'any' ? '' : `<p class="sub">${t(flexible ? 'queue.flexNote' : 'queue.fullNote', { n: size })}</p>`}
       <button class="btn wide" id="queue-cancel">${t('queue.cancel')}</button>
-    </div></div>`);
+    </div>${ftue.queueHtml()}</div>`);
   setText($('queue-waited'), t('queue.waited', { time: mmss(waited) }));
   if (startsIn) setText($('queue-go'), t('queue.startsIn', { n: people.length, secs: startsIn }));
   if (!fresh) return;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  ftue.queueStart(els.overlay.querySelector('.tut-queue'));
   $('queue-cancel').onclick = () => {
     send({ t: 'unqueue' });
     queueing = null;
+    ftue.queueStop();
     renderMenu();
   };
 }
@@ -1463,7 +1467,7 @@ function renderOverlay() {
            ${count >= 2 && waitingNames.length ? `<p class="sub lobby-note">${t('lobby.waitGuests', { names: list(waitingNames) })}</p>` : ''}`
         : `<button class="btn ${s.ready[me] ? '' : 'pri'} wide" id="ready">${s.ready[me] ? t('lobby.unready') : t('lobby.readyBtn')}</button>
            <p class="sub lobby-note">${t('lobby.waitHost', { name: escapeHtml(nameOf(s.host)) })}</p>`;
-      const reading = (seat) => (s.players[seat].tutorial ? `<span class="slot-tag">${t('lobby.reading', { n: s.players[seat].tutorial, total: 5 })}</span>` : '');
+      const reading = (seat) => (s.players[seat].tutorial ? `<span class="slot-tag">${t('lobby.reading', { n: s.players[seat].tutorial, total: TUTORIAL.length })}</span>` : '');
       const mine = depOf(me);
       const fresh = setOverlay(`lobby-${roster}`, `
         <div class="menu-bg"><div class="panel menu-card lobby-card">
@@ -1506,10 +1510,8 @@ function renderOverlay() {
           setTimeout(() => { if (btn.isConnected) btn.lastChild.textContent = t('social.invite'); }, 2200);
         };
         if (isHost) {
-          $('start').onclick = () => {
-            const go = () => send({ t: 'start' });
-            if (!ftue.confirmStart(go, nameOf)) go();
-          };
+          // someone still reading the rules is fine: round 1 waits for them (server afterIntro)
+          $('start').onclick = () => send({ t: 'start' });
           $('vis-toggle').onclick = () => send({ t: 'roomSettings', visibility: s.visibility === 'public' ? 'private' : 'public' });
           $('cap-toggle').onclick = () => {
             const caps = [2, 3, 4].filter((c) => c >= count);
@@ -1520,17 +1522,19 @@ function renderOverlay() {
         }
         wireGearTiles();
       }
-      ftue.decorateLobby();
       break;
     }
-    case 'roundIntro':
-      setOverlay(`intro-${s.round}`, `
+    case 'roundIntro': {
+      const readers = (s.reading ?? []).filter((seat) => seat !== me);
+      setOverlay(`intro-${s.round}-${readers.join()}`, `
         <div class="panel">
           <h1 class="stamp">${t('round.title', { n: s.round })}</h1>
           ${scoreLine()}
           <p class="sub">${t('round.sub', { color: myColor, n: ROUNDS_TO_WIN })}</p>
+          ${readers.length ? `<p class="sub round-reading">${t('round.reading', { names: list(readers.map(htmlName)) })} · <span id="rps-timer"></span></p>` : ''}
         </div>`);
       break;
+    }
     case 'rps': {
       if (!s.alive.includes(me)) {
         setOverlay(`rps-watch-${s.round}`, `<div class="panel"><h1 class="stamp" style="font-size:44px">${t('rps.watching')}</h1></div>`);
@@ -2219,7 +2223,7 @@ if (new URLSearchParams(location.search).has('debug')) {
     renderAssets: (opts) => import('./asset-studio.js').then((m) => m.renderAssets(opts)),
     meme: showMeme,
     visuals,
-    // the tunables, for measuring changes before making them (qa/_ux-fall-rate.mjs SLAM_SCALE)
+    // the tunables, for measuring changes before making them (qa/fall-rate.mjs SLAM_SCALE)
     tune: TUNE,
     set timeScale(v) { timeScale = v; },
     previewDeps: (seats = ['black', 'pink', 'blue']) => {

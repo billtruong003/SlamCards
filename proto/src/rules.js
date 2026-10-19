@@ -6,6 +6,9 @@ export const CARD_HALF_D = 0.739; // art is 92 x 136 px
 export const FALL_Y = -0.3;
 export const ROUNDS_TO_WIN = 2;
 export const MAX_PLAYERS = 4;
+// Turn length: two players, and three or four (everyone waits for every turn, so shorter). The
+// server's timings start from these; the tutorial quotes them.
+export const TURN_MS = { two: 30000, crowded: 18000 };
 
 // Seats in clockwise order. Each seat owns one card style.
 export const SEATS = ['black', 'pink', 'blue', 'green'];

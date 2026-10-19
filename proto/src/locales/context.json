@@ -921,6 +921,10 @@
     "max": 10,
     "id": "C1"
   },
+  "round.reading": {
+    "where": "Round 1 title card: the table waits for players reading the rules; {names}: their names",
+    "max": 50
+  },
   "round.sub": {
     "where": "Round intro: your card colour, win {n} rounds to win the match. {color} is pre-escaped HTML markup; keep the placeholder.",
     "max": 50,
@@ -1051,6 +1055,14 @@
     "where": "Slam-type button: tilted slam (PC adds \" · E\")",
     "max": 15,
     "id": "D3"
+  },
+  "turn.flatNote": {
+    "where": "Small second line on the flat slam button",
+    "max": 18
+  },
+  "turn.tiltNote": {
+    "where": "Small second line on the tilted slam button",
+    "max": 24
   },
   "turn.mine": {
     "where": "Banner: your turn, {secs} seconds left",
@@ -1350,8 +1362,8 @@
     "max": 40
   },
   "home.howto": {
-    "where": "Button on the PC home screen (wardrobe card) that opens the how-to-play steps",
-    "max": 18
+    "where": "Button on the PC home screen (wardrobe card) that opens the how-to-play steps; {n}: number of steps",
+    "max": 34
   },
   "sound.title": {
     "where": "Corner button and sound panel heading",
@@ -1406,26 +1418,6 @@
     "max": 10,
     "id": "H3"
   },
-  "ftue.invite.title": {
-    "where": "Lobby invite card: first time playing?",
-    "max": 30,
-    "id": "I1"
-  },
-  "ftue.invite.sub": {
-    "where": "Lobby invite card: offers a 1-minute tutorial",
-    "max": 70,
-    "id": "I2"
-  },
-  "ftue.invite.yes": {
-    "where": "Invite card button: show me how",
-    "max": 15,
-    "id": "I3"
-  },
-  "ftue.invite.no": {
-    "where": "Invite card button: I already know",
-    "max": 15,
-    "id": "I3"
-  },
   "ftue.next": {
     "where": "Tutorial button: next",
     "max": 10,
@@ -1436,6 +1428,10 @@
     "max": 10,
     "id": "I4"
   },
+  "ftue.skipIn": {
+    "where": "Tutorial \"skip\" while still locked at the first match; {n}: seconds left",
+    "max": 16
+  },
   "ftue.done": {
     "where": "Tutorial last-step button: play",
     "max": 10,
@@ -1444,142 +1440,6 @@
   "ftue.step": {
     "where": "Tutorial step counter above the title",
     "max": 20
-  },
-  "ftue.step1.title": {
-    "where": "Tutorial step 1 title: goal",
-    "max": 45,
-    "id": "I5"
-  },
-  "ftue.step1.p1": {
-    "where": "Tutorial step 1, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 110,
-    "id": "I5"
-  },
-  "ftue.step1.p2": {
-    "where": "Tutorial step 1, paragraph 2",
-    "max": 50,
-    "id": "I5"
-  },
-  "ftue.step1.mineUp": {
-    "where": "Step 1 picture label: your card, face up",
-    "max": 14
-  },
-  "ftue.step1.enemyDown": {
-    "where": "Step 1 picture label: enemy card, face down",
-    "max": 14
-  },
-  "ftue.step1.eat": {
-    "where": "Step 1 picture pop text: capture!",
-    "max": 6
-  },
-  "ftue.step2.title": {
-    "where": "Tutorial step 2 title: aiming",
-    "max": 45,
-    "id": "I6"
-  },
-  "ftue.step2.p1": {
-    "where": "Tutorial step 2, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 90,
-    "id": "I6"
-  },
-  "ftue.step2.p2": {
-    "where": "Tutorial step 2, paragraph 2",
-    "max": 70,
-    "id": "I6"
-  },
-  "ftue.step2.touch": {
-    "where": "Tutorial step 2, extra paragraph on phones",
-    "max": 40
-  },
-  "ftue.step2.reach": {
-    "where": "Step 2 picture label: black ring = your reach",
-    "max": 26
-  },
-  "ftue.step2.dropHere": {
-    "where": "Step 2 picture label: slipper lands here",
-    "max": 14
-  },
-  "ftue.step3.title": {
-    "where": "Tutorial step 3 title: face up beats face down",
-    "max": 45,
-    "id": "I7"
-  },
-  "ftue.step3.p1": {
-    "where": "Tutorial step 3, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 70,
-    "id": "I7"
-  },
-  "ftue.step3.p2": {
-    "where": "Tutorial step 3, paragraph 2",
-    "max": 80,
-    "id": "I7"
-  },
-  "ftue.step3.p3": {
-    "where": "Tutorial step 3, paragraph 3. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 50,
-    "id": "I7"
-  },
-  "ftue.step3.win": {
-    "where": "Step 3 picture caption: you capture",
-    "max": 25,
-    "id": "I8"
-  },
-  "ftue.step3.lose": {
-    "where": "Step 3 picture caption: you get captured",
-    "max": 25,
-    "id": "I8"
-  },
-  "ftue.step3.bothDown": {
-    "where": "Step 3 picture caption: both face down",
-    "max": 25,
-    "id": "I8"
-  },
-  "ftue.step3.bothUp": {
-    "where": "Step 3 picture caption: both face up",
-    "max": 25,
-    "id": "I8"
-  },
-  "ftue.step4.title": {
-    "where": "Tutorial step 4 title: do not knock cards off",
-    "max": 45,
-    "id": "I9"
-  },
-  "ftue.step4.p1": {
-    "where": "Tutorial step 4, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 80,
-    "id": "I9"
-  },
-  "ftue.step4.p2": {
-    "where": "Tutorial step 4, paragraph 2",
-    "max": 80,
-    "id": "I9"
-  },
-  "ftue.step4.slamHere": {
-    "where": "Step 4 picture label: you slam here",
-    "max": 14
-  },
-  "ftue.step4.fall": {
-    "where": "Step 4 picture label: card falls",
-    "max": 8
-  },
-  "ftue.step4.out": {
-    "where": "Step 4 picture stamp: you are out",
-    "max": 14
-  },
-  "ftue.step5.title": {
-    "where": "Tutorial step 5 title: a few more tricks",
-    "max": 45,
-    "id": "I10"
-  },
-  "ftue.step5.p1": {
-    "where": "Tutorial step 5, paragraph 1. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 90,
-    "id": "I10"
-  },
-  "ftue.step5.p2": {
-    "where": "Tutorial step 5, paragraph 2. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 90,
-    "id": "I10"
   },
   "ftue.pointer": {
     "where": "First-turn speech bubble pointing next to your card (bubble is 240 px wide). May contain <b>…</b> for emphasis; keep tags balanced.",
@@ -1590,30 +1450,194 @@
     "where": "Second, smaller line in the first-turn pointer bubble: the goal of the game in one sentence (flip your card face up, land it on a face-down enemy card)",
     "max": 90
   },
-  "ftue.confirm.title": {
-    "where": "Start-confirm card: {name} is still reading the tutorial",
-    "max": 25,
-    "id": "I21"
-  },
-  "ftue.confirm.body": {
-    "where": "Start-confirm card: they are at step {n}/{total}; they can finish during the match. May contain <b>…</b> for emphasis; keep tags balanced.",
-    "max": 90,
-    "id": "I22"
-  },
-  "ftue.confirm.go": {
-    "where": "Start-confirm button: start anyway",
-    "max": 15,
-    "id": "I22"
-  },
-  "ftue.confirm.wait": {
-    "where": "Start-confirm button: wait",
-    "max": 15,
-    "id": "I22"
-  },
   "ftue.stashed": {
     "where": "Bubble by the \"?\" button when the match starts mid-tutorial. May contain <b>…</b> for emphasis; keep tags balanced.",
     "max": 60,
     "id": "I23"
+  },
+  "tut.firstMatch": {
+    "where": "Ink pill above the tutorial card at a player's first match",
+    "max": 38
+  },
+  "tut.s1.title": {
+    "where": "Tutorial step 1 title: slam next to your own card",
+    "max": 30
+  },
+  "tut.s1.body": {
+    "where": "Tutorial step 1 text (<b> = highlighted words)",
+    "max": 110
+  },
+  "tut.s1.hint.touch": {
+    "where": "Tutorial step 1, muted line on phones: how to aim and slam",
+    "max": 40
+  },
+  "tut.s1.hint.mouse": {
+    "where": "Tutorial step 1, muted line with a mouse: how to aim and slam",
+    "max": 54
+  },
+  "tut.s2.title": {
+    "where": "Tutorial step 2 title: your face-up card on an enemy face-down card takes it",
+    "max": 36
+  },
+  "tut.s2.body": {
+    "where": "Tutorial step 2 text",
+    "max": 110
+  },
+  "tut.s3.title": {
+    "where": "Tutorial step 3 title: do not knock cards off",
+    "max": 30
+  },
+  "tut.s3.body": {
+    "where": "Tutorial step 3 text",
+    "max": 110
+  },
+  "tut.s4.title": {
+    "where": "Tutorial step 4 title: two timeouts in a row put you out",
+    "max": 30
+  },
+  "tut.s4.body": {
+    "where": "Tutorial step 4 text; {two} and {more}: seconds per turn with 2 players and with 3-4; {n}: rounds to win the match",
+    "max": 160
+  },
+  "tut.s5.title": {
+    "where": "Tutorial step 5 title: the two slam types",
+    "max": 30
+  },
+  "tut.s5.body": {
+    "where": "Tutorial step 5 text; {q} / {e}: the keys \" (Q)\" / \" (E)\" with a keyboard, empty on phones",
+    "max": 150
+  },
+  "tut.s5.hint.touch": {
+    "where": "Tutorial step 5, muted line on phones: where the slam-type buttons are, from the 2nd match",
+    "max": 64
+  },
+  "tut.s6.title": {
+    "where": "Tutorial step 6 title: the wind",
+    "max": 30
+  },
+  "tut.s6.body": {
+    "where": "Tutorial step 6 text; the wind badge reads like hud.wind",
+    "max": 150
+  },
+  "tut.s7.title": {
+    "where": "Tutorial step 7 title: what passing a turn means",
+    "max": 30
+  },
+  "tut.s7.body": {
+    "where": "Tutorial step 7 text",
+    "max": 140
+  },
+  "tut.s1.c1": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 1, a slam far from the card",
+    "max": 52
+  },
+  "tut.s1.c2": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 1, a slam close to the card",
+    "max": 52
+  },
+  "tut.s2.c1": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 2, the card lands face up on the enemy card",
+    "max": 52
+  },
+  "tut.s3.c1": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 3, a hard slam by the table edge",
+    "max": 52
+  },
+  "tut.s3.c2": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 3, the card falls off: out",
+    "max": 52
+  },
+  "tut.s4.c1": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 4, the first timeout",
+    "max": 52
+  },
+  "tut.s4.c2": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 4, the second timeout coming",
+    "max": 52
+  },
+  "tut.s4.c3": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 4, out of the round",
+    "max": 52
+  },
+  "tut.s5.c1": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 5, a flat slam",
+    "max": 52
+  },
+  "tut.s5.c2": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 5, a tilted slam",
+    "max": 52
+  },
+  "tut.s6.c1": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 6, a slam without wind",
+    "max": 52
+  },
+  "tut.s6.c2": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 6, the same slam in wind 4",
+    "max": 52
+  },
+  "tut.s7.c1": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 7, the turn before was passed",
+    "max": 56
+  },
+  "tut.s7.c2": {
+    "where": "Caption over a tutorial clip (a pill at the bottom of the video): step 7, so this turn must land in the pink ring",
+    "max": 52
+  },
+  "tut.findAgain": {
+    "where": "Bubble by the \"?\" button after the first match's tutorial; {n}: number of steps",
+    "max": 70
+  },
+  "tut.ok": {
+    "where": "Button closing that bubble",
+    "max": 8
+  },
+  "tut.gotIt": {
+    "where": "Button closing an in-match reminder",
+    "max": 14
+  },
+  "tut.queue.pill": {
+    "where": "Quick-match wait: pill over the tutorial clip",
+    "max": 30
+  },
+  "tut.queue.prev": {
+    "where": "Quick-match wait: label of the ‹ button",
+    "max": 24
+  },
+  "tut.queue.next": {
+    "where": "Quick-match wait: label of the › button",
+    "max": 24
+  },
+  "tut.queue.auto": {
+    "where": "Quick-match wait, phones: the steps move on by themselves; {n}: seconds",
+    "max": 34
+  },
+  "tut.queue.autoKeys": {
+    "where": "Quick-match wait with a keyboard: same, plus the arrow keys; {n}: seconds",
+    "max": 34
+  },
+  "tut.remind.types.title": {
+    "where": "In-match reminder (a small card with the step's clip) the first time the slam-type buttons show (match 2): heading",
+    "max": 30
+  },
+  "tut.remind.types.body": {
+    "where": "In-match reminder (a small card with the step's clip) the first time the slam-type buttons show: one line",
+    "max": 100
+  },
+  "tut.remind.wind.title": {
+    "where": "In-match reminder (a small card with the step's clip) the first time there is wind on the player's turn: heading",
+    "max": 30
+  },
+  "tut.remind.wind.body": {
+    "where": "In-match reminder (a small card with the step's clip) the first time there is wind: one line",
+    "max": 100
+  },
+  "tut.remind.forced.title": {
+    "where": "In-match reminder (a small card with the step's clip) the first time the player must slam inside the pink ring: heading",
+    "max": 32
+  },
+  "tut.remind.forced.body": {
+    "where": "In-match reminder (a small card with the step's clip) the first time the player must slam inside the pink ring: one line",
+    "max": 100
   },
   "tip.label": {
     "where": "Tag in front of in-match tips",
@@ -1635,63 +1659,10 @@
     "max": 50,
     "id": "I14"
   },
-  "tip.forced": {
-    "where": "Tip: first forced slam, explains the pink ring",
-    "max": 50,
-    "id": "I15"
-  },
   "tip.timeout": {
     "where": "Tip: first timeout",
     "max": 40,
     "id": "I16"
-  },
-  "rules.title": {
-    "where": "Quick-rules panel (\"?\" button) heading",
-    "max": 15,
-    "id": "I17"
-  },
-  "rules.r1": {
-    "where": "Quick rule 1: your face-up on enemy face-down = capture",
-    "max": 35,
-    "id": "I17a"
-  },
-  "rules.r2": {
-    "where": "Quick rule 2: enemy face-up on your face-down = captured",
-    "max": 35,
-    "id": "I17b"
-  },
-  "rules.r3": {
-    "where": "Quick rule 3: knock a card off = out",
-    "max": 35,
-    "id": "I17c"
-  },
-  "rules.r4": {
-    "where": "Quick rule 4: same side or just touching = play on",
-    "max": 40,
-    "id": "I17d"
-  },
-  "rules.r5": {
-    "where": "Quick rule 5: just passed = must slam in the pink ring",
-    "max": 45,
-    "id": "I17e"
-  },
-  "rules.r6": {
-    "where": "Rules panel line 6: a turn that times out is lost; on a forced (must-slam) turn the game slams for the player",
-    "max": 80
-  },
-  "rules.r7": {
-    "where": "Rules panel line 7: two timeouts in a row put the player out of that round",
-    "max": 55
-  },
-  "rules.replay": {
-    "where": "Quick-rules button: replay the tutorial",
-    "max": 20,
-    "id": "I18"
-  },
-  "rules.resume": {
-    "where": "Quick-rules button: resume the tutorial at step {n}",
-    "max": 30,
-    "id": "I18"
   },
   "corner.help": {
     "where": "Screen-reader label of the \"?\" corner button",

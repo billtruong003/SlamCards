@@ -36,9 +36,7 @@ for (const size of Object.keys(SIZES)) {
   await boot(a, `${BASE}/?debug`);
   await a.screenshot({ path: path.join(OUT, `${size}-1-menu.png`) });
   await a.evaluate(() => { document.getElementById('help').click(); });
-  await sleep(300);
-  await a.evaluate(() => document.getElementById('help-replay').click());
-  await sleep(600);
+  await sleep(900);
   await a.screenshot({ path: path.join(OUT, `${size}-2-tutorial-1.png`) });
   await a.evaluate(() => document.querySelector('.ftue-next').click());
   await a.evaluate(() => document.querySelector('.ftue-next').click());
@@ -94,15 +92,15 @@ for (const size of Object.keys(SIZES)) {
   await p.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
   await p.evaluate(() => document.getElementById('intro')?.remove());
   await sleep(500);
-  await p.evaluate(() => { document.getElementById('help').click(); document.getElementById('help-replay').click(); });
+  await p.evaluate(() => document.getElementById('help').click());
   await sleep(800);
   const loaded = await p.evaluate(async () => {
-    const urls = [...document.querySelectorAll('.fa-c')].map((el) => getComputedStyle(el, '::after').backgroundImage).filter((b) => b.includes('pets'));
-    const firstUrl = urls[0]?.match(/url\("?([^")]+)/)?.[1];
+    const v = document.querySelector('#ftue-modal video');
+    const firstUrl = v?.poster;
     const res = firstUrl ? await fetch(firstUrl) : null;
-    return { firstUrl, status: res?.status };
+    return { firstUrl, status: res?.status, sources: [...(v?.querySelectorAll('source') ?? [])].map((s) => s.src) };
   });
-  console.log('sub-path tutorial pet image', JSON.stringify(loaded));
+  console.log('sub-path tutorial clip poster', JSON.stringify(loaded));
   await p.screenshot({ path: path.join(OUT, 'subpath-tutorial-1.png') });
   await p.context().close();
 }

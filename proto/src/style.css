@@ -398,6 +398,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 }
 .howto{display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;border-top:2px dashed rgba(42,20,24,.25);padding-top:10px}
 .howto p{margin:0;font-weight:700;font-size:15px;line-height:1.3}
+.howto .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.howto .q{display:inline-flex;flex:none;width:28px;height:28px;border-radius:50%;background:var(--pink-dark);color:var(--cream);border:2px solid var(--ink);align-items:center;justify-content:center;font-size:17px;line-height:1}
 @media (max-height:720px){.gear-card .howto p{display:none}}
 /* opened inside a social app: a note suggesting the real browser */
 .inapp{display:flex;align-items:center;gap:8px;background:#fff3c4;border:2px solid var(--ink);border-radius:12px;padding:6px 8px 6px 12px;font-weight:700;font-size:13px;line-height:1.3;text-align:left}

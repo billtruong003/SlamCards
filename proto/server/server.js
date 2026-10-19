@@ -4,7 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
-import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards, pointOnCard } from '../src/rules.js';
+import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, TURN_MS, PARKED, judge, initialCards, pointOnCard } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
 import { cleanName, cleanChat } from './names.js';
 import { withMeta } from './meta.js';
@@ -14,6 +14,7 @@ import * as metrics from './metrics.js';
 import { startAdmin } from './ops.js';
 import { createSlamCheck } from './slam-check.js';
 import { botName, botLook, chooseAim, thinkMs, quickMs } from './bots.js';
+import { STEPS as TUTORIAL } from '../src/tutorial.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
 const PORT = Number(process.env.PORT) || 8097;
@@ -25,7 +26,6 @@ const BUILD = (() => {
   try { return JSON.parse(fs.readFileSync(path.join(DIST, 'build.json'), 'utf8')).build ?? null; } catch { return null; }
 })();
 const BOOT = crypto.randomUUID().slice(0, 8);
-const TUTORIAL_STEPS = 5;
 
 const TIMING = {
   roundIntro: 2000,
@@ -33,8 +33,8 @@ const TIMING = {
   rpsReveal: 1600,
   choose: 12000,
   order: 2600,
-  turn: 30000,           // two players
-  turnCrowded: 18000,    // three or four players: everyone waits for every turn, so turns are shorter
+  turn: TURN_MS.two,
+  turnCrowded: TURN_MS.crowded,
   awayTurn: 8000,
   forcedGrace: 10000,
   slamMaxMs: 15000,
@@ -51,6 +51,7 @@ const TIMING = {
   queueFlex: 15000,      // a player waiting for an exact size takes any table after this long
   botAfter: 20000,       // a player still alone in the queue after this long plays with computer players
   backToLobby: 30000,    // a friends' room shows the results this long, then goes back to its lobby
+  reading: 60000,        // round 1 waits this long at most for new players reading the rules
   queueTick: 400,
 };
 // Tests shorten the clock: SLAM_TIMING='{"turn":500}'.
@@ -59,7 +60,18 @@ Object.assign(TIMING, JSON.parse(process.env.SLAM_TIMING || '{}'));
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.mp3': 'audio/mpeg', '.svg': 'image/svg+xml', '.wasm': 'application/wasm', '.ico': 'image/x-icon',
+  '.mp4': 'video/mp4', '.webm': 'video/webm',
 };
+
+// "Range: bytes=a-b" (or "a-", or "-n" for the last n): the part of a file of `size` bytes it asks
+// for, as [start, end] inclusive; null when there is no such header, 'bad' when it cannot be served.
+function byteRange(header, size) {
+  const m = /^bytes=(\d*)-(\d*)$/.exec(header ?? '');
+  if (!m || (m[1] === '' && m[2] === '')) return null;
+  const start = m[1] === '' ? Math.max(0, size - Number(m[2])) : Number(m[1]);
+  const end = m[1] === '' || m[2] === '' ? size - 1 : Math.min(Number(m[2]), size - 1);
+  return start > end ? 'bad' : [start, end];
+}
 
 // Where players come from (refs.js), read with the key from SLAM_STATS_KEY; without one the page does not exist.
 const STATS_KEY = process.env.SLAM_STATS_KEY || '';
@@ -104,11 +116,26 @@ const server = http.createServer((req, res) => {
     // the page itself carries the link preview tags for this address (meta.js)
     if (file.endsWith(`${path.sep}index.html`)) data = withAds(withMeta(data.toString('utf8'), query), ADS);
     const immutable = urlPath.startsWith('/assets/');
-    const media = urlPath.startsWith('/audio/') || urlPath.startsWith('/memes/') || urlPath.endsWith('.png');
-    res.writeHead(200, {
+    const media = urlPath.startsWith('/audio/') || urlPath.startsWith('/memes/') || urlPath.startsWith('/tutorial/') || urlPath.endsWith('.png');
+    const headers = {
       'Content-Type': MIME[path.extname(file)] || 'application/octet-stream',
       'Cache-Control': immutable ? 'public, max-age=31536000, immutable' : media ? 'public, max-age=86400' : 'no-cache',
-    });
+      'Accept-Ranges': 'bytes',
+    };
+    // Videos are fetched in parts: Safari plays none served only whole (the tutorial clips).
+    const range = byteRange(req.headers.range, data.length);
+    if (range === 'bad') {
+      res.writeHead(416, { 'Content-Range': `bytes */${data.length}` });
+      res.end();
+      return;
+    }
+    if (range) {
+      const [start, end] = range;
+      res.writeHead(206, { ...headers, 'Content-Range': `bytes ${start}-${end}/${data.length}`, 'Content-Length': end - start + 1 });
+      res.end(data.subarray(start, end + 1));
+      return;
+    }
+    res.writeHead(200, headers);
     res.end(data);
   });
 });
@@ -249,6 +276,7 @@ function publicState(room, you) {
     host: room.host,
     ready: room.ready,
     last: room.phase === 'lobby' ? room.last ?? null : null,
+    reading: room.phase === 'roundIntro' ? readersLeft(room) : [],
     remainingMs: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
   };
 }
@@ -351,7 +379,10 @@ function startMatch(room) {
   room.slamCount = 0;
   room.outAt = {};
   room.history = []; // one line per round for the results screen: who won it and how
-  log(room, `match start with ${room.seats.length} players (${room.kind})`);
+  // New players read the rules before the first turn (task 1.11): round 1 waits for them.
+  room.readers = new Set(room.seats.filter((s) => room.players[s].learner || room.players[s].tutorial > 0));
+  room.readUntil = 0;
+  log(room, `match start with ${room.seats.length} players (${room.kind})${room.readers.size ? `, ${room.readers.size} reading the rules` : ''}`);
   startRound(room);
 }
 
@@ -379,8 +410,38 @@ function startRound(room) {
   room.event = null;
   room.firstOut = null;
   room.phase = 'roundIntro';
-  schedule(room, TIMING.roundIntro, () => (room.alive.length === 2 ? startRps(room) : startOrder(room)));
+  schedule(room, TIMING.roundIntro, () => afterIntro(room));
   broadcast(room);
+}
+
+// The round's title has been up long enough. Round 1 then holds while anyone at the table is still
+// reading the rules, for TIMING.reading at most; each reader closing them lets it go on sooner.
+function afterIntro(room) {
+  if (room.round === 1 && readersLeft(room).length && !room.readUntil) {
+    room.readUntil = Date.now() + TIMING.reading;
+    schedule(room, TIMING.reading, () => endReading(room));
+    log(room, `waiting for ${readersLeft(room).join(', ')} to read the rules`);
+    broadcast(room);
+    return;
+  }
+  endReading(room);
+}
+
+function endReading(room) {
+  room.readers = new Set();
+  room.readUntil = 0;
+  if (room.alive.length === 2) startRps(room);
+  else startOrder(room);
+}
+
+// Readers still at the table and connected: one who left or dropped is not waited for.
+const readersLeft = (room) => [...(room.readers ?? [])].filter((s) => room.players[s]?.connected && !room.players[s].left);
+
+// A reader closed the rules (or went): when nobody is left reading, round 1 goes on now.
+function doneReading(room, seat) {
+  if (!room.readers?.delete(seat) || room.phase !== 'roundIntro') return;
+  if (room.readUntil && !readersLeft(room).length) endReading(room);
+  else broadcast(room);
 }
 
 // Two players: rock-paper-scissors, the winner picks who slams first.
@@ -861,6 +922,7 @@ function detach(ws, { leaving = false } = {}) {
   player.connected = false;
   player.ws = null;
   player.tutorial = 0;
+  doneReading(room, seat);
   if (room.slam?.waiting.delete(seat) && room.slam.ended && !room.slam.waiting.size) finishSlam(room);
   // dropped during their own turn: cut what is left of it down to the short away turn
   if (room.phase === 'turn' && room.turn === seat && room.deadline - Date.now() > TIMING.awayTurn) {
@@ -1046,12 +1108,17 @@ function handle(ws, msg) {
     return;
   }
 
+  // Where the player is in the tutorial (0: closed), and `learner`: they have not read it through yet,
+  // so the next match's round 1 waits for them (afterIntro).
   if (msg.t === 'ftue') {
+    const player = room.players[seat];
     const step = Math.trunc(Number(msg.step));
-    const next = step >= 1 && step <= TUTORIAL_STEPS ? step : 0;
-    if (room.players[seat].tutorial !== next) {
-      room.players[seat].tutorial = next;
-      broadcast(room);
+    const next = step >= 1 && step <= TUTORIAL.length ? step : 0;
+    player.learner = Boolean(msg.learner);
+    if (player.tutorial !== next) {
+      player.tutorial = next;
+      if (!next && room.readers?.has(seat)) doneReading(room, seat);
+      else broadcast(room);
     }
     return;
   }
@@ -1208,7 +1275,7 @@ function returnToLobby(room) {
   room.last = { winner: room.result?.matchWinner ?? null, name: room.players[room.result?.matchWinner]?.name ?? null };
   Object.assign(room, {
     phase: 'lobby', seats: [], alive: [], round: 0, scores: {}, turn: null, cards: {}, result: null, event: null,
-    rematch: {}, ready: {}, deadline: 0, slam: null, autoSlam: false,
+    rematch: {}, ready: {}, deadline: 0, slam: null, autoSlam: false, readers: null, readUntil: 0,
   });
   log(room, 'back to the lobby');
   broadcast(room);

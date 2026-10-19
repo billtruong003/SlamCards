@@ -124,35 +124,33 @@ async function runProfile(p) {
     await sleep(300);
     await shot(page, '02-lobby-top');
     const lobby = await page.evaluate(() => {
-      const card = document.querySelector('.menu-card:not(.ftue-invite)').getBoundingClientRect();
-      const inv = document.querySelector('.ftue-invite')?.getBoundingClientRect();
-      const corner = document.getElementById('corner').getBoundingClientRect();
-      const hit = (a, b) => b && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
-      const no = document.getElementById('ftue-no')?.getBoundingClientRect();
-      const yes = document.getElementById('ftue-yes')?.getBoundingClientRect();
-      return { cardTopAtScroll0: Math.round(card.top), invite: Boolean(inv), inviteTop: inv && Math.round(inv.top), vh: innerHeight, cornerHitsNo: hit(corner, no), cornerHitsYes: hit(corner, yes) };
+      const card = document.querySelector('.menu-card').getBoundingClientRect();
+      return { cardTopAtScroll0: Math.round(card.top), vh: innerHeight };
     });
     step('lobby', inLobby, lobby);
     if (lobby.cardTopAtScroll0 < 0) report.findings.push(`Lobby title off-screen and unreachable (card top ${lobby.cardTopAtScroll0}px) — UX-01`);
 
-    if (lobby.invite) {
-      await page.locator('#ftue-yes').scrollIntoViewIfNeeded();
-      await shot(page, '03-lobby-invite');
-      await page.locator('#ftue-yes').tap();
-      await sleep(300);
-      await shot(page, '04-tutorial-1');
-      const fit = await page.evaluate(() => { const r = document.querySelector('.ftue-card').getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, nextVisible: document.querySelector('.ftue-next').getBoundingClientRect().bottom <= innerHeight }; });
-      step('tutorial modal', true, fit);
-      if (!fit.nextVisible) report.findings.push('Tutorial "Next" button below the fold');
-      for (let i = 0; i < 4; i++) { await page.locator('.ftue-next').tap(); await sleep(150); }
-      await shot(page, '05-tutorial-5');
-      await page.locator('.ftue-next').tap();
-    }
-
-    // guests ready up, then the host (the bot) starts
+    // guests ready up, then the host (the bot) starts; a new player reads the seven steps first
+    // while round 1 waits (task 1.11), the clip playing on this device
     await page.locator('#ready').tap();
     await until(() => host.state?.ready?.pink === true);
     host.send({ t: 'start' });
+    const steps = await until(() => page.locator('#ftue-modal .ftue-next').isVisible(), 10000);
+    // the clip loads as the match starts (the table is being drawn too): give it up to 8 s
+    await until(() => page.evaluate(() => { const v = document.querySelector('#ftue-modal video'); return Boolean(v && !v.paused && v.readyState >= 2); }), 8000);
+    await shot(page, '04-tutorial-1');
+    const fit = await page.evaluate(() => {
+      const r = document.querySelector('.ftue-card').getBoundingClientRect();
+      const v = document.querySelector('#ftue-modal video');
+      return { top: Math.round(r.top), bottom: Math.round(r.bottom), vh: innerHeight, nextVisible: document.querySelector('.ftue-next').getBoundingClientRect().bottom <= innerHeight,
+        clipPlaying: Boolean(v && !v.paused && v.readyState >= 2), clip: v?.currentSrc.split('/').pop() };
+    });
+    step('tutorial at the first match', steps, fit);
+    if (!fit.nextVisible) report.findings.push('Tutorial "Next" button below the fold');
+    if (!fit.clipPlaying) report.findings.push(`Tutorial clip not playing (${fit.clip || 'no source chosen'})`);
+    for (let i = 0; i < 6; i++) { await page.locator('.ftue-next').tap(); await sleep(150); }
+    await shot(page, '05-tutorial-7');
+    await page.locator('.ftue-next').tap();
     await until(() => host.state?.phase === 'rps');
     await page.locator('[data-rps="bua"]').tap();
     host.send({ t: 'rps', choice: 'keo' });

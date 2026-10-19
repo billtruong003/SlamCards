@@ -127,12 +127,15 @@ export const faceUp = (x, z, y = 0.008) => ({ p: [x, y, z], q: [0, 0, 0, 1] });
 export const near = (card, dx = 1.2) => ({ x: card.p[0] + dx, z: card.p[2] });
 export const bySeat = (players, seat) => players.find((p) => p.seat === seat);
 
-export function httpGet(port, rawPath) {
+export function httpGet(port, rawPath, headers = {}) {
   return new Promise((resolve, reject) => {
-    const req = http.request({ host: '127.0.0.1', port, path: rawPath, method: 'GET' }, (res) => {
-      let body = '';
-      res.on('data', (d) => { body += d; });
-      res.on('end', () => resolve({ status: res.statusCode, body }));
+    const req = http.request({ host: '127.0.0.1', port, path: rawPath, method: 'GET', headers }, (res) => {
+      const chunks = [];
+      res.on('data', (d) => { chunks.push(d); });
+      res.on('end', () => {
+        const raw = Buffer.concat(chunks);
+        resolve({ status: res.statusCode, body: raw.toString('utf8'), bytes: raw.length, headers: res.headers });
+      });
     });
     req.on('error', reject);
     req.end();

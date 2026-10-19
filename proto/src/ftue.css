@@ -1,4 +1,4 @@
-/* Errors, connection cards, short-screen lobby and first-time help (FTUE). */
+/* Errors, connection cards, short-screen lobby and first-time help (FTUE, ftue.js). */
 
 /* ---------- errors and connection ---------- */
 .fatal-title{font-size:clamp(30px,7vw,46px)}
@@ -21,99 +21,136 @@
 
 /* ---------- "?" button ---------- */
 #help{position:relative;min-width:30px}
+/* " · H" only where the corner row has room: narrower, it ran into the turn hint (1024 px) */
+@media (max-width:1279px){#corner .keyhint{display:none}}
 #help.dot::after{content:"";position:absolute;right:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--pink-dark);border:2px solid var(--ink)}
 
-/* ---------- invite card beside the lobby, start confirmation ---------- */
-/* flex-start, not center: a centred column taller than a phone screen spills off the top where it can't be
-   scrolled to (UX-01). The auto margins below still centre it when it fits. */
-.menu-bg.with-invite{flex-direction:column;gap:18px;justify-content:flex-start}
-.menu-bg.with-invite .menu-card{margin:auto auto 0}
-.menu-bg.with-invite .ftue-invite{margin:0 auto auto}
-.ftue-side{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;width:min(340px,calc(100vw - 32px))}
-.ftue-h{margin:0;font-size:28px;line-height:1.05;font-weight:800}
-.ftue-p{margin:0;font-weight:700;font-size:17px;line-height:1.3}
-.ftue-p b{color:var(--pink-dark)}
-.ftue-invite-art{position:relative;width:136px;height:72px}
-.ftue-no{background:none;border:0;color:var(--muted);font-weight:700;font-size:16px;text-decoration:underline;padding:4px 8px;min-height:36px}
-@media (min-width:1220px){
-  .menu-bg.with-invite .ftue-invite{position:fixed;left:calc(50% + 240px);top:50%;transform:translateY(-50%);margin:0}
-  .menu-bg.with-invite .menu-card:not(.ftue-invite){margin:auto}
-}
-.ftue-confirm{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(42,20,24,.3)}
-@media (min-width:1220px){.ftue-confirm .ftue-side{position:fixed;left:calc(50% + 240px);top:50%;transform:translateY(-50%)}}
-
-/* ---------- the five steps ---------- */
-.ftue-modal{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(42,20,24,.45);overflow-y:auto}
-.ftue-card{display:flex;width:min(640px,100%);min-height:300px;margin:auto;background:var(--cream);border:4px solid var(--ink);border-radius:18px;box-shadow:0 6px 0 var(--ink);overflow:hidden}
-.ftue-art{flex:none;width:250px;border-right:3px solid var(--ink);background:repeating-linear-gradient(0deg,#e7c38c 0 18px,#e2bb81 18px 20px)}
-.fa-stage{position:relative;width:250px;height:300px;margin:0 auto}
-.ftue-txt{flex:1;min-width:0;padding:16px 18px 14px;display:flex;flex-direction:column;gap:8px}
-.ftue-step{font-weight:800;font-size:13px;color:var(--pink-dark);letter-spacing:.04em}
-.ftue-txt h2{margin:0;font-weight:800;font-size:28px;line-height:1.05}
-.ftue-body{display:flex;flex-direction:column;gap:6px}
-.ftue-body p{margin:0;font-weight:600;font-size:16px;line-height:1.35}
-.ftue-body b{color:var(--pink-dark)}
-.ftue-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:6px}
-.ftue-pips{display:flex;gap:5px}
-.ftue-pips i{width:10px;height:10px;border-radius:50%;border:2px solid var(--ink)}
+/* ---------- the seven steps (task 1.11, mockup v25) ---------- */
+/* auto margins, not centring: a column taller than a phone screen must still scroll from its top (UX-01) */
+.ftue-modal{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px;background:rgba(42,20,24,.45);overflow-y:auto}
+.ftue-modal > :first-child{margin-top:auto}
+.ftue-modal > :last-child{margin-bottom:auto}
+.tut-banner{display:none;margin:0;max-width:100%;background:var(--ink);color:var(--cream);border-radius:12px;padding:2px 16px;font-weight:800;font-size:19px;text-align:center}
+.ftue-modal.first .tut-banner{display:block}
+.ftue-card{display:flex;flex:none;width:min(940px,100%);background:var(--cream);border:4px solid var(--ink);border-radius:18px;box-shadow:0 6px 0 var(--ink);overflow:hidden}
+.tut-card > .tut-clip{flex:none;width:min(480px,50%);align-self:flex-start;border-right:3px solid var(--ink)}
+.ftue-txt{flex:1;min-width:0;padding:22px 26px;display:flex;flex-direction:column;gap:10px}
+.ftue-step{font-weight:800;font-size:15px;color:var(--pink-dark);letter-spacing:.04em}
+.tut-title{margin:0;font-weight:800;font-size:36px;line-height:1.05}
+.tut-body{display:flex;flex-direction:column;gap:8px}
+.tut-body p{margin:0;font-weight:600;font-size:20px;line-height:1.35}
+.tut-body b{color:var(--pink-dark)}
+.tut-body .tut-hint{font-size:17px;line-height:1.3;color:var(--muted)}
+.ftue-foot{margin-top:auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-top:6px}
+.ftue-pips{display:flex;gap:6px}
+.ftue-pips i{width:12px;height:12px;box-sizing:border-box;border-radius:50%;border:2px solid var(--ink)}
 .ftue-pips i.on{background:var(--ink)}
-.ftue-skip{background:none;border:0;color:var(--muted);font-weight:700;font-size:14px;text-decoration:underline;min-height:40px;padding:0 8px}
-.ftue-next{min-height:42px;font-size:17px}
-@media (max-width:600px){
+.ftue-skip{margin-left:auto;background:none;border:0;color:var(--muted);font:700 17px var(--font);text-decoration:underline;min-height:46px;padding:0 8px;white-space:nowrap}
+.ftue-skip:disabled{text-decoration:none;opacity:.55}
+.ftue-next{min-width:140px;min-height:50px;font-size:20px;white-space:nowrap}
+/* a clip: 4:3, its caption a pill at the bottom (ink for the setup, pink for the outcome) */
+.tut-clip{position:relative;aspect-ratio:4/3;overflow:hidden;background:#e7c38c}
+.tut-clip video{display:block;width:100%;height:100%;object-fit:cover}
+.tut-cap{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);width:max-content;max-width:92%;box-sizing:border-box;background:var(--ink);color:var(--cream);border-radius:10px;padding:2px 12px;font-weight:800;font-size:18px;line-height:1.25;text-align:center;pointer-events:none}
+.tut-cap.pink{background:var(--pink-dark)}
+@media (max-width:700px){
+  .tut-banner{font-size:17px}
   .ftue-card{flex-direction:column}
-  .ftue-art{width:100%;border-right:0;border-bottom:3px solid var(--ink);height:240px;overflow:hidden}
-  .fa-stage{transform:scale(.8);transform-origin:top center}
+  .tut-card > .tut-clip{width:100%;border-right:0;border-bottom:3px solid var(--ink)}
+  .ftue-txt{padding:14px 18px 18px;gap:8px}
+  .ftue-step{font-size:14px}
+  .tut-title{font-size:30px}
+  .tut-body p{font-size:18px}
+  .tut-body .tut-hint{font-size:16px}
+  .ftue-pips{gap:4px}
+  .ftue-pips i{width:10px;height:10px}
+  .ftue-skip{font-size:16px}
+  .ftue-next{min-width:112px}
+  .tut-cap{font-size:15px}
 }
+/* the narrowest phones (320 px): the footer's dots, skip and next still fit on one row */
+@media (max-width:360px){
+  .ftue-foot{gap:8px}
+  .ftue-pips{gap:3px}
+  .ftue-pips i{width:8px;height:8px}
+  .ftue-skip{padding:0 4px}
+  .ftue-next{min-width:0;padding:4px 16px}
+}
+/* phone on its side: the clip beside the words, both smaller */
 @media (orientation:landscape) and (max-height:500px){
-  .ftue-card{flex-direction:row;min-height:0}
-  .ftue-art{width:200px;height:auto;border-bottom:0;border-right:3px solid var(--ink);overflow:hidden}
-  .fa-stage{transform:scale(.8);transform-origin:top center;margin:0}
-  .ftue-txt h2{font-size:22px}
+  .ftue-modal{padding:8px 16px}
+  .ftue-card{flex-direction:row}
+  .tut-card > .tut-clip{width:min(330px,42%);border-bottom:0;border-right:3px solid var(--ink)}
+  .ftue-txt{padding:10px 16px;gap:6px}
+  .tut-title{font-size:24px}
+  .tut-body p{font-size:16px}
+  .tut-banner{font-size:15px}
 }
 
-/* tutorial pictures (from mockup/ftue-preview) */
-/* the new card (milestone 4), drawn in CSS: face = the pet in its window, back = the card colour */
-.fa-c{position:absolute;--s:.44;--r:0deg;--c:#a34e71;--room:#fae0e8;width:calc(92px*var(--s));height:calc(136px*var(--s));box-sizing:border-box;border:calc(5px*var(--s)) solid var(--ink);border-radius:calc(13px*var(--s));background:var(--c);transform:translate(-50%,-50%) rotate(var(--r));filter:drop-shadow(0 3px 0 rgba(42,20,24,.35))}
-.fa-c.bf,.fa-c.bb{--c:#a34e71;--room:#fae0e8}
-.fa-c.pf,.fa-c.pb{--c:#2f6e9e;--room:#d8ebfb}
-.fa-c.bf::before,.fa-c.pf::before{content:"";position:absolute;inset:calc(5px*var(--s));border-radius:calc(8px*var(--s));background:linear-gradient(var(--c),var(--c)) no-repeat 50% 88%/78% 12%,var(--cream)}
-.fa-c.bf::after,.fa-c.pf::after{content:"";position:absolute;left:14%;right:14%;top:9%;height:60%;box-sizing:border-box;border:calc(4px*var(--s)) solid var(--ink);border-radius:calc(8px*var(--s));background:var(--pet) 50% 75%/118% no-repeat,radial-gradient(circle at 50% 35%,#fff8 0 30%,transparent 31%),var(--room)}
-.fa-c.bb,.fa-c.pb{background:url(/brand/bill-the-dev-mark-white.svg) 50% 42%/62% no-repeat,var(--c)}
-.fa-c.bb::before,.fa-c.pb::before{content:"";position:absolute;inset:calc(5px*var(--s));border:calc(3px*var(--s)) solid var(--cream);border-radius:calc(8px*var(--s))}
-.fa-c.fa-air{filter:drop-shadow(14px 26px 4px rgba(42,20,24,.25))}
-.fa-ring{position:absolute;border-radius:50%;transform:translate(-50%,-50%)}
-.fa-reach{border:3px dashed var(--ink);background:rgba(255,255,255,.25)}
-.fa-shake{width:26px;height:26px;border:2px dashed var(--ink)}
-.fa-impact{width:34px;height:34px;border:5px solid #fff;box-shadow:0 0 0 4px var(--ink)}
-.fa-forced{width:64px;height:64px;border:3px solid var(--pink);background:rgba(204,135,160,.22)}
-.fa-dep{position:absolute;width:24px;height:50px;opacity:.9;transform:translate(-50%,-50%) rotate(var(--r))}
-.fa-trail{position:absolute;left:0;top:0;width:250px;height:300px;pointer-events:none}
-.fa-lbl{position:absolute;transform:translate(-50%,-50%);font-weight:800;font-size:11px;background:var(--cream);border:2px solid var(--ink);border-radius:6px;padding:0 5px;white-space:nowrap}
-.fa-pop{position:absolute;font-weight:800;font-size:44px;color:var(--cream);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;transform:translate(-50%,-50%) rotate(-8deg)}
-.fa-v{display:inline-flex;flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);align-items:center;justify-content:center;font-weight:800;font-size:15px;background:var(--cream)}
-.fa-cell .fa-v,.fa-stage>.fa-v{position:absolute;transform:translate(-50%,-50%)}
-.fa-v.ok{background:var(--mint)}
-.fa-v.bad{background:var(--pink);color:#fff}
-.fa-v.fa-out{width:auto;border-radius:10px;padding:0 10px;font-size:14px;white-space:nowrap}
-.fa-cell{position:absolute;width:113px;height:118px;border:3px solid var(--ink);border-radius:12px;background:repeating-linear-gradient(0deg,#e7c38c 0 14px,#e2bb81 14px 16px);overflow:hidden}
-.fa-cap{position:absolute;left:0;right:0;bottom:0;background:var(--cream);border-top:3px solid var(--ink);font-weight:800;font-size:12px;line-height:1.15;text-align:center;padding:3px 4px}
-.fa-floor{position:absolute;right:0;top:0;bottom:0;width:52px;background:repeating-conic-gradient(#f3e6cf 0 25%,#ecdcbf 0 50%) 0 0/20px 20px;border-left:4px solid var(--ink)}
-.fa-tools{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.fa-wind{display:flex;align-items:center;gap:6px;background:var(--cream);border:3px solid var(--ink);border-radius:10px;padding:0 10px;font-weight:800;font-size:15px;height:30px}
-.fa-type{background:var(--cream);border:3px solid var(--ink);border-radius:10px;padding:0 8px;font-weight:700;font-size:12px;opacity:.6}
-.fa-type.sel{opacity:1;background:var(--mint)}
+/* ---------- the quick-match wait: the steps rotate beside the queue ---------- */
+.menu-bg.with-tut{flex-wrap:wrap;gap:20px;align-content:flex-start;align-content:safe center}
+.tut-queue.menu-card{display:flex;padding:0;overflow:hidden;width:min(700px,calc(100vw - 32px));max-width:none;background:var(--cream)}
+.tut-queue > .tut-clip{flex:none;width:400px;border-right:3px solid var(--ink)}
+.tut-pill{position:absolute;left:10px;top:10px;z-index:1;background:var(--ink);color:var(--cream);border-radius:12px;padding:2px 10px;font-weight:800;font-size:15px}
+.tut-qtxt{flex:1;min-width:0;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.tut-qhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tut-queue .tut-title{font-size:28px}
+.tut-queue .tut-body p{font-size:17px;line-height:1.3}
+.tut-queue .tut-body .tut-hint{font-size:15px}
+.tut-qnav{margin-top:auto;display:flex;align-items:center;gap:10px}
+.tut-qnav .btn{flex:none;width:48px;height:48px;min-height:0;padding:0;border-radius:12px;font-size:28px;line-height:1}
+.tut-qtime{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.tut-qtime small{font-size:14px;font-weight:700;color:var(--muted);line-height:1.2}
+.tut-bar{display:block;width:100%;height:8px;box-sizing:border-box;border:2px solid var(--ink);border-radius:4px;background:#efe3cf;overflow:hidden}
+.tut-bar i{display:block;height:100%;background:var(--pink-dark);transform-origin:left;animation:tutBar linear forwards}
+@keyframes tutBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (min-width:1180px){
+  .menu-bg.with-tut{flex-wrap:nowrap;justify-content:center;align-items:center}
+  .menu-bg.with-tut > .menu-card{margin:0}
+}
+/* a phone: the queue card shrinks to a strip on top (one row of seats), the steps under it */
+@media (max-width:820px){
+  .menu-bg.with-tut{gap:14px}
+  .with-tut .queue-card{gap:6px;padding:10px 14px}
+  .with-tut .queue-card h1.stamp{font-size:30px!important;white-space:nowrap}
+  .with-tut .queue-seats{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .with-tut .queue-seats .slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;height:54px;box-sizing:border-box;padding:2px;font-size:13px;line-height:1.1;text-align:center;overflow:hidden}
+  .with-tut .queue-seats .slot small,.with-tut .queue-seats .slot-dep{display:none}
+  .tut-queue.menu-card{flex-direction:column}
+  .tut-queue > .tut-clip{width:100%;max-height:240px;border-right:0;border-bottom:3px solid var(--ink)}
+  .tut-queue .tut-title{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){.tut-bar{display:none}}
 
-/* ---------- "?" quick rules ---------- */
-.help-panel{width:min(440px,calc(100vw - 20px))}
-.rules-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
-.rule{display:flex;gap:6px;align-items:flex-start;border:2px solid var(--ink);border-radius:10px;padding:5px 7px;background:#fff;font-weight:700;font-size:13px;line-height:1.25}
-.help-actions{justify-content:space-between}
-.help-actions .btn{min-height:36px;font-size:14px;padding:2px 12px}
-@media (max-width:420px){.rules-grid{grid-template-columns:1fr}}
+/* ---------- in a match: a reminder replays a step's clip the first time its feature comes up ---------- */
+.tut-remind{position:fixed;left:0;right:0;bottom:120px;margin:0 auto;z-index:8;width:min(360px,calc(100vw - 40px));background:var(--cream);border:3px solid var(--ink);border-radius:14px;box-shadow:0 5px 0 var(--ink);overflow:hidden}
+.tut-remind.wind,.tut-remind.forced{bottom:auto;top:110px}
+.tut-rhead{display:flex;align-items:stretch;border-bottom:3px solid var(--ink);font-weight:800}
+.tut-rhead i{font-style:normal;background:var(--pink-dark);color:#fff;padding:2px 10px;font-size:13px;letter-spacing:.04em;display:flex;align-items:center}
+.tut-rhead span{padding:2px 12px;font-size:16px}
+.tut-remind .tut-clip{border-bottom:3px solid var(--ink)}
+.tut-remind .tut-cap{font-size:14px}
+.tut-rfoot{display:flex;align-items:flex-end;gap:10px;padding:10px 14px 12px}
+.tut-rfoot p{flex:1;margin:0;font-weight:600;font-size:16px;line-height:1.3}
+.tut-rfoot b{color:var(--pink-dark)}
+.tut-rfoot .btn{flex:none;min-height:44px;font-size:17px;padding:4px 16px}
+/* the ring breathes in its shadow: #toggle is placed with a transform an animated one would undo */
+#toggle.tut-pulse{border-radius:14px;box-shadow:0 0 0 3px var(--pink-dark),0 0 0 6px rgba(163,78,113,.25);animation:tutRing 1s ease-in-out infinite alternate}
+@keyframes tutRing{to{box-shadow:0 0 0 3px var(--pink-dark),0 0 0 14px rgba(163,78,113,.25)}}
+#toggle small{display:block;font-size:11px;font-weight:700;line-height:1.1}
+@media (max-width:820px) and (orientation:portrait){
+  .tut-remind{bottom:128px}
+  .tut-remind.wind,.tut-remind.forced{top:160px}
+}
+/* phone on its side: the reminder at the right, the slam-type buttons keep the left edge */
+@media (max-width:820px) and (orientation:landscape),(orientation:landscape) and (max-height:500px){
+  .tut-remind,.tut-remind.wind,.tut-remind.forced{top:auto;bottom:8px;left:auto;right:64px;width:min(300px,44vw)}
+}
 
-/* ---------- in-match: stashed-steps bubble, tips, first-turn pointer ---------- */
+/* ---------- in a match: the "?" bubble, tips, first-turn pointer ---------- */
 .ftue-bubble{position:fixed;right:10px;bottom:76px;z-index:11;max-width:min(300px,calc(100vw - 20px));background:var(--cream);border:3px solid var(--ink);border-radius:14px;box-shadow:0 5px 0 var(--ink);padding:8px 12px;font-weight:700;font-size:15px;line-height:1.3}
 .ftue-bubble b{color:var(--pink-dark)}
+.ftue-bubble .btn{display:block;margin:8px auto 0;min-height:40px;padding:2px 20px;font-size:16px}
 .ftue-tip{position:fixed;top:96px;left:0;right:0;margin:0 auto;width:max-content;z-index:7;display:flex;align-items:stretch;max-width:calc(100vw - 24px);background:var(--cream);border:3px solid var(--ink);border-radius:12px;box-shadow:0 4px 0 var(--ink);overflow:hidden;pointer-events:none;font-weight:800}
 .ftue-tip i{font-style:normal;background:var(--pink-dark);color:#fff;padding:2px 10px;font-size:13px;display:flex;align-items:center;letter-spacing:.04em}
 .ftue-tip span{padding:2px 12px}
@@ -158,4 +195,4 @@
   .ftue-tip{top:78px}
 }
 .ftue-point.below .ftue-say{bottom:auto;top:var(--gap, 34px)}
-@media (prefers-reduced-motion:reduce){.ftue-pulse{animation:none}}
+@media (prefers-reduced-motion:reduce){.ftue-pulse,#toggle.tut-pulse{animation:none}}

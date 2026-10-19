@@ -155,11 +155,5 @@
 }
 @media (min-width:821px),(orientation:landscape){.react-chat{display:none!important}}
 @media (orientation:landscape) and (max-height:500px){.react-chat:not([hidden]){display:flex!important;margin-top:auto}}
-/* the tutorial invite next to the lobby card, inside the space the docked chat leaves */
-@media (min-width:1180px){
-  body[data-social="lobby"]:not([data-chat="off"]) .menu-bg.with-invite{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:20px}
-  body[data-social="lobby"]:not([data-chat="off"]) .menu-bg.with-invite .ftue-invite{position:static;transform:none;margin:auto 0}
-  body[data-social="lobby"]:not([data-chat="off"]) .menu-bg.with-invite .menu-card:not(.ftue-invite){margin:auto 0}
-}
 @media (max-width:420px){.keyhint{display:none}}
 body.clean #netstat,body.clean .credit{display:none!important}

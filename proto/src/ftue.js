@@ -1,15 +1,21 @@
-// First-time help: an invite card in the lobby, five illustrated steps, a pointer on the very
-// first turn, one-off tips during the first matches, and the "?" quick-rules panel.
-// All copy comes from TEXTS.md section I (locale keys ftue.*, tip.*, rules.*).
+// First-time help (task 1.11, mockup v25). The seven steps, each with a clip of the real game:
+// forced once at a new player's first match (the server holds round 1 while they read), rotating
+// on the quick-match wait, and replayed from "?". Then a pointer on the very first turn, one-off tips
+// in the first matches, and a reminder clip the first time slam types, wind or the pink ring come up.
+// Copy: locale keys tut.*, ftue.*, tip.*.
 import { TUNE } from './config.js';
-import { isFaceUp } from './rules.js';
+import { isFaceUp, ROUNDS_TO_WIN, TURN_MS } from './rules.js';
 import { t } from './i18n.js';
+import { STEPS, REMINDERS } from './tutorial.js';
 
-const STEPS = 5;
+const N = STEPS.length;
 const TIP_MATCHES = 3;
 const TIP_MS = 3500;
 const EDGE_WARNING = 1.2;
 const POINTER_BEHIND = 1.3;
+const SKIP_LOCK_MS = 3000; // the first match's steps: "skip" opens after this
+const QUEUE_STEP_MS = 6000; // the quick-match wait shows each step this long
+const BUBBLE_MS = 8000;
 
 const memory = {};
 const saved = {
@@ -17,62 +23,72 @@ const saved = {
   set(key, value) { memory[key] = value; try { localStorage.setItem(key, value); } catch { /* private mode */ } },
 };
 
-// The pet in a card's window, as a full address: a relative url() inside a custom property resolves
-// against the page, so under /slam-cards/ the stylesheet's own path missed and the cards were empty.
-const thumb = (pet) => `url(${new URL(`pets/thumbs/${pet}.png`, document.baseURI).href})`;
-const PET_OF = { b: 'cat', p: 'panda' }; // bf/bb: my pink cat card, pf/pb: the blue panda one
-const card = (cls, x, y, r = 0, s = 0.44, extra = '') => `<i class="fa-c ${cls}${extra}" style="left:${x}px;top:${y}px;--r:${r}deg;--s:${s};--pet:${thumb(PET_OF[cls[0]])}"></i>`;
-const label = (x, y, text) => `<span class="fa-lbl" style="left:${x}px;top:${y}px">${text}</span>`;
-const verdict = (cls, x, y, mark) => `<span class="fa-v ${cls}" style="left:${x}px;top:${y}px">${mark}</span>`;
-const cell = (x, y, top, bottom, mark, caption) => `<div class="fa-cell" style="left:${x}px;top:${y}px">${card(bottom, 60, 48, 6, 0.42)}${card(top, 46, 38, -14, 0.42)}${verdict(mark[0], 93, 18, mark[1])}<div class="fa-cap">${caption}</div></div>`;
-const SLIPPER = '<svg class="fa-dep" style="left:90px;top:176px;--r:-40deg" viewBox="0 0 40 84" aria-hidden="true"><rect x="3" y="3" width="34" height="78" rx="17" fill="#f5f7ff" stroke="#2a1418" stroke-width="4"/><path d="M9 36 Q20 20 31 36" fill="none" stroke="#5b8def" stroke-width="7" stroke-linecap="round"/><circle cx="20" cy="24" r="3" fill="#2a1418"/></svg>';
+// Files as full addresses: relative ones resolve against the page, which is wrong under /slam-cards/.
+const asset = (file) => new URL(file, document.baseURI).href;
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pips = (at) => STEPS.map((_, k) => `<i class="${k <= at ? 'on' : ''}"></i>`).join('');
 
-const paras = (...keys) => keys.map((key) => `<p>${t(key)}</p>`).join('');
-
-// Pictures from the approved Claude Design mockup (mockup/ftue-preview), 250x300 each.
-// Built on first use: the locale is not loaded yet when this module is imported.
-const pages = () => [
-  {
-    title: t('ftue.step1.title'),
-    body: paras('ftue.step1.p1', 'ftue.step1.p2'),
-    art: `${card('pb', 140, 150, 6, 0.62)}${card('bf', 118, 128, -16, 0.62)}<span class="fa-pop" style="left:150px;top:62px">${t('ftue.step1.eat')}</span>${label(72, 98, t('ftue.step1.mineUp'))}${label(178, 212, t('ftue.step1.enemyDown'))}`,
-  },
-  {
-    title: t('ftue.step2.title'),
-    body: paras('ftue.step2.p1', 'ftue.step2.p2'),
-    touch: paras('ftue.step2.touch'),
-    art: `<span class="fa-ring fa-reach" style="left:125px;top:140px;width:200px;height:200px"></span>${card('bb', 125, 140, -4, 0.55)}<span class="fa-ring fa-shake" style="left:90px;top:176px"></span>${SLIPPER}<svg class="fa-trail" viewBox="0 0 250 300" aria-hidden="true"><path d="M125 140 L190 88" stroke="#2a1418" stroke-width="6" stroke-dasharray="2 9" stroke-linecap="round" fill="none"/><path d="M190 88 l-14 1 m14 -1 l-4 13" stroke="#2a1418" stroke-width="5" stroke-linecap="round" fill="none"/></svg>${label(125, 258, t('ftue.step2.reach'))}${label(62, 214, t('ftue.step2.dropHere'))}`,
-  },
-  {
-    title: t('ftue.step3.title'),
-    body: paras('ftue.step3.p1', 'ftue.step3.p2', 'ftue.step3.p3'),
-    art: cell(8, 8, 'bf', 'pb', ['ok', '✓'], t('ftue.step3.win')) + cell(129, 8, 'pf', 'bb', ['bad', '✗'], t('ftue.step3.lose'))
-      + cell(8, 132, 'bb', 'pb', ['no', '–'], t('ftue.step3.bothDown')) + cell(129, 132, 'bf', 'pf', ['no', '–'], t('ftue.step3.bothUp')),
-  },
-  {
-    title: t('ftue.step4.title'),
-    body: paras('ftue.step4.p1', 'ftue.step4.p2'),
-    art: `<span class="fa-floor"></span>${card('bb', 58, 96, -4, 0.46)}<svg class="fa-trail" viewBox="0 0 250 300" aria-hidden="true"><path d="M160 168 Q205 120 224 86" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none" opacity=".95"/></svg>${card('pb', 160, 172, 8, 0.46)}${card('pf', 226, 72, 38, 0.46, ' fa-air')}<span class="fa-ring fa-impact" style="left:118px;top:200px"></span>${label(118, 230, t('ftue.step4.slamHere'))}${label(224, 128, t('ftue.step4.fall'))}<span class="fa-v bad fa-out" style="left:110px;top:270px">${t('ftue.step4.out')}</span>`,
-  },
-  {
-    title: t('ftue.step5.title'),
-    body: paras('ftue.step5.p1', 'ftue.step5.p2'),
-    art: `<div class="fa-tools"><span class="fa-wind"><svg width="34" height="16" viewBox="0 0 34 16" aria-hidden="true"><path d="M2 8 H28 M20 2 L30 8 L20 14" fill="none" stroke="#2a1418" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg> ${t('hud.wind', { n: 4 })}</span><span class="fa-type sel">${t('turn.flat')} · Q</span><span class="fa-type">${t('turn.tilt')} · E</span></div><span class="fa-ring fa-reach" style="left:125px;top:215px;width:120px;height:120px"></span><span class="fa-ring fa-forced" style="left:125px;top:215px"></span>${card('bb', 125, 215, -4, 0.36)}`,
-  },
-];
-
-const RULES = [['ok', '✓'], ['bad', '✗'], ['bad', '✗'], ['no', '–'], ['no', '!'], ['no', '!'], ['bad', '✗']];
+// A clip with its captions: the video plays muted on a loop, and the caption under way (STEPS cues,
+// in the player's language) is laid over it. Nothing loads until a step is shown; the browser takes
+// the MP4, or the WebM where it has no H.264 (open-source Chromium builds).
+const SOURCES = [['mp4', 'video/mp4'], ['webm', 'video/webm']];
+function mountClip(box) {
+  box.insertAdjacentHTML('afterbegin', '<video muted loop playsinline preload="none" disablepictureinpicture></video><span class="tut-cap" hidden></span>');
+  box.setAttribute('aria-hidden', 'true'); // the step's own words say it all
+  const video = box.querySelector('video');
+  const cap = box.querySelector('.tut-cap');
+  let step = -1;
+  const sync = () => {
+    const cues = STEPS[step]?.cues ?? [];
+    const k = cues.findIndex(([from, to]) => video.currentTime >= from && video.currentTime <= to);
+    cap.hidden = k < 0;
+    if (k < 0) return;
+    cap.textContent = t(`tut.s${step + 1}.c${k + 1}`);
+    cap.classList.toggle('pink', cues[k][2]);
+  };
+  for (const e of ['timeupdate', 'seeked', 'loadedmetadata']) video.addEventListener(e, sync);
+  return {
+    show(i) {
+      if (i === step) return;
+      step = i;
+      cap.hidden = true;
+      video.poster = asset(`tutorial/${STEPS[i].clip}.jpg`);
+      video.innerHTML = SOURCES.map(([ext, type]) => `<source src="${asset(`tutorial/${STEPS[i].clip}.${ext}`)}" type="${type}">`).join('');
+      video.load();
+      // reduced motion: the poster stays until the player presses play; a blocked autoplay keeps it too
+      if (reducedMotion) video.controls = true;
+      else video.play().catch(() => {});
+    },
+    stop() {
+      step = -1;
+      video.pause();
+      video.innerHTML = '';
+      video.load(); // lets the browser drop the download and the decoder
+    },
+  };
+}
 
 // track(name): a first-steps moment for the server's counts (server/metrics.js CLIENT_EVENTS).
 export function createFtue({ send, track = () => {}, world, touch, toastVisible, hidePanels }) {
-  const PAGES = pages();
+  const device = touch ? 'touch' : 'mouse';
   const disabled = new URLSearchParams(location.search).has('noftue');
-  let seen = saved.get('slam-ftue') === 'seen';
   let matches = Number(saved.get('slam-ftue-matches')) || 0;
+  // Steps seen, kept as "1257"; all seven = read through. Players from before the seven steps (who
+  // opened the old five or played a match) count as having read them.
+  const seenRaw = saved.get('slam-tut-seen');
+  const seen = seenRaw === null && (saved.get('slam-ftue') === 'seen' || matches > 0)
+    ? new Set(STEPS.keys())
+    : new Set([...(seenRaw ?? '')].map((c) => Number(c) - 1).filter((i) => i >= 0 && i < N));
+  if (seenRaw === null) saved.set('slam-tut-seen', [...seen].map((i) => i + 1).join(''));
+  const reminded = new Set((saved.get('slam-tut-tips') ?? '').split(',').filter(Boolean));
   // the pointer is for a player who has never slammed; a reload mid-match must not bring it back (QA-05)
   let slammedOnce = saved.get('slam-ftue-slammed') === '1';
   let page = -1;
+  let mode = null; // the steps open as 'first' (the first match, round 1 waits) or 'replay'
+  let lockUntil = 0;
+  let lockTimer = 0;
   let resumeAt = null;
+  let shownThisMatch = false;
   let state = null;
   let me = null;
   let lastPhase = '';
@@ -81,30 +97,43 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
   let tipUntil = 0;
   let pointerDone = false;
   let bubbleTimer = 0;
+  let reminder = null;
+  let queue = null;
+
+  const learner = () => !disabled && seen.size < N;
+  const firstUnseen = () => Math.max(0, STEPS.findIndex((_, i) => !seen.has(i)));
+  function markSeen(i) {
+    if (seen.has(i)) return;
+    seen.add(i);
+    saved.set('slam-tut-seen', [...seen].sort().map((k) => k + 1).join(''));
+  }
+  const vars = { q: touch ? '' : ' (Q)', e: touch ? '' : ' (E)', two: TURN_MS.two / 1000, more: TURN_MS.crowded / 1000, n: ROUNDS_TO_WIN };
+  // a step's words into a card: its number, title, body and the device's extra line if it has one
+  function fillStep(root, i) {
+    root.querySelector('.ftue-step').textContent = t('ftue.step', { n: i + 1, total: N });
+    root.querySelector('.ftue-pips').innerHTML = pips(i);
+    root.querySelector('.tut-title').textContent = t(`tut.s${i + 1}.title`);
+    const hint = STEPS[i].hint?.includes(device) ? `<p class="tut-hint">${t(`tut.s${i + 1}.hint.${device}`)}</p>` : '';
+    root.querySelector('.tut-body').innerHTML = `<p>${t(`tut.s${i + 1}.body`, vars)}</p>${hint}`;
+  }
 
   document.body.insertAdjacentHTML('beforeend', `
     <div id="ftue-modal" class="ftue-modal" hidden>
-      <div class="ftue-card" role="dialog" aria-modal="true" aria-labelledby="ftue-title">
-        <div class="ftue-art"><div class="fa-stage"></div></div>
+      <p class="tut-banner">${t('tut.firstMatch')}</p>
+      <div class="ftue-card tut-card" role="dialog" aria-modal="true" aria-labelledby="ftue-title">
+        <div class="tut-clip"></div>
         <div class="ftue-txt">
           <div class="ftue-step"></div>
-          <h2 id="ftue-title"></h2>
-          <div class="ftue-body"></div>
-          <div class="ftue-foot"><div class="ftue-pips"></div><button type="button" class="ftue-skip">${t('ftue.skip')}</button><button type="button" class="btn pri ftue-next">${t('ftue.next')}</button></div>
+          <h2 id="ftue-title" class="tut-title"></h2>
+          <div class="tut-body"></div>
+          <div class="ftue-foot"><div class="ftue-pips"></div><button type="button" class="ftue-skip"></button><button type="button" class="btn pri ftue-next"></button></div>
         </div>
       </div>
     </div>
-    <div id="ftue-confirm" class="ftue-confirm" hidden>
-      <div class="menu-card ftue-side">
-        <h2 class="ftue-h"></h2>
-        <p class="ftue-p"></p>
-        <div class="row"><button type="button" class="btn pri" id="ftue-go">${t('ftue.confirm.go')}</button><button type="button" class="btn" id="ftue-wait">${t('ftue.confirm.wait')}</button></div>
-      </div>
-    </div>
-    <div id="help-panel" class="panel-box help-panel" hidden>
-      <h2>${t('rules.title')}</h2>
-      <div class="rules-grid">${RULES.map(([cls, mark], i) => `<div class="rule"><span class="fa-v ${cls}">${mark}</span>${t(`rules.r${i + 1}`)}</div>`).join('')}</div>
-      <div class="row help-actions"><button type="button" class="btn" id="help-replay">${t('rules.replay')}</button><button type="button" class="btn" id="close-help">${t('common.close')}</button></div>
+    <div id="tut-remind" class="tut-remind" role="dialog" aria-labelledby="tut-remind-h" hidden>
+      <div class="tut-rhead"><i>${t('tip.label')}</i><span id="tut-remind-h"></span></div>
+      <div class="tut-clip"></div>
+      <div class="tut-rfoot"><p></p><button type="button" class="btn pri">${t('tut.gotIt')}</button></div>
     </div>
     <div id="ftue-bubble" class="ftue-bubble" hidden></div>
     <div id="ftue-tip" class="ftue-tip" hidden><i>${t('tip.label')}</i><span></span></div>
@@ -112,130 +141,173 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
 
   const $ = (id) => document.getElementById(id);
   const modal = $('ftue-modal');
-  const help = $('help-panel');
+  const modalClip = mountClip(modal.querySelector('.tut-clip'));
+  const skip = modal.querySelector('.ftue-skip');
+  const next = modal.querySelector('.ftue-next');
+  const remind = $('tut-remind');
+  const remindClip = mountClip(remind.querySelector('.tut-clip'));
+  const bubble = $('ftue-bubble');
   const helpButton = $('help');
   const point = $('ftue-point');
   const tip = $('ftue-tip');
 
-  const inLobby = () => state?.phase === 'lobby';
-  const remember = () => { seen = true; saved.set('slam-ftue', 'seen'); };
-  const shareStep = () => { if (state) send({ t: 'ftue', step: page >= 0 ? page + 1 : 0 }); };
+  // the server hears where the player is in the steps, and whether they still have to read them through
+  const shareStep = () => { if (state) send({ t: 'ftue', step: page >= 0 ? page + 1 : 0, learner: learner() }); };
+
+  // ---------- the steps ----------
+
+  // "Skip": none on the last step of the first match, locked for its first seconds (shown counting down)
+  function renderSkip() {
+    const left = Math.ceil((lockUntil - Date.now()) / 1000);
+    skip.hidden = mode === 'first' && page === N - 1;
+    skip.disabled = left > 0;
+    skip.textContent = left > 0 ? t('ftue.skipIn', { n: left }) : t('ftue.skip');
+    clearTimeout(lockTimer);
+    // next when the shown second changes (a few ms after, so the count has really moved on)
+    if (left > 0) lockTimer = setTimeout(renderSkip, ((lockUntil - Date.now()) % 1000 || 1000) + 15);
+  }
 
   function showPage(i) {
     page = i;
-    const p = PAGES[i];
-    modal.querySelector('.fa-stage').innerHTML = p.art;
-    modal.querySelector('.ftue-step').textContent = t('ftue.step', { n: i + 1, total: STEPS });
-    modal.querySelector('#ftue-title').textContent = p.title;
-    modal.querySelector('.ftue-body').innerHTML = p.body + (touch && p.touch ? p.touch : '');
-    modal.querySelector('.ftue-pips').innerHTML = PAGES.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('');
-    modal.querySelector('.ftue-next').textContent = t(i === STEPS - 1 ? 'ftue.done' : 'ftue.next');
+    markSeen(i);
+    fillStep(modal, i);
+    modalClip.show(i);
+    next.textContent = t(i === N - 1 ? 'ftue.done' : 'ftue.next');
+    renderSkip();
     modal.hidden = false;
-    modal.querySelector('.ftue-next').focus();
+    next.focus();
     shareStep();
   }
 
-  function closeModal() {
-    page = -1;
-    modal.hidden = true;
-    shareStep();
-  }
-
-  function openTutorial(at = 0) {
+  function openSteps(how, at) {
     track('tutorialOpened');
-    remember();
+    mode = how;
     resumeAt = null;
     helpButton.classList.remove('dot');
-    help.hidden = true;
-    $('ftue-bubble').hidden = true;
-    removeInvite();
+    hideBubble();
+    hideReminder();
+    hidePanels();
+    lockUntil = how === 'first' ? Date.now() + SKIP_LOCK_MS : 0;
+    modal.classList.toggle('first', how === 'first');
     showPage(at);
   }
 
-  modal.querySelector('.ftue-next').onclick = () => {
-    if (page < STEPS - 1) showPage(page + 1);
-    else {
-      track('tutorialDone');
-      closeModal();
+  function closeSteps() {
+    const wasFirst = mode === 'first';
+    page = -1;
+    mode = null;
+    clearTimeout(lockTimer);
+    modal.hidden = true;
+    modalClip.stop();
+    shareStep();
+    // after the first match's steps: where to find them again
+    if (wasFirst) showBubble(`${t('tut.findAgain', { n: N })} <button type="button" class="btn pri" id="ftue-bubble-ok">${t('tut.ok')}</button>`);
+  }
+
+  next.onclick = () => {
+    if (page < N - 1) {
+      showPage(page + 1);
+      return;
     }
+    track('tutorialDone');
+    closeSteps();
   };
-  modal.querySelector('.ftue-skip').onclick = () => {
+  skip.onclick = () => {
+    if (skip.disabled) return;
     track('tutorialSkipped');
-    closeModal();
+    closeSteps();
   };
 
-  // The match started while the steps were open: put them away behind "?" and say where they went.
-  function stashTutorial() {
+  // Round 1 went on without the reader (they took longer than the server waits): the steps go
+  // behind "?", which says where they were.
+  function stashSteps() {
     resumeAt = page;
-    closeModal();
+    mode = 'replay';
+    closeSteps();
     helpButton.classList.add('dot');
-    const bubble = $('ftue-bubble');
-    bubble.innerHTML = t('ftue.stashed', { n: resumeAt + 1, total: STEPS });
-    bubble.hidden = false;
-    clearTimeout(bubbleTimer);
-    bubbleTimer = setTimeout(() => { bubble.hidden = true; }, 4000);
+    showBubble(t('ftue.stashed', { n: resumeAt + 1, total: N }));
   }
 
-  function toggleHelp(open = help.hidden) {
-    if (open) {
-      hidePanels();
-      track('rulesOpened');
-    }
-    help.hidden = !open;
-    $('ftue-bubble').hidden = true;
-    $('help-replay').textContent = resumeAt !== null ? t('rules.resume', { n: resumeAt + 1, total: STEPS }) : t('rules.replay');
+  function showBubble(html) {
+    bubble.innerHTML = html;
+    bubble.hidden = false;
+    const ok = $('ftue-bubble-ok');
+    if (ok) ok.onclick = hideBubble;
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(hideBubble, BUBBLE_MS);
   }
-  helpButton.onclick = () => toggleHelp();
-  $('close-help').onclick = () => toggleHelp(false);
-  $('help-replay').onclick = () => openTutorial(resumeAt ?? 0);
+  function hideBubble() {
+    clearTimeout(bubbleTimer);
+    bubble.hidden = true;
+  }
+
+  helpButton.onclick = () => {
+    track('rulesOpened');
+    openSteps('replay', resumeAt ?? 0);
+  };
   addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || !modal.hidden) return;
-    if (e.key === 'h' || e.key === 'H') toggleHelp();
-    if (e.key === 'Escape') toggleHelp(false);
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (!modal.hidden) {
+      if (e.key === 'Enter' && e.target !== skip) {
+        e.preventDefault();
+        next.click();
+      }
+      if (e.key === 'Escape' && !skip.hidden) skip.click();
+      return;
+    }
+    if (queue && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) queue.step(e.key === 'ArrowLeft' ? -1 : 1);
+    if (e.key === 'h' || e.key === 'H') helpButton.click();
   });
 
-  // ---------- lobby ----------
+  // ---------- the quick-match wait: the steps rotate beside the queue ----------
 
-  function removeInvite() {
-    document.querySelector('.ftue-invite')?.remove();
-    document.querySelector('.menu-bg.with-invite')?.classList.remove('with-invite');
-  }
+  // The card for the queue screen (main.js renderQueue); queueStart wires it once it is on the page.
+  const queueHtml = () => `
+    <div class="panel menu-card tut-queue">
+      <div class="tut-clip"><span class="tut-pill">${t('tut.queue.pill')}</span></div>
+      <div class="tut-qtxt">
+        <div class="tut-qhead"><div class="ftue-step"></div><div class="ftue-pips"></div></div>
+        <h2 class="tut-title"></h2>
+        <div class="tut-body"></div>
+        <div class="tut-qnav">
+          <button type="button" class="btn tut-prev" aria-label="${t('tut.queue.prev')}">‹</button>
+          <div class="tut-qtime"><small>${t(touch ? 'tut.queue.auto' : 'tut.queue.autoKeys', { n: QUEUE_STEP_MS / 1000 })}</small><span class="tut-bar"><i></i></span></div>
+          <button type="button" class="btn pri tut-nxt" aria-label="${t('tut.queue.next')}">›</button>
+        </div>
+      </div>
+    </div>`;
 
-  function decorateLobby() {
-    const bg = document.querySelector('#overlay .menu-bg');
-    if (!bg || seen || disabled || !modal.hidden || bg.querySelector('.ftue-invite')) return;
-    bg.classList.add('with-invite');
-    bg.insertAdjacentHTML('beforeend', `
-      <div class="menu-card ftue-invite ftue-side">
-        <div class="ftue-invite-art">${card('pb', 52, 36, -8, 0.5)}${card('bf', 84, 32, 12, 0.5)}</div>
-        <h2 class="ftue-h">${t('ftue.invite.title')}</h2>
-        <p class="ftue-p">${t('ftue.invite.sub')}</p>
-        <button type="button" class="btn pri wide" id="ftue-yes">${t('ftue.invite.yes')}</button>
-        <button type="button" class="ftue-no" id="ftue-no">${t('ftue.invite.no')}</button>
-      </div>`);
-    $('ftue-yes').onclick = () => openTutorial(0);
-    // "Already know how": no first-turn pointer and no tips either (UX-06), same as after three matches.
-    $('ftue-no').onclick = () => {
-      track('tutorialDeclined');
-      remember();
-      matches = Math.max(matches, TIP_MATCHES);
-      saved.set('slam-ftue-matches', String(matches));
-      removeInvite();
+  let queueAt = -1;
+  function queueStart(root) {
+    queueStop();
+    const clip = mountClip(root.querySelector('.tut-clip'));
+    const bar = root.querySelector('.tut-bar');
+    let timer = 0;
+    const show = (i) => {
+      queueAt = (i + N) % N;
+      fillStep(root, queueAt);
+      clip.show(queueAt);
+      bar.innerHTML = `<i style="animation-duration:${QUEUE_STEP_MS}ms"></i>`; // a fresh bar restarts its fill
+      clearTimeout(timer);
+      timer = setTimeout(() => step(1, true), QUEUE_STEP_MS);
     };
+    // a step shown its full time, or passed on by the player, counts as seen
+    const step = (by, read = by > 0) => {
+      if (!root.isConnected) {
+        queueStop();
+        return;
+      }
+      if (read) markSeen(queueAt);
+      show(queueAt + by);
+    };
+    root.querySelector('.tut-prev').onclick = () => step(-1);
+    root.querySelector('.tut-nxt').onclick = () => step(1);
+    queue = { step, stop: () => { clearTimeout(timer); clip.stop(); } };
+    show(queueAt >= 0 ? queueAt : learner() ? firstUnseen() : 0);
   }
-
-  // Starting while someone is still reading asks once. Returns false when nothing needs asking.
-  function confirmStart(go, nameOf) {
-    const reading = Object.entries(state?.players ?? {}).filter(([seat, p]) => seat !== me && p.tutorial > 0 && p.connected);
-    if (!reading.length) return false;
-    const [seat, p] = reading[0];
-    const box = $('ftue-confirm');
-    box.querySelector('.ftue-h').textContent = t('ftue.confirm.title', { name: nameOf(seat) });
-    box.querySelector('.ftue-p').innerHTML = t('ftue.confirm.body', { n: p.tutorial, total: STEPS });
-    box.hidden = false;
-    $('ftue-go').onclick = () => { box.hidden = true; go(); };
-    $('ftue-wait').onclick = () => { box.hidden = true; };
-    return true;
+  function queueStop() {
+    queue?.stop();
+    queue = null;
   }
 
   // ---------- during a match ----------
@@ -254,7 +326,6 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     const mine = s.cards[me];
     if (!mine) return;
     if (s.event?.type === 'timeout' && s.event.by === me) queueTip('timeout');
-    if (s.turn === me && s.forced) queueTip('forced');
     const myUp = isFaceUp(mine);
     const threat = !myUp && s.alive.some((seat) => seat !== me && isFaceUp(s.cards[seat])
       && Math.hypot(s.cards[seat].p[0] - mine.p[0], s.cards[seat].p[2] - mine.p[2]) < TUNE.threatRange);
@@ -264,35 +335,71 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     if (Math.abs(mine.p[0]) > hx - EDGE_WARNING || Math.abs(mine.p[2]) > hz - EDGE_WARNING) queueTip('edge');
   }
 
-  function onState(next, seat) {
-    const entered = next.phase !== lastPhase ? next.phase : '';
-    const wasLobby = lastPhase === 'lobby';
-    lastPhase = next.phase;
-    state = next;
+  // A reminder replays a step's clip the first time its feature comes up on the player's turn:
+  // the pink ring (any match), the slam types and the wind (hidden in the first match, ftue.firstMatch).
+  remind.querySelector('.btn').onclick = () => hideReminder();
+  function checkReminders() {
+    const s = state;
+    if (disabled || reminder || !modal.hidden || s.phase !== 'turn' || s.turn !== me) return;
+    const due = [
+      ['forced', s.forced],
+      ['types', matches > 0],
+      ['wind', matches > 0 && s.wind?.strength > 0],
+    ].find(([kind, now]) => now && !reminded.has(kind));
+    if (!due) return;
+    const kind = due[0];
+    reminder = kind;
+    reminded.add(kind);
+    saved.set('slam-tut-tips', [...reminded].join(','));
+    remind.className = `tut-remind ${kind}`;
+    $('tut-remind-h').textContent = t(`tut.remind.${kind}.title`);
+    remind.querySelector('.tut-rfoot p').innerHTML = t(`tut.remind.${kind}.body`);
+    remindClip.show(REMINDERS[kind] - 1);
+    remind.hidden = false;
+    if (kind === 'types') $('toggle').classList.add('tut-pulse');
+  }
+  function hideReminder() {
+    if (!reminder) return;
+    reminder = null;
+    remind.hidden = true;
+    remindClip.stop();
+    $('toggle').classList.remove('tut-pulse');
+  }
+
+  function onState(nextState, seat) {
+    const entered = nextState.phase !== lastPhase ? nextState.phase : '';
+    const left = entered ? lastPhase : '';
+    lastPhase = nextState.phase;
+    state = nextState;
     me = seat;
-    if (next.phase !== 'lobby') {
-      removeInvite();
-      $('ftue-confirm').hidden = true;
-      if (wasLobby && page >= 0) stashTutorial();
-    }
     // Tips and the pointer run once per match; a finished match counts toward the first three.
-    if (entered === 'roundIntro' && next.round === 1) {
+    if (entered === 'roundIntro' && nextState.round === 1) {
       tipsShown = new Set();
       tipQueue = [];
       pointerDone = false;
     }
+    // the first match of someone still learning: the steps, while the server holds round 1 for them
+    if (nextState.phase === 'roundIntro' && nextState.round === 1 && nextState.reading?.includes(me)
+      && !shownThisMatch && modal.hidden && learner()) {
+      shownThisMatch = true;
+      openSteps('first', firstUnseen());
+    }
+    if (left === 'roundIntro' && !modal.hidden && mode === 'first') stashSteps();
     if (entered === 'matchEnd') {
       if (matches === 0) track('firstMatch');
       matches += 1;
       saved.set('slam-ftue-matches', String(matches));
+      shownThisMatch = false;
     }
+    if (reminder && (nextState.phase !== 'turn' || nextState.turn !== me)) hideReminder();
+    checkReminders();
     checkTips();
   }
 
   // Called every frame: the tip waits for any toast to clear, the first-turn pointer follows the card.
   function frame(now, canAim) {
     if (!tip.hidden && now > tipUntil) tip.hidden = true;
-    if (tip.hidden && tipQueue.length && !toastVisible() && state?.phase === 'turn') {
+    if (tip.hidden && tipQueue.length && !toastVisible() && !reminder && state?.phase === 'turn') {
       tip.querySelector('span').textContent = t(`tip.${tipQueue.shift()}`);
       tip.hidden = false;
       tipUntil = now + TIP_MS;
@@ -323,7 +430,7 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     // corners) decides: the bubble hangs above or below the pulse, pushed clear of that outline, on
     // the side with room (on a laptop the card often sits level with the pulse, so "the other side
     // of the pulse" was not enough). Near the top it prefers below, keeping the turn banner clear.
-    const corners = [[-0.6, -0.8], [0.6, -0.8], [-0.6, 0.8], [0.6, 0.8]].map(([dx, dz]) => world.toScreen(mine.x + dx, 0, mine.z + dz).y);
+    const corners = [[-0.6, -0.8], [0.6, -0.8], [-0.6, 0.8], [0.6, 0.8]].map(([cx, cz]) => world.toScreen(mine.x + cx, 0, mine.z + cz).y);
     const cardTop = Math.min(...corners);
     const cardBottom = Math.max(...corners);
     const sayH = point.querySelector('.ftue-say').offsetHeight || 80;
@@ -347,22 +454,25 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
       track('firstSlam');
     }
     point.hidden = true;
+    hideReminder();
   }
 
   function leaveRoom() {
     state = null;
     lastPhase = '';
-    page = -1;
-    modal.hidden = true;
+    shownThisMatch = false;
+    if (!modal.hidden) closeSteps();
     point.hidden = true;
     tip.hidden = true;
-    $('ftue-confirm').hidden = true;
-    removeInvite();
+    hideReminder();
+    hideBubble();
   }
 
   return {
-    decorateLobby, confirmStart, onState, frame, onSlam, leaveRoom, closeHelp: () => toggleHelp(false),
-    openTutorial: () => openTutorial(0),
+    onState, frame, onSlam, leaveRoom, queueHtml, queueStart, queueStop,
+    openTutorial: () => openSteps('replay', 0),
+    // just in a room: the server learns whether this player still has the steps to read
+    joined: () => send({ t: 'ftue', step: 0, learner: learner() }),
     // a player's very first match: wind and slam types stay out of the way until they know the basics
     get firstMatch() { return matches === 0 && !disabled; },
   };
