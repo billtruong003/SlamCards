@@ -107,7 +107,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [x] ~~**1.31** Bot trông như người thật sau 15 giây chờ (nghĩ 3–12 giây, có lúc lệch/rớt bài), không lên bảng điểm, thêm dòng vào chính sách riêng tư — L~~ Vật lý cú đập của bot chạy nhờ trên máy một người trong bàn (không tốn CPU server), vẫn qua bộ kiểm 1.07. Kiểm bằng `qa/bot-match.mjs`: trận thật với bot, 12 cú đập của bot, 0 bị chặn. Bot thêm/xoá trong phòng bạn làm ở 1.36
 - [x] ~~**1.32** Người bị loại: Xem tiếp / Rời / Tìm trận mới, báo round sau vào lại; Chơi ngay rời thì bot thay chỗ (UC-05) — M~~ Kiểm bằng `qa/out-card.mjs`
 - [x] ~~**1.33** Lượt 15–20 giây ở bàn 3–4 người; ~~treo máy bị loại sau 2 lần hết giờ~~ (xong ở 1.09, mọi phòng); đếm theo round (V-21, V-22) — S~~ Gốc V-21: cú máy đập hộ xoá bộ đếm treo máy nên người treo không bao giờ bị loại; giờ tính là một lần treo. Bàn 3–4 người lượt 18 giây
-- [ ] **1.34** Ăn bài dễ hơn, giảm tự làm rớt bài theo số đo; bàn 3 người cân đối; đo lại (V-27, V-08) — M
+- [ ] **1.34** (bàn 3 người cân đối: xong) Ăn bài dễ hơn, giảm tự làm rớt bài theo số đo; bàn 3 người cân đối; đo lại (V-27, V-08) — M
 - [x] ~~**1.35** Phòng về sảnh sau trận: link dùng lại được, bạn mới vào được, đổi cài đặt (V-05) — M~~ Phòng bạn: "Về phòng chờ" / có người mới mở link / tự về sau 30 giây
 - [x] ~~**1.36** Quản lý phòng: ~~rời sảnh/trận~~ (xong ở 1.09: nút "Rời"), chuyển chủ phòng, mời ra, thêm/xoá bot (nhãn "Máy"), báo đúng khi chủ rời (V-06, V-07) — M~~ Chủ vắng 20 giây thì chuyển vương miện (vẫn giữ chỗ); nút × mời ra; "+ Thêm máy" (nhãn Máy); nút Bắt đầu tính như server (V-07)
 - [x] ~~**1.37** Sửa phản hồi sai: thông báo ăn bài nhầm người, đập sát giờ bị giật, đập máy yếu bị huỷ không báo, "phòng đầy" sai số (V-24, V-25, V-26, V-17) — S–M. *Một phần đã có từ 1.07: server giờ báo rõ khi từ chối cú đập (slamRefused), client chưa hiện chữ giải thích.*~~
@@ -149,6 +149,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [ ] **Q10** · Âm thanh meme còn lại có thể vướng bản quyền: "Perfect Victory" (match-win), "ối dồi ôi" (fall-oidoioi), "trình là gì" (skill-trinh, nhắc tên Haaland). Giữ (meme đã tắt mặc định), hay thay bằng âm tự làm?
 - [ ] **Q11** · Việc tồn từ trước: hỏi David đồng ý dòng credit chưa; bản quyền bộ sticker tạm; Info ghi "Một trò của BillTheDev Studio" + link billthedevstudio.io.vn?; chữ intro đổi thành "Bill The Dev Studio"?
 - [ ] **Q12** · 3 script QA tạm (`qa/_look.mjs` chụp màn hình menu/hướng dẫn/trận ở laptop + điện thoại; `qa/_ux-4p.mjs`; `qa/_ux-fall-rate.mjs`): giữ thành script chính thức hay xoá?
+- [ ] **Q13** · Lực đập (1.34). Đo trên vật lý thật, 80 lượt mỗi bàn. Lực hiện tại: rớt bài 2p 6,9% / 3p 3,0% / 4p 3,8–6,4%, ăn bài 0,7–1,2% mỗi cú. Giảm lực 15%: rớt 3,6% / 2,2% / 3,5% nhưng ăn chỉ 0,3–0,7%, nên ván dài hơn. Gờ chắn mép: không tác dụng (bài rớt vì bay, không phải trượt). Chọn: (a) giữ lực, (b) giảm 15%, (c) hướng khác (vd: bàn 2 người to hơn).
 
 ## P0 — phải sửa trước khi deploy
 
