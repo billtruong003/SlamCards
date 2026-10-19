@@ -82,17 +82,18 @@ Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1t
 Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
 
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
-- [x] **1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S
-- [x] **1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S
-- [x] **1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)
-- [x] **1.04** Tắt meme mặc định, bỏ ảnh có bản quyền và mặt người thật — S
-- [x] **1.05** Báo bảo trì trước deploy, chặn trận mới; xem số phòng/người theo pha; báo khi server khởi động lại — M. Cổng quản trị 127.0.0.1:8197 (`/status`, `/drain`, `/undrain`); deploy.sh tự drain và chờ hết trận
-- [x] **1.06** Phản hồi khi mất WebGL hoặc mạng chặn WebSocket — S
-- [x] **1.07** Server kiểm cú đập: client gửi chỗ ngắm trước, server quyết rung tay + seed may rủi; từng khung hình bị kiểm (tốc độ, chỉ bài bị chạm mới được di chuyển, không xuyên bàn, không bay, ≤7 giây), kết quả phải trùng khung cuối; sai thì trả bài về, qua lượt (V-23). Đo 747 cú đập thật: 0 bị chặn nhầm — M–L
-- [x] **1.08** Sự kiện đo lường: cú đập đầu, trận đầu, xem hướng dẫn, thời gian chờ, độ dài trận, quay lại ngày 2 — M. Xem: `curl -s 127.0.0.1:8197/metrics?days=7` trên VPS
-- [x] **1.09** Feedback 19/10 (Bill + người chơi): tuỳ chọn ẩn tên trên bàn, bài m viền xanh / bài địch viền đỏ (lưu trên máy); nút "Rời" ở góc (chạm 2 lần); người treo máy bị loại sau 2 lần hết giờ ở mọi phòng (trước chỉ ghép ngẫu nhiên); logo menu giống trailer (ruy băng FLIP FLOP SLAM, lá bài hổ, dép); tutorial: ảnh pet mất trên live (đường dẫn trong biến CSS), nhãn trang 1 nằm đúng cạnh lá bài — S–M
+Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.10.
+- [x] ~~**1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S~~
+- [x] ~~**1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S~~
+- [x] ~~**1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)~~
+- [x] ~~**1.04** Tắt meme mặc định, bỏ ảnh có bản quyền và mặt người thật — S~~
+- [x] ~~**1.05** Báo bảo trì trước deploy, chặn trận mới; xem số phòng/người theo pha; báo khi server khởi động lại — M. Cổng quản trị 127.0.0.1:8197 (`/status`, `/drain`, `/undrain`); deploy.sh tự drain và chờ hết trận~~
+- [x] ~~**1.06** Phản hồi khi mất WebGL hoặc mạng chặn WebSocket — S~~
+- [x] ~~**1.07** Server kiểm cú đập: client gửi chỗ ngắm trước, server quyết rung tay + seed may rủi; từng khung hình bị kiểm (tốc độ, chỉ bài bị chạm mới được di chuyển, không xuyên bàn, không bay, ≤7 giây), kết quả phải trùng khung cuối; sai thì trả bài về, qua lượt (V-23). Đo 747 cú đập thật: 0 bị chặn nhầm — M–L~~
+- [x] ~~**1.08** Sự kiện đo lường: cú đập đầu, trận đầu, xem hướng dẫn, thời gian chờ, độ dài trận, quay lại ngày 2 — M. Xem: `curl -s 127.0.0.1:8197/metrics?days=7` trên VPS~~
+- [x] ~~**1.09** Feedback 19/10 (Bill + người chơi): tuỳ chọn ẩn tên trên bàn, bài m viền xanh / bài địch viền đỏ (lưu trên máy); nút "Rời" ở góc (chạm 2 lần); người treo máy bị loại sau 2 lần hết giờ ở mọi phòng (trước chỉ ghép ngẫu nhiên); logo menu giống trailer (ruy băng FLIP FLOP SLAM, lá bài hổ, dép); tutorial: ảnh pet mất trên live (đường dẫn trong biến CSS), nhãn trang 1 nằm đúng cạnh lá bài — S–M~~
 - [ ] **1.10** Mọi màn vừa 1 màn hình 360×640 → 430×932 và laptop 1366×768 (cả Windows 125%): màn chính, sảnh 4 người (nút Bắt đầu), hàng chờ, trận, kết quả (B-02) — L
-- [ ] **1.11** Hướng dẫn 4 ô bắt buộc lần đầu, có luật hết giờ 2 lần là thua; hiện cả ở Chơi ngay lúc chờ; mockup cho Bill duyệt trước (B-01, B-04, F-02..F-08) — M
+- [ ] **1.11** Hướng dẫn 4 ô bắt buộc lần đầu, có luật hết giờ 2 lần là thua; hiện cả ở Chơi ngay lúc chờ; mockup cho Bill duyệt trước (B-01, B-04, F-02..F-08) — M. *Đã xong một phần ở 1.09: ảnh pet trong hướng dẫn hiện lại trên live, nhãn trang 1 đúng chỗ.*
 - [ ] **1.12** Lượt đầu: bong bóng không che bài mình; nói mục tiêu trước cú đập đầu; trận đầu ẩn gió/kiểu đập (F-01, F-04, F-05) — S
 - [ ] **1.13** Nút xem luật to có chữ; nút góc trên điện thoại có chữ; tên không bị cắt (F-12) — S
 - [ ] **1.14** Chat điện thoại: chỉ câu nhanh + sticker, đọc được tin, mở được mọi lúc (B-03) — M
@@ -105,11 +106,14 @@ Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (
 - [ ] **1.30** Hàng chờ không bị chia nhỏ, sửa "Chơi luôn n người", màn chờ không vẽ lại mỗi giây (V-18, V-19) — M
 - [ ] **1.31** Bot trông như người thật sau 15 giây chờ (nghĩ 3–12 giây, có lúc lệch/rớt bài), không lên bảng điểm, thêm dòng vào chính sách riêng tư — L
 - [ ] **1.32** Người bị loại: Xem tiếp / Rời / Tìm trận mới, báo round sau vào lại; Chơi ngay rời thì bot thay chỗ (UC-05) — M
-- [ ] **1.33** Lượt 15–20 giây ở bàn 3–4 người; treo máy bị loại sau 2 lần hết giờ; đếm theo round (V-21, V-22) — S–M
+- [ ] **1.33** Lượt 15–20 giây ở bàn 3–4 người; ~~treo máy bị loại sau 2 lần hết giờ~~ (xong ở 1.09, mọi phòng); đếm theo round (V-21, V-22) — S
 - [ ] **1.34** Ăn bài dễ hơn, giảm tự làm rớt bài theo số đo; bàn 3 người cân đối; đo lại (V-27, V-08) — M
 - [ ] **1.35** Phòng về sảnh sau trận: link dùng lại được, bạn mới vào được, đổi cài đặt (V-05) — M
-- [ ] **1.36** Quản lý phòng: rời sảnh/trận, chuyển chủ phòng, mời ra, thêm/xoá bot (nhãn "Máy"), báo đúng khi chủ rời (V-06, V-07) — M–L
-- [ ] **1.37** Sửa phản hồi sai: thông báo ăn bài nhầm người, đập sát giờ bị giật, đập máy yếu bị huỷ không báo, "phòng đầy" sai số (V-24, V-25, V-26, V-17) — S–M
+- [ ] **1.36** Quản lý phòng: ~~rời sảnh/trận~~ (xong ở 1.09: nút "Rời"), chuyển chủ phòng, mời ra, thêm/xoá bot (nhãn "Máy"), báo đúng khi chủ rời (V-06, V-07) — M
+- [ ] **1.37** Sửa phản hồi sai: thông báo ăn bài nhầm người, đập sát giờ bị giật, đập máy yếu bị huỷ không báo, "phòng đầy" sai số (V-24, V-25, V-26, V-17) — S–M. *Một phần đã có từ 1.07: server giờ báo rõ khi từ chối cú đập (slamRefused), client chưa hiện chữ giải thích.*
+- [ ] **1.38** Lỗi console khi tải pet: `THREE.GLTFLoader: Couldn't load texture Textures/colormap.png` (thấy khi QA 2 trình duyệt, có từ trước): tìm nguyên nhân, xem pet có thiếu màu không — S
+- [ ] **1.39** Mang "chất lộn xộn" của trailer vào các màn khác (sảnh, kết quả, chờ ghép): chữ nghiêng, sticker tràn khung, màu như trailer — M. *Chờ Bill xác nhận (Q9)*
+- [ ] **1.40** Dọn script QA tạm `qa/_look.mjs`, `qa/_ux-4p.mjs`, `qa/_ux-fall-rate.mjs`: giữ thành script chính thức hay xoá (Q12) — S
 
 ### Phase 2 — tiến trình và sưu tầm
 - [ ] **2.01** Cloudflare Worker + D1: mã máy có chữ ký, chỉ server game ghi, sổ tiền, xoá máy không vào quá 30 ngày — L
@@ -139,6 +143,11 @@ Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (
 - [x] **Q6** · Gmail chính: truongbill003@gmail.com (chốt 14/10). Hộp mail studio (A1) tạo trên PA Vietnam: Bill tự đăng nhập và tạo, Claude không được tạo tài khoản/đặt mật khẩu thay.
 - [x] **Q7** · Có danh sách người ủng hộ công khai (chốt 14/10). Thêm vào G2.
 - [x] **UX-06** · Người bấm "Biết chơi rồi": tắt cả chỉ tay lẫn mẹo (chốt 14/10).
+- [ ] **Q8** · Deploy lô 1.01–1.09 lên live? Lần này có sửa nginx (www + link IP chuyển về tên miền chính), server live chưa có bước tự chờ hết trận nên lần này kiểm 0 người bằng tay; người đang mở bản cũ tự tải lại.
+- [ ] **Q9** · "Chất lộn xộn của trailer": chỉ logo (đã làm) hay mang vào sảnh, màn kết quả, màn chờ (1.39)?
+- [ ] **Q10** · Âm thanh meme còn lại có thể vướng bản quyền: "Perfect Victory" (match-win), "ối dồi ôi" (fall-oidoioi), "trình là gì" (skill-trinh, nhắc tên Haaland). Giữ (meme đã tắt mặc định), hay thay bằng âm tự làm?
+- [ ] **Q11** · Việc tồn từ trước: hỏi David đồng ý dòng credit chưa; bản quyền bộ sticker tạm; Info ghi "Một trò của BillTheDev Studio" + link billthedevstudio.io.vn?; chữ intro đổi thành "Bill The Dev Studio"?
+- [ ] **Q12** · 3 script QA tạm (`qa/_look.mjs` chụp màn hình menu/hướng dẫn/trận ở laptop + điện thoại; `qa/_ux-4p.mjs`; `qa/_ux-fall-rate.mjs`): giữ thành script chính thức hay xoá?
 
 ## P0 — phải sửa trước khi deploy
 
