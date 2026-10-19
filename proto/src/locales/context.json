@@ -271,7 +271,7 @@
     "id": "A11"
   },
   "error.full": {
-    "where": "Menu error: room already has 4 players",
+    "where": "Menu error: room already has 4 players {n} is the room's number of seats (2-4)",
     "max": 30,
     "id": "A12"
   },
@@ -1191,6 +1191,18 @@
   "toast.droppedLobby": {
     "where": "Toast in the lobby: other players lost connection; their seat is kept (no time promise)",
     "max": 50
+  },
+  "toast.abort.slow": {
+    "where": "Toast: a player's slam ran past the time limit (a slow device) and was called off; cards go back",
+    "max": 70
+  },
+  "toast.abort.refused": {
+    "where": "Toast: a player's slam failed the server's check and was called off; cards go back",
+    "max": 70
+  },
+  "toast.abort.left": {
+    "where": "Toast: the browser running a slam lost its connection; the slam was called off; cards go back",
+    "max": 70
   },
   "toast.nameBlocked": {
     "where": "Toast after joining: the typed name was blocked by the swear-word filter; {name} is the neutral stand-in the game uses instead",

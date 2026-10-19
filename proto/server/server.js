@@ -647,18 +647,23 @@ function finishSlam(room) {
   if (!slam) return;
   room.slam = null;
   const result = slam.result;
+  // Who did it: on a capture the card on top, which may be anyone's (a slam can drop the slammer's
+  // own card under someone's face-up one); the toast used to name the slammer, even "A ate A" (V-24).
+  const captures = result?.captures ?? [];
+  const by = captures[0]?.by ?? slam.by;
   if (result) {
     room.alive = room.alive.filter((s) => !result.eliminated.includes(s));
     markOut(room, result.eliminated);
     room.firstOut ??= result.eliminated[0];
-    room.event = { type: result.reason, by: slam.by, eliminated: result.eliminated };
+    room.event = { type: result.reason, by, eliminated: result.eliminated, captures };
   }
   if (room.alive.length <= 1) {
     endRound(room, {
       winner: room.alive[0] ?? slam.by,
       reason: result?.reason ?? 'capture',
-      by: slam.by,
+      by,
       eliminated: result?.eliminated ?? [],
+      captures,
     });
     return;
   }
@@ -674,7 +679,8 @@ function abortSlam(room, why) {
   metrics.slam(why.startsWith('refused') ? 'refused' : 'aborted');
   room.cards = parkInactive(room, { ...slam.previous });
   room.slam = null;
-  sendAll(room, { t: 'playAbort' });
+  // why, for the others' toast: too slow (a weak device), refused by the check, or its browser gone
+  sendAll(room, { t: 'playAbort', by: slam.by, reason: why.startsWith('refused') ? 'refused' : why === 'simulator left' ? 'left' : 'slow' });
   room.turn = nextAlive(room, slam.by);
   startTurn(room);
 }
@@ -683,7 +689,7 @@ function endRound(room, result) {
   room.slam = null;
   room.scores[result.winner] += 1;
   room.result = result;
-  room.history?.push({ round: room.round, winner: result.winner, reason: result.reason, by: result.by, eliminated: result.eliminated ?? [] });
+  room.history?.push({ round: room.round, winner: result.winner, reason: result.reason, by: result.by, eliminated: result.eliminated ?? [], captures: result.captures ?? [] });
   room.nextFirst = room.firstOut;
   room.phase = 'roundEnd';
   log(room, `round ${room.round} won by ${result.winner}`);
@@ -1006,7 +1012,7 @@ function handle(ws, msg) {
     }
     const seat = SEATS.find((s) => !room.players[s]);
     if (!seat || Object.keys(room.players).length >= Math.min(MAX_PLAYERS, room.cap)) {
-      send(ws, { t: 'error', code: 'full', message: 'Phòng đủ 4 đứa rồi, vào không được!' });
+      send(ws, { t: 'error', code: 'full', n: Math.min(MAX_PLAYERS, room.cap), message: 'Phòng đủ người rồi, vào không được!' });
       return;
     }
     const player = makePlayer(room, seat, askedName(msg.name), msg);

@@ -327,7 +327,7 @@ function onPeek(msg) {
   if (!msg.exists) refuse(t(gone, { code }));
   else if (msg.mine) joinRoom(code, token);
   else if (msg.phase !== 'lobby' || msg.quick) refuse(t('error.inMatchWait', { code })); // UX-08: say when to come back
-  else if (msg.full) refuse(t('error.full'));
+  else if (msg.full) refuse(t('error.full', { n: msg.cap ?? MAX_PLAYERS }));
   else if (playerName.get()) joinRoom(code, null);
   else renderNamePrompt(code, msg);
 }
@@ -666,7 +666,7 @@ function onMessage(msg) {
     quietClose = true;
   } else if (msg.t === 'error') {
     leaveRoom();
-    renderMenu(msg.code && has(`error.${msg.code}`) ? t(`error.${msg.code}`) : msg.message);
+    renderMenu(msg.code && has(`error.${msg.code}`) ? t(`error.${msg.code}`, { n: msg.n ?? MAX_PLAYERS }) : msg.message);
   } else if (social.onMessage(msg)) {
     // react / chat / chatLog
   } else if (msg.t === 'state') {
@@ -685,6 +685,9 @@ function onMessage(msg) {
   } else if (msg.t === 'slamGo') {
     onSlamGo(msg);
   } else if (msg.t === 'slamRefused' || msg.t === 'playAbort') {
+    // say why (V-25: a late slam just snapped back; V-26: a slow one vanished)
+    if (msg.t === 'slamRefused') showToast(t('turn.tooLate'), 1800);
+    else if (msg.reason) showToast(t(`toast.abort.${msg.reason}`, { name: nameOf(msg.by) }), 2500);
     // a slam the server would not start, or threw out (too late, or failed its check): back to its cards
     pendingSlam = null;
     sim = null;
@@ -914,7 +917,7 @@ function announceEvent() {
   const out = list(event.eliminated.map(nameOf));
   const text = event.type === 'fall' ? t('toast.fall', { name: nameOf(event.by) })
     : event.type === 'afk' ? t('toast.afk', { name: nameOf(event.by) })
-      : event.type === 'left' ? t('toast.left', { out }) : t('toast.capture', { by: nameOf(event.by), out });
+      : event.type === 'left' ? t('toast.left', { out }) : captureText('toast.capture', event, nameOf);
   showToast(text, 2500);
   if (event.type === 'afk') chime('out');
 }
@@ -1309,7 +1312,7 @@ function fillRoomList() {
         currentName();
         b.disabled = true;
         roomCode = b.dataset.join;
-        openRoom(roomCode, true);
+        openRoom(roomCode); // picked from the list, not typed: a room gone since is 'gone', not a typo
       };
     });
   }
@@ -1365,13 +1368,22 @@ function renderQueue(msg) {
   };
 }
 
+// "X ăn bài của Y" from the rules' captures: grouped by whose card is on top (V-24); `key` is the
+// toast or the round-end sentence, `name` how names are written (plain or bold).
+function captureText(key, ev, name) {
+  const captures = ev.captures?.length ? ev.captures : (ev.eliminated ?? []).map((victim) => ({ by: ev.by, victim }));
+  const byWho = new Map();
+  for (const c of captures) byWho.set(c.by, [...(byWho.get(c.by) ?? []), c.victim]);
+  return [...byWho].map(([by, victims]) => t(key, { by: name(by), out: list(victims.map(name)) })).join(' ');
+}
+
 // The match in a few lines under the scores: each round, who won it and how; then how long it took.
 function matchStory(result) {
   const rounds = result?.history ?? [];
   if (!rounds.length) return '';
   const how = (r) => {
     const out = list((r.eliminated ?? []).map(htmlName));
-    if (r.reason === 'capture') return t('result.captureHow', { by: htmlName(r.by), out });
+    if (r.reason === 'capture') return captureText('result.captureHow', r, htmlName);
     if (r.reason === 'fall') return t('result.fallHow', { name: htmlName(r.by) });
     if (r.reason === 'afk') return t('result.afkHow', { name: htmlName(r.by) });
     if (r.reason === 'left') return t('result.leftHow', { out });
@@ -1597,7 +1609,7 @@ function renderOverlay() {
       const out = list(eliminated.map(htmlName));
       const how = reason === 'fall' ? t('result.fallHow', { name: htmlName(by) })
         : reason === 'afk' ? t('result.afkHow', { name: htmlName(by) })
-          : reason === 'left' ? t('result.leftHow', { out }) : t('result.captureHow', { by: htmlName(by), out });
+          : reason === 'left' ? t('result.leftHow', { out }) : captureText('result.captureHow', s.result, htmlName);
       setOverlay(`end-${s.round}`, `
         <div class="panel">
           <h1 class="stamp ${winner === me ? '' : 'pink'}">${head}</h1>

@@ -16,7 +16,7 @@ test('names: cleaned, trimmed to 16, defaulted and de-duplicated', async () => {
       const c = await connect(srv.port);
       c.send({ t: 'join', code: host.code, name });
       const reply = await c.next((m) => m.t === 'joined' || m.t === 'error');
-      if (reply.t === 'error') assert.match(reply.message, /đủ 4/);
+      if (reply.t === 'error') assert.deepEqual([reply.code, reply.n], ['full', 4]);
     }
     const s = await host.waitState((st) => Object.keys(st.players).length === 4);
     const list = Object.values(s.players).map((p) => p.name);
@@ -35,7 +35,8 @@ test('room limits: 5th player refused, joining a running match refused, codes ar
     const players = await lobby(srv.port, 4);
     const fifth = await connect(srv.port);
     fifth.send({ t: 'join', code: players[0].code, name: 'X' });
-    assert.match((await fifth.next((m) => m.t === 'error')).message, /đủ 4/);
+    const full = await fifth.next((m) => m.t === 'error');
+    assert.deepEqual([full.code, full.n], ['full', 4], 'the room says its own size (V-17)');
 
     const duo = await lobby(srv.port, 2);
     const [a] = duo;
@@ -181,6 +182,9 @@ test('own goal: the slammer\'s face-down card ending under the enemy face-up car
     const end = await a.waitState((s) => s.phase === 'roundEnd');
     assert.equal(end.result.winner, 'pink');
     assert.deepEqual(end.result.eliminated, ['black']);
+    // whose card is on top did it, not the slammer (V-24: the toast said "black ate black")
+    assert.equal(end.result.by, 'pink');
+    assert.deepEqual(end.result.captures, [{ by: 'pink', victim: 'black' }]);
   } finally { srv.stop(); }
 });
 
