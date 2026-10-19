@@ -144,6 +144,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 @keyframes slamIn{from{transform:scale(3) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(-3deg);opacity:1}}
 @keyframes wobble{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.08) rotate(3deg)}}
 .vfx-clap{position:absolute;left:50%;top:22%;transform:translateX(-50%)}
+.vfx-stamp{position:absolute;left:50%;top:24%;transform:translateX(-50%) rotate(-6deg)}
+.vfx-stamp span{display:block;white-space:nowrap;font-weight:800;font-size:clamp(44px,10vw,92px);color:#e06a4e;-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;text-shadow:0 6px 0 var(--ink);animation:slamIn .35s cubic-bezier(.2,1.8,.4,1) both,wobble .5s ease-in-out .35s infinite alternate}
 .vfx-clap span{display:block;font-weight:800;font-size:clamp(40px,8vw,72px);color:#e5b568;-webkit-text-stroke:4px var(--ink);paint-order:stroke fill;text-shadow:0 5px 0 var(--ink);animation:clap .28s ease-in-out infinite alternate}
 @keyframes clap{from{transform:scale(1) rotate(-4deg)}to{transform:scale(1.15) rotate(4deg)}}
 

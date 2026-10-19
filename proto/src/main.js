@@ -795,13 +795,8 @@ function reactWithMemes() {
   if (phaseKey === memePhaseKey) return;
   memePhaseKey = phaseKey;
 
-  if (s.phase === 'turn' && s.turn === me && s.forced) showMeme('forced');
   if (s.phase === 'roundEnd' && s.result?.winner === me) showMeme('roundWin');
   if (s.phase === 'matchEnd') showMeme(s.result?.matchWinner === me ? 'matchWin' : 'matchLose');
-  if (s.phase === 'roundIntro') {
-    const onMatchPoint = s.seats.filter((seat) => (s.scores[seat] ?? 0) === ROUNDS_TO_WIN - 1).length;
-    if (onMatchPoint >= 2) showMeme('tie');
-  }
   if (s.phase === 'turn' && s.alive.includes(me) && flippedRound !== s.round) {
     const q = s.cards[me]?.q;
     if (q && 1 - 2 * (q[0] ** 2 + q[2] ** 2) > 0) {

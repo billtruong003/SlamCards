@@ -1295,6 +1295,10 @@
     "max": 20,
     "id": "H1"
   },
+  "meme.capture": {
+    "where": "Meme: big stamped word over the table when someone captures (knocks out) another card",
+    "max": 12
+  },
   "meme.trinh1": {
     "where": "Skill-shot meme, line 1; plays with a Vietnamese voice clip (\"what is skill…\")",
     "max": 15,

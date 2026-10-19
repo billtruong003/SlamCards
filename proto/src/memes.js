@@ -1,25 +1,22 @@
 // Meme reactions: a sound plus an image (or a text effect) for each game moment.
 // Several variants for one moment are picked at random; reactions queue up so they never overlap.
+// Off until the player turns them on (sound settings). No pictures of real people and no
+// characters someone else owns (cartoons, games, news footage): the game shows ads.
 const BASE = 'memes/';
 
 const MEMES = {
-  capture: [
-    { sound: 'capture-damage.mp3', image: 'capture-damage.jpg' },
-    { sound: 'capture-boom.mp3', image: 'capture-pikachu.jpg' },
-  ],
+  capture: [{ sound: 'capture-boom.mp3', vfx: 'stamp', text: 'meme.capture', maxMs: 2500 }],
   skill: [{ sound: 'skill-trinh.mp3', vfx: 'trinh', maxMs: 6000 }],
   fall: [
     { sound: 'fall-bruh.mp3', image: 'fall-bruh.png' },
-    { sound: 'fall-oidoioi.mp3', image: 'fall-tom.jpg' },
+    { sound: 'fall-oidoioi.mp3', image: 'fall-bruh.png' },
   ],
   roundWin: [{ sound: 'round-clap.mp3', vfx: 'clap', maxMs: 4500 }],
   matchWin: [{ sound: 'match-win.mp3', image: 'match-win.jpg', caption: 'meme.perfectVictory', maxMs: 7000 }],
   matchLose: [{ sound: 'match-lose.mp3', image: 'match-lose.jpg' }],
   pass: [{ sound: 'pass-huh.mp3', image: 'pass-huh.jpg' }],
   timeout: [{ sound: 'timeout-snore.mp3', image: 'timeout-snore.jpg', maxMs: 4000 }],
-  forced: [{ sound: 'forced-fbi.mp3', image: 'forced-fbi.jpg' }],
   firstFlip: [{ sound: 'flip-wow.mp3', image: 'flip-wow.jpg', maxMs: 3500 }],
-  tie: [{ sound: 'tie-tbc.mp3', image: 'tie-tbc.png', maxMs: 6000 }],
 };
 
 import { loadClip, playClip } from './audio.js';
@@ -28,8 +25,8 @@ import { t } from './i18n.js';
 const MIN_SHOW_MS = 1600;
 const MAX_QUEUE = 2;
 
-let enabled = true;
-try { enabled = localStorage.getItem('slam-memes') !== '0'; } catch { /* private mode */ }
+let enabled = false;
+try { enabled = localStorage.getItem('slam-memes') === '1'; } catch { /* private mode */ }
 
 export function preloadMemes() {
   for (const variants of Object.values(MEMES)) {
@@ -103,6 +100,9 @@ async function next() {
 function render(meme) {
   if (meme.vfx === 'trinh') {
     return `<div class="vfx-trinh"><span class="l1">${t('meme.trinh1')}</span><span class="l2">${t('meme.trinh2')}</span></div>`;
+  }
+  if (meme.vfx === 'stamp') {
+    return `<div class="vfx-stamp"><span>${t(meme.text)}</span></div>`;
   }
   if (meme.vfx === 'clap') {
     return `<div class="vfx-clap"><span>${t('meme.clap')}</span></div>`;
