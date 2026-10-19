@@ -1,7 +1,7 @@
 // Edge cases: input validation, limits, invalid events per phase, match lifecycle.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startFrom, startServer, connect, lobby, twoPlayerGame, faceDown, faceUp, near, sleep, slamTo } from './harness.js';
+import { startFrom, startServer, connect, lobby, twoPlayerGame, threePlayerGame, faceDown, faceUp, near, sleep, slamTo } from './harness.js';
 
 const quiet = async (client, ms = 250) => { await sleep(ms); return client.state; };
 
@@ -198,6 +198,30 @@ test('timeouts: plain turn passes, forced turn gets autoSlam, a second timeout p
     const out = await a.waitState((s) => s.phase === 'roundEnd', 4000);
     assert.equal(out.result.reason, 'afk');
     assert.equal(out.result.winner, 'pink');
+  } finally { srv.stop(); }
+});
+
+test('away but connected: the slam the game makes for them still counts as idle, the second puts them out (V-21)', async () => {
+  const srv = await startServer({ turn: 400, forcedGrace: 3000 });
+  try {
+    const [a, b] = await twoPlayerGame(srv.port);
+    // black times out once; pink passes; black's forced turn runs out and its browser slams for it
+    await b.waitState((s) => s.turn === 'pink', 2000);
+    b.send({ t: 'pass', impact: near(b.state.cards.pink, -1.2) });
+    await a.next((m) => m.t === 'autoSlam', 3000);
+    a.send({ t: 'slamStart', aim: near(a.state.cards.black), type: 'flat' });
+    const out = await a.waitState((s) => s.phase === 'roundEnd', 2000);
+    assert.equal(out.result.reason, 'afk');
+    assert.equal(out.result.winner, 'pink');
+  } finally { srv.stop(); }
+});
+
+test('three or more players get the shorter turn', async () => {
+  const srv = await startServer({ turn: 30000, turnCrowded: 1500 });
+  try {
+    const players = await threePlayerGame(srv.port);
+    const s = players[0].state;
+    assert.ok(s.remainingMs <= 1500, `remaining ${s.remainingMs}`);
   } finally { srv.stop(); }
 });
 

@@ -33,7 +33,8 @@ const TIMING = {
   rpsReveal: 1600,
   choose: 12000,
   order: 2600,
-  turn: 30000,
+  turn: 30000,           // two players
+  turnCrowded: 18000,    // three or four players: everyone waits for every turn, so turns are shorter
   awayTurn: 8000,
   forcedGrace: 10000,
   slamMaxMs: 15000,
@@ -366,6 +367,7 @@ function startRound(room) {
   room.slam = null;
   room.round += 1;
   room.alive = room.seats.filter((s) => !room.players[s].left);
+  room.timeouts = Object.fromEntries(room.seats.map((s) => [s, 0])); // idle turns count per round
   room.cards = { ...Object.fromEntries(room.seats.map((s) => [s, PARKED])), ...initialCards(room.alive) };
   room.passStreak = Object.fromEntries(room.seats.map((s) => [s, 0]));
   room.turn = null;
@@ -437,13 +439,17 @@ function newWind() {
   return { angle: Math.random() * Math.PI * 2, strength: crypto.randomInt(5) };
 }
 
+// V-22: at a 4-player table 30 s turns made matches of 10-25 minutes and the first one out waited
+// minutes; 3-4 players get shorter turns (never longer than a 2-player turn, tests shorten both).
+const turnMs = (room) => (room.alive.length >= 3 ? Math.min(TIMING.turn, TIMING.turnCrowded) : TIMING.turn);
+
 function startTurn(room) {
   room.autoSlam = false;
   const forced = room.passStreak[room.turn] >= 1;
   log(room, `turn ${room.turn} forced=${forced}`);
   room.phase = 'turn';
   room.wind = newWind();
-  scheduleTurnEnd(room, TIMING.turn);
+  scheduleTurnEnd(room, turnMs(room));
   broadcast(room);
   driveBots(room);
 }
@@ -511,6 +517,14 @@ function pickSimulator(room) {
 
 function startSlam(room, impact, type) {
   const by = room.turn;
+  // A slam the game made for an idle player (the forced turn ran out, autoSlam) is not them playing:
+  // it counts as idle, and a second idle turn in a row puts them out of the round, as the rules say.
+  // It used to reset the count, so someone connected but away was never out and every turn took the
+  // whole clock (V-21).
+  if (room.autoSlam && (room.timeouts[by] ?? 0) + 1 >= 2) {
+    registerPass(room, null);
+    return;
+  }
   const sim = isBot(room, by) ? pickSimulator(room) : by; // whose browser runs the physics
   if (!sim) {
     registerPass(room, impact); // nobody here to run it: the bot's slap lands on nothing
@@ -518,7 +532,7 @@ function startSlam(room, impact, type) {
   }
   log(room, `slam start by ${by}${sim === by ? '' : ` (simulated by ${sim})`}`);
   room.passStreak[by] = 0;
-  room.timeouts[by] = 0;
+  room.timeouts[by] = room.autoSlam ? (room.timeouts[by] ?? 0) + 1 : 0;
   const watchers = Object.entries(room.players).filter(([s, p]) => s !== sim && p.connected && !p.bot).map(([s]) => s);
   room.slamCount += 1;
   room.slam = {
@@ -574,7 +588,7 @@ function driveBots(room) {
     });
   } else if (room.phase === 'turn' && isBot(room, room.turn)) {
     const { turn: seat, round } = room;
-    act(thinkMs(TIMING.turn), () => { if (room.phase === 'turn' && room.turn === seat && room.round === round) botSlam(room, seat); });
+    act(thinkMs(turnMs(room)), () => { if (room.phase === 'turn' && room.turn === seat && room.round === round) botSlam(room, seat); });
   } else if (room.phase === 'matchEnd') {
     const bots = room.seats.filter((s) => isBot(room, s) && !room.rematch[s]);
     if (bots.length) {
