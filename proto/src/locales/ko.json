@@ -309,6 +309,7 @@
   "ftue.step5.p1": "<b>바람</b> 때문에 카드가 옆으로 날아갈 수 있어. <b>평평하게</b> 또는 <b>비스듬히</b> 쳐 봐.",
   "ftue.step5.p2": "패스하면 다음 턴에는 <b>분홍 링</b> 안을 쳐야 해. 한 턴은 30초!",
   "ftue.pointer": "<b>내 카드 가까이</b> 쳐 봐!",
+  "ftue.pointerGoal": "목표: 내 카드를 앞면으로 뒤집어 상대의 뒷면 카드 위에 올리기!",
   "ftue.confirm.title": "{name} 설명 보는 중",
   "ftue.confirm.body": "<b>{n}/{total}</b> 단계야. 지금 시작해도 게임 중에 이어 볼 수 있어.",
   "ftue.confirm.go": "바로 시작",

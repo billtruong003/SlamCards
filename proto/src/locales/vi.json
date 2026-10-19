@@ -309,6 +309,7 @@
   "ftue.step5.p1": "<b>Gió</b> có thể đẩy bài bay lệch. M đổi được kiểu <b>đập bằng</b> và <b>đập nghiêng</b>.",
   "ftue.step5.p2": "Bỏ lượt thì lượt sau phải đập trong <b>vòng hồng</b>. Mỗi lượt có 30 giây!",
   "ftue.pointer": "Thử đập <b>sát bài m</b> đi!",
+  "ftue.pointerGoal": "Mục tiêu: lật bài m ngửa lên rồi đè lên bài úp của địch.",
   "ftue.confirm.title": "{name} đang xem luật",
   "ftue.confirm.body": "Đang ở bước <b>{n}/{total}</b>. Bắt đầu luôn thì vẫn xem tiếp trong trận được.",
   "ftue.confirm.go": "Bắt đầu luôn",

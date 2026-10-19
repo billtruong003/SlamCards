@@ -309,6 +309,7 @@
   "ftue.step5.p1": "El <b>viento</b> desvía las cartas. Elige <b>golpe plano</b> o <b>golpe inclinado</b>.",
   "ftue.step5.p2": "Si pasas, tu próximo golpe va dentro del <b>círculo rosa</b>. ¡Tienes 30 segundos por turno!",
   "ftue.pointer": "¡Prueba golpear <b>cerca de tu carta</b>!",
+  "ftue.pointerGoal": "Objetivo: voltea tu carta boca arriba y que caiga sobre una carta boca abajo del rival.",
   "ftue.confirm.title": "{name} está aprendiendo",
   "ftue.confirm.body": "Va en <b>{n}/{total}</b>. Si empiezas ahora, puede seguir el tutorial durante la partida.",
   "ftue.confirm.go": "Empezar igual",

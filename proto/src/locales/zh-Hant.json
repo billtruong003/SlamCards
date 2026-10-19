@@ -309,6 +309,7 @@
   "ftue.step5.p1": "<b>風</b>會把卡吹歪。你可以切換<b>平拍</b>或<b>斜拍</b>。",
   "ftue.step5.p2": "跳過後，下次一定要拍<b>粉紅圈</b>裡面。每次出手只有30秒！",
   "ftue.pointer": "試試拍在<b>自己卡牌旁邊</b>！",
+  "ftue.pointerGoal": "目標：把自己的牌拍成正面，再壓到對手背面的牌上。",
   "ftue.confirm.title": "{name}正在看教學",
   "ftue.confirm.body": "看到<b>{n}/{total}</b>了。現在開始也可以，對戰中還能接著看。",
   "ftue.confirm.go": "直接開始",

@@ -309,6 +309,7 @@
   "ftue.step5.p1": "O <b>vento</b> desvia as cartas. Troque entre <b>batida reta</b> e <b>batida de lado</b>.",
   "ftue.step5.p2": "Passou? Na próxima, bata no <b>círculo rosa</b>. Cada vez tem só 30 segundos!",
   "ftue.pointer": "Tente bater <b>pertinho da sua carta</b>!",
+  "ftue.pointerGoal": "Objetivo: vire sua carta para cima e faça cair sobre uma carta virada do rival.",
   "ftue.confirm.title": "{name} tá aprendendo",
   "ftue.confirm.body": "Tá na etapa <b>{n}/{total}</b>. Se começar agora, dá pra continuar o tutorial na partida.",
   "ftue.confirm.go": "Começar mesmo",

@@ -17,6 +17,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .dots{display:flex;gap:5px}
 .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);background:var(--cream)}
 .dot.black{background:var(--ink)}.dot.pink{background:var(--pink)}
+.wind[hidden]{display:none!important}
 .wind{display:flex;align-items:center;gap:8px;background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:0 12px;font-weight:800;height:34px}
 #wind-arrow{display:inline-block;font-size:20px;line-height:1}
 

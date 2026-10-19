@@ -309,6 +309,7 @@
   "ftue.step5.p1": "<b>Wind</b> can push cards off course. Try a <b>flat slam</b> or a <b>tilted slam</b>.",
   "ftue.step5.p2": "Pass this turn? Next turn, slam in the <b>pink ring</b>. You get 30 seconds per turn!",
   "ftue.pointer": "Try slamming <b>close to your card</b>!",
+  "ftue.pointerGoal": "Goal: flip your card face up and land it on an enemy's face-down card.",
   "ftue.confirm.title": "{name} is learning",
   "ftue.confirm.body": "They're on step <b>{n}/{total}</b>. Start now and they can finish during the match.",
   "ftue.confirm.go": "Start anyway",

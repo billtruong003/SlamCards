@@ -1564,7 +1564,10 @@ function renderHud() {
   els.windBars.innerHTML = Array.from({ length: 4 }, (_, i) => `<i class="${i < strength ? 'on' : ''}"></i>`).join('');
   els.wind.dataset.level = String(strength);
   visuals.setWind(state.wind, world.table, ['turn', 'anim'].includes(state.phase));
-  els.toggle.hidden = !(state.phase === 'turn' && state.turn === me);
+  // first match: one way to slam (flat) and no wind readout, so a new player has one thing to learn
+  els.toggle.hidden = !(state.phase === 'turn' && state.turn === me) || ftue.firstMatch;
+  $('wind').hidden = ftue.firstMatch;
+  if (ftue.firstMatch && slamType !== 'flat') setType('flat');
   const key = JSON.stringify([state.seats, state.scores, state.alive, state.turn, state.players, SEATS.map((s) => social.isMuted(s))]);
   if (key === hudKey) return;
   hudKey = key;
@@ -1723,7 +1726,7 @@ function setType(type) {
 els.flat.onclick = () => setType('flat');
 els.tilt.onclick = () => setType('tilt');
 addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT') return;
+  if (e.target.tagName === 'INPUT' || ftue.firstMatch) return;
   if (e.key === 'q' || e.key === 'Q') setType('flat');
   if (e.key === 'e' || e.key === 'E') setType('tilt');
 });

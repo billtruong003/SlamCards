@@ -1522,6 +1522,10 @@
     "max": 60,
     "id": "I11"
   },
+  "ftue.pointerGoal": {
+    "where": "Second, smaller line in the first-turn pointer bubble: the goal of the game in one sentence (flip your card face up, land it on a face-down enemy card)",
+    "max": 90
+  },
   "ftue.confirm.title": {
     "where": "Start-confirm card: {name} is still reading the tutorial",
     "max": 25,

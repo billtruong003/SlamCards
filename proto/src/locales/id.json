@@ -309,6 +309,7 @@
   "ftue.step5.p1": "<b>Angin</b> bisa menggeser kartu. Pilih <b>gebuk rata</b> atau <b>gebuk miring</b>.",
   "ftue.step5.p2": "Lewati giliran? Berikutnya wajib gebuk dalam <b>lingkaran pink</b>. Tiap giliran 30 detik!",
   "ftue.pointer": "Coba gebuk <b>dekat kartumu</b>!",
+  "ftue.pointerGoal": "Tujuan: balik kartumu jadi terbuka lalu timpa kartu lawan yang tertutup.",
   "ftue.confirm.title": "{name} lagi belajar",
   "ftue.confirm.body": "Baru langkah <b>{n}/{total}</b>. Kalau mulai sekarang, tutorial bisa dilanjutkan saat main.",
   "ftue.confirm.go": "Mulai aja",

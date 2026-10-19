@@ -108,7 +108,7 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     </div>
     <div id="ftue-bubble" class="ftue-bubble" hidden></div>
     <div id="ftue-tip" class="ftue-tip" hidden><i>${t('tip.label')}</i><span></span></div>
-    <div id="ftue-point" class="ftue-point" hidden><span class="ftue-pulse"></span><span class="ftue-say">${t('ftue.pointer')}</span></div>`);
+    <div id="ftue-point" class="ftue-point" hidden><span class="ftue-pulse"></span><span class="ftue-say">${t('ftue.pointer')}<small>${t('ftue.pointerGoal')}</small></span></div>`);
 
   const $ = (id) => document.getElementById(id);
   const modal = $('ftue-modal');
@@ -319,8 +319,11 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     }
     const at = world.toScreen(target.x, 0, target.z);
     point.style.transform = `translate(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px)`;
-    // near the top the bubble would cover the turn banner, so it hangs below the pulse instead
-    point.classList.toggle('below', at.y < 280);
+    // The bubble hangs on the side of the pulse away from the player's own card, which it must
+    // never cover (on a phone the card is small and the bubble big); with the card off to the side,
+    // near the top it hangs below so the turn banner stays clear.
+    const myY = world.toScreen(mine.x, 0, mine.z).y;
+    point.classList.toggle('below', Math.abs(myY - at.y) > 24 ? myY < at.y : at.y < 280);
     // Keep the speech bubble (240 px wide, centred on the pulse) inside the screen.
     const centre = Math.min(Math.max(at.x, 128), innerWidth - 128);
     point.style.setProperty('--shift', `${(centre - at.x).toFixed(1)}px`);
@@ -347,5 +350,9 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     removeInvite();
   }
 
-  return { decorateLobby, confirmStart, onState, frame, onSlam, leaveRoom, closeHelp: () => toggleHelp(false) };
+  return {
+    decorateLobby, confirmStart, onState, frame, onSlam, leaveRoom, closeHelp: () => toggleHelp(false),
+    // a player's very first match: wind and slam types stay out of the way until they know the basics
+    get firstMatch() { return matches === 0 && !disabled; },
+  };
 }

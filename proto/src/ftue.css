@@ -122,6 +122,7 @@
 @keyframes ftuePulse{to{transform:scale(1.18)}}
 .ftue-say{position:absolute;left:calc(-120px + var(--shift, 0px));bottom:34px;width:240px;background:var(--cream);border:3px solid var(--ink);border-radius:14px;box-shadow:0 4px 0 var(--ink);padding:6px 12px;font-weight:700;font-size:15px;line-height:1.25;text-align:center}
 .ftue-say b{color:var(--pink-dark)}
+.ftue-say small{display:block;margin-top:3px;font-size:13px;font-weight:600;line-height:1.25}
 @media (max-width:820px){
   .ftue-bubble{right:8px;bottom:54px}
   .ftue-tip{top:52px;font-size:13px}
