@@ -82,7 +82,7 @@ Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1t
 Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
 
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
-Tiến độ 19/10: xong 1.01–1.40 (trên nhánh `fix/stability-and-ftue`, 101 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Phase 1 xong (1.11 xong 19/10); còn 1.41 làm sau Phase 1.
+Tiến độ 19/10: **Phase 1 xong và đã deploy** (1.01–1.40, nhánh `fix/stability-and-ftue`, 101 test qua; build `mvf00ph3`). Còn 1.41 (icon màu bài) làm sau Phase 1. Tiếp theo: Phase 2.
 - [x] ~~**1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S~~
 - [x] ~~**1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S~~
 - [x] ~~**1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)~~
@@ -144,7 +144,7 @@ Tiến độ 19/10: xong 1.01–1.40 (trên nhánh `fix/stability-and-ftue`, 101
 - [x] **Q6** · Gmail chính: truongbill003@gmail.com (chốt 14/10). Hộp mail studio (A1) tạo trên PA Vietnam: Bill tự đăng nhập và tạo, Claude không được tạo tài khoản/đặt mật khẩu thay.
 - [x] **Q7** · Có danh sách người ủng hộ công khai (chốt 14/10). Thêm vào G2.
 - [x] **UX-06** · Người bấm "Biết chơi rồi": tắt cả chỉ tay lẫn mẹo (chốt 14/10).
-- [ ] **Q8** · Deploy lô 1.01–1.09 lên live? Lần này có sửa nginx (www + link IP chuyển về tên miền chính), server live chưa có bước tự chờ hết trận nên lần này kiểm 0 người bằng tay; người đang mở bản cũ tự tải lại.
+- [x] **Q8** · Bill chốt 19/10: deploy. Đã lên live 19/10 (sao lưu `/opt/slam-cards-backup-20261019-1734`, kiểm 0 người, build từ commit sạch, nginx mới qua `nginx -t`). QA live: trận 2 trình duyệt đủ bước, hướng dẫn 7 bước 9/9, clip trả 206 cho Safari. Server live giờ có cổng quản trị (lần sau `deploy.sh` tự chờ hết trận).
 - [x] **Q9** · Bill chốt 19/10: chỉ logo. "Chất lộn xộn của trailer": chỉ logo (đã làm) hay mang vào sảnh, màn kết quả, màn chờ (1.39)?
 - [ ] **Q10** · Âm thanh meme còn lại có thể vướng bản quyền: "Perfect Victory" (match-win), "ối dồi ôi" (fall-oidoioi), "trình là gì" (skill-trinh, nhắc tên Haaland). Giữ (meme đã tắt mặc định), hay thay bằng âm tự làm?
 - [ ] **Q11** · Việc tồn từ trước: hỏi David đồng ý dòng credit chưa; bản quyền bộ sticker tạm; Info ghi "Một trò của BillTheDev Studio" + link billthedevstudio.io.vn?; chữ intro đổi thành "Bill The Dev Studio"?
@@ -165,7 +165,7 @@ Tiến độ 19/10: xong 1.01–1.40 (trên nhánh `fix/stability-and-ftue`, 101
   - Kiểm tra: 375×812, người mới vào bằng link → cuộn lên đầu thấy "Phòng XXXX".
   - Xong 14/10: `qa/devices.mjs` cả 5 máy, đỉnh thẻ phòng chờ ở 16px, nút góc không còn đè nút thẻ mời.
 
-- [ ] **OPS-01 · `proto/deploy.sh` không chạy được từ máy này**: nó dùng ssh host `hordecall`, mà `C:\Users\ducnq\.ssh\config` chưa có alias đó. Thêm:
+- [ ] **OPS-01 · (chạy được bằng `SLAM_HOST=root@14.225.255.73 bash deploy.sh`, đã dùng 19/10) `proto/deploy.sh` không chạy được từ máy này**: nó dùng ssh host `hordecall`, mà `C:\Users\ducnq\.ssh\config` chưa có alias đó. Thêm:
   ```
   Host hordecall
     HostName 14.225.255.73
