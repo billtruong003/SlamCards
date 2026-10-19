@@ -771,6 +771,9 @@ function handle(ws, msg) {
     const code = String(msg.code || '').toUpperCase();
     const room = rooms.get(code);
     const mine = Boolean(room && msg.token && Object.values(room.players).some((p) => p.token === msg.token && !p.left));
+    // a friends' room also says who made it and how many are in, for the invite screen (F-16);
+    // quick-match rooms say nothing about the strangers in them
+    const friends = room?.kind === 'friends';
     send(ws, {
       t: 'peek',
       code,
@@ -779,6 +782,9 @@ function handle(ws, msg) {
       full: room ? Object.keys(room.players).length >= Math.min(MAX_PLAYERS, room.cap) : false,
       quick: room?.kind === 'quick',
       mine,
+      host: friends ? room.players[room.host]?.name ?? null : null,
+      players: friends ? Object.keys(room.players).length : null,
+      cap: friends ? room.cap : null,
     });
     return;
   }

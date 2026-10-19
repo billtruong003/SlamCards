@@ -253,6 +253,14 @@
     "max": 40,
     "id": "A9"
   },
+  "invite.from": {
+    "where": "Invite screen (opened from a friend's link), above the name box: who invited you and the room code",
+    "max": 50
+  },
+  "invite.count": {
+    "where": "Invite screen, under the line above: how many players are already in the room out of how many seats",
+    "max": 30
+  },
   "error.notFound": {
     "where": "Menu error: wrong room code",
     "max": 30,

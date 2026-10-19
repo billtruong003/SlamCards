@@ -328,7 +328,7 @@ function onPeek(msg) {
   else if (msg.phase !== 'lobby' || msg.quick) refuse(t('error.inMatchWait', { code })); // UX-08: say when to come back
   else if (msg.full) refuse(t('error.full'));
   else if (playerName.get()) joinRoom(code, null);
-  else renderNamePrompt(code);
+  else renderNamePrompt(code, msg);
 }
 
 // Back to a clean menu: no room, no leftover HUD, labels or toasts from the last match.
@@ -1150,14 +1150,16 @@ function renderMenu(error = '') {
   $('code').onkeydown = (e) => { if (e.key === 'Enter') join(); };
 }
 
-function renderNamePrompt(code) {
+// peek (optional): the server's answer about the room, with who made it and how many are in.
+function renderNamePrompt(code, peek = null) {
   overlayKey = 'name';
   playMusic('menu');
   els.overlay.className = '';
   els.overlay.innerHTML = `
     <div class="menu-bg"><div class="panel menu-card name-card">
       ${logo()}
-      <p class="sub">${t('invite.sub', { code: `<span class="code">${escapeHtml(code)}</span>` })}</p>
+      <p class="sub">${peek?.host ? t('invite.from', { name: `<b>${escapeHtml(peek.host)}</b>`, code: `<span class="code">${escapeHtml(code)}</span>` }) : t('invite.sub', { code: `<span class="code">${escapeHtml(code)}</span>` })}</p>
+      ${peek?.players ? `<p class="sub invite-count">${t('invite.count', { n: peek.players, cap: peek.cap })}</p>` : ''}
       ${menuError('')}
       ${nameField()}
       <button class="btn pri wide" id="go">${t('menu.join')}</button>

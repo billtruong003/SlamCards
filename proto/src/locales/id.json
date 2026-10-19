@@ -50,6 +50,8 @@
   "queue.lost": "Koneksi putus pas nyari lawan. Coba lagi!",
   "queue.found": "Lawan ketemu!",
   "invite.sub": "Diajak main di room {code} nih!",
+  "invite.from": "{name} mengajakmu ke room {code}!",
+  "invite.count": "{n}/{cap} pemain di room",
   "error.notFound": "Room-nya nggak ketemu!",
   "error.inMatch": "Lagi main! Bikin room baru!",
   "error.full": "Udah 4 orang! Room penuh!",

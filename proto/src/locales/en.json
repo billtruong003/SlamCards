@@ -50,6 +50,8 @@
   "queue.lost": "Lost connection while finding players. Try again!",
   "queue.found": "Match found!",
   "invite.sub": "Your crew's in room {code}!",
+  "invite.from": "{name} invited you to room {code}!",
+  "invite.count": "{n}/{cap} players in the room",
   "error.notFound": "Room not found!",
   "error.inMatch": "Match on! Create a new room!",
   "error.full": "Room full! All 4 spots taken!",

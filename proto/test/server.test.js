@@ -41,6 +41,10 @@ test('C1: peek tells whether an invite link still points at a room', async () =>
     assert.equal(found.exists, true);
     assert.equal(found.phase, 'lobby');
     assert.equal(found.mine, false);
+    // the invite screen says who made the room and how many are in (F-16)
+    assert.equal(found.host, 'P0');
+    assert.equal(found.players, 1);
+    assert.equal(found.cap, 4);
     c.send({ t: 'peek', code: host.code, token: host.token });
     assert.equal((await c.next((m) => m.t === 'peek')).mine, true);
   } finally { srv.stop(); }

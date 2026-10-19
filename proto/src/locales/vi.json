@@ -50,6 +50,8 @@
   "queue.lost": "Mất kết nối lúc tìm trận. Thử lại nhé!",
   "queue.found": "Có trận rồi!",
   "invite.sub": "Vào phòng {code} chơi với tụi nó!",
+  "invite.from": "{name} rủ m vào phòng {code} đập bài!",
+  "invite.count": "Phòng đang có {n}/{cap} người",
   "error.notFound": "Không tìm thấy phòng!",
   "error.inMatch": "Đang chơi rồi! Tạo phòng mới!",
   "error.full": "Đủ 4 đứa rồi! Phòng đầy!",

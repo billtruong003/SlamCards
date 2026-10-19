@@ -50,6 +50,8 @@
   "queue.lost": "หลุดตอนหาคู่ ลองใหม่นะ!",
   "queue.found": "เจอแมตช์แล้ว!",
   "invite.sub": "มีคนชวนเข้าห้อง {code}!",
+  "invite.from": "{name} ชวนคุณเข้าห้อง {code}!",
+  "invite.count": "มีผู้เล่น {n}/{cap} คนในห้อง",
   "error.notFound": "ไม่เจอห้องนี้!",
   "error.inMatch": "เล่นอยู่! สร้างห้องใหม่!",
   "error.full": "ครบ 4 คนแล้ว! ห้องเต็ม!",

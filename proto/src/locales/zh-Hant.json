@@ -50,6 +50,8 @@
   "queue.lost": "配對時斷線了，再試一次吧！",
   "queue.found": "找到對局了！",
   "invite.sub": "有人揪你來{code}房間玩！",
+  "invite.from": "{name}邀請你進房間 {code}！",
+  "invite.count": "房間裡有 {n}/{cap} 人",
   "error.notFound": "找不到這個房間！",
   "error.inMatch": "已經開打了，開個新房間吧！",
   "error.full": "已經4個人了，房間滿了！",

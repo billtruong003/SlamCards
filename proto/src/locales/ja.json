@@ -50,6 +50,8 @@
   "queue.lost": "マッチング中に切れちゃった。もう一回！",
   "queue.found": "対戦相手が見つかった！",
   "invite.sub": "部屋{code}に誘われたよ！",
+  "invite.from": "{name}がルーム{code}に招待したよ！",
+  "invite.count": "ルームに{n}/{cap}人",
   "error.notFound": "部屋が見つからない！",
   "error.inMatch": "対戦中だよ！ 新しい部屋を作ろう！",
   "error.full": "もう4人いるよ！ 満員！",

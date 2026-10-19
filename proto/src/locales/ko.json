@@ -50,6 +50,8 @@
   "queue.lost": "매칭 중에 연결이 끊겼어. 다시 해 봐!",
   "queue.found": "상대를 찾았어!",
   "invite.sub": "{code}번 방에서 같이 놀자!",
+  "invite.from": "{name}님이 방 {code}에 초대했어요!",
+  "invite.count": "방에 {n}/{cap}명",
   "error.notFound": "방을 찾을 수 없어!",
   "error.inMatch": "이미 게임 중이야! 새 방을 만들어 줘!",
   "error.full": "4명 꽉 찼어! 더는 못 들어가!",

@@ -50,6 +50,8 @@
   "queue.lost": "Caiu a conexão na busca. Tenta de novo!",
   "queue.found": "Achamos um jogo!",
   "invite.sub": "Te chamaram pra sala {code}!",
+  "invite.from": "{name} te chamou pra sala {code}!",
+  "invite.count": "{n}/{cap} jogadores na sala",
   "error.notFound": "Sala não encontrada!",
   "error.inMatch": "Já começou! Crie outra sala!",
   "error.full": "Já tem 4! A sala tá cheia!",

@@ -82,7 +82,7 @@ Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1t
 Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
 
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
-Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.19 (1.11 chờ mockup).
+Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.20 (1.11 chờ mockup).
 - [x] ~~**1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S~~
 - [x] ~~**1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S~~
 - [x] ~~**1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)~~
@@ -101,7 +101,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [x] ~~**1.16** Phản hồi ngay khi chạm; intro studio bỏ qua được (F-09, F-15) — S~~ Đo: dép hiện sau ~40 ms, khung hình lâu nhất 71 ms; thiếu thật là nút không lún khi chạm (đã thêm)
 - [x] ~~**1.17** Màn chính PC cân đối; bàn và chữ lớn hơn trên PC; màn kết quả có thông tin trận (F-10, F-11) — M~~ Bàn trên laptop to hơn ~19%; màn kết quả có từng ván + thời gian + số cú đập
 - [x] ~~**1.18** Mỗi ghế một pet mặc định khác nhau — S~~
-- [ ] **1.19** Màn mời ghi ai rủ và phòng có mấy người (F-16) — S
+- [x] ~~**1.19** Màn mời ghi ai rủ và phòng có mấy người (F-16) — S~~
 - [ ] **1.20** Tương thích: Samsung Internet tối, trình duyệt Zalo/Messenger/Facebook/TikTok, iOS 15, ký hiệu ghế mù màu, giảm chuyển động — M
 - [ ] **1.30** Hàng chờ không bị chia nhỏ, sửa "Chơi luôn n người", ~~màn chờ không vẽ lại mỗi giây~~ (xong ở 1.15) (V-18, V-19) — M
 - [ ] **1.31** Bot trông như người thật sau 15 giây chờ (nghĩ 3–12 giây, có lúc lệch/rớt bài), không lên bảng điểm, thêm dòng vào chính sách riêng tư — L
