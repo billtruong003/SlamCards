@@ -146,7 +146,7 @@ for (const vp of Object.keys(VIEWPORTS).filter((v) => !only || only.includes(v))
   }
   await host.waitForFunction(() => slamDebug.state.phase === 'matchEnd', null, { timeout: 10000 }).catch(() => {});
   await sleep(1500);
-  await check(host, vp, 'end', ['#menu', '#new-room']);
+  await check(host, vp, 'end', ['#menu', '#rematch']);
   for (const p of all) await p.context().close();
 }
 await browser.close();

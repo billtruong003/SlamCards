@@ -319,11 +319,21 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     }
     const at = world.toScreen(target.x, 0, target.z);
     point.style.transform = `translate(${at.x.toFixed(1)}px, ${at.y.toFixed(1)}px)`;
-    // The bubble hangs on the side of the pulse away from the player's own card, which it must
-    // never cover (on a phone the card is small and the bubble big); with the card off to the side,
-    // near the top it hangs below so the turn banner stays clear.
-    const myY = world.toScreen(mine.x, 0, mine.z).y;
-    point.classList.toggle('below', Math.abs(myY - at.y) > 24 ? myY < at.y : at.y < 280);
+    // The bubble must never cover the player's own card. Its outline on screen (the footprint's
+    // corners) decides: the bubble hangs above or below the pulse, pushed clear of that outline, on
+    // the side with room (on a laptop the card often sits level with the pulse, so "the other side
+    // of the pulse" was not enough). Near the top it prefers below, keeping the turn banner clear.
+    const corners = [[-0.6, -0.8], [0.6, -0.8], [-0.6, 0.8], [0.6, 0.8]].map(([dx, dz]) => world.toScreen(mine.x + dx, 0, mine.z + dz).y);
+    const cardTop = Math.min(...corners);
+    const cardBottom = Math.max(...corners);
+    const sayH = point.querySelector('.ftue-say').offsetHeight || 80;
+    const gapAbove = Math.max(34, at.y - cardTop + 10); // bubble bottom this far above the pulse
+    const gapBelow = Math.max(34, cardBottom - at.y + 10); // bubble top this far below it
+    const roomAbove = at.y - gapAbove - sayH > 60;
+    const roomBelow = at.y + gapBelow + sayH < innerHeight - 8;
+    const below = !roomAbove || (roomBelow && at.y < 280);
+    point.classList.toggle('below', below);
+    point.style.setProperty('--gap', `${(below ? gapBelow : gapAbove).toFixed(0)}px`);
     // Keep the speech bubble (240 px wide, centred on the pulse) inside the screen.
     const centre = Math.min(Math.max(at.x, 128), innerWidth - 128);
     point.style.setProperty('--shift', `${(centre - at.x).toFixed(1)}px`);
