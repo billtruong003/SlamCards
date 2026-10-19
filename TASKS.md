@@ -84,7 +84,7 @@ Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
 - [x] **1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S
 - [x] **1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S
-- [ ] **1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S
+- [x] **1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)
 - [ ] **1.04** Tắt meme mặc định, bỏ ảnh có bản quyền và mặt người thật — S
 - [ ] **1.05** Báo bảo trì trước deploy, chặn trận mới; xem số phòng/người theo pha; báo khi server khởi động lại — M
 - [ ] **1.06** Phản hồi khi mất WebGL hoặc mạng chặn WebSocket — S
