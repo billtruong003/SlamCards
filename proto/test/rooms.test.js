@@ -2,7 +2,7 @@
 // and the name filter.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startServer, connect, lobby, startFrom, sleep } from './harness.js';
+import { startServer, connect, lobby, startFrom, sleep, near, twoPlayerGame, threePlayerGame } from './harness.js';
 import { isBadName } from '../server/names.js';
 
 const quiet = async (c, ms = 250) => { await sleep(ms); return c.state; };
@@ -159,13 +159,55 @@ test('quick match: two timeouts in a row put an idle player out of the round', a
   } finally { srv.stop(); }
 });
 
-test('friends rooms never drop idle players', async () => {
+test('friends rooms drop idle players too: two timeouts in a row and out of the round', async () => {
   const srv = await startServer({ turn: 200, forcedGrace: 100 });
   try {
     const players = await lobby(srv.port, 3);
     await startFrom(players);
-    await sleep(2500);
-    assert.equal(players[0].state.alive.length, 3);
+    const s = await players[0].waitState((st) => st.event?.type === 'afk' || st.result?.reason === 'afk', 8000);
+    assert.ok(s.alive.length < 3 || s.result?.reason === 'afk');
+  } finally { srv.stop(); }
+});
+
+test('leave button: out of the match at once, the others go on', async () => {
+  const srv = await startServer({ disconnect: 60000 });
+  try {
+    const players = await threePlayerGame(srv.port);
+    const turn = players[0].state.turn;
+    const leaver = players.find((p) => p.seat !== turn);
+    const stayer = players.find((p) => p !== leaver);
+    leaver.send({ t: 'leave' });
+    const s = await stayer.waitState((st) => st.players[leaver.seat].left, 2000);
+    assert.ok(!s.alive.includes(leaver.seat), 'no 60 s wait for someone who left on purpose');
+    assert.equal(s.phase, 'turn');
+    assert.equal(s.alive.length, 2);
+  } finally { srv.stop(); }
+});
+
+test('leave button: the slammer leaving mid-slam does not hold the table up', async () => {
+  const srv = await startServer({ slamMaxMs: 15000 });
+  try {
+    const players = await threePlayerGame(srv.port);
+    const turn = players[0].state.turn;
+    const slammer = players.find((p) => p.seat === turn);
+    const watcher = players.find((p) => p !== slammer);
+    slammer.send({ t: 'slamStart', aim: near(slammer.state.cards[turn]), type: 'flat' });
+    await watcher.next((m) => m.t === 'playStart');
+    slammer.send({ t: 'leave' });
+    await watcher.next((m) => m.t === 'playAbort', 1500);
+    const s = await watcher.waitState((st) => st.phase === 'turn' && st.turn !== turn, 1500);
+    assert.ok(!s.alive.includes(turn));
+  } finally { srv.stop(); }
+});
+
+test('leave button: in a two-player match the one who stays wins', async () => {
+  const srv = await startServer();
+  try {
+    const [a, b] = await twoPlayerGame(srv.port);
+    b.send({ t: 'leave' });
+    const end = await a.waitState((st) => st.phase === 'matchEnd', 2000);
+    assert.equal(end.result.matchWinner, 'black');
+    assert.equal(end.result.matchReason, 'disconnect');
   } finally { srv.stop(); }
 });
 

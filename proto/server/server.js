@@ -450,9 +450,10 @@ function registerPass(room, impact) {
   const by = room.turn;
   log(room, `pass by ${by}${impact ? '' : ' (timeout)'}`);
   room.timeouts[by] = impact ? 0 : (room.timeouts[by] ?? 0) + 1;
-  // With strangers, two timeouts in a row means nobody is there: out of this round, so the
-  // others aren't held up 30 s a turn (friends' rooms keep waiting for each other).
-  if (!impact && room.kind === 'quick' && room.timeouts[by] >= 2) {
+  // Two timeouts in a row means nobody is there: out of this round, so the others aren't held up
+  // a whole turn each time. The same in every room, as the tutorial says (friends' rooms used to
+  // wait forever, and a table with one idle friend could not go on).
+  if (!impact && room.timeouts[by] >= 2) {
     eliminateAfk(room, by);
     return;
   }
@@ -654,6 +655,9 @@ function dropPlayer(room, seat) {
   } else if (room.turn === seat && room.phase === 'turn') {
     room.turn = nextAlive(room, seat);
     startTurn(room);
+  } else if (room.slam?.by === seat && !room.slam.ended) {
+    // the slammer is gone mid-slam: no more frames will come, so the table does not wait for them
+    abortSlam(room, 'slammer left');
   } else {
     broadcast(room);
   }
@@ -723,7 +727,9 @@ function detach(ws, { leaving = false } = {}) {
     scheduleTurnEnd(room, TIMING.awayTurn);
     broadcast(room);
   }
-  if (leaving && room.phase === 'lobby') {
+  // left on purpose (the leave button, or off to another room or the queue): the seat goes at
+  // once, in a lobby or a match, instead of after the grace period for a lost connection
+  if (leaving) {
     dropPlayer(room, seat);
     return;
   }
@@ -796,6 +802,12 @@ function handle(ws, msg) {
     room.host = 'black';
     room.joinOrder = ['black'];
     attach(ws, room, 'black', player);
+    return;
+  }
+
+  // The leave button: out of the room or the match now; the others go on.
+  if (msg.t === 'leave') {
+    detach(ws, { leaving: true });
     return;
   }
 

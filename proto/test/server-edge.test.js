@@ -184,18 +184,17 @@ test('own goal: the slammer\'s face-down card ending under the enemy face-up car
   } finally { srv.stop(); }
 });
 
-test('timeouts: plain turn passes, forced turn gets autoSlam then passes', async () => {
+test('timeouts: plain turn passes, forced turn gets autoSlam, a second timeout puts the idle player out', async () => {
   const srv = await startServer({ turn: 400, forcedGrace: 300 });
   try {
     const [a, b] = await twoPlayerGame(srv.port);
+    const autoSlam = a.next((m) => m.t === 'autoSlam', 4000);
     const s1 = await b.waitState((s) => s.turn === 'pink', 2000);
     assert.equal(s1.event.type, 'timeout');
-    await a.waitState((s) => s.turn === 'black', 2000);
-    await a.waitState((s) => s.turn === 'pink' && s.passStreak === undefined, 2000);
-    const forced = await a.waitState((s) => s.turn === 'black' && s.forced, 3000);
-    assert.equal(forced.forced, true);
-    await a.next((m) => m.t === 'autoSlam', 2000);
-    await a.waitState((s) => s.turn === 'pink', 2000);
+    await autoSlam;
+    const out = await a.waitState((s) => s.phase === 'roundEnd', 4000);
+    assert.equal(out.result.reason, 'afk');
+    assert.equal(out.result.winner, 'pink');
   } finally { srv.stop(); }
 });
 
