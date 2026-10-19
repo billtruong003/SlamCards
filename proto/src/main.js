@@ -1974,6 +1974,7 @@ setInterval(() => {
   if (playback?.ended) finishPlayback();
 }, 250);
 
+let lastLocalFrames = null;
 if (new URLSearchParams(location.search).has('debug')) {
   window.slamDebug = {
     get state() { return state; },
