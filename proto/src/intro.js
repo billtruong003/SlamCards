@@ -1,8 +1,10 @@
 // "Bill The Dev" studio credit, ported from the studio's Unity boot (BillTheDev-Pack/3-boot-credit):
 // the fox pops in, its sunglasses drop on with a click and a squash, a glare sweeps the lenses,
 // the name types out with a blinking amber cursor, then it all fades. About 4.8 s.
-// First visit of the day plays in full; later visits that day can skip it with a tap after 1 s.
+// A tap or a key skips it: on a first visit after 0.6 s (long enough to see whose game it is; people
+// coming from an ad want to play, F-15), on later visits that day at once.
 import { ctx, bus } from './audio.js';
+import { t } from './i18n.js';
 
 const ease = {
   linear: (t) => t,
@@ -72,7 +74,8 @@ export async function playIntro() {
         <div class="intro-lens"><div class="intro-glare"></div></div>
       </div>
       <div class="intro-name" aria-label="Bill The Dev"></div>
-    </div>`;
+    </div>
+    <p class="intro-skip">${t('intro.skip')}</p>`;
   document.body.appendChild(root);
   const group = root.querySelector('.intro-group');
   const fox = root.querySelector('.intro-fox');
@@ -82,9 +85,11 @@ export async function playIntro() {
 
   let skipped = false;
   const started = performance.now();
-  root.addEventListener('pointerdown', () => {
-    if (repeat && performance.now() - started > 1000) skipped = true;
-  });
+  const skipAfter = repeat ? 0 : 600;
+  const skip = () => { if (performance.now() - started >= skipAfter) skipped = true; };
+  root.addEventListener('pointerdown', skip);
+  addEventListener('keydown', skip);
+  setTimeout(() => root.classList.add('skippable'), skipAfter);
   const wait = async (ms) => {
     const end = performance.now() + ms;
     while (!skipped && performance.now() < end) await sleep(16);
@@ -137,5 +142,6 @@ export async function playIntro() {
     root.style.opacity = String(1 - k);
     group.style.transform = `scale(${1 - 0.04 * k})`;
   });
+  removeEventListener('keydown', skip);
   root.remove();
 }

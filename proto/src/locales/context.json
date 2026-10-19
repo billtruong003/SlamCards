@@ -1743,5 +1743,9 @@
     "where": "Browser too old / game took too long to load (static HTML copy stays Vietnamese if JS never runs)",
     "max": 90,
     "id": "K7"
+  },
+  "intro.skip": {
+    "where": "Small grey line at the bottom of the studio intro (dark screen): tap or press a key to skip it",
+    "max": 24
   }
 }

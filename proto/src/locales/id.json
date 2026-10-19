@@ -356,5 +356,6 @@
   "fatal.loadBody": "Game belum selesai dimuat. Cek koneksi lalu muat ulang ya.",
   "gl.lostTitle": "Grafis terhenti",
   "gl.lostBody": "Perangkatmu mematikan grafis 3D game. Muat ulang untuk kembali ke room yang sama.",
-  "boot.slow": "Lama banget? Muat ulang halaman, atau pakai Chrome atau Safari versi terbaru!"
+  "boot.slow": "Lama banget? Muat ulang halaman, atau pakai Chrome atau Safari versi terbaru!",
+  "intro.skip": "Ketuk untuk lewati"
 }

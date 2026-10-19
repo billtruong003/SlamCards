@@ -97,6 +97,9 @@ if (langs.length > 1) {
   $('close-lang').onclick = () => { langPanel.hidden = true; };
 }
 
+// iOS Safari only shows :active (the pressed look of every button) on pages listening for touches
+addEventListener('touchstart', () => {}, { passive: true });
+
 // The rules button says what it is ("? Luật chơi"), and every corner button carries a short word
 // (data-short) that shows under its icon where the row shrinks to icons (a phone in a match).
 $('help').innerHTML = `<b aria-hidden="true">?</b><span>${escapeHtml(t('corner.help'))}</span>`;

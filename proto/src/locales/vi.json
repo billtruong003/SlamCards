@@ -356,5 +356,6 @@
   "fatal.loadBody": "Tải game chưa xong. Kiểm tra mạng rồi tải lại trang nhé.",
   "gl.lostTitle": "Đồ hoạ bị gián đoạn",
   "gl.lostBody": "Máy vừa tắt đồ hoạ 3D của game. Tải lại trang là vào lại đúng phòng.",
-  "boot.slow": "Tải lâu quá? Thử tải lại trang hoặc dùng Chrome, Safari bản mới nhé!"
+  "boot.slow": "Tải lâu quá? Thử tải lại trang hoặc dùng Chrome, Safari bản mới nhé!",
+  "intro.skip": "Chạm để bỏ qua"
 }

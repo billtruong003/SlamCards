@@ -356,5 +356,6 @@
   "fatal.loadBody": "The game didn't finish loading. Check your connection and reload.",
   "gl.lostTitle": "Graphics stopped",
   "gl.lostBody": "Your device switched off the game’s 3D. Reload to get back into the same room.",
-  "boot.slow": "Still loading? Reload the page, or try the latest Chrome or Safari!"
+  "boot.slow": "Still loading? Reload the page, or try the latest Chrome or Safari!",
+  "intro.skip": "Tap to skip"
 }

@@ -356,5 +356,6 @@
   "fatal.loadBody": "遊戲沒載入完。檢查網路後重新載入吧。",
   "gl.lostTitle": "畫面中斷了",
   "gl.lostBody": "裝置關閉了遊戲的3D畫面。重新載入就能回到同一個房間。",
-  "boot.slow": "載入太久了？重新整理網頁，或用最新版Chrome、Safari開啟試試！"
+  "boot.slow": "載入太久了？重新整理網頁，或用最新版Chrome、Safari開啟試試！",
+  "intro.skip": "點擊跳過"
 }

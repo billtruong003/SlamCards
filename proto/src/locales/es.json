@@ -356,5 +356,6 @@
   "fatal.loadBody": "El juego no terminó de cargar. Revisa tu conexión y recarga.",
   "gl.lostTitle": "Gráficos detenidos",
   "gl.lostBody": "Tu dispositivo apagó el 3D del juego. Recarga para volver a la misma sala.",
-  "boot.slow": "¿Tarda demasiado? ¡Recarga la página o usa la versión más reciente de Chrome o Safari!"
+  "boot.slow": "¿Tarda demasiado? ¡Recarga la página o usa la versión más reciente de Chrome o Safari!",
+  "intro.skip": "Toca para saltar"
 }

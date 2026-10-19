@@ -45,6 +45,9 @@ button{font:inherit;color:inherit;cursor:pointer}
 .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
 .btn{background:var(--cream);border:3px solid var(--ink);border-radius:12px;padding:4px 20px;font-weight:800;font-size:18px;box-shadow:0 4px 0 var(--ink);min-height:46px}
 .btn.pri{background:var(--pink-dark);color:#fff}
+/* a press shows at once (F-09): the button sinks into its shadow */
+.btn,.rps,.seg button,.tag-btn,#corner button,.cp-chips button{transition:transform .05s,box-shadow .05s}
+.btn:active:not(:disabled),.rps:active,.seg button:active,.tag-btn:active:not(:disabled),#corner button:active,.cp-chips button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .btn:disabled{opacity:.5;cursor:default}
 .input{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:4px 12px;font:700 18px var(--font);min-height:46px;width:160px;text-transform:uppercase}
 .rps{width:96px;height:96px;border:3px solid var(--ink);border-radius:18px;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;box-shadow:0 4px 0 var(--ink)}
@@ -290,6 +293,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .intro-glare{position:absolute;top:-30%;width:12%;height:160%;margin-left:-6%;background:rgba(255,255,255,.75);left:-41%;transform:rotate(-24deg)}
 .intro-name{min-height:1.2em;font-family:var(--font);font-weight:800;font-size:min(7vh,11vw);color:#F5F5F5;letter-spacing:.01em;white-space:nowrap}
 .intro-name .cursor{color:#FFB84D}
+.intro-skip{position:absolute;left:0;right:0;bottom:max(24px,env(safe-area-inset-bottom));margin:0;text-align:center;font:700 14px var(--font);color:#8a8794;opacity:0;transition:opacity .3s}
+#intro.skippable .intro-skip{opacity:1}
 
 /* ---------- home, create room, public rooms, quick match ---------- */
 .group-label{margin:0;font-weight:800;font-size:15px;text-align:left;width:100%}

@@ -82,7 +82,7 @@ Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1t
 Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
 
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
-Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.16 (1.11 chờ mockup).
+Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.17 (1.11 chờ mockup).
 - [x] ~~**1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S~~
 - [x] ~~**1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S~~
 - [x] ~~**1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)~~
@@ -98,7 +98,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [x] ~~**1.13** Nút xem luật to có chữ; nút góc trên điện thoại có chữ; tên không bị cắt (F-12) — S~~
 - [x] ~~**1.14** Chat điện thoại: chỉ câu nhanh + sticker, đọc được tin, mở được mọi lúc (B-03) — M~~ Kiểm bằng `qa/phone-chat.mjs`
 - [x] ~~**1.15** Oẳn tù tì/chọn đi trước: chữ đúng, có đồng hồ, nút không vẽ lại liên tục (F-06, F-07, V-28) — S~~ Thêm: lượt máy đập hộ ghi rõ, luật 6 sửa + luật 7 "hết giờ 2 lần = bị loại", người rời ở màn kết quả không còn báo "đợi 60 giây". Kiểm bằng `qa/rps-check.mjs`
-- [ ] **1.16** Phản hồi ngay khi chạm; intro studio bỏ qua được (F-09, F-15) — S
+- [x] ~~**1.16** Phản hồi ngay khi chạm; intro studio bỏ qua được (F-09, F-15) — S~~ Đo: dép hiện sau ~40 ms, khung hình lâu nhất 71 ms; thiếu thật là nút không lún khi chạm (đã thêm)
 - [ ] **1.17** Màn chính PC cân đối; bàn và chữ lớn hơn trên PC; màn kết quả có thông tin trận (F-10, F-11) — M
 - [ ] **1.18** Mỗi ghế một pet mặc định khác nhau — S
 - [ ] **1.19** Màn mời ghi ai rủ và phòng có mấy người (F-16) — S

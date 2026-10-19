@@ -356,5 +356,6 @@
   "fatal.loadBody": "游戏没加载完。检查网络后重新加载吧。",
   "gl.lostTitle": "画面中断了",
   "gl.lostBody": "设备关闭了游戏的3D画面。重新加载就能回到同一个房间。",
-  "boot.slow": "加载太久了？刷新页面，或用最新版Chrome、Safari打开试试！"
+  "boot.slow": "加载太久了？刷新页面，或用最新版Chrome、Safari打开试试！",
+  "intro.skip": "点击跳过"
 }

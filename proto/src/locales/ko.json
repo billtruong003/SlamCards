@@ -356,5 +356,6 @@
   "fatal.loadBody": "게임을 다 불러오지 못했어요. 인터넷을 확인하고 새로고침해 주세요.",
   "gl.lostTitle": "그래픽이 멈췄어요",
   "gl.lostBody": "기기가 게임의 3D를 껐어요. 새로고침하면 같은 방으로 돌아가요.",
-  "boot.slow": "로딩이 너무 길어? 새로고침하거나 최신 Chrome 또는 Safari로 열어 봐!"
+  "boot.slow": "로딩이 너무 길어? 새로고침하거나 최신 Chrome 또는 Safari로 열어 봐!",
+  "intro.skip": "탭해서 건너뛰기"
 }
