@@ -1760,6 +1760,10 @@
     "max": 90,
     "id": "K7"
   },
+  "inapp.note": {
+    "where": "Note on the home / invite screen when the game is opened inside a social app's browser ({app}: Zalo, Messenger, Facebook, TikTok...): suggest the phone's own browser. A Copy link button follows",
+    "max": 110
+  },
   "intro.skip": {
     "where": "Small grey line at the bottom of the studio intro (dark screen): tap or press a key to skip it",
     "max": 24

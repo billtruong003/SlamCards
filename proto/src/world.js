@@ -5,6 +5,7 @@ import { createStencilCard, orderStencilCards, spaceTime } from './stencil-card.
 // Cards with a stencil window and the player's pet inside (stencil-card.js). `?classic` brings
 // back the old joker cards (a fallback if a device can't do the stencil passes).
 const STENCIL = !new URLSearchParams(location.search).has('classic');
+const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
 import { toonizeTree, toonize } from './toon.js';
 import { CARD_HALF_W, CARD_HALF_T, CARD_HALF_D, tableFor } from './rules.js';
 
@@ -223,7 +224,7 @@ export class World {
     const made = STENCIL ? createStencilCard(seat, stencilRef) : createCardMesh(seat);
     if (STENCIL) {
       made.setLook(this.looks?.[seat]);
-      made.setGlow(this.glows?.[seat] ?? null);
+      made.setGlow(this.glows?.[seat]?.color ?? null, this.glows?.[seat]?.thick);
     }
     const { mesh, shadow } = made;
     this.scene.add(mesh);
@@ -322,10 +323,11 @@ export class World {
   }
 
   // What each seat's player wears ({ pet, dep, depColors, cardColor }); kept for cards built later.
-  // Card edge glows by seat ({ black: '#3ad16b', ... }, missing = none), kept for cards built later.
+  // Card edge glows by seat ({ black: { color: '#3ad16b', thick: true }, ... }, missing = none),
+  // kept for cards built later.
   setGlows(glows) {
     this.glows = glows;
-    for (const [seat, card] of Object.entries(this.cards)) card.stencil?.setGlow(glows[seat] ?? null);
+    for (const [seat, card] of Object.entries(this.cards)) card.stencil?.setGlow(glows[seat]?.color ?? null, glows[seat]?.thick);
     this.needsRender = true;
   }
 
@@ -551,6 +553,7 @@ export class World {
   // Trauma-based shake: hits add trauma, the shake is trauma squared (small hits barely move,
   // big ones kick hard) and it decays smoothly instead of stopping dead.
   shake(amount = 0.6) {
+    if (REDUCED_MOTION) return; // "reduce motion" in the system settings: no camera shake
     this.trauma = Math.min(1, this.trauma + amount);
   }
 

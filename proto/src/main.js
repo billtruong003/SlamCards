@@ -190,6 +190,7 @@ const ftue = createFtue({
 });
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
 const seatLabel = (seat) => t(`color.${cardColorOf(seat)}`);
+const suitOf = (seat) => CARD_COLORS[cardColorOf(seat)]?.suit ?? '';
 const list = (items) => items.join(t('common.listSep'));
 
 const nameOf = (seat) => state?.players[seat]?.name || seatLabel(seat);
@@ -442,7 +443,7 @@ function applyGlows() {
   const key = `${namesShown}|${me}|${seats.join(',')}`;
   if (key === glowKey) return;
   glowKey = key;
-  world.setGlows(namesShown || !me ? {} : Object.fromEntries(seats.map((s) => [s, s === me ? GLOW.mine : GLOW.theirs])));
+  world.setGlows(namesShown || !me ? {} : Object.fromEntries(seats.map((s) => [s, s === me ? { color: GLOW.mine, thick: true } : { color: GLOW.theirs }])));
 }
 // tapping a player's chip mutes (or unmutes) their stickers and chat
 els.players.addEventListener('click', (e) => {
@@ -1076,6 +1077,7 @@ function renderMenu(error = '') {
   const size = playerSize.get();
   els.overlay.innerHTML = `
     <div class="menu-bg with-gear"><div class="panel menu-card home">
+      ${inAppNote()}
       ${logo()}
       <p class="sub">${t('menu.tagline')}</p>
       ${menuError(error)}
@@ -1104,6 +1106,7 @@ function renderMenu(error = '') {
       <div class="howto"><p>${t('ftue.pointerGoal')}</p><button class="btn" id="home-howto">${t('home.howto')}</button></div>
     </div></div>`;
   wireGearTiles();
+  wireInAppNote();
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
   $('home-howto').onclick = () => ftue.openTutorial();
   els.overlay.querySelectorAll('#size [data-size]').forEach((b) => {
@@ -1157,6 +1160,7 @@ function renderNamePrompt(code, peek = null) {
   els.overlay.className = '';
   els.overlay.innerHTML = `
     <div class="menu-bg"><div class="panel menu-card name-card">
+      ${inAppNote()}
       ${logo()}
       <p class="sub">${peek?.host ? t('invite.from', { name: `<b>${escapeHtml(peek.host)}</b>`, code: `<span class="code">${escapeHtml(code)}</span>` }) : t('invite.sub', { code: `<span class="code">${escapeHtml(code)}</span>` })}</p>
       ${peek?.players ? `<p class="sub invite-count">${t('invite.count', { n: peek.players, cap: peek.cap })}</p>` : ''}
@@ -1165,6 +1169,7 @@ function renderNamePrompt(code, peek = null) {
       <button class="btn pri wide" id="go">${t('menu.join')}</button>
     </div></div>`;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+  wireInAppNote();
   const go = () => {
     if (!readName()) return;
     if (ws?.readyState !== WebSocket.OPEN) {
@@ -1374,6 +1379,31 @@ function matchStory(result) {
   const lines = rounds.map((r) => `<li><b>${t('round.title', { n: r.round })}</b> ${t('result.roundWinner', { name: htmlName(r.winner) })} <span>${how(r)}</span></li>`).join('');
   const stats = result.ms ? `<p class="sub match-stats">${t('match.stats', { time: mmss(result.ms), slams: result.slams ?? 0 })}</p>` : '';
   return `<ol class="match-story">${lines}</ol>${stats}`;
+}
+
+// Opened inside a social app's browser (Zalo, Messenger, Facebook, Instagram, TikTok, LINE): those can
+// drop saved names and stall sound, so the menus suggest the phone's own browser, with the link to
+// copy; closing the note hides it for the tab.
+const IN_APP = (() => {
+  const ua = navigator.userAgent;
+  const apps = [['Zalo', 'Zalo'], ['Messenger', 'Messenger'], ['MESSENGER', 'Messenger'], ['FBAN', 'Facebook'], ['FBAV', 'Facebook'], ['FB_IAB', 'Facebook'],
+    ['Instagram', 'Instagram'], ['musical_ly', 'TikTok'], ['BytedanceWebview', 'TikTok'], ['TikTok', 'TikTok'], [' Line/', 'LINE']];
+  return apps.find(([mark]) => ua.includes(mark))?.[1] ?? null;
+})();
+function inAppNote() {
+  let closed = false;
+  try { closed = sessionStorage.getItem('slam-inapp-closed') === '1'; } catch { /* storage blocked */ }
+  if (!IN_APP || closed) return '';
+  return `<div class="inapp" id="inapp"><p>${t('inapp.note', { app: escapeHtml(IN_APP) })}</p>
+    <button class="btn" id="inapp-copy">${t('lobby.copy')}</button><button class="x" id="inapp-x" aria-label="${escapeHtml(t('common.close'))}">×</button></div>`;
+}
+function wireInAppNote() {
+  if (!$('inapp')) return;
+  $('inapp-copy').onclick = async () => { $('inapp-copy').textContent = await copyText(location.href) ? t('lobby.copied') : t('lobby.copyManual'); };
+  $('inapp-x').onclick = () => {
+    try { sessionStorage.setItem('slam-inapp-closed', '1'); } catch { /* storage blocked */ }
+    $('inapp').remove();
+  };
 }
 
 // One cream chip per player (UX-02/UX-13): seat colours on the dimmed table were close to 1:1
@@ -1628,7 +1658,7 @@ function renderHud() {
     const out = !state.alive.includes(seat) && ['turn', 'anim'].includes(state.phase);
     const dots = Array.from({ length: ROUNDS_TO_WIN }, (_, i) => `<span class="dot ${i < (state.scores[seat] ?? 0) ? seat : ''}"></span>`).join('');
     return `<div class="chip ${seat}${out ? ' out' : ''}${state.turn === seat ? ' turn' : ''}${social.isMuted(seat) ? ' muted' : ''}" ${seat === me ? '' : `role="button" tabindex="0" aria-label="${escapeHtml(t(social.isMuted(seat) ? 'social.unmuteAria' : 'social.muteAria', { name: nameOf(seat) }))}"`}>
-      <span class="swatch ${seat}"></span><span class="name">${escapeHtml(nameOf(seat))}${seat === me ? ` ${t('hud.meTag')}` : ''}</span><span class="dots">${dots}</span>
+      <span class="swatch ${seat}" aria-hidden="true">${suitOf(seat)}</span><span class="name">${escapeHtml(nameOf(seat))}${seat === me ? ` ${t('hud.meTag')}` : ''}</span><span class="dots">${dots}</span>
     </div>`;
   }).join('');
 }
@@ -1720,7 +1750,7 @@ function updateLabels() {
     const q = card.mesh.quaternion;
     const faceUp = 1 - 2 * (q.x * q.x + q.z * q.z) > 0;
     const owner = seat === me ? t('hud.meTag') : t('card.owner', { name: nameOf(seat) });
-    const text = `${t(y < FALL_Y ? 'card.fallen' : faceUp ? 'card.up' : 'card.down')} ${owner}`;
+    const text = `${suitOf(seat)} ${t(y < FALL_Y ? 'card.fallen' : faceUp ? 'card.up' : 'card.down')} ${owner}`;
     if (el.textContent !== text) el.textContent = text;
     // under the card on screen, clear of its window: below the point a card's half diagonal
     // toward the camera, whichever way the card lies

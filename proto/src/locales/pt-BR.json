@@ -361,5 +361,6 @@
   "gl.lostTitle": "Gráficos pararam",
   "gl.lostBody": "Seu aparelho desligou o 3D do jogo. Recarregue para voltar à mesma sala.",
   "boot.slow": "Demorando demais? Recarregue a página ou use o Chrome ou Safari atualizado!",
+  "inapp.note": "Você está dentro do {app}. Toque em ⋯ e abra no navegador para jogar liso e manter seu nome.",
   "intro.skip": "Toque para pular"
 }

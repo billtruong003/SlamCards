@@ -361,5 +361,6 @@
   "gl.lostTitle": "Grafis terhenti",
   "gl.lostBody": "Perangkatmu mematikan grafis 3D game. Muat ulang untuk kembali ke room yang sama.",
   "boot.slow": "Lama banget? Muat ulang halaman, atau pakai Chrome atau Safari versi terbaru!",
+  "inapp.note": "Kamu membuka di {app}. Ketuk ⋯ lalu buka di browser agar lancar dan namamu tersimpan.",
   "intro.skip": "Ketuk untuk lewati"
 }

@@ -342,17 +342,23 @@ export function createStencilCard(seat, ref) {
 
   // A coloured glow around the edge (setGlow): whose card it is at a glance when names are hidden.
   // Two rings in the card's middle plane, seen from either side: a strong line and a soft halo.
+  // The thick one (the player's own card) is wider too, so it tells apart without colour vision.
   const glowMats = [0.95, 0.35].map((opacity) => new THREE.MeshBasicMaterial({ transparent: true, opacity, side: THREE.DoubleSide, depthWrite: false }));
-  const glow = new THREE.Group();
-  [[0, 0.045], [0.045, 0.12]].forEach(([from, to], i) => {
-    const ring = roundRect(new THREE.Shape(), 0, 0, W / 2 + to, H / 2 + to, CORNER + to);
-    ring.holes.push(roundRect(new THREE.Path(), 0, 0, W / 2 + from, H / 2 + from, CORNER + from));
-    glow.add(new THREE.Mesh(new THREE.ShapeGeometry(ring, 16), glowMats[i]));
-  });
-  glow.visible = false;
-  add('card', glow);
-  function setGlow(color) {
-    glow.visible = Boolean(color);
+  const glowRings = (line, halo) => {
+    const group = new THREE.Group();
+    [[0, line], [line, halo]].forEach(([from, to], i) => {
+      const ring = roundRect(new THREE.Shape(), 0, 0, W / 2 + to, H / 2 + to, CORNER + to);
+      ring.holes.push(roundRect(new THREE.Path(), 0, 0, W / 2 + from, H / 2 + from, CORNER + from));
+      group.add(new THREE.Mesh(new THREE.ShapeGeometry(ring, 16), glowMats[i]));
+    });
+    group.visible = false;
+    return add('card', group);
+  };
+  const glowThin = glowRings(0.045, 0.12);
+  const glowThick = glowRings(0.085, 0.2);
+  function setGlow(color, thick = false) {
+    glowThin.visible = Boolean(color) && !thick;
+    glowThick.visible = Boolean(color) && thick;
     if (color) for (const m of glowMats) m.color.set(color);
   }
 

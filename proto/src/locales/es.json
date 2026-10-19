@@ -361,5 +361,6 @@
   "gl.lostTitle": "Gráficos detenidos",
   "gl.lostBody": "Tu dispositivo apagó el 3D del juego. Recarga para volver a la misma sala.",
   "boot.slow": "¿Tarda demasiado? ¡Recarga la página o usa la versión más reciente de Chrome o Safari!",
+  "inapp.note": "Estás dentro de {app}. Toca ⋯ y abre en tu navegador para jugar fluido y guardar tu nombre.",
   "intro.skip": "Toca para saltar"
 }

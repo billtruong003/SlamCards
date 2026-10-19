@@ -361,5 +361,6 @@
   "gl.lostTitle": "Graphics stopped",
   "gl.lostBody": "Your device switched off the game’s 3D. Reload to get back into the same room.",
   "boot.slow": "Still loading? Reload the page, or try the latest Chrome or Safari!",
+  "inapp.note": "You're inside {app}. Tap ⋯ and open in your browser to play smoothly and keep your name.",
   "intro.skip": "Tap to skip"
 }

@@ -361,5 +361,6 @@
   "gl.lostTitle": "畫面中斷了",
   "gl.lostBody": "裝置關閉了遊戲的3D畫面。重新載入就能回到同一個房間。",
   "boot.slow": "載入太久了？重新整理網頁，或用最新版Chrome、Safari開啟試試！",
+  "inapp.note": "你在{app}裡打開的。點 ⋯ 用瀏覽器打開，更流暢，名字也會保存。",
   "intro.skip": "點擊跳過"
 }
