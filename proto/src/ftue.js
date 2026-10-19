@@ -59,7 +59,8 @@ const pages = () => [
 
 const RULES = [['ok', '✓'], ['bad', '✗'], ['bad', '✗'], ['no', '–'], ['no', '!'], ['no', '!']];
 
-export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
+// track(name): a first-steps moment for the server's counts (server/metrics.js CLIENT_EVENTS).
+export function createFtue({ send, track = () => {}, world, touch, toastVisible, hidePanels }) {
   const PAGES = pages();
   const disabled = new URLSearchParams(location.search).has('noftue');
   let seen = saved.get('slam-ftue') === 'seen';
@@ -137,6 +138,7 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
   }
 
   function openTutorial(at = 0) {
+    track('tutorialOpened');
     remember();
     resumeAt = null;
     helpButton.classList.remove('dot');
@@ -148,9 +150,15 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
 
   modal.querySelector('.ftue-next').onclick = () => {
     if (page < STEPS - 1) showPage(page + 1);
-    else closeModal();
+    else {
+      track('tutorialDone');
+      closeModal();
+    }
   };
-  modal.querySelector('.ftue-skip').onclick = closeModal;
+  modal.querySelector('.ftue-skip').onclick = () => {
+    track('tutorialSkipped');
+    closeModal();
+  };
 
   // The match started while the steps were open: put them away behind "?" and say where they went.
   function stashTutorial() {
@@ -165,7 +173,10 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
   }
 
   function toggleHelp(open = help.hidden) {
-    if (open) hidePanels();
+    if (open) {
+      hidePanels();
+      track('rulesOpened');
+    }
     help.hidden = !open;
     $('ftue-bubble').hidden = true;
     $('help-replay').textContent = resumeAt !== null ? t('rules.resume', { n: resumeAt + 1, total: STEPS }) : t('rules.replay');
@@ -201,6 +212,7 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
     $('ftue-yes').onclick = () => openTutorial(0);
     // "Already know how": no first-turn pointer and no tips either (UX-06), same as after three matches.
     $('ftue-no').onclick = () => {
+      track('tutorialDeclined');
       remember();
       matches = Math.max(matches, TIP_MATCHES);
       saved.set('slam-ftue-matches', String(matches));
@@ -266,6 +278,7 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
       pointerDone = false;
     }
     if (entered === 'matchEnd') {
+      if (matches === 0) track('firstMatch');
       matches += 1;
       saved.set('slam-ftue-matches', String(matches));
     }
@@ -311,7 +324,11 @@ export function createFtue({ send, world, touch, toastVisible, hidePanels }) {
 
   function onSlam() {
     pointerDone = true;
-    if (!slammedOnce) { slammedOnce = true; saved.set('slam-ftue-slammed', '1'); }
+    if (!slammedOnce) {
+      slammedOnce = true;
+      saved.set('slam-ftue-slammed', '1');
+      track('firstSlam');
+    }
     point.hidden = true;
   }
 

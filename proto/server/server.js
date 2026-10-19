@@ -10,6 +10,7 @@ import { cleanName, cleanChat } from './names.js';
 import { withMeta } from './meta.js';
 import { adsConfig, adsFileClient, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
+import * as metrics from './metrics.js';
 import { startAdmin } from './ops.js';
 import { createSlamCheck } from './slam-check.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
@@ -327,11 +328,27 @@ function startMatch(room) {
   room.ready = {};
   room.timeouts = Object.fromEntries(room.seats.map((s) => [s, 0]));
   room.nextFirst = null;
+  // for metrics.js: how long the match runs, how many slams, who sits out waiting
+  room.startedAt = Date.now();
+  room.slamCount = 0;
+  room.outAt = {};
   log(room, `match start with ${room.seats.length} players (${room.kind})`);
   startRound(room);
 }
 
+// Knocked out mid-round: the wait until the next round (or the end) is counted, for players still here.
+function markOut(room, seats) {
+  for (const seat of seats) if (room.players[seat]?.connected) room.outAt[seat] ??= Date.now();
+}
+function countOutWaits(room) {
+  for (const [seat, at] of Object.entries(room.outAt ?? {})) {
+    if (room.players[seat]?.connected && !room.players[seat].left) metrics.outWait(Date.now() - at);
+  }
+  room.outAt = {};
+}
+
 function startRound(room) {
+  countOutWaits(room);
   room.slam = null;
   room.round += 1;
   room.alive = room.seats.filter((s) => !room.players[s].left);
@@ -470,6 +487,7 @@ function startSlam(room, impact, type) {
   room.passStreak[by] = 0;
   room.timeouts[by] = 0;
   const watchers = Object.entries(room.players).filter(([s, p]) => s !== by && p.connected).map(([s]) => s);
+  room.slamCount += 1;
   room.slam = {
     by, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers),
     check: createSlamCheck({ seats: room.seats, start: room.cards, impact }),
@@ -507,6 +525,7 @@ function endSlam(room, final) {
   }
   slam.ended = true;
   slam.result = judge(final, slam.by, room.alive);
+  metrics.slam(slam.result?.reason ?? 'none');
   const cards = { ...final };
   for (const seat of slam.result?.restore ?? []) cards[seat] = slam.previous[seat];
   for (const seat of slam.result?.eliminated ?? []) cards[seat] = PARKED;
@@ -526,6 +545,7 @@ function finishSlam(room) {
   const result = slam.result;
   if (result) {
     room.alive = room.alive.filter((s) => !result.eliminated.includes(s));
+    markOut(room, result.eliminated);
     room.firstOut ??= result.eliminated[0];
     room.event = { type: result.reason, by: slam.by, eliminated: result.eliminated };
   }
@@ -547,6 +567,7 @@ function finishSlam(room) {
 function abortSlam(room, why) {
   const { slam } = room;
   log(room, `slam by ${slam.by} ${why}, reverting`);
+  metrics.slam(why.startsWith('refused') ? 'refused' : 'aborted');
   room.cards = parkInactive(room, { ...slam.previous });
   room.slam = null;
   sendAll(room, { t: 'playAbort' });
@@ -570,6 +591,11 @@ function endRound(room, result) {
 
 function endMatch(room, winner, reason = 'score') {
   clearTimeout(room.timer);
+  countOutWaits(room);
+  if (room.startedAt) {
+    metrics.matchEnd({ players: room.seats.length, ms: Date.now() - room.startedAt, rounds: room.round, slams: room.slamCount, reason });
+    room.startedAt = 0;
+  }
   room.slam = null;
   room.phase = 'matchEnd';
   room.deadline = 0;
@@ -717,6 +743,13 @@ function handle(ws, msg) {
 
   if (msg.t === 'hello') {
     refs.hello(ws, msg);
+    if (msg.age !== undefined) metrics.active(ws, msg.age);
+    return;
+  }
+
+  // A moment in a player's first steps (metrics.js CLIENT_EVENTS), counted once per connection.
+  if (msg.t === 'event') {
+    metrics.clientEvent(ws, msg.name);
     return;
   }
 
@@ -991,7 +1024,10 @@ function sendEveryone(msg) {
 
 function drain(ms) {
   draining = { until: Date.now() + ms };
-  for (const e of queue.splice(0)) send(e.ws, { t: 'error', code: 'maintenance', message: 'Sắp bảo trì, chưa mở trận mới.' });
+  for (const e of [...queue]) {
+    leaveQueue(e.ws);
+    send(e.ws, { t: 'error', code: 'maintenance', message: 'Sắp bảo trì, chưa mở trận mới.' });
+  }
   anyCountdownAt = 0;
   sendEveryone(maintenanceMessage());
   console.log(`[ops] draining, restart in about ${Math.round(ms / 60000)} min; ${status().playing} matches in play`);
@@ -1028,7 +1064,7 @@ function status() {
   };
 }
 
-startAdmin({ port: ADMIN_PORT, status, drain, undrain });
+startAdmin({ port: ADMIN_PORT, status, drain, undrain, metrics: (days) => ({ refs: refs.recent(days), play: metrics.recent(days) }) });
 
 // ---------- quick match ----------
 // A waiting player asks for 'any' (2-4) or an exact size. Exact sizes fill first, topped up with
@@ -1038,24 +1074,30 @@ startAdmin({ port: ADMIN_PORT, status, drain, undrain });
 const queue = []; // { ws, asked: askedName(), name, dep, look, size: 'any' | 2 | 3 | 4, at }
 let anyCountdownAt = 0;
 
+// Asking again (another size) keeps the place in time: the wait goes on, it does not restart.
 function joinQueue(ws, msg) {
-  leaveQueue(ws);
+  const previous = leaveQueue(ws, null);
   const size = [2, 3, 4].includes(msg.size) ? msg.size : 'any';
   const look = cleanLook(msg.look ?? { dep: msg.dep });
   const asked = askedName(msg.name);
-  queue.push({ ws, asked, name: asked.name, dep: look.dep, look, size, at: Date.now() });
+  queue.push({ ws, asked, name: asked.name, dep: look.dep, look, size, at: previous?.at ?? Date.now() });
   matchQueue();
 }
 
-function leaveQueue(ws) {
+// Takes a socket out of the queue. `outcome` ('left' or 'matched') counts how long it waited
+// (metrics.js); null for a socket only changing what it asked for.
+function leaveQueue(ws, outcome = 'left') {
   const i = queue.findIndex((e) => e.ws === ws);
-  if (i >= 0) queue.splice(i, 1);
+  if (i < 0) return null;
+  const [entry] = queue.splice(i, 1);
+  if (outcome) metrics.queueLeft(Date.now() - entry.at, outcome === 'matched');
+  return entry;
 }
 
 function startQuickRoom(entries) {
   const room = newRoom({ kind: 'quick', cap: entries.length });
   entries.forEach((e, i) => {
-    leaveQueue(e.ws);
+    leaveQueue(e.ws, 'matched');
     const seat = SEATS[i];
     const player = makePlayer(room, seat, e.asked, { look: e.look });
     refs.joined(e.ws);
@@ -1068,7 +1110,7 @@ function startQuickRoom(entries) {
 }
 
 function matchQueue() {
-  for (let i = queue.length - 1; i >= 0; i--) if (queue[i].ws.readyState !== queue[i].ws.OPEN) queue.splice(i, 1);
+  for (const e of queue.filter((q) => q.ws.readyState !== q.ws.OPEN)) leaveQueue(e.ws);
   const any = queue.filter((e) => e.size === 'any');
   // exact sizes, biggest first, topped up with 'any'
   for (const n of [4, 3, 2]) {
@@ -1168,6 +1210,7 @@ setInterval(() => {
 for (const signal of ['SIGINT', 'SIGTERM']) {
   process.once(signal, () => {
     refs.save();
+    metrics.save();
     process.exit(0);
   });
 }

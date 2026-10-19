@@ -168,6 +168,7 @@ els.flat.innerHTML = TOUCH ? t('turn.flat') : `${t('turn.flat')}<span class="key
 els.tilt.innerHTML = TOUCH ? t('turn.tilt') : `${t('turn.tilt')}<span class="keyhint"> · E</span>`;
 const ftue = createFtue({
   send,
+  track: (name) => send({ t: 'event', name }),
   world,
   touch: TOUCH,
   toastVisible: () => !els.toast.hidden,

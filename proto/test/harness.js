@@ -1,5 +1,8 @@
 // Shared helpers for end-to-end tests: a real server process plus simulated WebSocket players.
 import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import WebSocket from 'ws';
@@ -13,7 +16,9 @@ export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export async function startServer(timing = {}, env = {}) {
   const port = nextPort++;
-  const proc = spawn(process.execPath, [SERVER], { env: { ...process.env, ...env, PORT: String(port), SLAM_TIMING: JSON.stringify({ ...FAST, ...timing }) } });
+  // counts (refs.json, metrics.json) go to a folder of the test's own, never to proto/data
+  const data = env.SLAM_DATA ?? process.env.SLAM_DATA ?? fs.mkdtempSync(path.join(os.tmpdir(), 'slam-test-'));
+  const proc = spawn(process.execPath, [SERVER], { env: { ...process.env, ...env, SLAM_DATA: data, PORT: String(port), SLAM_TIMING: JSON.stringify({ ...FAST, ...timing }) } });
   let output = '';
   proc.stdout.on('data', (d) => { output += d; });
   proc.stderr.on('data', (d) => { output += d; });
