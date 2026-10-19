@@ -13,6 +13,7 @@ import * as refs from './refs.js';
 import * as metrics from './metrics.js';
 import { startAdmin } from './ops.js';
 import { createSlamCheck } from './slam-check.js';
+import { botName, botLook, chooseAim, thinkMs, quickMs } from './bots.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
 const PORT = Number(process.env.PORT) || 8097;
@@ -46,6 +47,7 @@ const TIMING = {
   quickStart: 1200,      // quick match: room made, then the first round starts
   anyCountdown: 5000,    // quick match "any": 2 found, then wait this long for more
   queueFlex: 15000,      // a player waiting for an exact size takes any table after this long
+  botAfter: 20000,       // a player still alone in the queue after this long plays with computer players
   queueTick: 400,
 };
 // Tests shorten the clock: SLAM_TIMING='{"turn":500}'.
@@ -145,6 +147,12 @@ function makePlayer(room, seat, asked, msg) {
   };
 }
 
+// A computer player for a seat: a kid's nickname, its own gear, a steadiness of hand of its own.
+function makeBot(room, seat) {
+  const player = makePlayer(room, seat, { name: botName(), blocked: false }, { look: botLook() });
+  return Object.assign(player, { bot: true, connected: true, skill: 0.3 + Math.random() * 0.5 });
+}
+
 // Two players with the same name get a number: "Tí vô danh", "Tí vô danh 2".
 function uniqueName(room, name) {
   const taken = new Set(Object.values(room.players).map((p) => p.name));
@@ -201,6 +209,9 @@ function send(ws, msg) {
 }
 
 const connectedSeats = (room) => room.seats.filter((s) => room.players[s]?.connected);
+// Computer players (bots.js) count as connected players at the table; these helpers ask about people.
+const isBot = (room, seat) => Boolean(room.players[seat]?.bot);
+const peopleIn = (room) => Object.keys(room.players).filter((s) => !room.players[s].bot && !room.players[s].left);
 
 function publicState(room, you) {
   return {
@@ -341,7 +352,7 @@ function startMatch(room) {
 
 // Knocked out mid-round: the wait until the next round (or the end) is counted, for players still here.
 function markOut(room, seats) {
-  for (const seat of seats) if (room.players[seat]?.connected) room.outAt[seat] ??= Date.now();
+  for (const seat of seats) if (room.players[seat]?.connected && !isBot(room, seat)) room.outAt[seat] ??= Date.now();
 }
 function countOutWaits(room) {
   for (const [seat, at] of Object.entries(room.outAt ?? {})) {
@@ -376,6 +387,7 @@ function startRps(room) {
     revealRps(room);
   });
   broadcast(room);
+  driveBots(room);
 }
 
 const BEATS = { bua: 'keo', keo: 'bao', bao: 'bua' };
@@ -392,6 +404,7 @@ function revealRps(room) {
     room.phase = 'choose';
     schedule(room, TIMING.choose, () => beginTurns(room, room.rpsWinner));
     broadcast(room);
+    driveBots(room);
   });
   broadcast(room);
 }
@@ -432,6 +445,7 @@ function startTurn(room) {
   room.wind = newWind();
   scheduleTurnEnd(room, TIMING.turn);
   broadcast(room);
+  driveBots(room);
 }
 
 // A player who is offline gets a short turn, so the table doesn't wait 30 s (40 s when forced)
@@ -488,24 +502,89 @@ function eliminateAfk(room, seat) {
 // resting state. Everyone else replays it live; the result applies once they have watched it.
 // The slammer gets where the slipper really landed and the seed of the spin luck (slamGo), and runs
 // the physics; every frame it streams is checked (slam-check.js) before the others see it.
+// A computer player's slam is simulated by one of the people at the table (simSlam): the server
+// still picks the landing point and the luck, and checks every frame like any other slam.
+function pickSimulator(room) {
+  const people = Object.keys(room.players).filter((s) => !isBot(room, s) && room.players[s].ws?.readyState === room.players[s].ws?.OPEN && room.players[s].connected);
+  return people.length ? people[crypto.randomInt(people.length)] : null;
+}
+
 function startSlam(room, impact, type) {
   const by = room.turn;
-  log(room, `slam start by ${by}`);
+  const sim = isBot(room, by) ? pickSimulator(room) : by; // whose browser runs the physics
+  if (!sim) {
+    registerPass(room, impact); // nobody here to run it: the bot's slap lands on nothing
+    return;
+  }
+  log(room, `slam start by ${by}${sim === by ? '' : ` (simulated by ${sim})`}`);
   room.passStreak[by] = 0;
   room.timeouts[by] = 0;
-  const watchers = Object.entries(room.players).filter(([s, p]) => s !== by && p.connected).map(([s]) => s);
+  const watchers = Object.entries(room.players).filter(([s, p]) => s !== sim && p.connected && !p.bot).map(([s]) => s);
   room.slamCount += 1;
   room.slam = {
-    by, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers),
+    by, sim, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers),
     check: createSlamCheck({ seats: room.seats, start: room.cards, impact }),
   };
   room.phase = 'anim';
   room.event = null;
   const slamType = type === 'tilt' ? 'tilt' : 'flat';
-  send(room.players[by].ws, { t: 'slamGo', impact, type: slamType, seed: crypto.randomInt(2 ** 31) });
-  for (const p of others(room, by)) send(p.ws, { t: 'playStart', by, impact, type: slamType });
+  const go = { impact, type: slamType, seed: crypto.randomInt(2 ** 31) };
+  send(room.players[sim].ws, sim === by ? { t: 'slamGo', ...go } : { t: 'simSlam', by, ...go });
+  for (const p of others(room, sim)) send(p.ws, { t: 'playStart', by, impact, type: slamType });
   schedule(room, TIMING.slamMaxMs, () => abortSlam(room, 'never finished'));
   broadcast(room);
+}
+
+// The browser running a slam's physics is gone: no more frames will come, so the slam is called off
+// now instead of after slamMaxMs.
+function callOffSimulatedSlam(room, seat) {
+  if (isLive(room) && room.slam?.sim === seat && !room.slam.ended) abortSlam(room, 'simulator left');
+}
+
+// A computer player's turn: think a few seconds, then slap where bots.js says.
+function botSlam(room, seat) {
+  const pick = chooseAim({ cards: room.cards, alive: room.alive, seat, forced: room.passStreak[seat] >= 1, skill: room.players[seat].skill });
+  const aim = pick && cleanImpact(room, seat, pick.aim);
+  if (!aim || onACard(room, aim)) {
+    const card = room.cards[seat].p;
+    registerPass(room, { x: card[0], z: card[2] }); // boxed in: a pass, never an idle timeout
+    return;
+  }
+  startSlam(room, shakeHand(room, aim), pick.type);
+}
+
+// The computer players' moves, scheduled whenever the game reaches a point where one may act (one
+// timer per room; a newer point replaces it, and each move checks the moment is still the same).
+function driveBots(room) {
+  clearTimeout(room.botTimer);
+  const act = (ms, fn) => { room.botTimer = later(`[${room.code}] bot`, ms, () => { if (isLive(room)) fn(); }); };
+  if (room.phase === 'rps') {
+    const picking = room.alive.filter((s) => isBot(room, s) && !room.rps[s]);
+    if (picking.length) {
+      act(quickMs(), () => {
+        if (room.phase !== 'rps') return;
+        for (const s of picking) room.rps[s] ??= ['bua', 'keo', 'bao'][crypto.randomInt(3)];
+        if (room.alive.every((s) => room.rps[s])) revealRps(room);
+        else broadcast(room);
+      });
+    }
+  } else if (room.phase === 'choose' && isBot(room, room.rpsWinner)) {
+    act(quickMs(), () => {
+      if (room.phase === 'choose') beginTurns(room, Math.random() < 0.65 ? room.rpsWinner : room.alive.find((s) => s !== room.rpsWinner));
+    });
+  } else if (room.phase === 'turn' && isBot(room, room.turn)) {
+    const { turn: seat, round } = room;
+    act(thinkMs(TIMING.turn), () => { if (room.phase === 'turn' && room.turn === seat && room.round === round) botSlam(room, seat); });
+  } else if (room.phase === 'matchEnd') {
+    const bots = room.seats.filter((s) => isBot(room, s) && !room.rematch[s]);
+    if (bots.length) {
+      act(quickMs() + 1500, () => {
+        if (room.phase !== 'matchEnd') return;
+        for (const s of bots) room.rematch[s] = true;
+        tryRematch(room);
+      });
+    }
+  }
 }
 
 function relayChunk(room, frames) {
@@ -520,7 +599,7 @@ function relayChunk(room, frames) {
   const text = JSON.stringify({ t: 'playChunk', frames });
   // an offline seat has ws === null; `undefined === undefined` used to let it through and throw,
   // which also cut the relay for every player after it
-  for (const p of others(room, room.slam.by)) if (p.ws && p.ws.readyState === p.ws.OPEN) p.ws.send(text);
+  for (const p of others(room, room.slam.sim)) if (p.ws && p.ws.readyState === p.ws.OPEN) p.ws.send(text);
 }
 
 function endSlam(room, final) {
@@ -539,7 +618,7 @@ function endSlam(room, final) {
   room.cards = parkInactive(room, cards);
   const peak = slam.check.stats();
   log(room, `slam end by ${slam.by}, ${slam.frames} frames, peak step ${peak.step.toFixed(3)} turn ${peak.turn.toFixed(3)}, result=${slam.result ? `${slam.result.reason}:${slam.result.eliminated}` : 'none'}`);
-  for (const p of others(room, slam.by)) send(p.ws, { t: 'playEnd', final });
+  for (const p of others(room, slam.sim)) send(p.ws, { t: 'playEnd', final });
   for (const s of [...slam.waiting]) if (!room.players[s]?.connected) slam.waiting.delete(s);
   if (!slam.waiting.size) finishSlam(room);
   else schedule(room, TIMING.watchMaxMs, () => finishSlam(room));
@@ -602,7 +681,7 @@ function endMatch(room, winner, reason = 'score') {
   countOutWaits(room);
   const ms = room.startedAt ? Date.now() - room.startedAt : 0;
   if (room.startedAt) {
-    metrics.matchEnd({ players: room.seats.length, ms, rounds: room.round, slams: room.slamCount, reason });
+    metrics.matchEnd({ players: room.seats.length, bots: room.seats.filter((s) => isBot(room, s)).length, ms, rounds: room.round, slams: room.slamCount, reason });
     room.startedAt = 0;
   }
   room.slam = null;
@@ -610,6 +689,7 @@ function endMatch(room, winner, reason = 'score') {
   room.deadline = 0;
   room.result = { ...room.result, matchWinner: winner, matchReason: reason, history: room.history ?? [], ms, slams: room.slamCount ?? 0 };
   broadcast(room);
+  driveBots(room);
 }
 
 // The only way a seat leaves room.players: its pending timers go with it, so nothing fires later
@@ -630,7 +710,7 @@ function dropPlayer(room, seat) {
   if (!player) return;
   if (room.phase === 'lobby') {
     removePlayer(room, seat);
-    if (!Object.keys(room.players).length) closeRoom(room);
+    if (!peopleIn(room).length) closeRoom(room);
     else {
       passHost(room);
       broadcast(room);
@@ -638,8 +718,13 @@ function dropPlayer(room, seat) {
     return;
   }
   player.left = true;
+  // only computer players left: nobody to play for
+  if (!peopleIn(room).length) {
+    closeRoom(room);
+    return;
+  }
   if (room.phase === 'matchEnd') {
-    if (!connectedSeats(room).length) closeRoom(room);
+    if (!connectedSeats(room).some((s) => !isBot(room, s))) closeRoom(room);
     return;
   }
   const stillIn = room.seats.filter((s) => !room.players[s].left);
@@ -687,6 +772,7 @@ function allReady(room) {
 
 function closeRoom(room) {
   clearTimeout(room.timer);
+  clearTimeout(room.botTimer);
   for (const player of Object.values(room.players)) clearTimeout(player.discTimer);
   if (isLive(room)) rooms.delete(room.code);
 }
@@ -738,9 +824,12 @@ function detach(ws, { leaving = false } = {}) {
   // left on purpose (the leave button, or off to another room or the queue): the seat goes at
   // once, in a lobby or a match, instead of after the grace period for a lost connection
   if (leaving) {
-    dropPlayer(room, seat);
+    dropPlayer(room, seat); // out first: their own slam is called off as they go
+    callOffSimulatedSlam(room, seat);
     return;
   }
+  // the connection is gone but the seat waits for them: a slam their browser was running is called off
+  callOffSimulatedSlam(room, seat);
   broadcast(room);
   const grace = room.phase !== 'lobby' ? TIMING.disconnect : seat === room.host ? TIMING.lobbyHostDisconnect : TIMING.lobbyDisconnect;
   clearTimeout(player.discTimer);
@@ -990,7 +1079,7 @@ function handle(ws, msg) {
     return;
   }
 
-  const slamming = room.phase === 'anim' && room.slam && !room.slam.ended && room.slam.by === seat;
+  const slamming = room.phase === 'anim' && room.slam && !room.slam.ended && room.slam.sim === seat;
   if (msg.t === 'slamChunk' && slamming && Array.isArray(msg.frames)) {
     relayChunk(room, msg.frames);
     return;
@@ -1009,13 +1098,18 @@ function handle(ws, msg) {
 
   if (msg.t === 'rematch' && room.phase === 'matchEnd') {
     room.rematch[seat] = true;
-    const ready = connectedSeats(room);
-    if (ready.length >= 2 && ready.every((s) => room.rematch[s])) {
-      for (const s of Object.keys(room.players)) if (!room.players[s].connected || room.players[s].left) removePlayer(room, s);
-      startMatch(room);
-    } else {
-      broadcast(room);
-    }
+    tryRematch(room);
+  }
+}
+
+// Everyone still at the table said rematch (computer players say it by themselves): a new match.
+function tryRematch(room) {
+  const ready = connectedSeats(room);
+  if (ready.length >= 2 && ready.some((s) => !isBot(room, s)) && ready.every((s) => room.rematch[s])) {
+    for (const s of Object.keys(room.players)) if (!room.players[s].connected || room.players[s].left) removePlayer(room, s);
+    startMatch(room);
+  } else {
+    broadcast(room);
   }
 }
 
@@ -1072,7 +1166,7 @@ const inPlay = (room) => (room.phase === 'lobby' ? room.kind === 'quick' : room.
 
 function status() {
   const all = [...rooms.values()];
-  const players = all.reduce((n, r) => n + Object.values(r.players).filter((p) => p.connected).length, 0);
+  const players = all.reduce((n, r) => n + Object.values(r.players).filter((p) => p.connected && !p.bot).length, 0);
   return {
     boot: BOOT,
     build: BUILD,
@@ -1120,8 +1214,8 @@ function leaveQueue(ws, outcome = 'left') {
   return entry;
 }
 
-function startQuickRoom(entries) {
-  const room = newRoom({ kind: 'quick', cap: entries.length });
+function startQuickRoom(entries, bots = 0) {
+  const room = newRoom({ kind: 'quick', cap: entries.length + bots });
   entries.forEach((e, i) => {
     leaveQueue(e.ws, 'matched');
     const seat = SEATS[i];
@@ -1131,7 +1225,9 @@ function startQuickRoom(entries) {
     room.joinOrder.push(seat);
     attach(e.ws, room, seat, player);
   });
-  log(room, `quick match for ${entries.length}`);
+  for (let i = entries.length; i < entries.length + bots; i++) room.players[SEATS[i]] = makeBot(room, SEATS[i]);
+  room.joinOrder.push(...SEATS.slice(entries.length, entries.length + bots));
+  log(room, `quick match for ${entries.length}${bots ? ` + ${bots} bots` : ''}`);
   schedule(room, TIMING.quickStart, () => startMatch(room));
 }
 
@@ -1168,6 +1264,14 @@ function matchQueue() {
     }
   } else {
     anyCountdownAt = 0;
+  }
+  // Alone in the queue for botAfter: computer players fill a table of the size asked for (two of
+  // three for "any"), so nobody waits forever on a quiet evening. People are always matched first.
+  if (queue.length === 1 && now - queue[0].at >= TIMING.botAfter) {
+    const [e] = queue;
+    const size = e.size === 'any' ? 2 + crypto.randomInt(2) : e.size;
+    startQuickRoom([e], size - 1);
+    return;
   }
   // tell each waiting player who would come with them
   for (const e of queue) {

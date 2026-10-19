@@ -3,7 +3,7 @@
 //
 // Measured here, so exact:
 //   queue    { matched | left: { '<5': n, '5-15': n, ... } }   seconds in the quick-match queue
-//   matches  { '2p': { n, minutes: {...}, rounds: {...}, slams: n, ends: { score | disconnect } } }
+//   matches  { '2p': { n, withBots, minutes: {...}, rounds: {...}, slams: n, ends: { score | disconnect } } }
 //   slams    { none | capture | fall | refused | aborted }
 //   outWait  { '<15': n, ... }   seconds a knocked-out player waited for the next round or the end
 // Reported by clients (a whitelist, each at most once per connection):
@@ -36,9 +36,10 @@ export function outWait(ms) {
 }
 
 // A match that reached its end screen: table size, length, rounds played, slams, why it ended.
-export function matchEnd({ players, ms, rounds, slams, reason }) {
+export function matchEnd({ players, bots = 0, ms, rounds, slams, reason }) {
   const size = `${players}p`;
   store.bump(['matches', size, 'n']);
+  if (bots) store.bump(['matches', size, 'withBots']);
   store.bump(['matches', size, 'minutes', bucket(ms / 60000, MINUTE_EDGES)]);
   store.bump(['matches', size, 'rounds', String(rounds)]);
   store.bump(['matches', size, 'slams'], slams);

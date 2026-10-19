@@ -175,7 +175,8 @@ test('D2: an aborted slam does not bring back a dropped player card', async () =
     await watcher.next((m) => m.t === 'playStart');
     slammer.close();
     await watcher.next((m) => m.t === 'playAbort', 4000);
-    const after = await watcher.waitState((s) => s.phase === 'turn' && s.turn !== turn);
+    // the slam is called off at once; the slammer's seat goes when their grace period runs out
+    const after = await watcher.waitState((s) => s.phase === 'turn' && s.turn !== turn && !s.alive.includes(turn), 4000);
     assert.ok(!after.alive.includes(turn));
     assert.equal(after.cards[turn].p[1], -50);
   } finally { srv.stop(); }

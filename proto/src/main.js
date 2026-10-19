@@ -679,6 +679,8 @@ function onMessage(msg) {
       playback.final = msg.final;
       playback.ended = true;
     }
+  } else if (msg.t === 'simSlam') {
+    simulateFor(msg);
   } else if (msg.t === 'slamGo') {
     onSlamGo(msg);
   } else if (msg.t === 'slamRefused' || msg.t === 'playAbort') {
@@ -1926,6 +1928,24 @@ function beginSlam(pending) {
   }, TUNE.hitstopMs);
 }
 
+// Another seat's slam whose physics runs here (a computer player's, server.js startSlam): the same
+// as the player's own slam once the server's answer is in, streamed the same way, for that seat.
+function simulateFor(msg) {
+  if (sim || playback) return;
+  const impact = new THREE.Vector3(msg.impact.x, 0, msg.impact.z);
+  petsRun();
+  visuals.dropDep(impact, () => {
+    const effects = world.slamEffects(impact, msg.type);
+    const strength = effects.length ? Math.max(...effects.map((e) => e.strength)) : 0.25;
+    impactFx(impact, strength, 0.5 + strength * 0.5);
+    popText(impact, t('card.pop'));
+    setTimeout(() => {
+      world.applySlam(impact, msg.type, seededRandom(msg.seed));
+      sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, impact: msg.impact, type: msg.type, by: msg.by };
+    }, TUNE.hitstopMs);
+  }, depOf(msg.by), depColorsOf(msg.by));
+}
+
 function autoSlam() {
   if (!state || state.phase !== 'turn' || state.turn !== me || sim || playback || pendingSlam) return;
   const mine = world.cards[me].mesh.position;
@@ -1966,7 +1986,7 @@ function stepSim(now) {
   if (!local) {
     flushChunk();
     send({ t: 'slamEnd', final });
-    lastSlamStats = slamStats(sim.frames, me);
+    lastSlamStats = slamStats(sim.frames, sim.by ?? me);
   }
   for (const seat of state?.alive ?? []) world.react(seat, 'idle');
   sim = null;

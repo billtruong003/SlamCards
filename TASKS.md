@@ -82,7 +82,7 @@ Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1t
 Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
 
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
-Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.31 bot (1.11 chờ mockup).
+Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.32 (1.11 chờ mockup).
 - [x] ~~**1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S~~
 - [x] ~~**1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S~~
 - [x] ~~**1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)~~
@@ -104,7 +104,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [x] ~~**1.19** Màn mời ghi ai rủ và phòng có mấy người (F-16) — S~~
 - [x] ~~**1.20** Tương thích: Samsung Internet tối, trình duyệt Zalo/Messenger/Facebook/TikTok, iOS 15, ký hiệu ghế mù màu, giảm chuyển động — M~~ Không có máy thật Samsung/iPhone: sửa theo nguyên nhân đã biết + kiểm bằng `qa/compat-check.mjs` (giả lập Zalo, chế độ tối, giảm chuyển động)
 - [x] ~~**1.30** Hàng chờ không bị chia nhỏ (chờ quá 15 giây thì ghép bàn bất kỳ, có dòng báo), bỏ nút "Chơi luôn n người", màn chờ không vẽ lại mỗi giây (V-18, V-19)~~ Đã kiểm trên trình duyệt
-- [ ] **1.31** Bot trông như người thật sau 15 giây chờ (nghĩ 3–12 giây, có lúc lệch/rớt bài), không lên bảng điểm, thêm dòng vào chính sách riêng tư — L
+- [x] ~~**1.31** Bot trông như người thật sau 15 giây chờ (nghĩ 3–12 giây, có lúc lệch/rớt bài), không lên bảng điểm, thêm dòng vào chính sách riêng tư — L~~ Vật lý cú đập của bot chạy nhờ trên máy một người trong bàn (không tốn CPU server), vẫn qua bộ kiểm 1.07. Kiểm bằng `qa/bot-match.mjs`: trận thật với bot, 12 cú đập của bot, 0 bị chặn. Bot thêm/xoá trong phòng bạn làm ở 1.36
 - [ ] **1.32** Người bị loại: Xem tiếp / Rời / Tìm trận mới, báo round sau vào lại; Chơi ngay rời thì bot thay chỗ (UC-05) — M
 - [ ] **1.33** Lượt 15–20 giây ở bàn 3–4 người; ~~treo máy bị loại sau 2 lần hết giờ~~ (xong ở 1.09, mọi phòng); đếm theo round (V-21, V-22) — S
 - [ ] **1.34** Ăn bài dễ hơn, giảm tự làm rớt bài theo số đo; bàn 3 người cân đối; đo lại (V-27, V-08) — M
