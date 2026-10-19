@@ -9,6 +9,10 @@
     "max": 20,
     "id": "A1"
   },
+  "logo.ribbon": {
+    "where": "Ribbon under the game logo: the game's other name. Keep FLIP FLOP SLAM (the global brand) unless the logo itself already says it in your language",
+    "max": 22
+  },
   "menu.tagline": {
     "where": "Line under the logo: what the game is, how many players",
     "max": 40,
@@ -455,6 +459,10 @@
     "where": "Sound panel checkbox",
     "max": 34,
     "id": "Tampilkan reaksi pemain lain"
+  },
+  "settings.showNames": {
+    "where": "Settings checkbox: show player names under the cards on the table; when off, the player's own card outline glows green and the opponents' glow red",
+    "max": 80
   },
   "social.invite": {
     "where": "Lobby main button: invite friends (share sheet on phones)",
@@ -1618,6 +1626,18 @@
     "where": "Screen-reader label of the \"?\" corner button",
     "max": 15,
     "id": "I19"
+  },
+  "corner.leave": {
+    "where": "Corner button with a door icon: leave the room or the match now (the others play on)",
+    "max": 8
+  },
+  "corner.leaveConfirm": {
+    "where": "The same button after a first tap: tap again within 3 s to really leave",
+    "max": 14
+  },
+  "corner.leaveAria": {
+    "where": "Screen-reader label of the leave button",
+    "max": 40
   },
   "corner.info": {
     "where": "Corner button that opens the info panel",

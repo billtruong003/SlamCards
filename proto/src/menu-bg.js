@@ -5,7 +5,7 @@ import { PETS, CARD_COLORS, CARD_COLOR_IDS } from './catalog.js';
 
 // The new cards (pet window face, colour back), drawn in CSS like the tutorial pictures.
 const pick = (list) => list[Math.floor(Math.random() * list.length)];
-// absolute: a relative url() inside a custom property resolves against the stylesheet, not the page
+// absolute: a relative url() inside a custom property resolves against the page, not the stylesheet
 const petUrl = () => `url(${new URL(`pets/thumbs/${pick(PETS)}.png`, document.baseURI).href})`;
 function dress(el, i) {
   const c = CARD_COLORS[CARD_COLOR_IDS[i % CARD_COLOR_IDS.length]];

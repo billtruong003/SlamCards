@@ -17,7 +17,11 @@ const saved = {
   set(key, value) { memory[key] = value; try { localStorage.setItem(key, value); } catch { /* private mode */ } },
 };
 
-const card = (cls, x, y, r = 0, s = 0.44, extra = '') => `<i class="fa-c ${cls}${extra}" style="left:${x}px;top:${y}px;--r:${r}deg;--s:${s}"></i>`;
+// The pet in a card's window, as a full address: a relative url() inside a custom property resolves
+// against the page, so under /slam-cards/ the stylesheet's own path missed and the cards were empty.
+const thumb = (pet) => `url(${new URL(`pets/thumbs/${pet}.png`, document.baseURI).href})`;
+const PET_OF = { b: 'cat', p: 'panda' }; // bf/bb: my pink cat card, pf/pb: the blue panda one
+const card = (cls, x, y, r = 0, s = 0.44, extra = '') => `<i class="fa-c ${cls}${extra}" style="left:${x}px;top:${y}px;--r:${r}deg;--s:${s};--pet:${thumb(PET_OF[cls[0]])}"></i>`;
 const label = (x, y, text) => `<span class="fa-lbl" style="left:${x}px;top:${y}px">${text}</span>`;
 const verdict = (cls, x, y, mark) => `<span class="fa-v ${cls}" style="left:${x}px;top:${y}px">${mark}</span>`;
 const cell = (x, y, top, bottom, mark, caption) => `<div class="fa-cell" style="left:${x}px;top:${y}px">${card(bottom, 60, 48, 6, 0.42)}${card(top, 46, 38, -14, 0.42)}${verdict(mark[0], 93, 18, mark[1])}<div class="fa-cap">${caption}</div></div>`;
@@ -31,7 +35,7 @@ const pages = () => [
   {
     title: t('ftue.step1.title'),
     body: paras('ftue.step1.p1', 'ftue.step1.p2'),
-    art: `${card('pb', 140, 150, 6, 0.62)}${card('bf', 118, 128, -16, 0.62)}<span class="fa-pop" style="left:150px;top:62px">${t('ftue.step1.eat')}</span>${label(70, 236, t('ftue.step1.mineUp'))}${label(186, 236, t('ftue.step1.enemyDown'))}`,
+    art: `${card('pb', 140, 150, 6, 0.62)}${card('bf', 118, 128, -16, 0.62)}<span class="fa-pop" style="left:150px;top:62px">${t('ftue.step1.eat')}</span>${label(72, 98, t('ftue.step1.mineUp'))}${label(178, 212, t('ftue.step1.enemyDown'))}`,
   },
   {
     title: t('ftue.step2.title'),

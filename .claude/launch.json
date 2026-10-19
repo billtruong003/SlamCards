@@ -32,6 +32,18 @@
         "proto/dist"
       ],
       "port": 8099
+    },
+    {
+      "name": "dist-subpath",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8101",
+        "--directory",
+        "proto"
+      ],
+      "port": 8101
     }
   ]
 }

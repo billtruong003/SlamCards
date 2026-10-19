@@ -319,6 +319,8 @@ function onPeek(msg) {
 // Back to a clean menu: no room, no leftover HUD, labels or toasts from the last match.
 function leaveRoom() {
   social.closeAll();
+  $('leave').hidden = true;
+  disarmLeave();
   state = null;
   me = null;
   roomCode = null;
@@ -405,6 +407,29 @@ const social = createSocial({
 });
 els.panel.querySelector('#close-panel').insertAdjacentHTML('beforebegin', `<label class="check"><input type="checkbox" id="reacts-on" ${social.showOthers() ? 'checked' : ''}> ${t('social.showReacts')}</label>`);
 $('reacts-on').onchange = (e) => social.setShowOthers(e.target.checked);
+
+// Names over the cards can cover them on a phone: a player may hide them (this device only). The
+// cards then glow instead, green for mine and red for the others, so whose is whose stays clear.
+const tableNames = {
+  get: () => { try { return localStorage.getItem('slam-names') !== '0'; } catch { return true; } },
+  set: (on) => { try { localStorage.setItem('slam-names', on ? '1' : '0'); } catch { /* private mode */ } },
+};
+const GLOW = { mine: '#3ad16b', theirs: '#ff4b4b' };
+let namesShown = tableNames.get();
+els.panel.querySelector('#close-panel').insertAdjacentHTML('beforebegin', `<label class="check"><input type="checkbox" id="names-on" ${namesShown ? 'checked' : ''}> ${t('settings.showNames')}</label>`);
+$('names-on').onchange = (e) => {
+  namesShown = e.target.checked;
+  tableNames.set(namesShown);
+  world.needsRender = true; // labels and glows are refreshed with the next frame drawn
+};
+let glowKey = '';
+function applyGlows() {
+  const seats = state?.seats ?? [];
+  const key = `${namesShown}|${me}|${seats.join(',')}`;
+  if (key === glowKey) return;
+  glowKey = key;
+  world.setGlows(namesShown || !me ? {} : Object.fromEntries(seats.map((s) => [s, s === me ? GLOW.mine : GLOW.theirs])));
+}
 // tapping a player's chip mutes (or unmutes) their stickers and chat
 els.players.addEventListener('click', (e) => {
   const chip = e.target.closest('.chip');
@@ -669,11 +694,40 @@ function onMessage(msg) {
   }
 }
 
+// ---------- leaving on purpose ----------
+
+// The door in the corner, in a lobby or a match: a first tap asks (the label turns into a question
+// for 3 s), a second one leaves at once; the others go on without this seat.
+let leaveArmed = 0;
+$('leave').onclick = () => {
+  const button = $('leave');
+  if (!button.classList.contains('armed')) {
+    button.classList.add('armed');
+    setText(button.querySelector('span'), t('corner.leaveConfirm'));
+    clearTimeout(leaveArmed);
+    leaveArmed = setTimeout(disarmLeave, 3000);
+    return;
+  }
+  disarmLeave();
+  const code = roomCode;
+  send({ t: 'leave' });
+  leaveRoom();
+  forgetToken(code);
+  history.replaceState(null, '', location.pathname);
+  renderMenu();
+};
+function disarmLeave() {
+  clearTimeout(leaveArmed);
+  $('leave').classList.remove('armed');
+  setText($('leave').querySelector('span'), t('corner.leave'));
+}
+
 function onState(next) {
   // a match I played just ended (a reload that lands on the end screen does not count it twice)
   if (next.phase === 'matchEnd' && state && state.phase !== 'matchEnd' && next.seats.includes(me)) ads.matchFinished();
   state = next;
   stateAt = performance.now();
+  $('leave').hidden = false;
   if (awaitingServer && !(state.phase === 'turn' && state.turn === me)) awaitingServer = false;
 
   if (state.seats.length >= 2) world.setup(state.seats);
@@ -962,7 +1016,31 @@ function showMenuError(text) {
   box.hidden = !text;
 }
 
-const logo = () => `<h1 class="stamp title">${escapeHtml(t('menu.logo')).replace(/\n/g, '<br>')}</h1>`;
+// The game's logo, the same drawing as the trailer's (video/edit/src/Shorts5.tsx Logo): the first line
+// of the name on an arc, the second big in yellow with a brown block shadow, the other name on a
+// ribbon, the tiger card and the flip-flop stuck on the sides. Long names get smaller type.
+function logo() {
+  const [arc, big = ''] = t('menu.logo').split('\n');
+  const arcSize = Math.min(170, Math.round(1190 / Math.max(1, [...arc].length)));
+  const bigSize = Math.min(230, Math.round(1840 / Math.max(1, [...big].length)));
+  const word = (text, attrs) => `<text ${attrs} stroke="#2a1418" stroke-linejoin="round" paint-order="stroke fill">${escapeHtml(text)}</text>`;
+  return `<h1 class="logo" aria-label="${escapeHtml(t('menu.logo').replace('\n', ' '))}">
+    <img class="logo-card" src="brand/logo-card.png" alt="">
+    <svg viewBox="0 60 1000 620" aria-hidden="true">
+      <path id="logo-arc" d="M140 300 Q500 110 860 300" fill="none"/>
+      <text font-size="${arcSize}" fill="#F6F3EF" stroke="#2a1418" stroke-width="26" stroke-linejoin="round" paint-order="stroke fill"><textPath href="#logo-arc" startOffset="50%" text-anchor="middle">${escapeHtml(arc)}</textPath></text>
+      <g transform="rotate(-3 500 420)">
+        ${[5, 4, 3, 2, 1].map((i) => word(big, `x="500" y="${455 + i * 4}" text-anchor="middle" font-size="${bigSize}" fill="#9a5414" stroke-width="22"`)).join('')}
+        ${word(big, 'x="500" y="455" text-anchor="middle" font-size="' + bigSize + '" fill="#FFC93C" stroke-width="22"')}
+      </g>
+      <g transform="rotate(-4 500 600)">
+        <path d="M110 565 L890 565 L855 607 L890 649 L110 649 L145 607 Z" fill="#25221F" stroke="#141210" stroke-width="8"/>
+        <text x="500" y="623" text-anchor="middle" font-size="50" fill="#FFB84D" letter-spacing="8">${escapeHtml(t('logo.ribbon'))}</text>
+      </g>
+    </svg>
+    <img class="logo-dep" src="brand/logo-dep.png" alt="">
+  </h1>`;
+}
 const menuError = (error) => `<p class="menu-error" ${error ? '' : 'hidden'}>${escapeHtml(error)}</p>`;
 
 // Player-count picker: "any" plus 2/3/4, each with a row of dots (seats).
@@ -1569,11 +1647,12 @@ function badgeFor(seat) {
 const labelScreen = {};
 const LABEL_DROP = 0.9; // a little more than the card's half diagonal (0.89)
 function updateLabels() {
+  applyGlows();
   const inRound = Boolean(state) && !['lobby', 'matchEnd'].includes(state.phase);
   for (const seat of SEATS) {
     const card = world.cards[seat];
     const el = badgeFor(seat);
-    const show = inRound && Boolean(card?.mesh.visible);
+    const show = inRound && namesShown && Boolean(card?.mesh.visible);
     if (el.hidden === show) el.hidden = !show;
     if (!show) continue;
     const { x, y, z } = card.mesh.position;

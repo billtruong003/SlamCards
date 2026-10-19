@@ -221,7 +221,10 @@ export class World {
 
   buildCard(seat, stencilRef) {
     const made = STENCIL ? createStencilCard(seat, stencilRef) : createCardMesh(seat);
-    if (STENCIL) made.setLook(this.looks?.[seat]);
+    if (STENCIL) {
+      made.setLook(this.looks?.[seat]);
+      made.setGlow(this.glows?.[seat] ?? null);
+    }
     const { mesh, shadow } = made;
     this.scene.add(mesh);
     this.scene.add(shadow);
@@ -316,6 +319,13 @@ export class World {
   }
 
   // What each seat's player wears ({ pet, dep, depColors, cardColor }); kept for cards built later.
+  // Card edge glows by seat ({ black: '#3ad16b', ... }, missing = none), kept for cards built later.
+  setGlows(glows) {
+    this.glows = glows;
+    for (const [seat, card] of Object.entries(this.cards)) card.stencil?.setGlow(glows[seat] ?? null);
+    this.needsRender = true;
+  }
+
   setLooks(looks) {
     this.looks = looks;
     if (STENCIL) for (const seat of this.seats) this.cards[seat]?.stencil?.setLook(looks[seat]);

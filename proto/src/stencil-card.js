@@ -340,6 +340,22 @@ export function createStencilCard(seat, ref) {
   edgeGeo.translate(0, 0, -CARD_HALF_T);
   add('card', new THREE.Mesh(edgeGeo, [new THREE.MeshBasicMaterial({ visible: false }), new THREE.MeshBasicMaterial({ color: 0x2a1418 })]));
 
+  // A coloured glow around the edge (setGlow): whose card it is at a glance when names are hidden.
+  // Two rings in the card's middle plane, seen from either side: a strong line and a soft halo.
+  const glowMats = [0.95, 0.35].map((opacity) => new THREE.MeshBasicMaterial({ transparent: true, opacity, side: THREE.DoubleSide, depthWrite: false }));
+  const glow = new THREE.Group();
+  [[0, 0.045], [0.045, 0.12]].forEach(([from, to], i) => {
+    const ring = roundRect(new THREE.Shape(), 0, 0, W / 2 + to, H / 2 + to, CORNER + to);
+    ring.holes.push(roundRect(new THREE.Path(), 0, 0, W / 2 + from, H / 2 + from, CORNER + from));
+    glow.add(new THREE.Mesh(new THREE.ShapeGeometry(ring, 16), glowMats[i]));
+  });
+  glow.visible = false;
+  add('card', glow);
+  function setGlow(color) {
+    glow.visible = Boolean(color);
+    if (color) for (const m of glowMats) m.color.set(color);
+  }
+
   const winGeo = new THREE.ShapeGeometry(windowShape(), 16);
   add('mask', new THREE.Mesh(winGeo, maskMaterial(ref))).position.z = CARD_HALF_T;
   add('reset', new THREE.Mesh(winGeo, depthMaterial(ref, true))).position.z = CARD_HALF_T;
@@ -520,7 +536,7 @@ export function createStencilCard(seat, ref) {
   }
 
   setLook(null);
-  return { mesh, shadow, setRank, update, setLook, react, stencilRef: ref };
+  return { mesh, shadow, setRank, update, setLook, setGlow, react, stencilRef: ref };
 }
 
 // Lowest card first, so a card lying on another draws its window after the one below.
