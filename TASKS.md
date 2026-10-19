@@ -14,7 +14,7 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 
 **Cách làm mỗi bước**: code → `npm test` → `node qa/devices.mjs` (5 máy) → bước đụng giao diện thì thêm 11 ngôn ngữ trên iPhone SE (`SLAM_LANG=<mã>`) → commit. Chữ mới: `vi.json` + `context.json` + viết luôn 10 ngôn ngữ, gom lại cho Bill duyệt ở bước 22. **[DEPLOY]**: 0 người đang chơi → sao lưu `/opt/slam-cards` → `SLAM_HOST=root@14.225.255.73 bash proto/deploy.sh` → chạy `qa/devices.mjs`, `qa/phase1-checks.mjs`, `qa/live-match.mjs` trên bản live → xem log lỗi pm2 → báo Bill.
 
-**Quyết định đã chốt**: chọn số người mặc định "Bất kỳ"; ghép ngẫu nhiên vào trận luôn, không Sẵn sàng, không bot giả người; phòng tạo với bạn mặc định Riêng tư; danh sách phòng công khai chỉ hiện pet + mã; ghép ngẫu nhiên hết giờ 2 lượt liền = bị loại; lọc từ xấu trong tên; mọi đồ đều miễn phí (chưa khóa, chưa quảng cáo).
+**Quyết định đã chốt**: chọn số người mặc định "Bất kỳ"; ghép ngẫu nhiên vào trận luôn, không Sẵn sàng; ~~không bot giả người~~ (đổi 19/10: có bot trông như người thật sau 15 giây chờ, xem việc 1.31); phòng tạo với bạn mặc định Riêng tư; danh sách phòng công khai chỉ hiện pet + mã; ghép ngẫu nhiên hết giờ 2 lượt liền = bị loại; lọc từ xấu trong tên; mọi đồ đều miễn phí (chưa khóa, chưa quảng cáo).
 
 ### Mốc 1 · Kiểm chứng kỹ thuật
 1. ✅ **Xong 14/10 · đạt.** `?stencil` trong game, code ở `src/stencil-card.js`, kiểm tra bằng `node qa/stencil-proto.mjs [chromium|webkit]` (cần server :8097) và `SLAM_STENCIL=1 node qa/live-match.mjs`. Kết quả: 4 lá nằm cạnh nhau / chồng nhau / ngửa trên úp / bay nghiêng / sát mép đều đúng; lật giữa không trung đúng ở 8 góc; dép rơi trên ô cửa không bị che; trận 2 người trọn vẹn không lỗi. Draw call: 54–64 cả cảnh (bản cũ 20) sau khi gộp pet thành 1 mesh có xương (7 mảnh → 2 lần vẽ) và chỉ vẽ mặt đang nhìn thấy. Chromium 60 FPS. WebKit giả lập trên Windows 21–31 FPS (bản cũ 30–40, vẽ bằng CPU nên chưa phản ánh iPhone thật) → **cần thử trên điện thoại thật** trước mốc 4. Cách dựng: sân khấu (bệ + pet + dép) luôn xoay về camera, nên lá nằm hướng nào pet cũng đứng thẳng nhìn người chơi; khoảng không phía sau đứng yên tạo chiều sâu.
@@ -75,6 +75,57 @@ Thiết kế đã duyệt: canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4
 - Quảng cáo: code xong, đang tắt (G3/ADS-01); còn ADS-02, WS3, WS4, A4. Web studio (WS1/2/5/6), Android (AdMob), cổng game (CrazyGames…), khóa đồ / mở bằng quảng cáo.
 - VPS: V1 ưu tiên CPU, V2 tin Telegram thử, V3 reboot (chờ Bill). OPS-01 alias ssh.
 - Bill: A1 hộp mail, A2/A3/A5/A6.
+
+## Kế hoạch sau feedback release (chốt 19/10)
+
+Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1tz1ewPyxi4, mục "Kế hoạch phase"). Làm theo thứ tự; S vài giờ, M 1–2 ngày, L vài ngày+.
+Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
+
+### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
+- [ ] **1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S
+- [ ] **1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S
+- [ ] **1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S
+- [ ] **1.04** Tắt meme mặc định, bỏ ảnh có bản quyền và mặt người thật — S
+- [ ] **1.05** Báo bảo trì trước deploy, chặn trận mới; xem số phòng/người theo pha; báo khi server khởi động lại — M
+- [ ] **1.06** Phản hồi khi mất WebGL hoặc mạng chặn WebSocket — S
+- [ ] **1.07** Server kiểm kết quả cú đập có hợp lý (cần trước Phase 2) (V-23) — M–L
+- [ ] **1.08** Sự kiện đo lường: cú đập đầu, trận đầu, xem hướng dẫn, thời gian chờ, độ dài trận, quay lại ngày 2 — M
+- [ ] **1.10** Mọi màn vừa 1 màn hình 360×640 → 430×932 và laptop 1366×768 (cả Windows 125%): màn chính, sảnh 4 người (nút Bắt đầu), hàng chờ, trận, kết quả (B-02) — L
+- [ ] **1.11** Hướng dẫn 4 ô bắt buộc lần đầu, có luật hết giờ 2 lần là thua; hiện cả ở Chơi ngay lúc chờ; mockup cho Bill duyệt trước (B-01, B-04, F-02..F-08) — M
+- [ ] **1.12** Lượt đầu: bong bóng không che bài mình; nói mục tiêu trước cú đập đầu; trận đầu ẩn gió/kiểu đập (F-01, F-04, F-05) — S
+- [ ] **1.13** Nút xem luật to có chữ; nút góc trên điện thoại có chữ; tên không bị cắt (F-12) — S
+- [ ] **1.14** Chat điện thoại: chỉ câu nhanh + sticker, đọc được tin, mở được mọi lúc (B-03) — M
+- [ ] **1.15** Oẳn tù tì/chọn đi trước: chữ đúng, có đồng hồ, nút không vẽ lại liên tục (F-06, F-07, V-28) — S
+- [ ] **1.16** Phản hồi ngay khi chạm; intro studio bỏ qua được (F-09, F-15) — S
+- [ ] **1.17** Màn chính PC cân đối; bàn và chữ lớn hơn trên PC; màn kết quả có thông tin trận (F-10, F-11) — M
+- [ ] **1.18** Mỗi ghế một pet mặc định khác nhau — S
+- [ ] **1.19** Màn mời ghi ai rủ và phòng có mấy người (F-16) — S
+- [ ] **1.20** Tương thích: Samsung Internet tối, trình duyệt Zalo/Messenger/Facebook/TikTok, iOS 15, ký hiệu ghế mù màu, giảm chuyển động — M
+- [ ] **1.30** Hàng chờ không bị chia nhỏ, sửa "Chơi luôn n người", màn chờ không vẽ lại mỗi giây (V-18, V-19) — M
+- [ ] **1.31** Bot trông như người thật sau 15 giây chờ (nghĩ 3–12 giây, có lúc lệch/rớt bài), không lên bảng điểm, thêm dòng vào chính sách riêng tư — L
+- [ ] **1.32** Người bị loại: Xem tiếp / Rời / Tìm trận mới, báo round sau vào lại; Chơi ngay rời thì bot thay chỗ (UC-05) — M
+- [ ] **1.33** Lượt 15–20 giây ở bàn 3–4 người; treo máy bị loại sau 2 lần hết giờ; đếm theo round (V-21, V-22) — S–M
+- [ ] **1.34** Ăn bài dễ hơn, giảm tự làm rớt bài theo số đo; bàn 3 người cân đối; đo lại (V-27, V-08) — M
+- [ ] **1.35** Phòng về sảnh sau trận: link dùng lại được, bạn mới vào được, đổi cài đặt (V-05) — M
+- [ ] **1.36** Quản lý phòng: rời sảnh/trận, chuyển chủ phòng, mời ra, thêm/xoá bot (nhãn "Máy"), báo đúng khi chủ rời (V-06, V-07) — M–L
+- [ ] **1.37** Sửa phản hồi sai: thông báo ăn bài nhầm người, đập sát giờ bị giật, đập máy yếu bị huỷ không báo, "phòng đầy" sai số (V-24, V-25, V-26, V-17) — S–M
+
+### Phase 2 — tiến trình và sưu tầm
+- [ ] **2.01** Cloudflare Worker + D1: mã máy có chữ ký, chỉ server game ghi, sổ tiền, xoá máy không vào quá 30 ngày — L
+- [ ] **2.02** Đăng nhập Google (không bắt buộc), gộp tiến trình, cập nhật chính sách riêng tư — M
+- [ ] **2.03** Tiền + kinh nghiệm sau trận, level; màn kết quả hiện tiền — M
+- [ ] **2.04** Cửa hàng pet: mèo/chó/cánh cụt mở sẵn, 21 con bán; thu pet bị khoá về mèo — M
+- [ ] **2.05** Gacha nền bài 6 bậc có shader, đảm bảo trong 50 lượt, 10 lượt miễn phí mỗi level, server quyết định kết quả — L
+- [ ] **2.06** Nền bài hiện ở mặt ngửa trong trận, mọi người đều thấy — M
+- [ ] **2.07** Bộ sưu tầm + sticker: trắng x25, xanh lá x15, còn lại x10; thay sticker tạm chưa rõ bản quyền — M
+- [ ] **2.08** Thành tích: mở khoá và đeo cạnh tên — M
+- [ ] **2.09** Bảng điểm tuần (thứ Hai 0h VN) và tháng (ngày 1), chỉ tài khoản Google, lọc tên chặt hơn — M
+- [ ] **2.10** Banner đối tác (streamer, Refund Gaming) có thời hạn — M
+- [ ] **2.11** Quà hằng ngày theo giờ server (Bill chốt làm) — S–M
+- [ ] **2.12** Báo cáo / tắt tiếng một người chơi — M
+
+### Để sau (chưa xếp phase)
+- Mời bằng QR; chơi chung một máy; chế độ streamer; trận 1 round; xem trận phòng công khai; hồ sơ riêng cho máy dùng chung.
 
 ## Câu hỏi
 
