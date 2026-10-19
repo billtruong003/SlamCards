@@ -103,7 +103,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [x] ~~**1.18** Mỗi ghế một pet mặc định khác nhau — S~~
 - [x] ~~**1.19** Màn mời ghi ai rủ và phòng có mấy người (F-16) — S~~
 - [x] ~~**1.20** Tương thích: Samsung Internet tối, trình duyệt Zalo/Messenger/Facebook/TikTok, iOS 15, ký hiệu ghế mù màu, giảm chuyển động — M~~ Không có máy thật Samsung/iPhone: sửa theo nguyên nhân đã biết + kiểm bằng `qa/compat-check.mjs` (giả lập Zalo, chế độ tối, giảm chuyển động)
-- [x] ~~**1.30** Hàng chờ không bị chia nhỏ (chờ quá 15 giây thì ghép bàn bất kỳ, có dòng báo), bỏ nút "Chơi luôn n người", màn chờ không vẽ lại mỗi giây (V-18, V-19)~~ *Chưa kiểm dòng báo trên trình duyệt (server có test)*
+- [x] ~~**1.30** Hàng chờ không bị chia nhỏ (chờ quá 15 giây thì ghép bàn bất kỳ, có dòng báo), bỏ nút "Chơi luôn n người", màn chờ không vẽ lại mỗi giây (V-18, V-19)~~ Đã kiểm trên trình duyệt
 - [ ] **1.31** Bot trông như người thật sau 15 giây chờ (nghĩ 3–12 giây, có lúc lệch/rớt bài), không lên bảng điểm, thêm dòng vào chính sách riêng tư — L
 - [ ] **1.32** Người bị loại: Xem tiếp / Rời / Tìm trận mới, báo round sau vào lại; Chơi ngay rời thì bot thay chỗ (UC-05) — M
 - [ ] **1.33** Lượt 15–20 giây ở bàn 3–4 người; ~~treo máy bị loại sau 2 lần hết giờ~~ (xong ở 1.09, mọi phòng); đếm theo round (V-21, V-22) — S
