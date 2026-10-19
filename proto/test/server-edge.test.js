@@ -296,8 +296,14 @@ test('full match to rematch: scores reset, a gone player is removed', async () =
     c.close();
     await a.waitState((st) => st.players[c.seat]?.connected === false);
     a.send({ t: 'rematch' });
-    b.send({ t: 'rematch' });
-    const again = await a.waitState((st) => st.phase !== 'matchEnd', 3000);
+    // a friends' room goes back to its lobby; the host starts the next match
+    const lobbyAgain = await a.waitState((st) => st.phase === 'lobby', 3000);
+    assert.equal(Object.keys(lobbyAgain.players).length, 2, 'the gone player gave up the seat');
+    assert.ok(lobbyAgain.last?.name, 'the lobby knows who won');
+    b.send({ t: 'ready', ready: true });
+    await a.waitState((st) => st.ready[b.seat]);
+    a.send({ t: 'start' });
+    const again = await a.waitState((st) => st.phase !== 'lobby', 3000);
     assert.equal(again.round, 1);
     assert.deepEqual(Object.values(again.scores), [0, 0]);
     assert.equal(again.seats.length, 2, 'disconnected player left out of the rematch');

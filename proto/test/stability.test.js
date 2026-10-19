@@ -45,8 +45,14 @@ test('rematch without a disconnected player: their grace timer does not crash th
     c.close();
     await a.waitState((st) => st.players[c.seat]?.connected === false);
     a.send({ t: 'rematch' });
-    b.send({ t: 'rematch' });
-    const again = await a.waitState((st) => st.phase !== 'matchEnd', 3000);
+    // a friends' room goes back to its lobby; the host starts the next match
+    const lobbyAgain = await a.waitState((st) => st.phase === 'lobby', 3000);
+    assert.equal(Object.keys(lobbyAgain.players).length, 2, 'the gone player gave up the seat');
+    assert.ok(lobbyAgain.last?.name, 'the lobby knows who won');
+    b.send({ t: 'ready', ready: true });
+    await a.waitState((st) => st.ready[b.seat]);
+    a.send({ t: 'start' });
+    const again = await a.waitState((st) => st.phase !== 'lobby', 3000);
     assert.equal(again.seats.length, 2);
     await sleep(900); // past the match grace period of the removed player
     assert.equal(srv.exited(), false, srv.log());

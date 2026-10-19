@@ -82,7 +82,7 @@ Nguồn: artifact phân tích feedback (https://claude.ai/artifact/3CEjfSeW8FW1t
 Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (+10 mỗi lá ăn); pet 200/300/400; quay 60; mô phỏng ở `docs/economy_sim.py`.
 
 ### Phase 1 — gameplay, UI/UX, FTUE, toàn vẹn dữ liệu
-Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.34 (1.11 chờ mockup).
+Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-and-ftue`, 87 test qua, **chưa deploy**). Đang chờ: Bill quyết deploy (Q8). Việc tiếp theo: 1.34 đang đo, rồi 1.37 (1.11 chờ mockup).
 - [x] ~~**1.01** Sửa server sập do hẹn giờ mất kết nối không bị huỷ khi Bắt đầu/Tái đấu (V-01) — S~~
 - [x] ~~**1.02** Lưu tên ngay khi gõ (cả Telex), vẽ lại không mất tên, server báo tên cuối khi trùng/bị lọc (V-02) — S~~
 - [x] ~~**1.03** Gộp về một địa chỉ: www và link IP cũ chuyển hướng 301 về tên miền chính (nginx VPS, Bill đồng ý 19/10) (V-03) — S. Config trong `proto/deploy/`, deploy tự cài (chưa lên live)~~
@@ -108,8 +108,8 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [x] ~~**1.32** Người bị loại: Xem tiếp / Rời / Tìm trận mới, báo round sau vào lại; Chơi ngay rời thì bot thay chỗ (UC-05) — M~~ Kiểm bằng `qa/out-card.mjs`
 - [x] ~~**1.33** Lượt 15–20 giây ở bàn 3–4 người; ~~treo máy bị loại sau 2 lần hết giờ~~ (xong ở 1.09, mọi phòng); đếm theo round (V-21, V-22) — S~~ Gốc V-21: cú máy đập hộ xoá bộ đếm treo máy nên người treo không bao giờ bị loại; giờ tính là một lần treo. Bàn 3–4 người lượt 18 giây
 - [ ] **1.34** Ăn bài dễ hơn, giảm tự làm rớt bài theo số đo; bàn 3 người cân đối; đo lại (V-27, V-08) — M
-- [ ] **1.35** Phòng về sảnh sau trận: link dùng lại được, bạn mới vào được, đổi cài đặt (V-05) — M
-- [ ] **1.36** Quản lý phòng: ~~rời sảnh/trận~~ (xong ở 1.09: nút "Rời"), chuyển chủ phòng, mời ra, thêm/xoá bot (nhãn "Máy"), báo đúng khi chủ rời (V-06, V-07) — M
+- [x] ~~**1.35** Phòng về sảnh sau trận: link dùng lại được, bạn mới vào được, đổi cài đặt (V-05) — M~~ Phòng bạn: "Về phòng chờ" / có người mới mở link / tự về sau 30 giây
+- [x] ~~**1.36** Quản lý phòng: ~~rời sảnh/trận~~ (xong ở 1.09: nút "Rời"), chuyển chủ phòng, mời ra, thêm/xoá bot (nhãn "Máy"), báo đúng khi chủ rời (V-06, V-07) — M~~ Chủ vắng 20 giây thì chuyển vương miện (vẫn giữ chỗ); nút × mời ra; "+ Thêm máy" (nhãn Máy); nút Bắt đầu tính như server (V-07)
 - [ ] **1.37** Sửa phản hồi sai: thông báo ăn bài nhầm người, đập sát giờ bị giật, đập máy yếu bị huỷ không báo, "phòng đầy" sai số (V-24, V-25, V-26, V-17) — S–M. *Một phần đã có từ 1.07: server giờ báo rõ khi từ chối cú đập (slamRefused), client chưa hiện chữ giải thích.*
 - [ ] **1.38** Lỗi console khi tải pet: `THREE.GLTFLoader: Couldn't load texture Textures/colormap.png` (thấy khi QA 2 trình duyệt, có từ trước): tìm nguyên nhân, xem pet có thiếu màu không — S
 - [ ] **1.39** Mang "chất lộn xộn" của trailer vào các màn khác (sảnh, kết quả, chờ ghép): chữ nghiêng, sticker tràn khung, màu như trailer — M. *Chờ Bill xác nhận (Q9)*

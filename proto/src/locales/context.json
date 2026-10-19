@@ -290,6 +290,10 @@
     "max": 100,
     "id": "K1"
   },
+  "error.kicked": {
+    "where": "Menu error after the host removed the player from a friends' lobby",
+    "max": 50
+  },
   "error.maintenance": {
     "where": "Menu error: a deploy is coming, so new matches are refused for a few minutes",
     "max": 90
@@ -540,6 +544,22 @@
     "where": "Empty player slot, small text",
     "max": 8,
     "id": "B5"
+  },
+  "lobby.bot": {
+    "where": "Tag on a lobby seat taken by a computer player (friends' rooms)",
+    "max": 8
+  },
+  "lobby.kick": {
+    "where": "Screen-reader label of the host's x button on a guest's seat",
+    "max": 30
+  },
+  "lobby.addBot": {
+    "where": "Host's button in an empty lobby seat: add a computer player",
+    "max": 16
+  },
+  "lobby.addBotNote": {
+    "where": "Small line under it",
+    "max": 24
   },
   "lobby.reading": {
     "where": "Tag under a player who is reading the tutorial (step {n} of {total})",
@@ -1168,6 +1188,10 @@
     "max": 50,
     "id": "E7"
   },
+  "toast.droppedLobby": {
+    "where": "Toast in the lobby: other players lost connection; their seat is kept (no time promise)",
+    "max": 50
+  },
   "toast.nameBlocked": {
     "where": "Toast after joining: the typed name was blocked by the swear-word filter; {name} is the neutral stand-in the game uses instead",
     "max": 90
@@ -1291,15 +1315,13 @@
     "max": 12,
     "id": "F7"
   },
-  "match.rematchWaiting": {
-    "where": "Rematch button after pressing: waiting for the others",
-    "max": 20,
-    "id": "F7"
+  "match.backToRoom": {
+    "where": "Results button in a friends' room: everyone goes back to the room's lobby (new friends can join, the host starts the next match)",
+    "max": 20
   },
-  "match.newRoom": {
-    "where": "Match-end button shown instead of Rematch when everyone else has left; makes a fresh room",
-    "max": 18,
-    "id": "Bikin room baru"
+  "lobby.lastWinner": {
+    "where": "Lobby line under the title after a match: who won the last one",
+    "max": 50
   },
   "match.menu": {
     "where": "Button: back to menu",

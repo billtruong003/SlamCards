@@ -65,9 +65,16 @@ try {
     if (hs.phase === 'matchEnd') {
       await shot(host, '05-match-end');
       if (rematched) break;
-      await Promise.all([host.click('#rematch'), guest.click('#rematch')]);
+      // a friends' room goes back to its lobby (1.35): the guest is ready again, the host starts
+      await host.click('#rematch');
       rematched = true;
-      const back = await host.waitForFunction(() => slamDebug.state.phase !== 'matchEnd', null, { timeout: 15000 }).then(() => true).catch(() => false);
+      const lobby = await host.waitForFunction(() => slamDebug.state.phase === 'lobby', null, { timeout: 15000 }).then(() => true).catch(() => false);
+      step('back to the room after the match', lobby);
+      await guest.waitForSelector('#ready', { timeout: 15000 });
+      await guest.click('#ready');
+      await host.waitForFunction(() => slamDebug.state.ready?.pink === true, null, { timeout: 5000 });
+      await host.click('#start');
+      const back = await host.waitForFunction(() => slamDebug.state.phase !== 'lobby', null, { timeout: 15000 }).then(() => true).catch(() => false);
       step('rematch starts a new match', back);
       // play the rematch only up to its first turn, then leave via the menu
       await host.waitForFunction(() => ['rps', 'choose', 'turn'].includes(slamDebug.state.phase), null, { timeout: 20000 }).catch(() => {});

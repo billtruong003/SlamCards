@@ -45,10 +45,12 @@ const TIMING = {
   // drops the connection at once, and the room must still be there when the player comes back.
   lobbyDisconnect: 60000,
   lobbyHostDisconnect: 180000,
+  hostHandoff: 20000,    // a lobby host gone this long hands the crown on (the seat itself waits longer)
   quickStart: 1200,      // quick match: room made, then the first round starts
   anyCountdown: 5000,    // quick match "any": 2 found, then wait this long for more
   queueFlex: 15000,      // a player waiting for an exact size takes any table after this long
   botAfter: 20000,       // a player still alone in the queue after this long plays with computer players
+  backToLobby: 30000,    // a friends' room shows the results this long, then goes back to its lobby
   queueTick: 400,
 };
 // Tests shorten the clock: SLAM_TIMING='{"turn":500}'.
@@ -231,6 +233,7 @@ function publicState(room, you) {
     cards: room.cards,
     players: Object.fromEntries(Object.entries(room.players).map(([seat, p]) => [seat, {
       connected: p.connected, name: p.name, left: Boolean(p.left), tutorial: p.tutorial || 0,
+      ...(p.bot && room.kind === 'friends' ? { bot: true } : {}),
       dep: p.dep, depColors: p.depColors, pet: p.pet, cardColor: p.cardColor,
     }])),
     rpsChosen: Object.fromEntries(room.seats.map((s) => [s, Boolean(room.rps[s])])),
@@ -245,6 +248,7 @@ function publicState(room, you) {
     cap: room.cap,
     host: room.host,
     ready: room.ready,
+    last: room.phase === 'lobby' ? room.last ?? null : null,
     remainingMs: room.deadline ? Math.max(0, room.deadline - Date.now()) : 0,
   };
 }
@@ -704,6 +708,7 @@ function endMatch(room, winner, reason = 'score') {
   room.result = { ...room.result, matchWinner: winner, matchReason: reason, history: room.history ?? [], ms, slams: room.slamCount ?? 0 };
   broadcast(room);
   driveBots(room);
+  if (room.kind === 'friends') schedule(room, TIMING.backToLobby, () => returnToLobby(room));
 }
 
 // The only way a seat leaves room.players: its pending timers go with it, so nothing fires later
@@ -712,6 +717,7 @@ function removePlayer(room, seat) {
   const player = room.players[seat];
   if (!player) return;
   clearTimeout(player.discTimer);
+  clearTimeout(player.handoffTimer);
   delete room.players[seat];
   delete room.ready[seat];
   delete room.rematch[seat];
@@ -781,10 +787,15 @@ function dropPlayer(room, seat) {
   }
 }
 
-// The host left: the player who came in earliest (and is still here) takes over.
-function passHost(room) {
-  if (room.kind !== 'friends' || (room.host && room.players[room.host] && !room.players[room.host].left)) return;
-  room.host = room.joinOrder.find((s) => room.players[s] && !room.players[s].left) ?? null;
+// The host left: the person who came in earliest (and is still here) takes over. `force` hands it on
+// even though the host still has a seat (gone from the lobby for hostHandoff).
+function passHost(room, force = false) {
+  if (room.kind !== 'friends') return;
+  const current = room.players[room.host];
+  if (!force && current && !current.left) return;
+  const here = (s) => room.players[s] && !room.players[s].left && !room.players[s].bot;
+  room.host = room.joinOrder.find((s) => s !== room.host && here(s) && room.players[s].connected)
+    ?? room.joinOrder.find((s) => here(s)) ?? null;
   if (room.host) delete room.ready[room.host];
 }
 
@@ -798,7 +809,10 @@ function allReady(room) {
 function closeRoom(room) {
   clearTimeout(room.timer);
   clearTimeout(room.botTimer);
-  for (const player of Object.values(room.players)) clearTimeout(player.discTimer);
+  for (const player of Object.values(room.players)) {
+    clearTimeout(player.discTimer);
+    clearTimeout(player.handoffTimer);
+  }
   if (isLive(room)) rooms.delete(room.code);
 }
 
@@ -821,6 +835,7 @@ function attach(ws, room, seat, player) {
   player.ws = ws;
   player.connected = true;
   clearTimeout(player.discTimer);
+  clearTimeout(player.handoffTimer);
   ws.ctx = { room, seat };
   // the name the room shows (de-duplicated, or a stand-in for a blocked one), so the client can show and keep it
   send(ws, { t: 'joined', code: room.code, color: seat, token: player.token, name: player.name, nameBlocked: player.nameBlocked });
@@ -858,6 +873,17 @@ function detach(ws, { leaving = false } = {}) {
   broadcast(room);
   const grace = room.phase !== 'lobby' ? TIMING.disconnect : seat === room.host ? TIMING.lobbyHostDisconnect : TIMING.lobbyDisconnect;
   clearTimeout(player.discTimer);
+  clearTimeout(player.handoffTimer);
+  if (room.phase === 'lobby' && seat === room.host) {
+    // the others can start without them (V-06: the crown used to wait three minutes)
+    player.handoffTimer = later(`[${room.code}] ${seat} handoff`, TIMING.hostHandoff, () => {
+      if (!player.connected && isLive(room) && room.phase === 'lobby' && room.host === seat) {
+        passHost(room, true);
+        log(room, `host ${seat} away, ${room.host} hosts now`);
+        broadcast(room);
+      }
+    });
+  }
   player.discTimer = later(`[${room.code}] ${seat} grace`, grace, () => {
     if (!player.connected && isLive(room) && room.players[seat] === player) dropPlayer(room, seat);
   });
@@ -893,7 +919,8 @@ function handle(ws, msg) {
       t: 'peek',
       code,
       exists: Boolean(room),
-      phase: room?.phase ?? null,
+      // a friends' room at its results lets new people in (returnToLobby), so it reads as a lobby
+      phase: room?.kind === 'friends' && room.phase === 'matchEnd' ? 'lobby' : room?.phase ?? null,
       full: room ? Object.keys(room.players).length >= Math.min(MAX_PLAYERS, room.cap) : false,
       quick: room?.kind === 'quick',
       mine,
@@ -968,6 +995,7 @@ function handle(ws, msg) {
       attach(ws, room, existing, room.players[existing]);
       return;
     }
+    if (room.phase === 'matchEnd') returnToLobby(room);
     if (room.phase !== 'lobby') {
       send(ws, { t: 'error', code: 'inMatch', message: 'Phòng đang đánh dở, tạo phòng mới đi!' });
       return;
@@ -1054,6 +1082,32 @@ function handle(ws, msg) {
     return;
   }
 
+  // The host sends someone out of the lobby (a computer player too); they may come back by the link.
+  if (msg.t === 'kick' && room.kind === 'friends' && room.phase === 'lobby' && seat === room.host
+    && msg.seat !== seat && room.players[msg.seat]) {
+    const out = room.players[msg.seat];
+    if (out.ws) {
+      send(out.ws, { t: 'error', code: 'kicked', message: 'Chủ phòng đã mời m ra.' });
+      out.ws.ctx = null;
+    }
+    removePlayer(room, msg.seat);
+    log(room, `${msg.seat} sent out by the host`);
+    broadcast(room);
+    return;
+  }
+
+  // The host adds a computer player to an empty seat (labelled as one in a friends' room); it is ready.
+  if (msg.t === 'addBot' && room.kind === 'friends' && room.phase === 'lobby' && seat === room.host) {
+    const free = SEATS.find((s) => !room.players[s]);
+    if (free && Object.keys(room.players).length < Math.min(MAX_PLAYERS, room.cap)) {
+      room.players[free] = makeBot(room, free);
+      room.joinOrder.push(free);
+      room.ready[free] = true;
+      broadcast(room);
+    }
+    return;
+  }
+
   if (msg.t === 'roomSettings' && room.phase === 'lobby' && seat === room.host) {
     if (msg.visibility === 'public' || msg.visibility === 'private') room.visibility = msg.visibility;
     // the cap can't drop below the players already in
@@ -1122,9 +1176,36 @@ function handle(ws, msg) {
   }
 
   if (msg.t === 'rematch' && room.phase === 'matchEnd') {
+    if (room.kind === 'friends') {
+      returnToLobby(room);
+      return;
+    }
     room.rematch[seat] = true;
     tryRematch(room);
   }
+}
+
+// A friends' room goes back to its lobby after a match (V-05): the invite link works again, new
+// friends can come in, the host can change the settings and start the next match. It happens when
+// anyone asks for it ('rematch' in a friends' room), when someone new opens the link, or by itself
+// after backToLobby. Whoever is gone by then gives up the seat.
+function returnToLobby(room) {
+  if (room.phase !== 'matchEnd' || room.kind !== 'friends') return;
+  for (const s of Object.keys(room.players)) if (!room.players[s].connected || room.players[s].left) removePlayer(room, s);
+  if (!peopleIn(room).length) {
+    closeRoom(room);
+    return;
+  }
+  clearTimeout(room.timer);
+  clearTimeout(room.botTimer);
+  passHost(room);
+  room.last = { winner: room.result?.matchWinner ?? null, name: room.players[room.result?.matchWinner]?.name ?? null };
+  Object.assign(room, {
+    phase: 'lobby', seats: [], alive: [], round: 0, scores: {}, turn: null, cards: {}, result: null, event: null,
+    rematch: {}, ready: {}, deadline: 0, slam: null, autoSlam: false,
+  });
+  log(room, 'back to the lobby');
+  broadcast(room);
 }
 
 // Everyone still at the table said rematch (computer players say it by themselves): a new match.

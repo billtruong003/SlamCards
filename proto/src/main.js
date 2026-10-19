@@ -756,7 +756,7 @@ function onState(next) {
 
   // a lost connection mid-match waits up to 60 s for them; on the results screen nobody waits
   const gone = state.phase === 'matchEnd' ? [] : Object.keys(state.players).filter((s) => s !== me && !state.players[s].connected && !state.players[s].left);
-  if (gone.length) showToast(t('toast.dropped', { names: list(gone.map(nameOf)) }));
+  if (gone.length) showToast(t(state.phase === 'lobby' ? 'toast.droppedLobby' : 'toast.dropped', { names: list(gone.map(nameOf)) }));
   else if (els.toast.dataset.sticky) hideToast();
 
   announceEvent();
@@ -1430,12 +1430,17 @@ function renderOverlay() {
       const link = `${location.origin}${location.pathname}?room=${s.code}`;
       const count = Object.keys(s.players).length;
       const isHost = s.host === me;
-      const guests = Object.keys(s.players).filter((seat) => seat !== s.host);
+      // as the server counts (allReady): a guest who lost the connection does not hold the start back (V-07)
+      const guests = Object.keys(s.players).filter((seat) => seat !== s.host && s.players[seat].connected);
       const readyCount = guests.filter((seat) => s.ready[seat]).length;
       const canStart = guests.length >= 1 && readyCount === guests.length;
+      const free = Object.keys(s.players).length < s.cap;
       const roster = `${s.host}-${s.visibility}-${s.cap}-${JSON.stringify(s.ready)}-${SEATS.map((seat) => { const p = s.players[seat]; return p ? `${p.name}:${p.dep}:${p.depColors}:${p.pet}:${p.cardColor}:${p.tutorial}` : ''; }).join('|')}`;
       const seatTag = (seat) => (seat === s.host ? `<span class="seat-tag">${CROWN}${t('lobby.host')}</span>`
-        : `<span class="seat-tag${s.ready[seat] ? ' ok' : ''}">${s.ready[seat] ? `${CHECK}${t('lobby.isReady')}` : t('lobby.notReady')}</span>`);
+        : s.players[seat].bot ? `<span class="seat-tag bot">${t('lobby.bot')}</span>`
+          : `<span class="seat-tag${s.ready[seat] ? ' ok' : ''}">${s.ready[seat] ? `${CHECK}${t('lobby.isReady')}` : t('lobby.notReady')}</span>`);
+      // the host's tools on the seats: send a guest out (×), add a computer player to an empty seat
+      const kick = (seat) => (isHost && seat !== me ? `<button class="seat-kick" data-kick="${seat}" aria-label="${escapeHtml(t('lobby.kick', { name: nameOf(seat) }))}">×</button>` : '');
       const tags = `<div class="room-tags">
           <button class="tag-btn" id="vis-toggle" ${isHost ? '' : 'disabled'}>${visIcon(s.visibility)}${t(`create.${s.visibility}`)}${isHost ? ' ▾' : ''}</button>
           <button class="tag-btn" id="cap-toggle" ${isHost ? '' : 'disabled'}>${PEOPLE}${t('lobby.capTag', { n: s.cap })}${isHost ? ' ▾' : ''}</button>
@@ -1451,7 +1456,7 @@ function renderOverlay() {
       const fresh = setOverlay(`lobby-${roster}`, `
         <div class="menu-bg"><div class="panel menu-card lobby-card">
           <h1 class="stamp" style="font-size:44px">${t('lobby.title', { code: `<span class="code">${s.code}</span>` })}</h1>
-          <p class="sub">${t('lobby.sub')}</p>
+          <p class="sub">${s.last?.name ? t('lobby.lastWinner', { name: `<b>${escapeHtml(s.last.name)}</b>` }) : t('lobby.sub')}</p>
           ${tags}
           <button class="btn pri wide invite" id="invite"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>${t('social.invite')}</button>
           <div class="row link-row">
@@ -1460,8 +1465,9 @@ function renderOverlay() {
           </div>
           <div class="seats">
             ${SEATS.slice(0, Math.max(s.cap, count)).map((seat) => (s.players[seat] ? `
-              <div class="slot seat ${seat}">${seatTag(seat)}<img class="slot-dep pet" src="${petThumb(petOf(seat))}" alt="">${escapeHtml(s.players[seat].name)}<small>${t('lobby.seatCard', { color: seatLabel(seat).toLowerCase() })}${seat === me ? ` · ${t('lobby.you')}` : ''}</small>${reading(seat)}</div>`
-    : `<div class="slot waiting">${t('lobby.waiting')}<small>${t('lobby.empty')}</small></div>`)).join('')}
+              <div class="slot seat ${seat}">${seatTag(seat)}${kick(seat)}<img class="slot-dep pet" src="${petThumb(petOf(seat))}" alt="">${escapeHtml(s.players[seat].name)}<small>${t('lobby.seatCard', { color: seatLabel(seat).toLowerCase() })}${seat === me ? ` · ${t('lobby.you')}` : ''}</small>${reading(seat)}</div>`
+    : isHost && free ? `<button class="slot waiting add-bot" data-add-bot>${t('lobby.addBot')}<small>${t('lobby.addBotNote')}</small></button>`
+      : `<div class="slot waiting">${t('lobby.waiting')}<small>${t('lobby.empty')}</small></div>`)).join('')}
           </div>
           <p class="sub dep-title">${t('lobby.myGear')}</p>
           ${gearTiles(myLook())}
@@ -1470,6 +1476,8 @@ function renderOverlay() {
         </div></div>`);
       if (fresh) {
         mountMenuBackground(els.overlay.querySelector('.menu-bg'));
+        els.overlay.querySelectorAll('[data-kick]').forEach((b) => { b.onclick = () => send({ t: 'kick', seat: b.dataset.kick }); });
+        els.overlay.querySelectorAll('[data-add-bot]').forEach((b) => { b.onclick = () => { b.disabled = true; send({ t: 'addBot' }); }; });
         $('copy').onclick = async () => {
           $('copy').textContent = await copyText(link, $('link')) ? t('lobby.copied') : t('lobby.copyManual');
         };
@@ -1616,14 +1624,12 @@ function renderOverlay() {
           <div class="row">
             ${quick ? `<button class="btn pri" id="find-new">${t('match.findNew')}</button>` : ''}
             ${quick && !alone ? `<button class="btn" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${t('match.rematchCount', { n: rematchCount, m: present.length })}</button>` : ''}
-            ${!quick && alone ? `<button class="btn pri" id="new-room">${t('match.newRoom')}</button>` : ''}
-            ${!quick && !alone ? `<button class="btn pri" id="rematch" ${s.rematch[me] ? 'disabled' : ''}>${s.rematch[me] ? t('match.rematchWaiting') : t('match.rematch')}</button>` : ''}
+            ${!quick ? `<button class="btn pri" id="rematch">${t('match.backToRoom')}</button>` : ''}
             <button class="btn" id="menu">${t('match.menu')}</button>
           </div>
           ${quick && !alone ? `<p class="sub">${t('match.quickNote')}</p>` : ''}
           ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">${t('match.waitingFor', { names: list(waitingFor.map(htmlName)) })}</p>` : ''}
         </div>`)) {
-        if ($('new-room')) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), look: playerLook.chosen() });
         if ($('rematch')) $('rematch').onclick = () => send({ t: 'rematch' });
         if ($('find-new')) {
           $('find-new').onclick = () => {

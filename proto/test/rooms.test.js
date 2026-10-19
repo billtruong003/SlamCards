@@ -186,6 +186,82 @@ test('friends rooms drop idle players too: two timeouts in a row and out of the 
   } finally { srv.stop(); }
 });
 
+test('after a match a friends room goes back to its lobby: the link lets new friends in, settings change (V-05)', async () => {
+  const srv = await startServer({ backToLobby: 60000 });
+  try {
+    const [a, b] = await twoPlayerGame(srv.port);
+    b.send({ t: 'leave' }); // the quickest way to a match end
+    await a.waitState((st) => st.phase === 'matchEnd', 2000);
+    // someone new opens the invite link while the results are up
+    const c = await connect(srv.port);
+    c.send({ t: 'peek', code: a.code });
+    assert.equal((await c.next((m) => m.t === 'peek')).phase, 'lobby', 'the link reads as open');
+    c.send({ t: 'join', code: a.code, name: 'Mới' });
+    await c.next((m) => m.t === 'joined', 2000);
+    const lobbyState = await a.waitState((st) => st.phase === 'lobby' && Object.keys(st.players).length === 2, 2000);
+    assert.equal(lobbyState.last.winner, 'black');
+    a.send({ t: 'roomSettings', cap: 3, visibility: 'public' });
+    const changed = await a.waitState((st) => st.cap === 3, 2000);
+    assert.equal(changed.visibility, 'public');
+    c.send({ t: 'ready', ready: true });
+    await a.waitState((st) => st.ready[c.seat]);
+    a.send({ t: 'start' });
+    await a.waitState((st) => st.phase !== 'lobby', 2000);
+  } finally { srv.stop(); }
+});
+
+test('a friends room goes back to its lobby by itself after the results', async () => {
+  const srv = await startServer({ backToLobby: 300 });
+  try {
+    const [a, b] = await twoPlayerGame(srv.port);
+    b.send({ t: 'leave' });
+    await a.waitState((st) => st.phase === 'matchEnd', 2000);
+    await a.waitState((st) => st.phase === 'lobby', 2000);
+  } finally { srv.stop(); }
+});
+
+test('host tools: send a guest out, add a computer player that is ready and labelled, play with it', async () => {
+  const srv = await startServer({ turn: 20000 });
+  try {
+    const [host, guest] = await lobby(srv.port, 2);
+    host.send({ t: 'kick', seat: guest.seat });
+    assert.equal((await guest.next((m) => m.t === 'error')).code, 'kicked');
+    await host.waitState((st) => !st.players[guest.seat]);
+    guest.send({ t: 'kick', seat: host.seat }); // a guest has no such power (and is out anyway)
+    host.send({ t: 'addBot' });
+    const withBot = await host.waitState((st) => Object.keys(st.players).length === 2);
+    const botSeat = Object.keys(withBot.players).find((s) => s !== host.seat);
+    assert.equal(withBot.players[botSeat].bot, true, 'a friends room says which seat is a computer player');
+    assert.equal(withBot.ready[botSeat], true);
+    host.send({ t: 'start' });
+    await host.waitState((st) => st.phase !== 'lobby', 2000);
+    // rock-paper-scissors against the bot, then its turn arrives here to simulate
+    // pick until it is not a draw; if the host wins, the bot goes first
+    for (let i = 0; i < 10; i++) {
+      const st = await host.waitState((x) => ['rps', 'choose', 'turn'].includes(x.phase) && !(x.phase === 'rps' && x.rpsChosen[host.seat]), 8000);
+      if (st.phase === 'rps') host.send({ t: 'rps', choice: 'bua' });
+      else if (st.phase === 'choose' && st.rpsWinner === host.seat) host.send({ t: 'choose', first: false });
+      if (st.phase === 'turn' || (st.phase === 'choose' && st.rpsWinner !== host.seat)) break;
+      await host.waitState((x) => x !== st, 8000);
+    }
+    // if the host goes first, a pass hands the turn to the bot
+    const turn = await host.waitState((st) => st.phase === 'turn', 8000);
+    if (turn.turn === host.seat) host.send({ t: 'pass', impact: near(turn.cards[host.seat], 2.9) });
+    await host.next((m) => m.t === 'simSlam', 20000);
+  } finally { srv.stop(); }
+});
+
+test('a lobby host gone a while hands the crown on, and keeps the seat', async () => {
+  const srv = await startServer({ hostHandoff: 200, lobbyHostDisconnect: 60000 });
+  try {
+    const [host, guest] = await lobby(srv.port, 2);
+    host.close();
+    const s = await guest.waitState((st) => st.host === guest.seat, 2000);
+    assert.ok(s.players[host.seat], 'the old host still has a seat');
+    assert.equal(s.players[host.seat].connected, false);
+  } finally { srv.stop(); }
+});
+
 test('leave button: out of the match at once, the others go on', async () => {
   const srv = await startServer({ disconnect: 60000 });
   try {
