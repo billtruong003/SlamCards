@@ -1,7 +1,7 @@
 // Edge cases: input validation, limits, invalid events per phase, match lifecycle.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startFrom, startServer, connect, lobby, twoPlayerGame, faceDown, faceUp, near, sleep } from './harness.js';
+import { startFrom, startServer, connect, lobby, twoPlayerGame, faceDown, faceUp, near, sleep, slamTo } from './harness.js';
 
 const quiet = async (client, ms = 250) => { await sleep(ms); return client.state; };
 
@@ -164,9 +164,7 @@ test('fall: slammer is out and other fallen cards are put back', async () => {
   try {
     const [a, b] = await twoPlayerGame(srv.port);
     const before = a.state.cards;
-    a.send({ t: 'slamStart', impact: near(before.black), type: 'flat' });
-    await b.next((m) => m.t === 'playStart');
-    a.send({ t: 'slamEnd', final: { black: faceDown(-1, 0), pink: faceDown(9, 0, -1) } });
+    await slamTo(a, { black: faceDown(-1, 0), pink: faceDown(9, 0, -1) });
     b.send({ t: 'playbackDone' });
     const end = await a.waitState((s) => s.phase === 'roundEnd');
     assert.equal(end.result.reason, 'fall');
@@ -178,9 +176,7 @@ test('own goal: the slammer\'s face-down card ending under the enemy face-up car
   const srv = await startServer();
   try {
     const [a, b] = await twoPlayerGame(srv.port);
-    a.send({ t: 'slamStart', impact: near(a.state.cards.black), type: 'flat' });
-    await b.next((m) => m.t === 'playStart');
-    a.send({ t: 'slamEnd', final: { black: faceDown(2, 0), pink: faceUp(2, 0, 0.024) } });
+    await slamTo(a, { black: faceDown(2, 0), pink: faceUp(2, 0, 0.024) });
     b.send({ t: 'playbackDone' });
     const end = await a.waitState((s) => s.phase === 'roundEnd');
     assert.equal(end.result.winner, 'pink');
@@ -263,9 +259,7 @@ test('full match to rematch: scores reset, a gone player is removed', async () =
       const slammer = players.find((p) => p.seat === s.turn);
       const final = { [s.turn]: faceUp(0, 0, 0.04) };
       players.filter((p) => p !== slammer).forEach((p, i) => { final[p.seat] = faceDown(0, 0, 0.008 + i * 0.016); });
-      slammer.send({ t: 'slamStart', impact: near(s.cards[s.turn]), type: 'flat' });
-      await sleep(50);
-      slammer.send({ t: 'slamEnd', final });
+      await slamTo(slammer, final);
       players.forEach((p) => p !== slammer && p.send({ t: 'playbackDone' }));
       await a.waitState((st) => st.phase === 'roundEnd' || st.phase === 'matchEnd', 3000)
         .catch((err) => { throw new Error(`${err.message}\n${srv.log()}`); });

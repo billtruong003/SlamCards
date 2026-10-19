@@ -4,13 +4,14 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
-import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '../src/rules.js';
+import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards, pointOnCard } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
 import { cleanName, cleanChat } from './names.js';
 import { withMeta } from './meta.js';
 import { adsConfig, adsFileClient, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
 import { startAdmin } from './ops.js';
+import { createSlamCheck } from './slam-check.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
 const PORT = Number(process.env.PORT) || 8097;
@@ -303,6 +304,19 @@ function cleanImpact(room, seat, impact) {
   return Math.hypot(x - card[0], z - card[2]) <= reach ? { x, z } : null;
 }
 
+// The slipper lands near the aim, never exactly on it (TUNE.handShake), and never on a card:
+// decided here so a client cannot aim with perfect precision.
+function shakeHand(room, aim) {
+  for (let i = 0; i < 12; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.sqrt(Math.random()) * TUNE.handShake;
+    const point = { x: aim.x + Math.cos(angle) * radius, z: aim.z + Math.sin(angle) * radius };
+    if (!onACard(room, point)) return point;
+  }
+  return aim;
+}
+const onACard = (room, point) => room.alive.some((s) => pointOnCard(room.cards[s], point.x, point.z));
+
 // ---------- match flow ----------
 
 function startMatch(room) {
@@ -448,21 +462,35 @@ function eliminateAfk(room, seat) {
 
 // A slam is streamed: start, frame chunks while the slammer simulates, then the final
 // resting state. Everyone else replays it live; the result applies once they have watched it.
+// The slammer gets where the slipper really landed and the seed of the spin luck (slamGo), and runs
+// the physics; every frame it streams is checked (slam-check.js) before the others see it.
 function startSlam(room, impact, type) {
   const by = room.turn;
   log(room, `slam start by ${by}`);
   room.passStreak[by] = 0;
   room.timeouts[by] = 0;
   const watchers = Object.entries(room.players).filter(([s, p]) => s !== by && p.connected).map(([s]) => s);
-  room.slam = { by, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers) };
+  room.slam = {
+    by, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers),
+    check: createSlamCheck({ seats: room.seats, start: room.cards, impact }),
+  };
   room.phase = 'anim';
   room.event = null;
-  for (const p of others(room, by)) send(p.ws, { t: 'playStart', by, impact, type: type === 'tilt' ? 'tilt' : 'flat' });
-  schedule(room, TIMING.slamMaxMs, () => abortSlam(room));
+  const slamType = type === 'tilt' ? 'tilt' : 'flat';
+  send(room.players[by].ws, { t: 'slamGo', impact, type: slamType, seed: crypto.randomInt(2 ** 31) });
+  for (const p of others(room, by)) send(p.ws, { t: 'playStart', by, impact, type: slamType });
+  schedule(room, TIMING.slamMaxMs, () => abortSlam(room, 'never finished'));
   broadcast(room);
 }
 
 function relayChunk(room, frames) {
+  for (const frame of frames) {
+    const why = room.slam.check.frame(frame);
+    if (why) {
+      abortSlam(room, `refused: ${why}`);
+      return;
+    }
+  }
   room.slam.frames += frames.length;
   const text = JSON.stringify({ t: 'playChunk', frames });
   // an offline seat has ws === null; `undefined === undefined` used to let it through and throw,
@@ -472,13 +500,19 @@ function relayChunk(room, frames) {
 
 function endSlam(room, final) {
   const { slam } = room;
+  const why = slam.check.end(final);
+  if (why) {
+    abortSlam(room, `refused: ${why}`);
+    return;
+  }
   slam.ended = true;
   slam.result = judge(final, slam.by, room.alive);
   const cards = { ...final };
   for (const seat of slam.result?.restore ?? []) cards[seat] = slam.previous[seat];
   for (const seat of slam.result?.eliminated ?? []) cards[seat] = PARKED;
   room.cards = parkInactive(room, cards);
-  log(room, `slam end by ${slam.by}, ${slam.frames} frames, result=${slam.result ? `${slam.result.reason}:${slam.result.eliminated}` : 'none'}`);
+  const peak = slam.check.stats();
+  log(room, `slam end by ${slam.by}, ${slam.frames} frames, peak step ${peak.step.toFixed(3)} turn ${peak.turn.toFixed(3)}, result=${slam.result ? `${slam.result.reason}:${slam.result.eliminated}` : 'none'}`);
   for (const p of others(room, slam.by)) send(p.ws, { t: 'playEnd', final });
   for (const s of [...slam.waiting]) if (!room.players[s]?.connected) slam.waiting.delete(s);
   if (!slam.waiting.size) finishSlam(room);
@@ -508,12 +542,14 @@ function finishSlam(room) {
   startTurn(room);
 }
 
-function abortSlam(room) {
+// A slam that never finished, or failed its check: the cards go back and the turn moves on.
+// Everyone hears it, the slammer included, whose own simulation stops.
+function abortSlam(room, why) {
   const { slam } = room;
-  log(room, `slam by ${slam.by} never finished, reverting`);
+  log(room, `slam by ${slam.by} ${why}, reverting`);
   room.cards = parkInactive(room, { ...slam.previous });
   room.slam = null;
-  for (const p of others(room, slam.by)) send(p.ws, { t: 'playAbort' });
+  sendAll(room, { t: 'playAbort' });
   room.turn = nextAlive(room, slam.by);
   startTurn(room);
 }
@@ -886,15 +922,17 @@ function handle(ws, msg) {
     return;
   }
 
-  if (msg.t === 'slamStart' && room.phase === 'turn' && seat === room.turn) {
-    const impact = cleanImpact(room, seat, msg.impact);
-    if (impact) startSlam(room, impact, msg.type);
+  // The aim (clients before the aim/seed exchange sent an already shaken `impact`): in reach and
+  // off the cards, or the slam is refused out loud so the client does not wait for an answer.
+  if (msg.t === 'slamStart') {
+    const aim = room.phase === 'turn' && seat === room.turn ? cleanImpact(room, seat, msg.aim ?? msg.impact) : null;
+    if (aim && !onACard(room, aim)) startSlam(room, shakeHand(room, aim), msg.type);
+    else send(ws, { t: 'slamRefused' });
     return;
   }
 
   const slamming = room.phase === 'anim' && room.slam && !room.slam.ended && room.slam.by === seat;
-  if (msg.t === 'slamChunk' && slamming && Array.isArray(msg.frames)
-    && room.slam.frames + msg.frames.length <= 1200) {
+  if (msg.t === 'slamChunk' && slamming && Array.isArray(msg.frames)) {
     relayChunk(room, msg.frames);
     return;
   }

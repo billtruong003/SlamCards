@@ -47,6 +47,26 @@ export function rotate(q, v) {
 
 const conjugate = ([x, y, z, w]) => [-x, -y, -z, w];
 
+// A point on the table, in a card's own frame (height ignored): the client's aim check and the
+// server's hand shake use the same test.
+export function pointOnCard(card, x, z, margin = 0) {
+  const local = rotate(conjugate(card.q), [x - card.p[0], 0, z - card.p[2]]);
+  return Math.abs(local[0]) < CARD_HALF_W + margin && Math.abs(local[2]) < CARD_HALF_D + margin;
+}
+
+// The same numbers on every machine for one seed (mulberry32). The server picks a slam's seed only
+// after the aim is in, so the slammer cannot re-roll the spin luck until a capture comes up.
+export function seededRandom(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 export const isFaceUp = (card) => rotate(card.q, [0, 1, 0])[1] > 0;
 export const hasFallen = (card) => card.p[1] < FALL_Y;
 

@@ -133,3 +133,69 @@ export function httpGet(port, rawPath) {
     req.end();
   });
 }
+
+// ---------- slams the server's check accepts (server/slam-check.js) ----------
+
+const round4 = (v) => Math.round(v * 1e4) / 1e4;
+function slerp(a, b, t) {
+  let dot = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+  const to = dot < 0 ? b.map((v) => -v) : b;
+  dot = Math.abs(dot);
+  if (dot > 0.9995) return a.map((v, i) => v + (to[i] - v) * t);
+  const theta = Math.acos(dot);
+  const s = Math.sin(theta);
+  return a.map((v, i) => (Math.sin((1 - t) * theta) * v + Math.sin(t * theta) * to[i]) / s);
+}
+const qAngle = (a, b) => 2 * Math.acos(Math.min(1, Math.abs(a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3])));
+const same = (a, b) => a.p.every((v, i) => Math.abs(v - b.p[i]) < 1e-4) && qAngle(a.q, b.q) < 1e-3;
+
+// Frames from `start` to `final` a real slam could have made: the slammer's card (the slipper reached it)
+// visits and nudges every other card that ends somewhere new, then each moving card glides to its final
+// spot, sideways first and then down (a card leaving the table drops only once it is past the edge).
+export function slamFrames(seats, start, final, slammer) {
+  const now = Object.fromEntries(seats.map((s) => [s, { p: [...start[s].p], q: [...start[s].q] }]));
+  const frames = [];
+  const push = () => frames.push(seats.flatMap((s) => [...now[s].p, ...now[s].q].map(round4)));
+  const glide = (seat, p, q = now[seat].q) => {
+    const from = now[seat];
+    const n = Math.max(1, Math.ceil(Math.max(Math.hypot(p[0] - from.p[0], p[1] - from.p[1], p[2] - from.p[2]) / 0.3, qAngle(from.q, q) / 0.8)));
+    const p0 = [...from.p];
+    const q0 = [...from.q];
+    for (let i = 1; i <= n; i++) {
+      const t = i / n;
+      now[seat] = { p: p0.map((v, k) => v + (p[k] - v) * t), q: slerp(q0, q, t) };
+      push();
+    }
+  };
+  push();
+  const movers = seats.filter((s) => start[s].p[1] > -10 && !same(start[s], final[s]));
+  for (const m of movers.filter((s) => s !== slammer)) {
+    const target = now[m].p;
+    const lead = now[slammer].p;
+    const d = Math.hypot(target[0] - lead[0], target[2] - lead[2]) || 1;
+    glide(slammer, [target[0] + ((lead[0] - target[0]) / d) * 1.2, lead[1], target[2] + ((lead[2] - target[2]) / d) * 1.2]);
+    glide(m, [target[0] + 0.03, target[1], target[2]]);
+  }
+  for (const m of movers.length && !movers.includes(slammer) ? [slammer, ...movers] : movers) {
+    const f = final[m];
+    glide(m, [f.p[0], Math.max(now[m].p[1], f.p[1]), f.p[2]], f.q);
+    glide(m, f.p, f.q);
+  }
+  return frames;
+}
+
+// The slammer slams near its own card, gets the server's answer, streams frames to `final`
+// (seats missing from it stay put) and ends the slam. Watchers still send their own playbackDone.
+export async function slamTo(slammer, final, { type = 'flat', during } = {}) {
+  const { seats, cards } = slammer.state;
+  slammer.send({ t: 'slamStart', aim: near(cards[slammer.seat]), type });
+  const go = await slammer.next((m) => m.t === 'slamGo' || m.t === 'slamRefused');
+  if (go.t !== 'slamGo') throw new Error('slam refused');
+  await during?.();
+  const full = Object.fromEntries(seats.map((s) => [s, final[s] ?? cards[s]]));
+  const frames = slamFrames(seats, cards, full, slammer.seat);
+  for (let i = 0; i < frames.length; i += 6) slammer.send({ t: 'slamChunk', frames: frames.slice(i, i + 6) });
+  const last = frames[frames.length - 1];
+  slammer.send({ t: 'slamEnd', final: Object.fromEntries(seats.map((s, i) => [s, { p: last.slice(i * 7, i * 7 + 3), q: last.slice(i * 7 + 3, i * 7 + 7) }])) });
+  return go;
+}

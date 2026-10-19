@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { World } from './world.js';
 import { Visuals } from './visuals.js';
 import { TUNE } from './config.js';
-import { SEATS, ROUNDS_TO_WIN, FALL_Y, MAX_PLAYERS } from './rules.js';
+import { SEATS, ROUNDS_TO_WIN, FALL_Y, MAX_PLAYERS, seededRandom } from './rules.js';
 import { thump, chime } from './sound.js';
 import { playMusic, refreshMusic } from './music.js';
 import { getLevel, setLevel, setMuted } from './audio.js';
@@ -323,6 +323,7 @@ function leaveRoom() {
   roomCode = null;
   pendingPeek = null;
   sim = null;
+  pendingSlam = null;
   playback = null;
   awaitingServer = false;
   appliedCardsKey = '';
@@ -637,8 +638,14 @@ function onMessage(msg) {
       playback.final = msg.final;
       playback.ended = true;
     }
-  } else if (msg.t === 'playAbort') {
+  } else if (msg.t === 'slamGo') {
+    onSlamGo(msg);
+  } else if (msg.t === 'slamRefused' || msg.t === 'playAbort') {
+    // a slam the server would not start, or threw out (too late, or failed its check): back to its cards
+    pendingSlam = null;
+    sim = null;
     playback = null;
+    awaitingServer = false;
     resyncCards();
   } else if (msg.t === 'pong') {
     lastPong = performance.now();
@@ -1696,38 +1703,62 @@ function shakeHand(point) {
   return point.clone();
 }
 
+// A slam in flight. The aim goes to the server at once and the slipper starts falling toward it;
+// the server answers with where the shaking hand actually lands and the seed of the spin luck
+// (slamGo), and the slipper slides to that point. Physics starts once it has landed and the answer
+// is in: on a normal connection the answer beats the 140 ms fall, so nothing waits.
+let pendingSlam = null;
+
 function slam(aim) {
   awaitingServer = true;
   ftue.onSlam();
   visuals.hideAim();
-  const impact = shakeHand(aim);
   const type = slamType;
-  const effects = world.slamEffects(impact, type);
-  const impactMsg = { x: impact.x, z: impact.z };
 
-  if (effects.length === 0) {
+  // a slap that reaches no card is a pass: nothing to simulate, the server only hears where it fell
+  if (world.slamEffects(aim, type).length === 0) {
+    const impact = shakeHand(aim);
     visuals.dropDep(impact, () => {
       impactFx(impact, 0.25, 0.4);
-      send({ t: 'pass', impact: impactMsg });
+      send({ t: 'pass', impact: { x: impact.x, z: impact.z } });
     }, depOf(me), depColorsOf(me));
     return;
   }
 
-  visuals.dropDep(impact, () => {
-    const strength = Math.max(...effects.map((e) => e.strength));
-    impactFx(impact, strength, 0.5 + strength * 0.5);
-    popText(impact, t('card.pop'));
-    send({ t: 'slamStart', impact: impactMsg, type });
-    setTimeout(() => {
-      world.applySlam(impact, type);
-      sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, impact: impactMsg, type };
-      petsRun();
-    }, TUNE.hitstopMs);
+  const pending = { target: aim.clone(), type, go: null, landed: false };
+  pendingSlam = pending;
+  send({ t: 'slamStart', aim: { x: aim.x, z: aim.z }, type });
+  visuals.dropDep(pending.target, () => {
+    pending.landed = true;
+    beginSlam(pending);
   }, depOf(me), depColorsOf(me));
 }
 
+function onSlamGo(msg) {
+  const pending = pendingSlam;
+  if (!pending) return;
+  pending.go = msg;
+  pending.target.set(msg.impact.x, 0, msg.impact.z);
+  beginSlam(pending);
+}
+
+function beginSlam(pending) {
+  if (pendingSlam !== pending || !pending.landed || !pending.go) return;
+  pendingSlam = null;
+  const { target: impact, type, go } = pending;
+  const effects = world.slamEffects(impact, type);
+  const strength = effects.length ? Math.max(...effects.map((e) => e.strength)) : 0.25;
+  impactFx(impact, strength, 0.5 + strength * 0.5);
+  popText(impact, t('card.pop'));
+  setTimeout(() => {
+    world.applySlam(impact, type, seededRandom(go.seed));
+    sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, impact: { x: impact.x, z: impact.z }, type };
+    petsRun();
+  }, TUNE.hitstopMs);
+}
+
 function autoSlam() {
-  if (!state || state.phase !== 'turn' || state.turn !== me || sim || playback) return;
+  if (!state || state.phase !== 'turn' || state.turn !== me || sim || playback || pendingSlam) return;
   const mine = world.cards[me].mesh.position;
   for (let i = 0; i < 60; i++) {
     const angle = Math.random() * Math.PI * 2;
@@ -1762,6 +1793,7 @@ function stepSim(now) {
 
   const final = world.readCards();
   const local = sim.local;
+  if (local) lastLocalFrames = sim.frames;
   if (!local) {
     flushChunk();
     send({ t: 'slamEnd', final });
@@ -1965,6 +1997,8 @@ if (new URLSearchParams(location.search).has('debug')) {
     turnMsLeft: () => (state?.phase === 'turn' ? turnMsLeft() : 0),
     place: (cards) => world.setCards(cards),
     effects: (x, z, type = 'flat') => world.slamEffects(new THREE.Vector3(x, 0, z), type),
+    // the frames of the last localSlam (qa/slam-record.mjs feeds them to the server's slam check)
+    get lastLocalFrames() { return lastLocalFrames; },
     localSlam: (x, z, type = 'flat') => {
       world.applySlam(new THREE.Vector3(x, 0, z), type);
       sim = { frames: [], sent: 0, acc: 0, last: performance.now(), steps: 0, calm: 0, local: true, type };

@@ -1,7 +1,7 @@
 // End-to-end tests against a real server process: node --test test/
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startServer, connect, lobby, twoPlayerGame, threePlayerGame, faceDown, faceUp, near, bySeat, httpGet, sleep } from './harness.js';
+import { startServer, connect, lobby, twoPlayerGame, threePlayerGame, faceDown, faceUp, near, bySeat, httpGet, sleep, slamTo, slamFrames } from './harness.js';
 
 test('S1: malformed websocket messages do not crash the server', async () => {
   const srv = await startServer();
@@ -107,9 +107,7 @@ test('capture: face-up card on a face-down card ends the round', async () => {
   const srv = await startServer();
   try {
     const [a, b] = await twoPlayerGame(srv.port);
-    a.send({ t: 'slamStart', impact: near(a.state.cards.black), type: 'flat' });
-    await b.next((m) => m.t === 'playStart');
-    a.send({ t: 'slamEnd', final: { black: faceUp(1, 0, 0.024), pink: faceDown(1, 0) } });
+    await slamTo(a, { black: faceUp(1, 0, 0.024), pink: faceDown(1, 0) });
     await b.next((m) => m.t === 'playEnd');
     b.send({ t: 'playbackDone' });
     const end = await a.waitState((s) => s.phase === 'roundEnd');
@@ -128,11 +126,13 @@ test('D2: a player dropped mid-slam keeps a parked card, even if the slammer rep
     const leaver = players.find((p) => p.seat !== turn);
     const stayer = players.find((p) => p !== slammer && p !== leaver);
     const cards = slammer.state.cards;
-    slammer.send({ t: 'slamStart', impact: near(cards[turn]), type: 'flat' });
-    await stayer.next((m) => m.t === 'playStart');
-    leaver.close();
-    await stayer.waitState((s) => !s.alive.includes(leaver.seat));
-    slammer.send({ t: 'slamEnd', final: { ...cards } });
+    await slamTo(slammer, { ...cards }, {
+      during: async () => {
+        await stayer.next((m) => m.t === 'playStart');
+        leaver.close();
+        await stayer.waitState((s) => !s.alive.includes(leaver.seat));
+      },
+    });
     stayer.send({ t: 'playbackDone' });
     const after = await stayer.waitState((s) => s.phase === 'turn');
     assert.equal(after.cards[leaver.seat].p[1], -50, `left player card stays parked\n${srv.log()}${JSON.stringify(after.alive)} ${after.phase}`);
@@ -152,7 +152,8 @@ test('slam frames still reach the others when an earlier seat is offline', async
     await stayer.waitState((s) => s.players[leaver.seat].connected === false);
     slammer.send({ t: 'slamStart', impact: near(slammer.state.cards[turn]), type: 'flat' });
     await stayer.next((m) => m.t === 'playStart');
-    slammer.send({ t: 'slamChunk', frames: [[0, 0, 0, 0, 0, 0, 1]] });
+    const { seats, cards } = slammer.state;
+    slammer.send({ t: 'slamChunk', frames: slamFrames(seats, cards, cards, turn).slice(0, 1) });
     const chunk = await stayer.next((m) => m.t === 'playChunk', 2000);
     assert.equal(chunk.frames.length, 1);
     assert.doesNotMatch(srv.log(), /slamChunk failed/);
@@ -185,9 +186,7 @@ test('L1: the round winner leaving during the round-end screen does not corrupt 
     const rest = players.filter((p) => p !== winner);
     const final = { [turn]: faceUp(0, 0, 0.04) };
     rest.forEach((p, i) => { final[p.seat] = faceDown(0, 0, 0.008 + i * 0.016); });
-    winner.send({ t: 'slamStart', impact: near(winner.state.cards[turn]), type: 'flat' });
-    await rest[0].next((m) => m.t === 'playStart');
-    winner.send({ t: 'slamEnd', final });
+    await slamTo(winner, final);
     rest.forEach((p) => p.send({ t: 'playbackDone' }));
     await rest[0].waitState((s) => s.phase === 'roundEnd');
     winner.close();

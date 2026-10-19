@@ -1,7 +1,7 @@
 // Server stability: a seat that is removed must take its pending timers with it (V-01).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startServer, connect, lobby, startFrom, sleep, faceDown, faceUp, near } from './harness.js';
+import { startServer, connect, lobby, startFrom, sleep, faceDown, faceUp, slamTo } from './harness.js';
 
 // The grace timer of a guest who dropped in the lobby must not fire after Start removed that seat.
 test('start with a disconnected guest: their grace timer does not crash the server later', async () => {
@@ -37,9 +37,7 @@ test('rematch without a disconnected player: their grace timer does not crash th
       const slammer = players.find((p) => p.seat === s.turn);
       const final = { [s.turn]: faceUp(0, 0, 0.04) };
       players.filter((p) => p !== slammer).forEach((p, i) => { final[p.seat] = faceDown(0, 0, 0.008 + i * 0.016); });
-      slammer.send({ t: 'slamStart', impact: near(s.cards[s.turn]), type: 'flat' });
-      await sleep(50);
-      slammer.send({ t: 'slamEnd', final });
+      await slamTo(slammer, final);
       players.forEach((p) => p !== slammer && p.send({ t: 'playbackDone' }));
       await a.waitState((st) => st.phase === 'roundEnd' || st.phase === 'matchEnd', 3000);
     }

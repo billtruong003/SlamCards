@@ -88,7 +88,7 @@ Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (
 - [x] **1.04** Tắt meme mặc định, bỏ ảnh có bản quyền và mặt người thật — S
 - [x] **1.05** Báo bảo trì trước deploy, chặn trận mới; xem số phòng/người theo pha; báo khi server khởi động lại — M. Cổng quản trị 127.0.0.1:8197 (`/status`, `/drain`, `/undrain`); deploy.sh tự drain và chờ hết trận
 - [x] **1.06** Phản hồi khi mất WebGL hoặc mạng chặn WebSocket — S
-- [ ] **1.07** Server kiểm kết quả cú đập có hợp lý (cần trước Phase 2) (V-23) — M–L
+- [x] **1.07** Server kiểm cú đập: client gửi chỗ ngắm trước, server quyết rung tay + seed may rủi; từng khung hình bị kiểm (tốc độ, chỉ bài bị chạm mới được di chuyển, không xuyên bàn, không bay, ≤7 giây), kết quả phải trùng khung cuối; sai thì trả bài về, qua lượt (V-23). Đo 747 cú đập thật: 0 bị chặn nhầm — M–L
 - [ ] **1.08** Sự kiện đo lường: cú đập đầu, trận đầu, xem hướng dẫn, thời gian chờ, độ dài trận, quay lại ngày 2 — M
 - [ ] **1.10** Mọi màn vừa 1 màn hình 360×640 → 430×932 và laptop 1366×768 (cả Windows 125%): màn chính, sảnh 4 người (nút Bắt đầu), hàng chờ, trận, kết quả (B-02) — L
 - [ ] **1.11** Hướng dẫn 4 ô bắt buộc lần đầu, có luật hết giờ 2 lần là thua; hiện cả ở Chơi ngay lúc chờ; mockup cho Bill duyệt trước (B-01, B-04, F-02..F-08) — M
@@ -123,6 +123,7 @@ Kinh tế đã duyệt: tiền/trận 2p 100/40, 3p 110/60/40, 4p 120/75/55/40 (
 - [ ] **2.10** Banner đối tác (streamer, Refund Gaming) có thời hạn — M
 - [ ] **2.11** Quà hằng ngày theo giờ server (Bill chốt làm) — S–M
 - [ ] **2.12** Báo cáo / tắt tiếng một người chơi — M
+- [ ] **2.13** Kiểm tra phát lại vật lý trên server (lấy mẫu, chạy sau trận) cho trận có điểm/bảng xếp hạng: chạy lại cú đập với cùng seed, lệch nhiều thì gắn cờ người chơi — L
 
 ### Để sau (chưa xếp phase)
 - Mời bằng QR; chơi chung một máy; chế độ streamer; trận 1 round; xem trận phòng công khai; hồ sơ riêng cho máy dùng chung.
