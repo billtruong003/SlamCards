@@ -114,6 +114,7 @@ Tiến độ 19/10: xong 1.01–1.09 (đã commit trên nhánh `fix/stability-an
 - [ ] **1.38** Lỗi console khi tải pet: `THREE.GLTFLoader: Couldn't load texture Textures/colormap.png` (thấy khi QA 2 trình duyệt, có từ trước): tìm nguyên nhân, xem pet có thiếu màu không — S
 - [ ] **1.39** Mang "chất lộn xộn" của trailer vào các màn khác (sảnh, kết quả, chờ ghép): chữ nghiêng, sticker tràn khung, màu như trailer — M. *Chờ Bill xác nhận (Q9)*
 - [ ] **1.40** Dọn script QA tạm `qa/_look.mjs`, `qa/_ux-4p.mjs`, `qa/_ux-fall-rate.mjs`: giữ thành script chính thức hay xoá (Q12) — S
+- [ ] **1.41** Icon màu bài (♥ ◆ ★ ♣) đang chán: lên ý tưởng bộ icon mới + mockup Design (session card-icons đang làm), Bill duyệt, **làm sau khi xong Phase 1** — S–M
 
 ### Phase 2 — tiến trình và sưu tầm
 - [ ] **2.01** Cloudflare Worker + D1: mã máy có chữ ký, chỉ server game ghi, sổ tiền, xoá máy không vào quá 30 ngày — L
