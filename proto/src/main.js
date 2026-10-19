@@ -901,14 +901,18 @@ function setOverlay(key, html, { clear = false } = {}) {
 }
 
 // First visit: the name box starts with a random silly name, so a friend opening an invite link
-// can press one button and play (UX-07). It is saved at once, so the next visit shows the same name.
+// can press one button and play (UX-07). The suggestion stays the same while the page is open and
+// is kept once the player types or goes; it is not saved just for being shown, since a saved name
+// is what lets an invite link skip the name box.
 const randomName = () => {
   const names = t('menu.randomNames').split('|').map((n) => n.trim()).filter(Boolean);
   return names[Math.floor(Math.random() * names.length)] ?? '';
 };
+let suggestedName = '';
 function nameField() {
+  const value = playerName.get() || (suggestedName ||= randomName());
   return `<label class="name-field">${t('menu.nameLabel')}
-    <input class="input name" id="name" maxlength="16" placeholder="${escapeHtml(t('menu.namePlaceholder'))}" value="${escapeHtml(currentName())}" autocomplete="nickname">
+    <input class="input name" id="name" maxlength="16" placeholder="${escapeHtml(t('menu.namePlaceholder'))}" value="${escapeHtml(value)}" autocomplete="nickname">
   </label>`;
 }
 // Whatever screen shows the name box, the name is kept as it is typed (Telex and other input
