@@ -226,6 +226,7 @@
   "toast.capture": "{by}收走了{out}的卡！",
   "toast.left": "{out}退出对局了。",
   "toast.dropped": "{names}掉线了！最多等60秒…",
+  "toast.nameBlocked": "这个名字不能用，暂时叫你 {name}，可以在主页改。",
   "net.lost": "掉线了！正在重连…",
   "net.lag": "有点卡…",
   "net.failTitle": "连不上服务器！",

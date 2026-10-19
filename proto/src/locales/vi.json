@@ -226,6 +226,7 @@
   "toast.capture": "{by} ăn bài của {out}!",
   "toast.left": "{out} rời trận rồi.",
   "toast.dropped": "{names} mất kết nối! Đợi tối đa 60 giây…",
+  "toast.nameBlocked": "Tên đó không dùng được, tạm gọi bạn là {name}. Đổi ở màn chính nhé.",
   "net.lost": "Mất kết nối! Đang nối lại…",
   "net.lag": "Mạng hơi lag…",
   "net.failTitle": "Không nối được server!",

@@ -1130,6 +1130,10 @@
     "max": 50,
     "id": "E7"
   },
+  "toast.nameBlocked": {
+    "where": "Toast after joining: the typed name was blocked by the swear-word filter; {name} is the neutral stand-in the game uses instead",
+    "max": 90
+  },
   "net.lost": {
     "where": "Toast: your connection dropped, reconnecting",
     "max": 30,

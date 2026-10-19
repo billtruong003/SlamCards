@@ -226,6 +226,7 @@
   "toast.capture": "{by} pegou a carta de {out}!",
   "toast.left": "{out} saiu da partida.",
   "toast.dropped": "{names} desconectou! Esperando até 60 segundos…",
+  "toast.nameBlocked": "Esse nome não é permitido, por enquanto você é {name}. Mude na tela inicial.",
   "net.lost": "Caiu a conexão! Reconectando…",
   "net.lag": "Tá dando lag…",
   "net.failTitle": "Não conectou ao servidor!",

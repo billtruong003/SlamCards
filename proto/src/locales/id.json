@@ -226,6 +226,7 @@
   "toast.capture": "{by} merebut kartu {out}!",
   "toast.left": "{out} keluar dari laga.",
   "toast.dropped": "{names} putus koneksi! Tunggu maksimal 60 detik…",
+  "toast.nameBlocked": "Nama itu tidak boleh, sementara kamu jadi {name}. Ganti di layar utama.",
   "net.lost": "Putus! Menyambung lagi…",
   "net.lag": "Agak lag nih…",
   "net.failTitle": "Nggak bisa terhubung!",

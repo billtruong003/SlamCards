@@ -226,6 +226,7 @@
   "toast.capture": "{by}が{out}のカードを取った！",
   "toast.left": "{out}が対戦を抜けたよ。",
   "toast.dropped": "{names}の接続が切れた！ 最大60秒待つよ…",
+  "toast.nameBlocked": "その名前は使えないので、いまは {name} だよ。ホーム画面で変えてね。",
   "net.lost": "接続が切れた！ 再接続中…",
   "net.lag": "ちょっとラグい…",
   "net.failTitle": "サーバーにつながらない！",

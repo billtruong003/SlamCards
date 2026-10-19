@@ -226,6 +226,7 @@
   "toast.capture": "{by}의 카드가 {out}의 카드를 덮었어!",
   "toast.left": "{out} 게임을 나갔어.",
   "toast.dropped": "{names} 연결 끊김! 최대 60초 기다리는 중…",
+  "toast.nameBlocked": "그 이름은 쓸 수 없어서 지금은 {name}(으)로 불러요. 홈 화면에서 바꿔 주세요.",
   "net.lost": "연결 끊김! 다시 연결 중…",
   "net.lag": "조금 끊기네…",
   "net.failTitle": "서버에 연결할 수 없어!",

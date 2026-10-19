@@ -525,6 +525,11 @@ function onMessage(msg) {
     history.replaceState(null, '', `?room=${roomCode}`);
     lastPong = performance.now();
     hideToast();
+    // the server refused the name (swear-word filter): keep its stand-in so the next room gets it too
+    if (msg.nameBlocked && msg.name) {
+      playerName.set(msg.name);
+      showToast(t('toast.nameBlocked', { name: msg.name }), 3500);
+    }
   } else if (msg.t === 'peek') {
     onPeek(msg);
   } else if (msg.t === 'replaced') {
@@ -817,16 +822,24 @@ function setOverlay(key, html, { clear = false } = {}) {
 }
 
 // First visit: the name box starts with a random silly name, so a friend opening an invite link
-// can press one button and play (UX-07). It is only saved once they actually go.
+// can press one button and play (UX-07). It is saved at once, so the next visit shows the same name.
 const randomName = () => {
   const names = t('menu.randomNames').split('|').map((n) => n.trim()).filter(Boolean);
   return names[Math.floor(Math.random() * names.length)] ?? '';
 };
 function nameField() {
   return `<label class="name-field">${t('menu.nameLabel')}
-    <input class="input name" id="name" maxlength="16" placeholder="${escapeHtml(t('menu.namePlaceholder'))}" value="${escapeHtml(playerName.get() || randomName())}" autocomplete="nickname">
+    <input class="input name" id="name" maxlength="16" placeholder="${escapeHtml(t('menu.namePlaceholder'))}" value="${escapeHtml(currentName())}" autocomplete="nickname">
   </label>`;
 }
+// Whatever screen shows the name box, the name is kept as it is typed (Telex and other input
+// methods included: the last input event carries the finished word). Re-rendering the screen,
+// opening the wardrobe or closing the tab never loses it; an emptied box keeps the last name (V-02).
+els.overlay.addEventListener('input', (e) => {
+  if (e.target.id !== 'name') return;
+  const name = e.target.value.trim().slice(0, 16);
+  if (name) playerName.set(name);
+});
 
 function readName() {
   const name = $('name').value.trim().slice(0, 16);

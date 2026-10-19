@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { SEATS, MAX_PLAYERS, ROUNDS_TO_WIN, PARKED, judge, initialCards } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
-import { cleanName as cleanNameText, cleanChat } from './names.js';
+import { cleanName, cleanChat } from './names.js';
 import { withMeta } from './meta.js';
 import { adsConfig, adsFileClient, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
@@ -113,18 +113,25 @@ const DEPS = ['dep_lao', 'dep_to_ong', 'dep_le'];
 const DEFAULT_DEP = { black: 'dep_lao', pink: 'dep_le', blue: 'dep_to_ong', green: 'dep_lao' };
 const cleanDep = (dep, seat) => (DEPS.includes(dep) ? dep : DEFAULT_DEP[seat]);
 
-// Control characters and angle brackets out, 16 characters, and no swear words (names.js):
-// strangers see each other's names in quick matches.
-const cleanName = (name) => cleanNameText(name) || `Dép #${crypto.randomInt(10, 100)}`;
+// The name a player asked for: control characters and angle brackets out, 16 characters, no swear
+// words (names.js), since strangers see each other's names. An empty or blocked one gets a neutral
+// stand-in; `blocked` lets the client replace the name it keeps sending (V-02).
+function askedName(raw) {
+  const name = cleanName(raw);
+  return { name: name || `Dép #${crypto.randomInt(10, 100)}`, blocked: !name && String(raw ?? '').trim() !== '' };
+}
 
 // A new player's look: their pick, with the card colour moved to a free one if it is taken
 // (seat order first) and a default pet for the seat when they have none yet.
-function makePlayer(room, seat, msg) {
+function makePlayer(room, seat, asked, msg) {
   const look = cleanLook(msg.look ?? { dep: msg.dep }, cleanDep(msg.dep, seat));
   const taken = new Set(Object.values(room.players).map((p) => p.cardColor));
   const wanted = look.cardColor && !taken.has(look.cardColor) ? look.cardColor : null;
   const cardColor = wanted ?? [SEAT_DEFAULTS[seat].cardColor, ...CARD_COLOR_IDS].find((c) => !taken.has(c));
-  return { token: crypto.randomUUID(), name: uniqueName(room, cleanName(msg.name)), ...look, pet: look.pet ?? SEAT_DEFAULTS[seat].pet, cardColor };
+  return {
+    token: crypto.randomUUID(), name: uniqueName(room, asked.name), nameBlocked: asked.blocked,
+    ...look, pet: look.pet ?? SEAT_DEFAULTS[seat].pet, cardColor,
+  };
 }
 
 // Two players with the same name get a number: "Tí vô danh", "Tí vô danh 2".
@@ -622,7 +629,8 @@ function attach(ws, room, seat, player) {
   player.connected = true;
   clearTimeout(player.discTimer);
   ws.ctx = { room, seat };
-  send(ws, { t: 'joined', code: room.code, color: seat, token: player.token });
+  // the name the room shows (de-duplicated, or a stand-in for a blocked one), so the client can show and keep it
+  send(ws, { t: 'joined', code: room.code, color: seat, token: player.token, name: player.name, nameBlocked: player.nameBlocked });
   if (room.chat?.length) send(ws, { t: 'chatLog', lines: room.chat });
   broadcast(room);
 }
@@ -698,7 +706,7 @@ function handle(ws, msg) {
       visibility: msg.visibility === 'public' ? 'public' : 'private',
       cap: [2, 3, 4].includes(msg.cap) ? msg.cap : MAX_PLAYERS,
     });
-    const player = makePlayer(room, 'black', msg);
+    const player = makePlayer(room, 'black', askedName(msg.name), msg);
     refs.joined(ws);
     room.players.black = player;
     room.host = 'black';
@@ -745,7 +753,7 @@ function handle(ws, msg) {
       send(ws, { t: 'error', code: 'full', message: 'Phòng đủ 4 đứa rồi, vào không được!' });
       return;
     }
-    const player = makePlayer(room, seat, msg);
+    const player = makePlayer(room, seat, askedName(msg.name), msg);
     refs.joined(ws);
     leaveQueue(ws);
     room.players[seat] = player;
@@ -913,14 +921,15 @@ function publicRooms() {
 // 'any' players; 'any' players on their own start once 2 are found and a short countdown runs
 // out (or 4 are found). Everyone in the queue hears who would come with them.
 
-const queue = []; // { ws, name, dep, size: 'any' | 2 | 3 | 4, at }
+const queue = []; // { ws, asked: askedName(), name, dep, look, size: 'any' | 2 | 3 | 4, at }
 let anyCountdownAt = 0;
 
 function joinQueue(ws, msg) {
   leaveQueue(ws);
   const size = [2, 3, 4].includes(msg.size) ? msg.size : 'any';
   const look = cleanLook(msg.look ?? { dep: msg.dep });
-  queue.push({ ws, name: cleanName(msg.name), dep: look.dep, look, size, at: Date.now() });
+  const asked = askedName(msg.name);
+  queue.push({ ws, asked, name: asked.name, dep: look.dep, look, size, at: Date.now() });
   matchQueue();
 }
 
@@ -934,7 +943,7 @@ function startQuickRoom(entries) {
   entries.forEach((e, i) => {
     leaveQueue(e.ws);
     const seat = SEATS[i];
-    const player = makePlayer(room, seat, { name: e.name, look: e.look });
+    const player = makePlayer(room, seat, e.asked, { look: e.look });
     refs.joined(e.ws);
     room.players[seat] = player;
     room.joinOrder.push(seat);

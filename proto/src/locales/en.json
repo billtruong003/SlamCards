@@ -226,6 +226,7 @@
   "toast.capture": "{by} knocked out {out}!",
   "toast.left": "{out} left the match.",
   "toast.dropped": "{names} disconnected! Waiting up to 60 seconds…",
+  "toast.nameBlocked": "That name isn't allowed, you're {name} for now. Change it on the home screen.",
   "net.lost": "Disconnected! Reconnecting…",
   "net.lag": "Bit of lag…",
   "net.failTitle": "Can't reach the server!",

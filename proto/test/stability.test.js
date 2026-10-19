@@ -1,7 +1,7 @@
 // Server stability: a seat that is removed must take its pending timers with it (V-01).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { startServer, lobby, startFrom, sleep, faceDown, faceUp, near } from './harness.js';
+import { startServer, connect, lobby, startFrom, sleep, faceDown, faceUp, near } from './harness.js';
 
 // The grace timer of a guest who dropped in the lobby must not fire after Start removed that seat.
 test('start with a disconnected guest: their grace timer does not crash the server later', async () => {
@@ -54,5 +54,36 @@ test('rematch without a disconnected player: their grace timer does not crash th
     assert.equal(srv.exited(), false, srv.log());
     a.send({ t: 'ping', at: 1 });
     await a.next((m) => m.t === 'pong');
+  } finally { srv.stop(); }
+});
+
+// The client keeps what the server calls it: the de-duplicated name, or a stand-in for a blocked one (V-02).
+test('joined carries the final name, and says when the asked name was blocked', async () => {
+  const srv = await startServer();
+  try {
+    const host = await connect(srv.port);
+    host.send({ t: 'create', name: 'Tí' });
+    const made = await host.next((m) => m.t === 'joined');
+    assert.equal(made.name, 'Tí');
+    assert.equal(made.nameBlocked, false);
+    const twin = await connect(srv.port);
+    twin.send({ t: 'join', code: host.code, name: 'Tí' });
+    const second = await twin.next((m) => m.t === 'joined');
+    assert.equal(second.name, 'Tí 2');
+    assert.equal(second.nameBlocked, false);
+    const rude = await connect(srv.port);
+    rude.send({ t: 'join', code: host.code, name: 'đ.ị.t' });
+    const third = await rude.next((m) => m.t === 'joined');
+    assert.match(third.name, /^Dép #\d+$/);
+    assert.equal(third.nameBlocked, true);
+    // quick match goes through the queue: same answer
+    const q1 = await connect(srv.port);
+    const q2 = await connect(srv.port);
+    q1.send({ t: 'queue', size: 2, name: 'fuck' });
+    q2.send({ t: 'queue', size: 2, name: 'Tèo' });
+    const [j1, j2] = await Promise.all([q1.next((m) => m.t === 'joined'), q2.next((m) => m.t === 'joined')]);
+    assert.equal(j1.nameBlocked, true);
+    assert.equal(j2.name, 'Tèo');
+    assert.equal(j2.nameBlocked, false);
   } finally { srv.stop(); }
 });
