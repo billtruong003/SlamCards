@@ -256,15 +256,20 @@ const playerName = {
   set: (name) => { try { localStorage.setItem('slam-name', name); } catch { /* private mode */ } },
 };
 
-// What this player wears (catalog.js): kept on the device, sent with create / join / queue.
-// The server fills in what is missing (seat defaults) and keeps card colours unique per room.
+// What this player wears (catalog.js): kept on the device. Only what the player actually picked is
+// kept and sent with create / join / queue (chosen); the server fills in the rest from the seat
+// (each seat its own pet and card colour), so players who never opened the wardrobe do not all
+// show up as the same cat (1.18). get() adds display defaults for the wardrobe and menus.
 const playerLook = {
-  get() {
+  chosen() {
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem('slam-look') || '{}'); } catch { /* bad value */ }
     let dep = saved.dep;
     try { dep ??= localStorage.getItem('slam-dep') || undefined; } catch { /* private mode */ }
-    const look = cleanLook({ ...saved, dep });
+    return cleanLook({ ...saved, dep });
+  },
+  get() {
+    const look = playerLook.chosen();
     return { ...look, pet: look.pet ?? 'cat', cardColor: look.cardColor ?? 'hong' };
   },
   set(look) {
@@ -284,7 +289,7 @@ const petOf = (seat) => state?.players[seat]?.pet ?? SEAT_DEFAULTS[seat]?.pet ??
 
 function joinRoom(code, token) {
   roomCode = code;
-  send({ t: 'join', code, token: token ?? undefined, name: playerName.get() || t('menu.defaultName'), look: playerLook.get() });
+  send({ t: 'join', code, token: token ?? undefined, name: playerName.get() || t('menu.defaultName'), look: playerLook.chosen() });
 }
 
 // An invite link (or a reconnect) first asks whether the room is still there and whether this
@@ -797,8 +802,10 @@ function openWardrobe(tab) {
     look: myLook(),
     taken,
     tab,
-    onChange: (look) => {
-      playerLook.set(look);
+    // keep only what was picked on top of what was picked before (a colour change alone does
+    // not turn the cat on display into a chosen pet)
+    onChange: (look, picked) => {
+      playerLook.set({ ...playerLook.chosen(), ...picked });
       if (inRoom) send({ t: 'pickLook', look });
     },
     onDone: () => {
@@ -1214,7 +1221,7 @@ function renderCreate(preset = {}) {
   });
   pick('vis', 'vis', (v) => { visibility = v; });
   pick('cap', 'size', (v) => { cap = Number(v); });
-  $('create-go').onclick = () => sendFromMenu($('create-go'), { t: 'create', name: currentName(), look: playerLook.get(), visibility, cap });
+  $('create-go').onclick = () => sendFromMenu($('create-go'), { t: 'create', name: currentName(), look: playerLook.chosen(), visibility, cap });
   $('create-cancel').onclick = () => renderMenu();
 }
 
@@ -1303,7 +1310,7 @@ function fillRoomList() {
 
 function sendQueue(size) {
   queueing = { size, since: Date.now() };
-  send({ t: 'queue', size, name: currentName(), look: playerLook.get() });
+  send({ t: 'queue', size, name: currentName(), look: playerLook.chosen() });
   renderQueue(null);
 }
 
@@ -1583,7 +1590,7 @@ function renderOverlay() {
           ${quick && !alone ? `<p class="sub">${t('match.quickNote')}</p>` : ''}
           ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">${t('match.waitingFor', { names: list(waitingFor.map(htmlName)) })}</p>` : ''}
         </div>`)) {
-        if ($('new-room')) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), look: playerLook.get() });
+        if ($('new-room')) $('new-room').onclick = () => send({ t: 'create', name: playerName.get() || t('menu.defaultName'), look: playerLook.chosen() });
         if ($('rematch')) $('rematch').onclick = () => send({ t: 'rematch' });
         if ($('find-new')) {
           $('find-new').onclick = () => {

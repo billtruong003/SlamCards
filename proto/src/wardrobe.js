@@ -5,7 +5,8 @@ import { toonGradient } from './toon.js';
 import { t } from './i18n.js';
 
 // The wardrobe: three tabs (pet, slipper + part colours, card colour) over the menu background.
-// `look` is { pet, dep, depColors, cardColor }; every pick calls onChange with the new look.
+// `look` is { pet, dep, depColors, cardColor }; every pick calls onChange(newLook, picked), picked
+// being only the fields that pick changed.
 // `taken` lists card colours other players in the room already have.
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -89,7 +90,7 @@ export function renderWardrobe(root, { look, taken = [], tab = 'pet', onChange, 
 
   const pick = (patch) => {
     current = { ...current, ...patch };
-    onChange({ ...current, depColors: [...current.depColors] });
+    onChange({ ...current, depColors: [...current.depColors] }, patch);
     draw();
   };
 
