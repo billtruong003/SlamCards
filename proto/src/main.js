@@ -338,6 +338,9 @@ function onPeek(msg) {
 // Back to a clean menu: no room, no leftover HUD, labels or toasts from the last match.
 function leaveRoom() {
   social.closeAll();
+  $('ad-lobby').hidden = true;
+  $('ad-lobby').innerHTML = '';
+  lobbyAdPlaced = false;
   $('leave').hidden = true;
   disarmLeave();
   $('out-card').hidden = true;
@@ -1433,7 +1436,18 @@ function scoreLine() {
   return `<span class="scores">${state.seats.map((s) => `<span class="score-chip"><i class="dot ${s}"></i>${escapeHtml(nameOf(s))}<b>${state.scores[s] ?? 0}</b></span>`).join('')}</span>`;
 }
 
+// The lobby banner (ads.js lobbyBanner): placed once a room visit, outside the lobby's own markup
+// (which is drawn again whenever someone comes or goes), shown while the room waits in its lobby.
+let lobbyAdPlaced = false;
+function syncLobbyAd() {
+  const box = $('ad-lobby');
+  const lobby = state?.phase === 'lobby' && state.kind === 'friends';
+  if (lobby && !lobbyAdPlaced) lobbyAdPlaced = ads.lobbyBanner(box);
+  box.hidden = !(lobby && lobbyAdPlaced);
+}
+
 function renderOverlay() {
+  syncLobbyAd();
   const s = state;
   // the wardrobe stays open over lobby updates; a match starting closes it
   if (overlayKey === 'wardrobe') {

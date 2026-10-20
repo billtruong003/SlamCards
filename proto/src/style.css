@@ -396,6 +396,13 @@ button{font:inherit;color:inherit;cursor:pointer}
   .menu-bg.with-gear{justify-content:center;align-items:center}
   .menu-bg.with-gear > .menu-card{margin:0}
 }
+/* the lobby banner (ads.js): a 300x250 beside the lobby card, only where the screen leaves room for
+   it (1500 px: the card starts at x=295 at 1366, the docked chat pushes it left; measured 20/10);
+   on phones the lobby has its sticky start button and no room for an ad away from buttons */
+.ad-lobby{position:fixed;left:24px;top:50%;width:300px;height:250px;transform:translateY(-50%);z-index:1;overflow:hidden}
+@media (max-width:1499px),(max-height:620px){.ad-lobby{display:none!important}}
+/* no ad to show (Google says unfilled, as before the site is approved): no empty box either */
+.ad-lobby:has(ins[data-ad-status="unfilled"]){display:none}
 .howto{display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;border-top:2px dashed rgba(42,20,24,.25);padding-top:10px}
 .howto p{margin:0;font-weight:700;font-size:15px;line-height:1.3}
 .howto .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}

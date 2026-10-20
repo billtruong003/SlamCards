@@ -148,7 +148,7 @@ Số 19/10: 843/908 cú đập không ra gì (93%); trận 3 người có bot d�
 
 - [x] **Q1 · Luật "đè hẳn"**: đã chốt 14/10. Giữ code (≥ 50% diện tích chồng lên là "đè hẳn") và giữ chữ "đè hẳn", vì hai cách nói không khác nghĩa.
 - [x] **Q2 · Mockup FTUE**: đã duyệt 14/10, làm theo mockup. FTUE đã có trong nhánh (`src/ftue.js`, `src/ftue.css`).
-- [ ] **Q3** · Duyệt chỗ đặt quảng cáo (mục G3). Mockup 3 chỗ ở canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4tJz, hàng "Q3". Chờ Bill xem.
+- [x] **Q3** · Bill duyệt 20/10, bật luôn. Duyệt chỗ đặt quảng cáo (mục G3). Mockup 3 chỗ ở canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4tJz, hàng "Q3". Chờ Bill xem.
 - [x] **Q4** · Cổng game dùng `billthedevstudio.io.vn` (chốt 14/10).
 - [x] **Q5** · Tạm thời đưa 3 game casual (Meh Merge, Nah Blocks, Bruh Arrows), chỉ gồm nội dung quảng cáo, video YouTube, ảnh store và link store (chốt 14/10).
 - [x] **Q6** · Gmail chính: truongbill003@gmail.com (chốt 14/10). Hộp mail studio (A1) tạo trên PA Vietnam: Bill tự đăng nhập và tạo, Claude không được tạo tài khoản/đặt mật khẩu thay.
@@ -190,9 +190,9 @@ Production vẫn chạy `80d3c9c`. Trước khi deploy: `ss -tn state establishe
 
 - [x] **DEP-01 · Deploy nhánh `fix/stability-and-ftue`** (14/10, kèm 10 ngôn ngữ; deploy bằng `SLAM_HOST=root@14.225.255.73 bash deploy.sh` vì chưa có alias). Bản cũ sao lưu ở VPS `/root/slam-cards-backup-20261014-80d3c9c.tgz`.
 - [x] **G7** · (xong 14/10) pm2 giới hạn RAM: `pm2 restart slam-cards --max-memory-restart 400M --update-env && pm2 save`.
-- [ ] **V1** · Ưu tiên CPU cho game: `/usr/local/bin/vps-priority` (cron 5 phút) `renice 10` các tiến trình `lucy-*`; thêm `nice -n 15` vào dòng `cron_dream.sh` trong crontab root. Bill đã duyệt.
-- [ ] **V3** · Reboot giờ vắng để nạp thư viện vừa cập nhật.
-- [ ] **V2** · Gửi tin Telegram thử (`vps-diskguard --test`). Chỉ khi Bill cho phép.
+- [x] **V1** · (xong 20/10: script tạo mới, chạy 5 phút/lần, theo cây tiến trình để không hạ nhầm game; crontab cũ sao lưu `/root/crontab-backup-20261020-1254.txt`) Ưu tiên CPU cho game: `/usr/local/bin/vps-priority` (cron 5 phút) `renice 10` các tiến trình `lucy-*`; thêm `nice -n 15` vào dòng `cron_dream.sh` trong crontab root. Bill đã duyệt.
+- [x] **V3** · (20/10: đã cập nhật gói; kernel đang chạy là bản mới nhất, hệ thống không báo cần reboot nên không reboot. Giữ lại không nâng: cloudflare-warp (không đụng warp-svc), netplan (cấu hình mạng, rủi ro từ xa), fwupd) Reboot giờ vắng để nạp thư viện vừa cập nhật.
+- [x] **V2** · (20/10: Bill cho phép, đã gửi) Gửi tin Telegram thử (`vps-diskguard --test`). Chỉ khi Bill cho phép.
 - [x] **G8** · ~~Bỏ link IP `:8096` khỏi README và `deploy.sh`~~ (xong 14/10; cổng 8096 trên nginx vẫn mở, đóng khi deploy nếu Bill đồng ý). Concept.md đã thêm luật 2–4 người (14/10).
 
 ## P1
@@ -253,7 +253,7 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
 - [ ] **G2** · Ủng hộ trong game theo canvas trang "Dép Lào · Ủng hộ": dải mời ở màn hết trận, nút "Ủng hộ" cạnh Info/Âm thanh, bảng QR (máy tính), tấm trượt có nút "Lưu ảnh mã QR" (điện thoại). Không hiện tên chủ tài khoản. Có danh sách người ủng hộ công khai (Q7). QR gốc: `C:\Users\ducnq\Downloads\77375854_download.webp`, cắt x 324–845, y 360–911. Chữ mới vào TEXTS.md.
 - [ ] **G5** · Ảnh xem trước khi dán link phòng (Open Graph) cho Zalo/Messenger.
 - [ ] **G6** · Nút "Báo lỗi" (về `support@` hoặc Lucy).
-- [ ] **G3** · Quảng cáo. Code xong (17/10, chưa deploy, đang TẮT); chờ Bill đăng ký AdSense + xin duyệt H5 Games Ads. Không chặn nút copy link; không bao giờ trong ván.
+- [x] **G3** · (20/10: đang chạy trên live; AdSense: site `billthedevstudio.io.vn` "Getting ready" chờ Google duyệt, ads.txt Authorized, bảng đồng ý EU đã bật; thêm banner phòng chờ, đơn vị `1312678633`, chỉ màn ≥1500 px, chỉ người tạo phòng đã chơi ≥2 trận; quảng cáo mở dép để tới khi có đồ khoá ở Phase 2) Quảng cáo. Code xong (17/10, chưa deploy, đang TẮT); chờ Bill đăng ký AdSense + xin duyệt H5 Games Ads. Không chặn nút copy link; không bao giờ trong ván.
   - Kênh (Bill chốt 14/10, xem lại 17/10 vẫn giữ): **Google H5 Games Ads** (Ad Placement API qua AdSense). Lý do: chạy trên tên miền của mình, tiền về thẳng AdSense, Google lo đấu giá + giới hạn tần suất + bảng hỏi đồng ý EU. AdinPlay (Venatus) nhắm cổng game lớn, phải liên hệ, ngưỡng lượt xem không công khai → để sau khi có traffic. GameMonetize / GameDistribution / CrazyGames / Poki: SDK của họ chỉ trả tiền khi game nằm trên cổng/mạng của họ → để mục "Cổng game".
   - [x] **ADS-01** · (17/10) `src/ads.js` + `server/ads.js`, test `test/ads.test.js`. **Tắt** khi không có biến `SLAM_ADSENSE_CLIENT` trên server: trang không có thẻ, không tải script Google, `/ads.txt` trả 404, game y như cũ. Chỗ đặt duy nhất: **preroll lúc mở trang** (che menu, chưa ở phòng nào nên không ai phải chờ, không có đồng hồ lượt nào chạy):
     - không bao giờ khi địa chỉ có `?room=` (link mời: bạn mới lần đầu thấy game, chủ phòng đang chờ; hoặc tải lại trang để về ghế giữa trận); không khi `?noads` / `?clean`;
@@ -262,7 +262,7 @@ Kế hoạch đã chốt với Bill: màn **Game** trong Lucy, 6 tab (Tổng qua
     - "Về menu" ở màn hết trận tải lại trang nên đa số quảng cáo hiện ở đó, lúc kết nối cũ đã đóng (bàn không thấy m còn ngồi, tái đấu không phải chờ). "Tìm trận mới" và "Tái đấu" không bao giờ có quảng cáo vì người khác đang chờ.
     - Tắt toàn bộ tiếng (Web Audio + nhạc) từ lúc gọi tới `adBreakDone`; script bị chặn (ad blocker) thì trả tiếng ngay; tối đa 60 giây.
     - **Không làm rewarded**: mọi đồ đang miễn phí, chưa có gì để thưởng. Khi nào khóa đồ thì thêm `type: 'reward'` ở tủ đồ.
-  - [ ] **ADS-02** · Trước khi bật thật: trang chính sách riêng tư (WS3, phải nhắc quảng cáo Google + cookie), `ads.txt` (server tự sinh, cần chép khối `location = /ads.txt` từ `proto/deploy/nginx-slam-domain.conf` vào nginx live), và bảng hỏi đồng ý cho khách châu Âu/Anh/Thụy Sĩ (dùng CMP của chính Google trong AdSense, không cần code).
+  - [x] **ADS-02** · (20/10: trang riêng tư có mục quảng cáo, ads.txt Authorized, bảng đồng ý châu Âu đang bật trong AdSense) Trước khi bật thật: trang chính sách riêng tư (WS3, phải nhắc quảng cáo Google + cookie), `ads.txt` (server tự sinh, cần chép khối `location = /ads.txt` từ `proto/deploy/nginx-slam-domain.conf` vào nginx live), và bảng hỏi đồng ý cho khách châu Âu/Anh/Thụy Sĩ (dùng CMP của chính Google trong AdSense, không cần code).
   - **Bill làm để bật quảng cáo** (Claude không tạo/đăng nhập tài khoản):
     1. Tạo tài khoản AdSense bằng truongbill003@gmail.com (https://adsense.google.com), thêm site `billthedevstudio.io.vn`, điền thông tin thanh toán + thuế.
     2. Lấy mã nhà xuất bản dạng `ca-pub-` + 16 số (AdSense → Tài khoản → Thông tin tài khoản).

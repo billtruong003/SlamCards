@@ -48,6 +48,14 @@ export function adDue(stats, now, cfg = ADS) {
   return stats.sinceAd >= cfg.matchesPerAd || minutes >= cfg.minutesPerAd;
 }
 
+// The lobby banner: the same people as the page-load ad (no invite link, past the first matches),
+// with no count between them: it sits beside a lobby, it never stops anyone.
+export function bannerAllowed(search, stats, cfg = ADS) {
+  const query = new URLSearchParams(search);
+  if (query.has('room') || query.has('noads') || query.has('clean')) return false;
+  return stats.matches >= cfg.minMatches;
+}
+
 // Page-load ad: only on the plain menu address, never for a room link or a seat being resumed.
 export function prerollAllowed(search, stats, now, cfg = ADS) {
   const query = new URLSearchParams(search);
@@ -55,10 +63,10 @@ export function prerollAllowed(search, stats, now, cfg = ADS) {
   return adDue(stats, now, cfg);
 }
 
-// env: { doc, storage, search, now, mute(on) }. Returns { enabled, preroll(), matchFinished() }.
+// env: { doc, storage, search, now, mute(on) }. Returns { enabled, preroll(), lobbyBanner(box), matchFinished() }.
 export function createAds(env) {
   const config = readAdsConfig(env.doc);
-  const off = { enabled: false, preroll: () => Promise.resolve('off'), matchFinished() {} };
+  const off = { enabled: false, preroll: () => Promise.resolve('off'), lobbyBanner: () => false, matchFinished() {} };
   if (!config) return off;
   const now = env.now ?? Date.now;
   const storage = env.storage;
@@ -100,6 +108,15 @@ export function createAds(env) {
         else failWaiters.push(() => finish('error'));
         push({ type: 'preroll', adBreakDone: (info) => finish(info?.breakStatus ?? 'other') });
       });
+    },
+    // Fills `box` with the display unit once and asks Google for an ad; false when this player
+    // gets none. The caller keeps the box for the whole room visit (a banner drawn again would ask
+    // again: refreshing ads that way is against AdSense rules).
+    lobbyBanner(box) {
+      if (!bannerAllowed(env.search, loadStats(storage))) return false;
+      box.innerHTML = `<ins class="adsbygoogle" style="display:block;width:100%;height:100%" data-ad-client="${config.client}" data-ad-slot="${ADS.lobbySlot}"></ins>`;
+      push({});
+      return true;
     },
     matchFinished() {
       saveStats(storage, countMatch(loadStats(storage)));

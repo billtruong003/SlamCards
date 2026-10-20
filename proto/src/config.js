@@ -43,10 +43,12 @@ export const TUNE = {
 };
 
 // Ads (src/ads.js). Off unless the server is started with SLAM_ADSENSE_CLIENT=ca-pub-<16 digits>;
-// the id is not kept here so the same build runs with and without ads. Only one placement: the
-// page load of a player who has finished at least `minMatches` matches, never with ?room= in the
-// address (an invite link, or a reload back into a seat), so a live turn is never interrupted.
+// the id is not kept here so the same build runs with and without ads. Two placements (Bill, Q3,
+// 20/10): the page load, and a banner beside a friends' room lobby on wide screens; both only for a
+// player who has finished `minMatches` matches, never with ?room= in the first address (an invite
+// link, or a reload back into a seat), so a live turn is never interrupted.
 export const ADS = {
+  lobbySlot: '1312678633', // the AdSense display unit "DepLao lobby banner" (responsive)
   minMatches: 2,           // a new player's first matches (an invited friend's first session) stay ad-free
   matchesPerAd: 3,         // an ad is due after this many finished matches...
   minutesPerAd: 5,         // ...or this long since the last one

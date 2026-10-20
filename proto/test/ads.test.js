@@ -1,11 +1,11 @@
-// Ads (src/ads.js client gating, server/ads.js switch): off unless configured, page-load only,
-// never into a room or a live seat, frequency-capped.
+// Ads (src/ads.js client gating, server/ads.js switch): off unless configured, the page load and the
+// lobby banner only, never into a room or a live seat, frequency-capped.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { startServer, httpGet } from './harness.js';
-import { createAds, readAdsConfig, adDue, prerollAllowed, countMatch, loadStats } from '../src/ads.js';
+import { createAds, readAdsConfig, adDue, prerollAllowed, bannerAllowed, countMatch, loadStats } from '../src/ads.js';
 import os from 'node:os';
 import path from 'node:path';
 import { adsConfig, adsFileClient, withAds, adsTxt } from '../server/ads.js';
@@ -182,4 +182,24 @@ test('the publisher id can live in data/ads.json; a missing or broken file means
   assert.equal(adsFileClient(file), 'ca-pub-1234567890123456');
   assert.equal(adsConfig({ SLAM_ADSENSE_CLIENT: adsFileClient(file) }).client, 'ca-pub-1234567890123456');
   fs.rmSync(dir, { recursive: true });
+});
+
+test('lobby banner (Bill, Q3): past the first matches, never for an invite link; one ad request per box', () => {
+  const stats = (matches) => ({ matches, sinceAd: 0, lastAdAt: Date.now() });
+  assert.equal(bannerAllowed('', stats(ADS.minMatches)), true, 'no count between banners: it stops nobody');
+  assert.equal(bannerAllowed('', stats(ADS.minMatches - 1)), false, 'a new player');
+  assert.equal(bannerAllowed('?room=ABCD', stats(10)), false, 'came by an invite link');
+  assert.equal(bannerAllowed('?noads', stats(10)), false);
+
+  const doc = fakeDoc(CLIENT);
+  const ads = createAds({ doc, storage: veteran(), search: '', mute: () => {} });
+  const box = { innerHTML: '' };
+  const before = doc.win.adsbygoogle.length;
+  assert.equal(ads.lobbyBanner(box), true);
+  assert.match(box.innerHTML, new RegExp(`data-ad-slot="${ADS.lobbySlot}"`));
+  assert.match(box.innerHTML, new RegExp(`data-ad-client="${CLIENT}"`));
+  assert.equal(doc.win.adsbygoogle.length, before + 1, 'one request');
+  const guest = createAds({ doc: fakeDoc(CLIENT), storage: veteran(), search: '?room=ABCD', mute: () => {} });
+  assert.equal(guest.lobbyBanner({ innerHTML: '' }), false);
+  assert.equal(createAds({ doc: fakeDoc(null), storage: veteran(), search: '' }).lobbyBanner(box), false, 'ads off');
 });
