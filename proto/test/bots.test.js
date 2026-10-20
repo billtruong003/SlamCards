@@ -193,7 +193,9 @@ test('"Chơi với máy luôn": alone in the queue, computer players come at onc
     const b = await connect(srv.port);
     a.send({ t: 'queue', size: 4, name: 'A' });
     b.send({ t: 'queue', size: 3, name: 'B' });
-    await a.next((m) => m.t === 'queue' && m.state === 'waiting', 2000);
+    // both in the queue before A asks (B's queue message could otherwise land after it, and A
+    // would rightly be alone)
+    await Promise.all([a, b].map((c) => c.next((m) => m.t === 'queue' && m.state === 'waiting', 2000)));
     a.send({ t: 'botsNow' });
     await sleep(400);
     assert.ok(!a.inbox.some((m) => m.t === 'joined'), 'still waiting with B');

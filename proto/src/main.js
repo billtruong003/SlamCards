@@ -1360,8 +1360,10 @@ function renderQueue(msg) {
       </div>
       ${startsIn ? `<p class="queue-go" id="queue-go"></p><p class="sub">${t('queue.anyNote')}</p>`
     : size === 'any' ? '' : `<p class="sub">${t(flexible ? 'queue.flexNote' : 'queue.fullNote', { n: size })}</p>`}
-      ${peers.length ? '' : `<button class="btn pri wide" id="queue-bots">${t('queue.botsNow')}</button>`}
-      <button class="btn wide" id="queue-cancel">${t('queue.cancel')}</button>
+      <div class="queue-actions">
+        ${peers.length ? '' : `<button class="btn pri wide" id="queue-bots">${t('queue.botsNow')}</button>`}
+        <button class="btn wide" id="queue-cancel">${t('queue.cancel')}</button>
+      </div>
     </div>${ftue.queueHtml()}</div>`);
   setText($('queue-waited'), t('queue.waited', { time: mmss(waited) }));
   if (startsIn) setText($('queue-go'), t('queue.startsIn', { n: people.length, secs: startsIn }));

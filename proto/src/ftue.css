@@ -108,8 +108,14 @@
   .menu-bg.with-tut{flex-wrap:nowrap;justify-content:center;align-items:center}
   .menu-bg.with-tut > .menu-card{margin:0}
 }
-/* a phone: the queue card shrinks to a strip on top (one row of seats), the steps under it */
-@media (max-width:820px){
+.queue-actions{display:flex;flex-direction:column;gap:8px;width:100%}
+/* a phone: the queue card shrinks to a strip on top (one row of seats), the steps under it; on its
+   side the two buttons share a row too (the second one, "Chơi với máy luôn", pushed "Hủy" off) */
+@media (orientation:landscape) and (max-height:500px){
+  .queue-actions{flex-direction:row}
+  .queue-actions .btn{flex:1}
+}
+@media (max-width:820px),(orientation:landscape) and (max-height:500px){
   .menu-bg.with-tut{gap:14px}
   .with-tut .queue-card{gap:6px;padding:10px 14px}
   .with-tut .queue-card h1.stamp{font-size:30px!important;white-space:nowrap}
