@@ -114,7 +114,7 @@ Tiến độ 19/10: **Phase 1 xong và đã deploy** (1.01–1.40, nhánh `fix/s
 - [x] ~~**1.38** Lỗi console khi tải pet: `THREE.GLTFLoader: Couldn't load texture Textures/colormap.png` (thấy khi QA 2 trình duyệt, có từ trước): tìm nguyên nhân, xem pet có thiếu màu không — S~~ Không phải lỗi game: chỉ xuất hiện khi script QA chuyển trang lúc texture pet đang tải (trình duyệt huỷ tải). Trang mở bình thường: 0 lỗi, file texture trả 200
 - [x] ~~**1.39** Mang "chất lộn xộn" của trailer vào các màn khác (sảnh, kết quả, chờ ghép): chữ nghiêng, sticker tràn khung, màu như trailer — M. *Chờ Bill xác nhận (Q9)*~~ Bill chốt (Q9): chỉ logo
 - [x] ~~**1.40** Dọn script QA tạm `qa/_look.mjs`, `qa/_ux-4p.mjs`, `qa/_ux-fall-rate.mjs`: giữ thành script chính thức hay xoá (Q12) — S~~ Bill chốt (Q12): giữ, đổi tên thành `qa/look.mjs`, `qa/ux-4p.mjs`, `qa/fall-rate.mjs`
-- [ ] **1.41** Icon màu bài (♥ ◆ ★ ♣) đang chán: lên ý tưởng bộ icon mới + mockup Design (session card-icons đang làm), Bill duyệt, **làm sau khi xong Phase 1** — S–M
+- [x] ~~**1.41** Icon màu bài~~ Bill chốt 20/10: không cần ký hiệu kiểu bài tây, chỉ màu + nhiều màu. Xong 20/10: bỏ ♥◆★♣ ở mọi chỗ, thêm tím, cam, xanh ngọc, đỏ (8 màu, 10 ngôn ngữ); mặt úp vẫn mang dấu Bill The Dev.
 
 ### Bot (chốt 20/10, làm sau khi nhánh `fix/stability-and-ftue` xong, nhánh riêng `feat/bots`)
 Số 19/10: 843/908 cú đập không ra gì (93%); trận 3 người có bot dài 6–15+ phút; bot nghĩ trung bình 7,5 giây và ngắm áng chừng, không thử trước. Bill chốt: **bot vẫn giả làm người** (không nhãn trong Chơi ngay).

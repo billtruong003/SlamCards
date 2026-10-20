@@ -193,7 +193,6 @@ const ftue = createFtue({
 });
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
 const seatLabel = (seat) => t(`color.${cardColorOf(seat)}`);
-const suitOf = (seat) => CARD_COLORS[cardColorOf(seat)]?.suit ?? '';
 const list = (items) => items.join(t('common.listSep'));
 
 const nameOf = (seat) => state?.players[seat]?.name || seatLabel(seat);
@@ -791,7 +790,7 @@ function gearRow(look) {
   const c = CARD_COLORS[look.cardColor];
   return `<button type="button" class="gear-row" data-ward="pet">
     <img src="${petThumb(look.pet)}" alt=""><img src="deps/${look.dep}.png" alt="">
-    <span class="card-chip" style="--c:${c.color}">${c.suit}</span>
+    <span class="card-chip" style="--c:${c.color}"></span>
     <span class="gr-label">${t('wardrobe.title')}<small>${escapeHtml(t(`pet.${look.pet}`))} · ${escapeHtml(t(`dep.${look.dep}`))} · ${escapeHtml(t(`color.${look.cardColor}`))}</small></span>
     <svg width="12" height="20" viewBox="0 0 12 20" aria-hidden="true"><path d="M2 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>`;
@@ -1704,7 +1703,7 @@ function renderHud() {
     const out = !state.alive.includes(seat) && ['turn', 'anim'].includes(state.phase);
     const dots = Array.from({ length: ROUNDS_TO_WIN }, (_, i) => `<span class="dot ${i < (state.scores[seat] ?? 0) ? seat : ''}"></span>`).join('');
     return `<div class="chip ${seat}${out ? ' out' : ''}${state.turn === seat ? ' turn' : ''}${social.isMuted(seat) ? ' muted' : ''}" ${seat === me ? '' : `role="button" tabindex="0" aria-label="${escapeHtml(t(social.isMuted(seat) ? 'social.unmuteAria' : 'social.muteAria', { name: nameOf(seat) }))}"`}>
-      <span class="swatch ${seat}" aria-hidden="true">${suitOf(seat)}</span><span class="name">${escapeHtml(nameOf(seat))}${seat === me ? ` ${t('hud.meTag')}` : ''}</span><span class="dots">${dots}</span>
+      <span class="swatch ${seat}" aria-hidden="true"></span><span class="name">${escapeHtml(nameOf(seat))}${seat === me ? ` ${t('hud.meTag')}` : ''}</span><span class="dots">${dots}</span>
     </div>`;
   }).join('');
 }
@@ -1824,7 +1823,7 @@ function updateLabels() {
     const q = card.mesh.quaternion;
     const faceUp = 1 - 2 * (q.x * q.x + q.z * q.z) > 0;
     const owner = seat === me ? t('hud.meTag') : t('card.owner', { name: nameOf(seat) });
-    const text = `${suitOf(seat)} ${t(y < FALL_Y ? 'card.fallen' : faceUp ? 'card.up' : 'card.down')} ${owner}`;
+    const text = `${t(y < FALL_Y ? 'card.fallen' : faceUp ? 'card.up' : 'card.down')} ${owner}`;
     if (el.textContent !== text) el.textContent = text;
     // under the card on screen, clear of its window: below the point a card's half diagonal
     // toward the camera, whichever way the card lies

@@ -1,6 +1,7 @@
 // Browser compatibility touches (task 1.20): inside a social app's browser the menus suggest the real
 // browser; a dark-mode phone still gets the light game; "reduce motion" stops the camera shake;
-// every seat carries its mark (♥ ◆ ★ ♣) on the name chips and card labels.
+// seats tell apart by their card colour beside each name and the owner's name on each card label
+// (Bill 20/10, 1.41: no playing-card suits).
 //   node qa/compat-check.mjs        (local server on 8098)
 import { chromium } from 'playwright';
 
@@ -57,11 +58,20 @@ await zalo.waitForFunction(() => Object.values(slamDebug.state.ready ?? {}).some
 await zalo.evaluate(() => document.getElementById('start').click());
 await plain.waitForFunction(() => ['rps', 'turn', 'order'].includes(slamDebug.state?.phase), null, { timeout: 10000 });
 await sleep(800);
-const marks = await plain.evaluate(() => ({
-  chips: [...document.querySelectorAll('#players .swatch')].map((s) => s.textContent),
-  badges: [...document.querySelectorAll('#labels .badge')].filter((b) => !b.hidden).map((b) => b.textContent.slice(0, 2).trim()),
-}));
-expect('name chips carry seat marks', marks.chips.length === 2 && marks.chips.every((m) => /[♥◆★♣]/.test(m)), JSON.stringify(marks.chips));
-expect('card labels carry seat marks', marks.badges.length >= 1 && marks.badges.every((m) => /[♥◆★♣]/.test(m)), JSON.stringify(marks.badges));
+const marks = await plain.evaluate(() => {
+  const toRgb = (hex) => `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`;
+  const css = getComputedStyle(document.documentElement);
+  const players = slamDebug.state.players;
+  return {
+    chips: Object.keys(players).map((seat) => ({
+      swatch: getComputedStyle(document.querySelector(`#players .swatch.${seat}`)).backgroundColor,
+      card: toRgb(css.getPropertyValue(`--seat-${seat}`).trim()),
+    })),
+    badges: [...document.querySelectorAll('#labels .badge')].filter((b) => !b.hidden).map((b) => b.textContent),
+    names: Object.values(players).map((p) => p.name),
+  };
+});
+expect('name chips show the card colour of each player', marks.chips.length === 2 && marks.chips.every((c) => c.swatch === c.card), JSON.stringify(marks.chips));
+expect('card labels say whose card', marks.badges.length >= 1 && marks.badges.every((t) => /\(m\)/.test(t) || marks.names.some((n) => t.includes(n))), JSON.stringify(marks.badges));
 await browser.close();
 process.exit(results.every(Boolean) ? 0 : 1);

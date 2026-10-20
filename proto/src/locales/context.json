@@ -1071,6 +1071,22 @@
     "max": 10,
     "id": "HIJAU"
   },
+  "color.tim": {
+    "where": "Card colour name (wardrobe tile, lobby seat line, round intro)",
+    "max": 12
+  },
+  "color.cam": {
+    "where": "Card colour name (wardrobe tile, lobby seat line, round intro)",
+    "max": 12
+  },
+  "color.ngoc": {
+    "where": "Card colour name (wardrobe tile, lobby seat line, round intro)",
+    "max": 12
+  },
+  "color.do": {
+    "where": "Card colour name (wardrobe tile, lobby seat line, round intro)",
+    "max": 12
+  },
   "depPart.dep_lao.sole": {
     "where": "Slipper part that can be recoloured (dep_lao.sole)",
     "max": 16,

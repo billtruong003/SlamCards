@@ -131,7 +131,7 @@ export function renderWardrobe(root, { look, taken = [], tab = 'pet', onChange, 
       body.innerHTML = `<div class="color-grid">${CARD_COLOR_IDS.map((c) => {
         const used = taken.includes(c) && c !== current.cardColor;
         return `<button type="button" class="color-tile${c === current.cardColor ? ' on' : ''}" data-color="${c}" ${used ? 'disabled' : ''} style="--c:${CARD_COLORS[c].color}" aria-pressed="${c === current.cardColor}">
-          <i>${CARD_COLORS[c].suit}</i><span>${esc(t(`color.${c}`))}</span>${used ? `<small>${t('wardrobe.taken')}</small>` : ''}</button>`;
+          <span>${esc(t(`color.${c}`))}</span>${used ? `<small>${t('wardrobe.taken')}</small>` : ''}</button>`;
       }).join('')}</div>`;
       body.querySelectorAll('[data-color]').forEach((b) => { b.onclick = () => pick({ cardColor: b.dataset.color }); });
     }
@@ -160,6 +160,6 @@ export function gearTiles(look) {
   return `<div class="gear-tiles">
     <button type="button" class="gear-tile" data-ward="pet"><img src="${petThumb(look.pet)}" alt="">${esc(t(`pet.${look.pet}`))}<small>${t('wardrobe.pet')}</small></button>
     <button type="button" class="gear-tile" data-ward="dep"><img src="deps/${look.dep}.png" alt=""><span class="dep-dots">${dots}</span>${esc(t(`dep.${look.dep}`))}<small>${t('wardrobe.dep')}</small></button>
-    <button type="button" class="gear-tile" data-ward="card"><span class="card-chip" style="--c:${CARD_COLORS[look.cardColor].color}">${CARD_COLORS[look.cardColor].suit}</span>${esc(t(`color.${look.cardColor}`))}<small>${t('wardrobe.card')}</small></button>
+    <button type="button" class="gear-tile" data-ward="card"><span class="card-chip" style="--c:${CARD_COLORS[look.cardColor].color}"></span>${esc(t(`color.${look.cardColor}`))}<small>${t('wardrobe.card')}</small></button>
   </div>`;
 }

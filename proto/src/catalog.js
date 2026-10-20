@@ -17,15 +17,19 @@ export const DEP_IDS = Object.keys(DEP_PARTS);
 export const DEP_COLORS = ['#fffaf0', '#2a1418', '#ff5c9d', '#ff8a3d', '#ffc93c', '#3ccf6e', '#2fa8ff', '#4f8ff0', '#9b6bff', '#d93a3a', '#7a3d1a', '#6cc3e8'];
 export const defaultDepColors = (dep) => DEP_PARTS[dep].map((p) => p.def);
 
-// Card colours: the card frame, the room behind the window, its stage, a suit mark so colours
-// can be told apart without seeing colour.
-// Muted print-like colours (OKLCH chroma <= 0.12, about 1.5x the wooden table) that differ in lightness
-// as well as hue, so they stay apart for red-green colour blindness. `deep` carries white text (>= 4.5:1).
+// Card colours: the card frame, its dark and deep shades (names, badges), the room behind the window
+// and its stage. Colour alone tells the seats apart, with each player's name on their chip and card
+// (Bill 20/10, 1.41: no playing-card suits; more colours to choose from). The first four are the
+// seats' defaults (SEAT_DEFAULTS); two players in a room never share one.
 export const CARD_COLORS = {
-  hong: { color: '#a34e71', deep: '#974e66', dark: '#693449', room: '#fae0e8', floor: '#ecbbcc', suit: '♥' },
-  xanh: { color: '#2f6e9e', deep: '#1c719a', dark: '#1c4b70', room: '#d8ebfb', floor: '#abcff0', suit: '◆' },
-  vang: { color: '#d4a14a', deep: '#886116', dark: '#5f4106', room: '#f3e6d2', floor: '#e0c69f', suit: '★' },
-  la: { color: '#5d9d6b', deep: '#307a4f', dark: '#235430', room: '#dbeede', floor: '#b0d6b6', suit: '♣' },
+  hong: { color: '#a34e71', deep: '#974e66', dark: '#693449', room: '#fae0e8', floor: '#ecbbcc' },
+  xanh: { color: '#2f6e9e', deep: '#1c719a', dark: '#1c4b70', room: '#d8ebfb', floor: '#abcff0' },
+  vang: { color: '#d4a14a', deep: '#886116', dark: '#5f4106', room: '#f3e6d2', floor: '#e0c69f' },
+  la: { color: '#5d9d6b', deep: '#307a4f', dark: '#235430', room: '#dbeede', floor: '#b0d6b6' },
+  tim: { color: '#7d5ba6', deep: '#6a4a93', dark: '#45305f', room: '#ece3f6', floor: '#cdbde4' },
+  cam: { color: '#d9733b', deep: '#a8552a', dark: '#6e3615', room: '#fbe7d9', floor: '#f0c4a6' },
+  ngoc: { color: '#2e9a94', deep: '#1f7a75', dark: '#14504c', room: '#d6f0ee', floor: '#a6dcd8' },
+  do: { color: '#c0443f', deep: '#a33733', dark: '#6e2320', room: '#f8dcdb', floor: '#ebb0ae' },
 };
 export const CARD_COLOR_IDS = Object.keys(CARD_COLORS);
 
