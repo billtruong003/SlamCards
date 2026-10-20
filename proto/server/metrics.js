@@ -6,6 +6,12 @@
 //   matches  { '2p': { n, withBots, minutes: {...}, rounds: {...}, slams: n, ends: { score | disconnect } } }
 //   slams    { none | capture | fall | refused | aborted }
 //   outWait  { '<15': n, ... }   seconds a knocked-out player waited for the next round or the end
+//   bots     computer players (B.06), by persona (quick | fox | wild | rookie):
+//            started    matches with at least one bot
+//            left       people who left such a match before its end (on purpose or lost for good)
+//            results    { <persona>: { won, lost } }   whether each bot won the match it played
+//            slams      { <persona>: { none | capture | fall } }   how each bot slam came out
+//            talk       { <situation>: n }   lines and stickers sent (server/bot-talk.js)
 // Reported by clients (a whitelist, each at most once per connection):
 //   events   { firstSlam, firstMatch, rulesOpened, tutorialOpened, tutorialDone, tutorialSkipped, tutorialDeclined }
 //   active   { '0': n, '1': n, '2': n, '3-7': n, ... }   players on their first visit of the day, by days since
@@ -45,6 +51,14 @@ export function matchEnd({ players, bots = 0, ms, rounds, slams, reason }) {
   store.bump(['matches', size, 'slams'], slams);
   store.bump(['matches', size, 'ends', reason]);
 }
+
+export const bots = {
+  started() { store.bump(['bots', 'started']); },
+  left() { store.bump(['bots', 'left']); },
+  result(persona, won) { store.bump(['bots', 'results', persona, won ? 'won' : 'lost']); },
+  slam(persona, outcome) { store.bump(['bots', 'slams', persona, outcome]); },
+  talk(situation) { store.bump(['bots', 'talk', situation]); },
+};
 
 // msg: { t: 'event', name }. Unknown names and repeats on the same connection are ignored.
 export function clientEvent(ws, name) {

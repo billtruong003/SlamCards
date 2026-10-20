@@ -115,3 +115,19 @@ test('a played match: length, rounds, slams, how it ended, and each slam outcome
     assert.deepEqual(m.slams, { capture: 2 });
   } finally { srv.stop(); }
 });
+
+test('bots (B.06): a match with a computer player is counted, and the person who walks out of it', async () => {
+  const { srv, today } = await withAdmin({ queueTick: 50, quickStart: 100, roundIntro: 100, rps: 20000 });
+  try {
+    const me = await connect(srv.port);
+    me.send({ t: 'queue', size: 2, name: 'Bill', played: 0 });
+    await me.next((m) => m.t === 'queue' && m.state === 'waiting', 2000);
+    me.send({ t: 'botsNow' });
+    await me.waitState((s) => s.phase === 'rps', 3000);
+    me.send({ t: 'leave' });
+    await sleep(200);
+    const day = await today();
+    assert.equal(day.bots?.started, 1);
+    assert.equal(day.bots?.left, 1);
+  } finally { srv.stop(); }
+});

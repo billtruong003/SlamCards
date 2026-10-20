@@ -404,6 +404,7 @@ function startMatch(room) {
   room.readUntil = 0;
   log(room, `match start with ${room.seats.length} players (${room.kind})${room.readers.size ? `, ${room.readers.size} reading the rules` : ''}`);
   room.turnNo = 0;
+  if (room.seats.some((s) => isBot(room, s))) metrics.bots.started();
   botsTalk(room, 'hello');
   startRound(room);
 }
@@ -680,7 +681,9 @@ function botsTalk(room, situation, seats = room.seats) {
   if (!id) return;
   later(`[${room.code}] talk`, 500 + Math.random() * 1500, () => {
     const bot = room.players[seat];
-    if (isLive(room) && bot?.bot && allowed(bot, 'react')) sendAll(room, { t: 'react', seat, id });
+    if (!isLive(room) || !bot?.bot || !allowed(bot, 'react')) return;
+    sendAll(room, { t: 'react', seat, id });
+    metrics.bots.talk(situation);
   });
 }
 
@@ -761,6 +764,7 @@ function endSlam(room, final) {
   slam.ended = true;
   slam.result = judge(final, slam.by, room.alive);
   metrics.slam(slam.result?.reason ?? 'none');
+  if (isBot(room, slam.by)) metrics.bots.slam(room.players[slam.by].persona, slam.result?.reason ?? 'none');
   const cards = { ...final };
   for (const seat of slam.result?.restore ?? []) cards[seat] = slam.previous[seat];
   for (const seat of slam.result?.eliminated ?? []) cards[seat] = PARKED;
@@ -838,6 +842,7 @@ function endMatch(room, winner, reason = 'score') {
   const ms = room.startedAt ? Date.now() - room.startedAt : 0;
   if (room.startedAt) {
     metrics.matchEnd({ players: room.seats.length, bots: room.seats.filter((s) => isBot(room, s)).length, ms, rounds: room.round, slams: room.slamCount, reason });
+    for (const s of room.seats.filter((seat) => isBot(room, seat))) metrics.bots.result(room.players[s].persona, s === winner);
     room.startedAt = 0;
   }
   room.slam = null;
@@ -877,6 +882,7 @@ function dropPlayer(room, seat) {
     }
     return;
   }
+  if (!player.bot && room.phase !== 'matchEnd' && room.seats.some((s) => isBot(room, s))) metrics.bots.left();
   // A quick match keeps its size for the people still in it: a computer player takes the seat (a
   // new name, the same cards on the table), and the old token no longer opens it.
   if (room.kind === 'quick' && !['lobby', 'matchEnd'].includes(room.phase) && !player.bot && peopleIn(room).some((s) => s !== seat)) {
