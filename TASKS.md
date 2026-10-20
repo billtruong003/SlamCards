@@ -311,37 +311,39 @@ Ngôn ngữ chọn theo **ngôn ngữ trình duyệt** (`navigator.languages`), 
 Mockup chạy thật: `mockup/customize/index.html` (artifact https://claude.ai/artifact/FMn6afs8qBzdu4unpgC9ex). Pet: Kenney Cube Pets (CC0), 24 con, mỗi con 8 động tác, ~150 KB. Ảnh mockup: `qa/customize-shots.mjs` → `qa/out/customize/`.
 
 **A. Phòng chờ: chủ phòng + Sẵn sàng** (làm trước, ít rủi ro, gộp với QA-07)
-- [ ] Server: `host` = người tạo phòng (rời thì chuyển cho người vào sớm nhất còn lại); `ready` cho từng người; chỉ host `start`, khi ≥ 2 người và mọi khách đã sẵn sàng; đổi đồ thì tự bỏ sẵn sàng. Test tự động cho từng luật.
-- [ ] Client: host thấy "Chiến thôi! ({n}/{m} sẵn sàng)" (khóa tới khi đủ), khách thấy "Sẵn sàng" / "Hủy sẵn sàng", ô ghế có 👑 và nhãn trạng thái. Tái đấu theo cùng luật (gộp UX-03).
+- [x] Server: `host` = người tạo phòng (rời thì chuyển cho người vào sớm nhất còn lại); `ready` cho từng người; chỉ host `start`, khi ≥ 2 người và mọi khách đã sẵn sàng; đổi đồ thì tự bỏ sẵn sàng. Test tự động cho từng luật.
+- [x] Client: host thấy "Chiến thôi! ({n}/{m} sẵn sàng)" (khóa tới khi đủ), khách thấy "Sẵn sàng" / "Hủy sẵn sàng", ô ghế có 👑 và nhãn trạng thái. Tái đấu theo cùng luật (gộp UX-03).
 
 **B. Dép nhiều màu, kiểu toon** (sửa luôn ART-01, ART-02)
-- [ ] Shader tô lại màu theo ô palette (đã chạy trong mockup): dép lào 2 phần, dép lê 3 phần, tổ ong 1 phần. Bảng 12 màu mỗi phần.
-- [ ] Phòng chờ: thay ảnh JPG bằng xem trước 3D trực tiếp (hoặc chụp lại bằng shader game).
+
+*Rà 20/10: mọi mục A–D dưới đây đã làm 14–15/10 (xem Lộ trình, Mốc 2–5); gạch cho khớp.*
+- [x] Shader tô lại màu theo ô palette (đã chạy trong mockup): dép lào 2 phần, dép lê 3 phần, tổ ong 1 phần. Bảng 12 màu mỗi phần.
+- [x] Phòng chờ: thay ảnh JPG bằng xem trước 3D trực tiếp (hoặc chụp lại bằng shader game).
 
 **C. Lá bài stencil + pet**
 
 Thiết kế lá đã chốt 14/10 (mockup `mockup/customize/`, canvas https://claude.ai/artifact/XWcsPAYQfdDG6VZMPK4tJz): mặt ngửa nền kem viền mực, khung màu ghế, ô cửa có khoảng hở với dải tên; trong ô là "khoảng không" 3 lớp (kiểu shader UI Background của Minions Art) + bệ tròn cho pet và dép; mặt úp là hoạ tiết cáo + logo, chữ Bill trắng · The xám · Dev cam. Viền pet đi theo pháp tuyến mượt nướng sẵn, độ dày viền là uniform.
-- [ ] Renderer bật `stencil: true`; mỗi lá 1 cặp mã (ngửa/úp), tối đa 4 lá.
-- [ ] Lá mới: mặt trước/sau vẽ bằng canvas (màu, hoa văn, biểu tượng, tên pet), ô cửa chỉ ghi stencil, căn phòng + pet + dép đạo cụ so stencil. Thay `cards.js`; vật lý giữ hộp 1 × 1.478.
-- [ ] **Prototype riêng phần khó nhất**: bài nằm trên bàn thì căn phòng nằm dưới mặt bàn, bị bàn che ở depth test. Cần ô cửa đặt lại depth trước khi vẽ phòng, và vẽ các lá từ thấp lên cao để lá đè vẫn che lá dưới. Mockup hiện chỉ chứng minh lá đứng giữa không gian.
-- [ ] Pet: chỉ tải pet của người trong phòng; `AnimationMixer` mỗi lá; nối động tác với sự kiện (ăn → nhảy, bị ăn → lắc đầu, tới lượt → gật, bài bay → chạy, rớt bàn → ngã).
-- [ ] Ý "úp = pet ngủ, ngửa = pet thức": giữ nhãn ▲NGỬA/▼ÚP một thời gian, playtest xem người mới có hiểu không.
-- [ ] Đo lại `qa/perf.mjs` (mục tiêu dưới ~50 draw call với 4 lá) và `qa/devices.mjs` (WebKit có stencil, iPhone SE).
+- [x] Renderer bật `stencil: true`; mỗi lá 1 cặp mã (ngửa/úp), tối đa 4 lá.
+- [x] Lá mới: mặt trước/sau vẽ bằng canvas (màu, hoa văn, biểu tượng, tên pet), ô cửa chỉ ghi stencil, căn phòng + pet + dép đạo cụ so stencil. Thay `cards.js`; vật lý giữ hộp 1 × 1.478.
+- [x] **Prototype riêng phần khó nhất**: bài nằm trên bàn thì căn phòng nằm dưới mặt bàn, bị bàn che ở depth test. Cần ô cửa đặt lại depth trước khi vẽ phòng, và vẽ các lá từ thấp lên cao để lá đè vẫn che lá dưới. Mockup hiện chỉ chứng minh lá đứng giữa không gian.
+- [x] Pet: chỉ tải pet của người trong phòng; `AnimationMixer` mỗi lá; nối động tác với sự kiện (ăn → nhảy, bị ăn → lắc đầu, tới lượt → gật, bài bay → chạy, rớt bàn → ngã).
+- [x] Ý "úp = pet ngủ, ngửa = pet thức": giữ nhãn ▲NGỬA/▼ÚP một thời gian, playtest xem người mới có hiểu không.
+- [x] Đo lại `qa/perf.mjs` (mục tiêu dưới ~50 draw call với 4 lá) và `qa/devices.mjs` (WebKit có stencil, iPhone SE).
 
 **D. Màu bài mới + chọn đồ**
-- [ ] Thay 4 màu ghế bằng hồng dâu / xanh biển / vàng nắng / xanh lá mạ + hoa văn (sọc chéo, chấm bi, răng cưa, ô cờ) + biểu tượng ♥ ◆ ★ ♣. Cập nhật CSS ghế, nhãn bài, chip HUD, dòng điểm (gộp UX-02).
-- [ ] Người chơi tự chọn màu bài (màu đã có người lấy thì mờ). Lưu pet/dép/màu trong localStorage, gửi lên server (`pickLook`), server kiểm tra hợp lệ + trùng màu.
-- [ ] Chữ mới vào TEXTS.md: tên 24 pet, tên màu, Sẵn sàng / Hủy sẵn sàng / Đợi chủ phòng / tab Tủ đồ. Sửa FTUE bước 1 + 3 theo lá bài mới. Ghi công Kenney trong bảng Info.
+- [x] Thay 4 màu ghế bằng hồng dâu / xanh biển / vàng nắng / xanh lá mạ + hoa văn (sọc chéo, chấm bi, răng cưa, ô cờ) + biểu tượng ♥ ◆ ★ ♣. Cập nhật CSS ghế, nhãn bài, chip HUD, dòng điểm (gộp UX-02).
+- [x] Người chơi tự chọn màu bài (màu đã có người lấy thì mờ). Lưu pet/dép/màu trong localStorage, gửi lên server (`pickLook`), server kiểm tra hợp lệ + trùng màu.
+- [x] Chữ mới vào TEXTS.md: tên 24 pet, tên màu, Sẵn sàng / Hủy sẵn sàng / Đợi chủ phòng / tab Tủ đồ. Sửa FTUE bước 1 + 3 theo lá bài mới. Ghi công Kenney trong bảng Info.
 
 ## Hình ảnh & hiệu năng
 
 - [x] **ART-03 · Viền mực của bàn đè lên lá bài nằm sát mép.** Hull viền cao hơn mặt bàn 0.045 nên che bài ở mép xa. Sửa: viền bàn không ghi depth, vẽ sau sàn/bàn (`renderOrder` 1), bài vẽ sau viền (`renderOrder` 2). Bàn vẫn che bài nằm sau nó, viền thì không, và không có z-fight. Kiểm tra: `node qa/table-rim.mjs` (cần server :8097) → `qa/out/table-rim.png`.
 
-- [ ] **ART-01 · Dép trong game nhìn như tô màu mượt, không ra chất toon.** Đã kiểm tra: dép có dùng `MeshToonMaterial` (3 dải) + viền mực, nhưng texture `art/blender/palette.png` là các ô **chuyển màu** (mỗi ô sáng → tối). UV của dép trải dọc ô nên bóng đổ đã "vẽ sẵn" trong màu, che mất các dải toon. Ảnh: `qa/screens/art01-slippers-closeup.png`.
+- [x] (xong 15/10, Mốc 3 mục 8: dải toon rõ; rà 20/10) **ART-01 · Dép trong game nhìn như tô màu mượt, không ra chất toon.** Đã kiểm tra: dép có dùng `MeshToonMaterial` (3 dải) + viền mực, nhưng texture `art/blender/palette.png` là các ô **chuyển màu** (mỗi ô sáng → tối). UV của dép trải dọc ô nên bóng đổ đã "vẽ sẵn" trong màu, che mất các dải toon. Ảnh: `qa/screens/art01-slippers-closeup.png`.
   - Sửa (trong `art/blender/build_slippers_lowpoly.py`): mỗi vật liệu lấy màu ở **một điểm** của ô (dồn UV vào giữa ô), hoặc thay palette bằng ô màu phẳng. Xuất lại 3 file `.glb`. Có thể chỉnh thêm độ tương phản 3 dải trong `toonGradient()` (`src/toon.js`) sau khi màu nền đã phẳng.
   - Nghi thêm (chưa chứng minh): đèn bán cầu 1.6 (`HemisphereLight` trong `world.js`) tô mượt, không chia dải; nếu sau khi làm phẳng màu mà dải vẫn mờ thì giảm đèn này.
-- [ ] **ART-02 · Ảnh dép ở phòng chờ (`public/deps/*.jpg`) là ảnh render Blender kiểu thật, không cùng phong cách toon + viền mực trong game.** Sửa: chụp lại ảnh từ chính model trong game (cùng shader), có thể tự động bằng script Playwright như `qa/toon-look.mjs`.
-- [ ] **PERF-01 · Khựng nhẹ ở cú đập đầu tiên trên máy yếu.** Đo: điện thoại tầm trung (CPU chậm 4×) có 1 frame 50ms; máy yếu (CPU chậm 6×) có 3 frame giật, dài nhất 83ms. Số shader tăng dần 5 → 10 đúng lúc hiệu ứng đập/dép rơi xuất hiện lần đầu → trình duyệt biên dịch shader lúc đang chơi.
+- [x] (xong 15/10, Mốc 5 mục 18: ảnh dép chụp bằng shader game, bỏ JPG Blender; rà 20/10) **ART-02 · Ảnh dép ở phòng chờ (`public/deps/*.jpg`) là ảnh render Blender kiểu thật, không cùng phong cách toon + viền mực trong game.** Sửa: chụp lại ảnh từ chính model trong game (cùng shader), có thể tự động bằng script Playwright như `qa/toon-look.mjs`.
+- [x] (xong 15/10, Mốc 4 mục 15: `world.warmUp` + `renderer.compile` trước trận; máy chậm 6× cú đập tối đa 117 ms; rà 20/10) **PERF-01 · Khựng nhẹ ở cú đập đầu tiên trên máy yếu.** Đo: điện thoại tầm trung (CPU chậm 4×) có 1 frame 50ms; máy yếu (CPU chậm 6×) có 3 frame giật, dài nhất 83ms. Số shader tăng dần 5 → 10 đúng lúc hiệu ứng đập/dép rơi xuất hiện lần đầu → trình duyệt biên dịch shader lúc đang chơi.
   - Sửa: sau khi tải xong, gọi `renderer.compile(scene, camera)` và cho hiệu ứng đập + dép rơi chạy một lần ngoài màn hình (warm-up) trước khi vào trận.
 
 Đo hiệu năng ngày 14/10/2026 (`node qa/perf.mjs`, Chromium dùng GPU thật AMD Radeon 610M — GPU tích hợp yếu; kết quả ở `qa/perf-report-2026-10-14.json`):
