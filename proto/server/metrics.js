@@ -13,7 +13,8 @@
 //            slams      { <persona>: { none | capture | fall } }   how each bot slam came out
 //            talk       { <situation>: n }   lines and stickers sent (server/bot-talk.js)
 // Reported by clients (a whitelist, each at most once per connection):
-//   events   { firstSlam, firstMatch, rulesOpened, tutorialOpened, tutorialDone, tutorialSkipped, tutorialDeclined }
+//   events   { firstSlam, firstMatch, rulesOpened, tutorialOpened, tutorialDone, tutorialSkipped, tutorialDeclined,
+//              donateOpened, donateSaved }
 //   active   { '0': n, '1': n, '2': n, '3-7': n, ... }   players on their first visit of the day, by days since
 //            their very first visit: day-2 return is active['1'] against active['0'] the day before
 import path from 'node:path';
@@ -23,7 +24,7 @@ import { DATA_DIR } from './refs.js';
 const store = dailyStore(path.join(DATA_DIR, 'metrics.json'), { saveEveryMs: Number(process.env.SLAM_REFS_SAVE_MS) || 10000, label: 'metrics' });
 export const { save, recent } = store;
 
-export const CLIENT_EVENTS = new Set(['firstSlam', 'firstMatch', 'rulesOpened', 'tutorialOpened', 'tutorialDone', 'tutorialSkipped', 'tutorialDeclined']);
+export const CLIENT_EVENTS = new Set(['firstSlam', 'firstMatch', 'rulesOpened', 'tutorialOpened', 'tutorialDone', 'tutorialSkipped', 'tutorialDeclined', 'donateOpened', 'donateSaved']);
 const WAIT_EDGES = [5, 15, 30, 60, 120];
 const MINUTE_EDGES = [1, 2, 4, 6, 10, 15];
 const OUT_EDGES = [15, 30, 60, 120, 180];

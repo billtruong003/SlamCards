@@ -18,6 +18,7 @@ import { createSocial } from './social.js';
 import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStatic } from './i18n.js';
 import { helloMessage } from './ref.js';
 import { createAds } from './ads.js';
+import { createDonate } from './donate.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -191,6 +192,15 @@ const ftue = createFtue({
     langPanel.hidden = true;
   },
 });
+const donate = createDonate({
+  track: (name) => send({ t: 'event', name }),
+  hidePanels: () => {
+    els.panel.hidden = true;
+    els.infoPanel.hidden = true;
+    langPanel.hidden = true;
+  },
+});
+donate.show(null); // the menu
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
 const seatLabel = (seat) => t(`color.${cardColorOf(seat)}`);
 const list = (items) => items.join(t('common.listSep'));
@@ -337,6 +347,7 @@ function onPeek(msg) {
 // Back to a clean menu: no room, no leftover HUD, labels or toasts from the last match.
 function leaveRoom() {
   social.closeAll();
+  donate.show(null); // back to the menu
   $('ad-lobby').hidden = true;
   $('ad-lobby').innerHTML = '';
   lobbyAdPlaced = false;
@@ -1452,6 +1463,7 @@ function syncLobbyAd() {
 
 function renderOverlay() {
   syncLobbyAd();
+  donate.show(state?.phase ?? null);
   const s = state;
   // the wardrobe stays open over lobby updates; a match starting closes it
   if (overlayKey === 'wardrobe') {
@@ -1667,7 +1679,9 @@ function renderOverlay() {
           </div>
           ${quick && !alone ? `<p class="sub">${t('match.quickNote')}</p>` : ''}
           ${waitingFor.length && Object.keys(s.rematch).length ? `<p class="sub">${t('match.waitingFor', { names: list(waitingFor.map(htmlName)) })}</p>` : ''}
+          ${donate.strip()}
         </div>`)) {
+        donate.wire(els.overlay);
         if ($('rematch')) $('rematch').onclick = () => send({ t: 'rematch' });
         if ($('find-new')) {
           $('find-new').onclick = () => {

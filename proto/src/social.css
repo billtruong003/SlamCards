@@ -157,3 +157,48 @@
 @media (orientation:landscape) and (max-height:500px){.react-chat:not([hidden]){display:flex!important;margin-top:auto}}
 @media (max-width:420px){.keyhint{display:none}}
 body.clean #netstat,body.clean .credit{display:none!important}
+
+/* ---------- support the game (donate.js) ---------- */
+#donate{display:inline-flex;align-items:center;gap:4px;background:#ff6f9c!important}
+/* a narrow phone's corner row has no room for one more word: the pink heart alone (labelled); and
+   none beside "Rời" (a lobby): it pushed the leave button off a 360-375 px screen. The menu has it,
+   and the end of a match its invitation. */
+@media (max-width:420px){#donate span{display:none}#leave:not([hidden]) ~ #donate{display:none!important}}
+.donate{position:fixed;inset:0;z-index:21;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(42,20,24,.55);overflow-y:auto}
+.donate-card{display:flex;align-items:center;gap:26px;width:min(700px,100%);box-sizing:border-box;padding:26px 28px;background:var(--cream);border:4px solid var(--ink);border-radius:22px;box-shadow:0 8px 0 var(--ink);margin:auto}
+.donate-grip,.donate-save,.donate-steps{display:none}
+.donate-save{text-decoration:none}
+.donate-qr{width:250px;height:auto;flex:none;border-radius:18px}
+.donate-txt{display:flex;flex-direction:column;gap:10px;min-width:0}
+.donate-txt h2{margin:0;font-size:32px;line-height:1.05;font-weight:800}
+.donate-txt p{margin:0;font-size:17px;font-weight:600;line-height:1.4}
+.donate-txt ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:16px;font-weight:600;color:var(--muted)}
+.donate-txt li{display:flex;gap:8px;align-items:center}
+.donate-thanks{font-size:15px!important;color:var(--muted)}
+.donate-thanks b{color:var(--pink-dark)}
+.donate-close{align-self:flex-start}
+/* the invitation under the end-of-match buttons */
+.donate-strip{display:flex;align-items:center;gap:14px;width:100%;box-sizing:border-box;margin-top:6px;padding:10px 12px 10px 16px;border:3px solid var(--ink);border-radius:16px;background:#fff;text-align:left}
+.donate-strip>svg{flex:none;width:30px;height:30px;color:#ff6f9c}
+.donate-strip p{margin:0;flex:1;font-weight:700;font-size:16px;line-height:1.3}
+.donate-strip p span{font-weight:600;color:var(--muted)}
+.donate-strip .btn{flex:none;background:#ff6f9c;min-height:42px;font-size:17px}
+/* a phone: a sheet from the bottom, the QR to save and the three steps (it cannot scan its own screen) */
+@media (max-width:700px){
+  .donate{align-items:flex-end;padding:0}
+  .donate-card{flex-direction:column;gap:10px;width:100%;margin:0;padding:12px 20px 24px;border:0;border-top:4px solid var(--ink);border-radius:26px 26px 0 0;box-shadow:none;text-align:center}
+  .donate-grip{display:block;width:48px;height:5px;border-radius:3px;background:#e3d6bf}
+  .donate-qr{order:2;width:min(236px,60vw)}
+  .donate-txt{display:contents}
+  .donate-txt h2{order:1;font-size:28px}
+  .donate-txt p{order:1;font-size:16px;color:var(--muted)}
+  .donate-txt ul{display:none}
+  .donate-save{display:flex;order:3;justify-content:center}
+  .donate-steps{display:grid;order:4;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0;padding:0;list-style:none;width:100%;font-size:13.5px;font-weight:700;line-height:1.25}
+  .donate-steps li{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .donate-steps i{font-style:normal;width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);background:var(--mint);display:flex;align-items:center;justify-content:center;font-size:13px}
+  .donate-thanks{order:5}
+  .donate-close{order:6;align-self:center;background:none;border:0;box-shadow:none;text-decoration:underline}
+  .donate-strip{padding:10px 10px 10px 14px;gap:10px}
+  .donate-strip>svg{display:none}
+}

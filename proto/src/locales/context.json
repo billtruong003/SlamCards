@@ -1974,6 +1974,62 @@
     "max": 8,
     "id": "J1"
   },
+  "donate.button": {
+    "where": "Corner button and end-of-match button that open the support panel (shown in Vietnamese only)",
+    "max": 10
+  },
+  "donate.title": {
+    "where": "Support panel title: help pay for the game server",
+    "max": 28
+  },
+  "donate.body": {
+    "where": "Support panel: how to pay",
+    "max": 110
+  },
+  "donate.noName": {
+    "where": "Support panel point",
+    "max": 30
+  },
+  "donate.noUnlock": {
+    "where": "Support panel point",
+    "max": 50
+  },
+  "donate.save": {
+    "where": "Phone: save the QR image to scan it from the bank app",
+    "max": 24
+  },
+  "donate.step1": {
+    "where": "Phone, step 1 of paying",
+    "max": 18
+  },
+  "donate.step2": {
+    "where": "Phone, step 2 of paying",
+    "max": 30
+  },
+  "donate.step3": {
+    "where": "Phone, step 3 of paying",
+    "max": 26
+  },
+  "donate.close": {
+    "where": "Closes the support panel",
+    "max": 14
+  },
+  "donate.qrAlt": {
+    "where": "Alt text of the QR image",
+    "max": 50
+  },
+  "donate.thanks": {
+    "where": "Support panel: the public list of supporters; {names} is pre-escaped HTML",
+    "max": 30
+  },
+  "donate.strip1": {
+    "where": "End of match, support invitation, first line",
+    "max": 30
+  },
+  "donate.strip2": {
+    "where": "End of match, support invitation, second line",
+    "max": 50
+  },
   "corner.infoAria": {
     "where": "Screen-reader label of the Info button",
     "max": 20
