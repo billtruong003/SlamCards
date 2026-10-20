@@ -2,6 +2,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { startServer, connect, lobby, twoPlayerGame, sleep } from './harness.js';
 
 function admin(port, method, path) {
@@ -104,4 +107,28 @@ test('a busy admin port costs the controls, never the game', async () => {
     const c = await connect(srv.port);
     await c.next((m) => m.t === 'server');
   } finally { srv.stop(); blocker.close(); }
+});
+
+// "Báo lỗi" (G6): kept per Vietnam day with the device's own details only; limited per connection.
+test('bug reports: saved with clean device details, empty ones refused, a flood limited', async () => {
+  const data = fs.mkdtempSync(path.join(os.tmpdir(), 'slam-reports-'));
+  const srv = await startServer({}, { SLAM_DATA: data });
+  try {
+    const c = await connect(srv.port);
+    c.send({ t: 'report', text: '   ' });
+    assert.equal((await c.next((m) => m.t === 'report')).result, 'empty');
+    c.send({ t: 'report', text: 'Bài bay mất\u0000 tiêu', diag: { build: 'abc', room: 'ABCD', ua: 'UA', screen: '390x844@2', lang: 'vi', phase: 'turn', errors: ['x is not defined'], ip: '1.2.3.4', name: 'Bill' } });
+    assert.equal((await c.next((m) => m.t === 'report')).result, 'ok');
+    c.send({ t: 'report', text: 'lần nữa' });
+    assert.equal((await c.next((m) => m.t === 'report')).result, 'limited', 'a minute between two');
+    await sleep(200);
+    const dir = path.join(data, 'reports');
+    const [file] = fs.readdirSync(dir);
+    const line = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8').trim());
+    assert.equal(line.text, 'Bài bay mất tiêu');
+    assert.equal(line.room, 'ABCD');
+    assert.deepEqual(line.errors, ['x is not defined']);
+    assert.equal(line.ip, undefined, 'nothing about who');
+    assert.equal(line.name, undefined);
+  } finally { srv.stop(); }
 });

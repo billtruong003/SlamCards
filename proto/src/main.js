@@ -19,6 +19,7 @@ import { t, has, detectLang, loadLang, setLang, lang, availableLangs, applyStati
 import { helloMessage } from './ref.js';
 import { createAds } from './ads.js';
 import { createDonate } from './donate.js';
+import { createReport } from './report.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -201,6 +202,11 @@ const donate = createDonate({
   },
 });
 donate.show(null); // the menu
+const report = createReport({
+  send,
+  context: () => ({ build: __BUILD__, room: roomCode ?? '', phase: state?.phase ?? 'menu' }),
+  toast: (text) => showToast(text, 2600),
+});
 const RPS_ICON = { bua: '✊', keo: '✌️', bao: '✋' };
 const seatLabel = (seat) => t(`color.${cardColorOf(seat)}`);
 const list = (items) => items.join(t('common.listSep'));
@@ -487,6 +493,10 @@ $('lang').onclick = () => {
   els.infoPanel.hidden = true;
 };
 $('close-info').onclick = () => { els.infoPanel.hidden = true; };
+$('open-report').onclick = () => {
+  els.infoPanel.hidden = true;
+  report.open();
+};
 $('close-panel').onclick = () => { els.panel.hidden = true; };
 
 // ---------- network ----------
@@ -651,6 +661,8 @@ function setMaintenance(on) {
 function onMessage(msg) {
   if (msg.t === 'server') {
     onServerInfo(msg);
+  } else if (msg.t === 'report') {
+    report.answered(msg.result);
   } else if (msg.t === 'maintenance') {
     setMaintenance(msg.on);
   } else if (msg.t === 'notice') {

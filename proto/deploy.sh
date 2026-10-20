@@ -36,6 +36,8 @@ ssh "$HOST" 'set -e; rm -rf /tmp/slam-new && mkdir /tmp/slam-new && tar xzf /tmp
   (cd /tmp/slam-new && npm ci --omit=dev --no-audit --no-fund --loglevel=error)
   bash /tmp/slam-new/deploy/nginx-install.sh
   cd /opt/slam-cards && rm -rf dist server src deploy node_modules package.json package-lock.json && cp -a /tmp/slam-new/. . && rm -rf /tmp/slam-new
+  # bug reports to Bill on Telegram every 5 minutes (deploy/report-notify.sh, G6)
+  chmod 755 deploy/report-notify.sh && echo "*/5 * * * * root /opt/slam-cards/deploy/report-notify.sh" > /etc/cron.d/slam-report-notify
   pm2 restart slam-cards --update-env'
 rm /tmp/slam.tgz
 echo "Deployed: https://billthedevstudio.io.vn/slam-cards/"

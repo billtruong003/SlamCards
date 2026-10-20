@@ -12,6 +12,7 @@ import { adsConfig, adsFileClient, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
 import * as metrics from './metrics.js';
 import { startAdmin } from './ops.js';
+import { saveReport, pruneReports } from './reports.js';
 import { createSlamCheck } from './slam-check.js';
 import { botName, botLook, planSlam, thinkMs, quickMs, pickPersona } from './bots.js';
 import { loadPhysics } from './sim.js';
@@ -1059,6 +1060,12 @@ function handle(ws, msg) {
     return;
   }
 
+  // "Báo lỗi" (G6): kept for Bill (reports.js), in or out of a room.
+  if (msg.t === 'report') {
+    send(ws, { t: 'report', result: saveReport(ws, msg) });
+    return;
+  }
+
   // Lets a client opening an invite link know whether the room is still there before asking for a name.
   if (msg.t === 'peek') {
     const code = String(msg.code || '').toUpperCase();
@@ -1634,4 +1641,5 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
   });
 }
 
+pruneReports();
 server.listen(PORT, '127.0.0.1', () => console.log(`Slam Cards server on http://127.0.0.1:${PORT}`));

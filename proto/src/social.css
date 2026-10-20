@@ -158,6 +158,12 @@
 @media (max-width:420px){.keyhint{display:none}}
 body.clean #netstat,body.clean .credit{display:none!important}
 
+/* ---------- "Báo lỗi" (report.js) ---------- */
+.report-panel{width:min(340px,calc(100vw - 20px))}
+.report-panel h2{margin:0;font-size:20px}
+.report-label{font-weight:700;font-size:14px}
+.report-panel textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:90px;text-transform:none;font:600 15px/1.35 var(--font)}
+
 /* ---------- support the game (donate.js) ---------- */
 #donate{display:inline-flex;align-items:center;gap:4px;background:#ff6f9c!important}
 /* a narrow phone's corner row has no room for one more word: the pink heart alone (labelled); and

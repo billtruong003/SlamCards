@@ -2076,6 +2076,38 @@
     "where": "Link to the privacy policy page (info panel)",
     "max": 34
   },
+  "report.button": {
+    "where": "Info panel button that opens the bug report form",
+    "max": 16
+  },
+  "report.title": {
+    "where": "Bug report form title",
+    "max": 28
+  },
+  "report.ask": {
+    "where": "Bug report form: the question above the text box",
+    "max": 50
+  },
+  "report.note": {
+    "where": "Bug report form: what is sent with the text",
+    "max": 80
+  },
+  "report.send": {
+    "where": "Bug report form: send button",
+    "max": 10
+  },
+  "report.thanks": {
+    "where": "Toast after a bug report is sent",
+    "max": 30
+  },
+  "report.limited": {
+    "where": "Toast when bug reports are rate-limited",
+    "max": 44
+  },
+  "report.empty": {
+    "where": "Toast when the bug report is empty",
+    "max": 44
+  },
   "common.close": {
     "where": "Close button of the info, sound and quick-rules panels",
     "max": 8,
