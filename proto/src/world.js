@@ -7,15 +7,12 @@ import { createStencilCard, orderStencilCards, spaceTime } from './stencil-card.
 const STENCIL = !new URLSearchParams(location.search).has('classic');
 const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
 import { toonizeTree, toonize } from './toon.js';
-import { CARD_HALF_W, CARD_HALF_T, CARD_HALF_D, tableFor } from './rules.js';
+import { createPhysics } from './physics.js';
 
 let RAPIER;
 
-const round4 = (n) => Math.round(n * 10000) / 10000;
 const PARKED_BELOW = -10;
 
-const tmpQuat = new THREE.Quaternion();
-const tmpLocal = new THREE.Vector3();
 const tmpProject = new THREE.Vector3();
 const tmpEuler = new THREE.Euler();
 const tmpNdc = new THREE.Vector2();
@@ -139,10 +136,8 @@ export class World {
     floor.material = toonize(floor.material);
     this.scene.add(floor);
 
-    this.physics = new RAPIER.World({ x: 0, y: TUNE.gravity, z: 0 });
-    this.physics.timestep = TUNE.fixedDt / TUNE.substeps;
-    const floorBody = this.physics.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0, -3.5, 0));
-    this.physics.createCollider(RAPIER.ColliderDesc.cuboid(40, 0.5, 40), floorBody);
+    // the cards' motion (physics.js, shared with the server); this class draws it
+    this.physics = createPhysics(RAPIER);
 
     this.seats = [];
     this.cards = {};
@@ -167,13 +162,10 @@ export class World {
     this.tableKey = key;
 
     for (const part of this.tableParts) this.scene.remove(part);
-    if (this.tableBody) this.physics.removeRigidBody(this.tableBody);
-    for (const card of Object.values(this.cards)) {
-      this.scene.remove(card.mesh, card.shadow);
-      this.physics.removeRigidBody(card.body);
-    }
+    for (const card of Object.values(this.cards)) this.scene.remove(card.mesh, card.shadow);
 
-    this.table = tableFor(seats.length);
+    this.physics.setup(seats);
+    this.table = this.physics.table;
     this.buildTable(this.table);
     this.seats = [...seats];
     this.cards = Object.fromEntries(seats.map((seat, i) => [seat, this.buildCard(seat, i + 1)]));
@@ -210,14 +202,6 @@ export class World {
       toonizeTree(part);
       this.scene.add(part);
     }
-
-    this.tableBody = this.physics.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0, -0.25, 0));
-    this.physics.createCollider(
-      RAPIER.ColliderDesc.cuboid(hx, 0.25, hz)
-        .setFriction(TUNE.table.friction)
-        .setRestitution(TUNE.table.restitution),
-      this.tableBody,
-    );
   }
 
   buildCard(seat, stencilRef) {
@@ -229,21 +213,7 @@ export class World {
     const { mesh, shadow } = made;
     this.scene.add(mesh);
     this.scene.add(shadow);
-    const body = this.physics.createRigidBody(
-      RAPIER.RigidBodyDesc.dynamic()
-        .setCcdEnabled(true)
-        .setSoftCcdPrediction(TUNE.softCcd)
-        .setLinearDamping(TUNE.card.linearDamping)
-        .setAngularDamping(TUNE.card.angularDamping),
-    );
-    this.physics.createCollider(
-      RAPIER.ColliderDesc.cuboid(CARD_HALF_W, CARD_HALF_T, CARD_HALF_D)
-        .setDensity(TUNE.card.density)
-        .setFriction(TUNE.card.friction)
-        .setRestitution(TUNE.card.restitution),
-      body,
-    );
-    return { mesh, shadow, body, stencil: STENCIL ? made : null };
+    return { mesh, shadow, body: this.physics.body(seat), stencil: STENCIL ? made : null };
   }
 
   resize() {
@@ -300,19 +270,13 @@ export class World {
 
   // Seats still on the table (eliminated cards are parked far below and disabled).
   get activeSeats() {
-    return this.seats.filter((seat) => this.cards[seat].body.isEnabled());
+    return this.physics.activeSeats;
   }
 
   // ----- state -----
 
   readCards() {
-    const out = {};
-    for (const seat of this.seats) {
-      const t = this.cards[seat].body.translation();
-      const r = this.cards[seat].body.rotation();
-      out[seat] = { p: [t.x, t.y, t.z].map(round4), q: [r.x, r.y, r.z, r.w].map(round4) };
-    }
-    return out;
+    return this.physics.readCards();
   }
 
   // Card colour per seat (hex, the dark shade): tints the old joker cards (`?classic`).
@@ -368,18 +332,8 @@ export class World {
   }
 
   setCards(cards) {
-    for (const seat of this.seats) {
-      const { body, mesh } = this.cards[seat];
-      const { p, q } = cards[seat];
-      const parked = p[1] < PARKED_BELOW;
-      body.setEnabled(!parked);
-      mesh.visible = !parked;
-      body.setTranslation({ x: p[0], y: p[1], z: p[2] }, true);
-      body.setRotation({ x: q[0], y: q[1], z: q[2], w: q[3] }, true);
-      body.setLinvel({ x: 0, y: 0, z: 0 }, true);
-      body.setAngvel({ x: 0, y: 0, z: 0 }, true);
-      if (!parked) body.sleep();
-    }
+    this.physics.setCards(cards);
+    for (const seat of this.seats) this.cards[seat].mesh.visible = cards[seat].p[1] >= PARKED_BELOW;
     this.syncMeshes();
   }
 
@@ -395,13 +349,7 @@ export class World {
   }
 
   recordFrame() {
-    const frame = [];
-    for (const seat of this.seats) {
-      const t = this.cards[seat].body.translation();
-      const r = this.cards[seat].body.rotation();
-      frame.push(t.x, t.y, t.z, r.x, r.y, r.z, r.w);
-    }
-    return frame.map(round4);
+    return this.physics.recordFrame();
   }
 
   syncMeshes() {
@@ -432,105 +380,27 @@ export class World {
   // ----- slam -----
 
   cardAt(point, margin = TUNE.cardMargin) {
-    return this.activeSeats.find((seat) => {
-      const local = this.toCardLocal(seat, point);
-      return Math.abs(local.x) < CARD_HALF_W + margin && Math.abs(local.z) < CARD_HALF_D + margin;
-    });
-  }
-
-  // Returns a shared vector: read it before the next call.
-  toCardLocal(seat, point) {
-    const { mesh } = this.cards[seat];
-    tmpQuat.copy(mesh.quaternion).invert();
-    return tmpLocal.set(point.x - mesh.position.x, 0, point.z - mesh.position.z).applyQuaternion(tmpQuat);
-  }
-
-  distanceToCardEdge(seat, point) {
-    const local = this.toCardLocal(seat, point);
-    const dx = Math.max(Math.abs(local.x) - CARD_HALF_W, 0);
-    const dz = Math.max(Math.abs(local.z) - CARD_HALF_D, 0);
-    return Math.hypot(dx, dz);
-  }
-
-  // A card lying under another one is sheltered from the gust, so a slam on a stack
-  // lifts the top card off instead of moving the pair together.
-  isCovered(seat) {
-    const { mesh } = this.cards[seat];
-    return this.activeSeats.some((otherSeat) => {
-      if (otherSeat === seat) return false;
-      const above = this.cards[otherSeat].mesh.position;
-      if (above.y <= mesh.position.y + 0.004) return false;
-      const local = this.toCardLocal(seat, above);
-      return Math.abs(local.x) < CARD_HALF_W * 2 * TUNE.cover.overlap
-        && Math.abs(local.z) < CARD_HALF_D * 2 * TUNE.cover.overlap;
-    });
+    return this.physics.cardAt(point, margin);
   }
 
   slamEffects(point, type) {
-    return this.activeSeats.map((seat) => {
-      const distance = this.distanceToCardEdge(seat, point);
-      const raw = 1 - distance / TUNE.windRadius;
-      let strength = raw > 0 ? raw ** TUNE.slam.strengthCurve : 0;
-      if (this.isCovered(seat)) strength *= TUNE.cover.strength;
-      return { color: seat, strength, type };
-    }).filter((effect) => effect.strength > 0);
+    return this.physics.slamEffects(point, type);
   }
 
   applySlam(point, type, random = Math.random) {
-    const params = TUNE.slam[type];
-    for (const { color: seat, strength } of this.slamEffects(point, type)) {
-      const { body, mesh } = this.cards[seat];
-      const dir = new THREE.Vector3(mesh.position.x - point.x, 0, mesh.position.z - point.z).normalize();
-      const mass = body.mass();
-      body.wakeUp();
-      body.applyImpulse({
-        x: dir.x * params.horizontal * strength * mass,
-        y: params.vertical * strength * mass,
-        z: dir.z * params.horizontal * strength * mass,
-      }, true);
-      // Flip count grows faster than distance and varies per slam, so a close slam
-      // can tumble 2-3 times while a light one barely turns over.
-      const flipAxis = new THREE.Vector3(0, 1, 0).cross(dir);
-      const luck = 1 + (random() * 2 - 1) * TUNE.slam.spinRandom;
-      const spin = params.spin * strength ** TUNE.slam.spinCurve * luck;
-      const roll = (random() * 2 - 1) * params.spin * TUNE.slam.rollNoise * strength;
-      const yaw = (random() - 0.5) * TUNE.slam.yawNoise * strength;
-      body.setAngvel({
-        x: flipAxis.x * spin + dir.x * roll,
-        y: yaw,
-        z: flipAxis.z * spin + dir.z * roll,
-      }, true);
-    }
+    this.physics.applySlam(point, type, random);
   }
 
   stepPhysics(wind) {
-    for (const seat of this.activeSeats) {
-      const { body } = this.cards[seat];
-      body.resetForces(false);
-      if (body.translation().y > TUNE.airborneHeight) {
-        const accel = TUNE.windAccelPerUnit * wind.strength;
-        const mass = body.mass();
-        body.addForce({ x: Math.cos(wind.angle) * accel * mass, y: 0, z: Math.sin(wind.angle) * accel * mass }, true);
-      }
-    }
-    for (let i = 0; i < TUNE.substeps; i++) this.physics.step();
+    this.physics.step(wind);
   }
 
   isSettled() {
-    return this.activeSeats.every((seat) => {
-      const { body } = this.cards[seat];
-      if (body.isSleeping()) return true;
-      const v = body.linvel();
-      const w = body.angvel();
-      return Math.hypot(v.x, v.y, v.z) < TUNE.settle.linear && Math.hypot(w.x, w.y, w.z) < TUNE.settle.angular;
-    });
+    return this.physics.isSettled();
   }
 
   isSomethingFalling() {
-    return this.activeSeats.some((seat) => {
-      const y = this.cards[seat].body.translation().y;
-      return y < -0.05 && y > -2.4;
-    });
+    return this.physics.isSomethingFalling();
   }
 
   // ----- view helpers -----

@@ -7,7 +7,9 @@ cd "$(dirname "$0")"
 npx vite build
 # all of src: the server imports shared modules from it (rules, config, catalog, ads, tutorial...),
 # and a list kept by hand here once missed a new one
-tar czf /tmp/slam.tgz dist server deploy src
+# with package.json + lock: the server's own dependencies ("dependencies": ws, and Rapier for the computer
+# players' tries, server/sim.js) are installed on the VPS; devDependencies are the browser build's
+tar czf /tmp/slam.tgz dist server deploy src package.json package-lock.json
 HOST="${SLAM_HOST:-hordecall}"
 
 # Stop new matches and wait for the ones in play to finish (server/ops.js, loopback port 8197).
@@ -29,9 +31,11 @@ DRAIN
 scp /tmp/slam.tgz "$HOST":/tmp/slam.tgz
 # nginx first (deploy/nginx-install.sh: only when the sites changed, rolled back if the check fails),
 # so a bad nginx file stops the deploy before the running game is touched
+# the dependencies go in beside the new files first: if that fails, the running game is not touched
 ssh "$HOST" 'set -e; rm -rf /tmp/slam-new && mkdir /tmp/slam-new && tar xzf /tmp/slam.tgz -C /tmp/slam-new && rm /tmp/slam.tgz
+  (cd /tmp/slam-new && npm ci --omit=dev --no-audit --no-fund --loglevel=error)
   bash /tmp/slam-new/deploy/nginx-install.sh
-  cd /opt/slam-cards && rm -rf dist server src deploy && cp -a /tmp/slam-new/. . && rm -rf /tmp/slam-new
+  cd /opt/slam-cards && rm -rf dist server src deploy node_modules package.json package-lock.json && cp -a /tmp/slam-new/. . && rm -rf /tmp/slam-new
   pm2 restart slam-cards --update-env'
 rm /tmp/slam.tgz
 echo "Deployed: https://billthedevstudio.io.vn/slam-cards/"
