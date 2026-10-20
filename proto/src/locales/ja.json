@@ -45,6 +45,7 @@
   "queue.fullNote": "{n}人そろったらすぐ開始。",
   "queue.flexNote": "人が少ないので、人数に関係なく卓に入るよ。",
   "queue.cancel": "キャンセル",
+  "queue.botsNow": "今すぐコンピューターと遊ぶ",
   "queue.slot": "さがし中…",
   "queue.justIn": "来たよ",
   "queue.lost": "マッチング中に切れちゃった。もう一回！",

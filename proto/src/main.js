@@ -1325,7 +1325,7 @@ function fillRoomList() {
 
 function sendQueue(size) {
   queueing = { size, since: Date.now() };
-  send({ t: 'queue', size, name: currentName(), look: playerLook.chosen() });
+  send({ t: 'queue', size, name: currentName(), look: playerLook.chosen(), played: ftue.played });
   renderQueue(null);
 }
 
@@ -1357,6 +1357,7 @@ function renderQueue(msg) {
       </div>
       ${startsIn ? `<p class="queue-go" id="queue-go"></p><p class="sub">${t('queue.anyNote')}</p>`
     : size === 'any' ? '' : `<p class="sub">${t(flexible ? 'queue.flexNote' : 'queue.fullNote', { n: size })}</p>`}
+      ${peers.length ? '' : `<button class="btn pri wide" id="queue-bots">${t('queue.botsNow')}</button>`}
       <button class="btn wide" id="queue-cancel">${t('queue.cancel')}</button>
     </div>${ftue.queueHtml()}</div>`);
   setText($('queue-waited'), t('queue.waited', { time: mmss(waited) }));
@@ -1364,6 +1365,9 @@ function renderQueue(msg) {
   if (!fresh) return;
   mountMenuBackground(els.overlay.querySelector('.menu-bg'));
   ftue.queueStart(els.overlay.querySelector('.tut-queue'));
+  // alone in the queue: no need to wait for the computer players (server botsNow)
+  const bots = $('queue-bots');
+  if (bots) bots.onclick = () => { bots.disabled = true; send({ t: 'botsNow' }); };
   $('queue-cancel').onclick = () => {
     send({ t: 'unqueue' });
     queueing = null;

@@ -45,6 +45,7 @@
   "queue.fullNote": "Đủ {n} người là bắt đầu.",
   "queue.flexNote": "Vắng người quá, giờ ghép luôn bàn bao nhiêu người cũng được.",
   "queue.cancel": "Hủy",
+  "queue.botsNow": "Chơi với máy luôn",
   "queue.slot": "Đang tìm…",
   "queue.justIn": "mới vào",
   "queue.lost": "Mất kết nối lúc tìm trận. Thử lại nhé!",

@@ -45,6 +45,7 @@
   "queue.fullNote": "{n}명 모이면 바로 시작해.",
   "queue.flexNote": "사람이 적어서 이제 인원 상관없이 들어가요.",
   "queue.cancel": "취소",
+  "queue.botsNow": "지금 컴퓨터랑 하기",
   "queue.slot": "찾는 중…",
   "queue.justIn": "방금 합류",
   "queue.lost": "매칭 중에 연결이 끊겼어. 다시 해 봐!",

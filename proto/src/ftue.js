@@ -475,5 +475,7 @@ export function createFtue({ send, track = () => {}, world, touch, toastVisible,
     joined: () => send({ t: 'ftue', step: 0, learner: learner() }),
     // a player's very first match: wind and slam types stay out of the way until they know the basics
     get firstMatch() { return matches === 0 && !disabled; },
+    // matches finished on this device: the queue tells the server, which picks computer players to suit
+    get played() { return matches; },
   };
 }

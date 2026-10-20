@@ -45,6 +45,7 @@
   "queue.fullNote": "Starts as soon as {n} players are in.",
   "queue.flexNote": "It's quiet, so you'll join a table of any size now.",
   "queue.cancel": "Cancel",
+  "queue.botsNow": "Play the computer now",
   "queue.slot": "Searching…",
   "queue.justIn": "just joined",
   "queue.lost": "Lost connection while finding players. Try again!",

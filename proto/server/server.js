@@ -13,7 +13,8 @@ import * as refs from './refs.js';
 import * as metrics from './metrics.js';
 import { startAdmin } from './ops.js';
 import { createSlamCheck } from './slam-check.js';
-import { botName, botLook, chooseAim, thinkMs, quickMs } from './bots.js';
+import { botName, botLook, planSlam, thinkMs, quickMs, pickPersona } from './bots.js';
+import { loadPhysics } from './sim.js';
 import { STEPS as TUTORIAL } from '../src/tutorial.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
@@ -49,7 +50,7 @@ const TIMING = {
   quickStart: 1200,      // quick match: room made, then the first round starts
   anyCountdown: 5000,    // quick match "any": 2 found, then wait this long for more
   queueFlex: 15000,      // a player waiting for an exact size takes any table after this long
-  botAfter: 20000,       // a player still alone in the queue after this long plays with computer players
+  botAfter: 8000,        // a player still alone in the queue after this long plays with computer players (B.01)
   backToLobby: 30000,    // a friends' room shows the results this long, then goes back to its lobby
   reading: 60000,        // round 1 waits this long at most for new players reading the rules
   queueTick: 400,
@@ -191,10 +192,14 @@ function makePlayer(room, seat, asked, msg) {
   };
 }
 
-// A computer player for a seat: a kid's nickname, its own gear, a steadiness of hand of its own.
+// A computer player for a seat: a persona (bots.js) picked for how much the people at the table have
+// played, a kid's nickname that goes with it, its own gear. A friends' room does not know how much its
+// players have played: its bots come from the middle mix.
+const FRIENDS_PLAYED = 5;
 function makeBot(room, seat) {
-  const player = makePlayer(room, seat, { name: botName(), blocked: false }, { look: botLook() });
-  return Object.assign(player, { bot: true, connected: true, skill: 0.3 + Math.random() * 0.5 });
+  const persona = pickPersona(room.played ?? FRIENDS_PLAYED);
+  const player = makePlayer(room, seat, { name: botName(persona), blocked: false }, { look: botLook() });
+  return Object.assign(player, { bot: true, connected: true, persona });
 }
 
 // Two players with the same name get a number: "Tí vô danh", "Tí vô danh 2".
@@ -634,9 +639,16 @@ function callOffSimulatedSlam(room, seat) {
   if (isLive(room) && room.slam?.sim === seat && !room.slam.ended) abortSlam(room, 'simulator left');
 }
 
-// A computer player's turn: think a few seconds, then slap where bots.js says.
-function botSlam(room, seat) {
-  const pick = chooseAim({ cards: room.cards, alive: room.alive, seat, forced: room.passStreak[seat] >= 1, skill: room.players[seat].skill });
+// A computer player's turn: it tries slams on the server's copy of the table (bots.js planSlam), then
+// slaps; if the game moved on meanwhile (a disconnect, the clock), it does nothing.
+async function botSlam(room, seat) {
+  const { round, turn } = room;
+  const physics = await loadPhysics();
+  const pick = await planSlam({
+    physics, seats: room.seats, cards: room.cards, alive: room.alive, seat,
+    forced: room.passStreak[seat] >= 1, wind: room.wind, persona: room.players[seat].persona,
+  });
+  if (!isLive(room) || room.phase !== 'turn' || room.turn !== turn || room.round !== round) return;
   const aim = pick && cleanImpact(room, seat, pick.aim);
   if (!aim || onACard(room, aim)) {
     const card = room.cards[seat].p;
@@ -667,7 +679,11 @@ function driveBots(room) {
     });
   } else if (room.phase === 'turn' && isBot(room, room.turn)) {
     const { turn: seat, round } = room;
-    act(thinkMs(turnMs(room)), () => { if (room.phase === 'turn' && room.turn === seat && room.round === round) botSlam(room, seat); });
+    act(thinkMs(room.players[seat].persona, turnMs(room)), () => {
+      if (room.phase === 'turn' && room.turn === seat && room.round === round) {
+        botSlam(room, seat).catch((err) => console.error(`[${room.code}] bot ${seat}: ${err.stack ?? err}`));
+      }
+    });
   } else if (room.phase === 'matchEnd') {
     const bots = room.seats.filter((s) => isBot(room, s) && !room.rematch[s]);
     if (bots.length) {
@@ -822,8 +838,9 @@ function dropPlayer(room, seat) {
   // new name, the same cards on the table), and the old token no longer opens it.
   if (room.kind === 'quick' && !['lobby', 'matchEnd'].includes(room.phase) && !player.bot && peopleIn(room).some((s) => s !== seat)) {
     clearTimeout(player.discTimer);
-    Object.assign(player, { bot: true, connected: true, ws: null, token: crypto.randomUUID(), tutorial: 0, skill: 0.3 + Math.random() * 0.5 });
-    player.name = uniqueName(room, botName());
+    const persona = pickPersona(room.played ?? FRIENDS_PLAYED);
+    Object.assign(player, { bot: true, connected: true, ws: null, token: crypto.randomUUID(), tutorial: 0, persona });
+    player.name = uniqueName(room, botName(persona));
     log(room, `${seat} left, a computer player takes the seat`);
     broadcast(room);
     driveBots(room);
@@ -1056,6 +1073,14 @@ function handle(ws, msg) {
   if (msg.t === 'queue') {
     detach(ws, { leaving: true });
     joinQueue(ws, msg);
+    return;
+  }
+
+  // "Chơi với máy luôn" on the queue screen: no more waiting, computer players now. Only someone
+  // still waiting alone: a person who might come along is never skipped over.
+  if (msg.t === 'botsNow') {
+    const entry = queue.find((e) => e.ws === ws);
+    if (entry && queue.length === 1) fillWithBots(entry);
     return;
   }
 
@@ -1393,8 +1418,16 @@ function joinQueue(ws, msg) {
   const size = [2, 3, 4].includes(msg.size) ? msg.size : 'any';
   const look = cleanLook(msg.look ?? { dep: msg.dep });
   const asked = askedName(msg.name);
-  queue.push({ ws, asked, name: asked.name, dep: look.dep, look, size, at: previous?.at ?? Date.now() });
+  const played = Math.max(0, Math.min(1000, Math.trunc(Number(msg.played)) || 0)); // matches finished, as the browser counts
+  queue.push({ ws, asked, name: asked.name, dep: look.dep, look, size, played, at: previous?.at ?? Date.now() });
   matchQueue();
+}
+
+// Computer players fill a table of the size asked for (two or three for "any") around one person:
+// after botAfter alone in the queue, or at once when they ask for it ("Chơi với máy luôn").
+function fillWithBots(entry) {
+  const size = entry.size === 'any' ? 2 + crypto.randomInt(2) : entry.size;
+  startQuickRoom([entry], size - 1);
 }
 
 // Takes a socket out of the queue. `outcome` ('left' or 'matched') counts how long it waited
@@ -1409,6 +1442,7 @@ function leaveQueue(ws, outcome = 'left') {
 
 function startQuickRoom(entries, bots = 0) {
   const room = newRoom({ kind: 'quick', cap: entries.length + bots });
+  room.played = Math.min(...entries.map((e) => e.played ?? 0)); // bots are picked for the newest player
   entries.forEach((e, i) => {
     leaveQueue(e.ws, 'matched');
     const seat = SEATS[i];
@@ -1461,9 +1495,7 @@ function matchQueue() {
   // Alone in the queue for botAfter: computer players fill a table of the size asked for (two of
   // three for "any"), so nobody waits forever on a quiet evening. People are always matched first.
   if (queue.length === 1 && now - queue[0].at >= TIMING.botAfter) {
-    const [e] = queue;
-    const size = e.size === 'any' ? 2 + crypto.randomInt(2) : e.size;
-    startQuickRoom([e], size - 1);
+    fillWithBots(queue[0]);
     return;
   }
   // tell each waiting player who would come with them

@@ -45,6 +45,7 @@
   "queue.fullNote": "Begitu ada {n} orang, langsung mulai.",
   "queue.flexNote": "Lagi sepi, sekarang kamu masuk meja berapa pun pemainnya.",
   "queue.cancel": "Batal",
+  "queue.botsNow": "Main lawan komputer sekarang",
   "queue.slot": "Nyari…",
   "queue.justIn": "baru masuk",
   "queue.lost": "Koneksi putus pas nyari lawan. Coba lagi!",

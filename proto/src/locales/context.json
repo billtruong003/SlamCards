@@ -227,6 +227,10 @@
     "max": 10,
     "id": "Batal"
   },
+  "queue.botsNow": {
+    "where": "Quick-match wait, alone in the queue: skip the wait and play computer players now",
+    "max": 30
+  },
   "queue.slot": {
     "where": "Matchmaking: empty seat still searching",
     "max": 14,

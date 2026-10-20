@@ -45,6 +45,7 @@
   "queue.fullNote": "Empieza al llegar a {n} jugadores.",
   "queue.flexNote": "Hay poca gente: ahora entras en una mesa de cualquier tamaño.",
   "queue.cancel": "Cancelar",
+  "queue.botsNow": "Jugar contra la máquina ya",
   "queue.slot": "Buscando…",
   "queue.justIn": "recién llegó",
   "queue.lost": "Se cortó la conexión al buscar. ¡Prueba otra vez!",

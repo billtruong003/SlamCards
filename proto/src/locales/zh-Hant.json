@@ -45,6 +45,7 @@
   "queue.fullNote": "湊齊 {n} 人就開始。",
   "queue.flexNote": "人太少了，現在幾個人的桌都可以進。",
   "queue.cancel": "取消",
+  "queue.botsNow": "直接和電腦玩",
   "queue.slot": "尋找中…",
   "queue.justIn": "剛加入",
   "queue.lost": "配對時斷線了，再試一次吧！",

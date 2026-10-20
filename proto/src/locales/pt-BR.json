@@ -45,6 +45,7 @@
   "queue.fullNote": "Começa assim que tiver {n} pessoas.",
   "queue.flexNote": "Está vazio, agora você entra numa mesa de qualquer tamanho.",
   "queue.cancel": "Cancelar",
+  "queue.botsNow": "Jogar contra o computador já",
   "queue.slot": "Procurando…",
   "queue.justIn": "chegou agora",
   "queue.lost": "Caiu a conexão na busca. Tenta de novo!",
