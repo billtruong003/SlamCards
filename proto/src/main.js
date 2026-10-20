@@ -21,6 +21,7 @@ import { createAds } from './ads.js';
 import { createDonate } from './donate.js';
 import { createReport } from './report.js';
 import { createPlayerMenu } from './player-menu.js';
+import { keepDevice } from './device.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -517,6 +518,7 @@ $('close-panel').onclick = () => { els.panel.hidden = true; };
 // it for longer than the seat is kept, gets a card with a retry button instead of a silent loop.
 const RETRY_MS = [1000, 2000, 4000, 8000];
 const GIVE_UP_AFTER = 5;
+let profile = null; // { coins, xp } from the progress store (2.01); shown from 2.03
 let everConnected = false;
 let failures = 0;
 let lostAt = 0;
@@ -673,6 +675,10 @@ function setMaintenance(on) {
 function onMessage(msg) {
   if (msg.t === 'server') {
     onServerInfo(msg);
+  } else if (msg.t === 'device') {
+    keepDevice(msg.token);
+  } else if (msg.t === 'profile') {
+    profile = { coins: msg.coins, xp: msg.xp };
   } else if (msg.t === 'report') {
     report.answered(msg.result);
   } else if (msg.t === 'reportPlayer') {

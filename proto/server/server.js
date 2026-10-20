@@ -13,6 +13,9 @@ import * as refs from './refs.js';
 import * as metrics from './metrics.js';
 import { startAdmin } from './ops.js';
 import { saveReport, savePlayerReport, pruneReports } from './reports.js';
+import { loadKeys } from './keys.js';
+import { newDevice, deviceId } from './devices.js';
+import { createProgress } from './progress.js';
 import { createSlamCheck } from './slam-check.js';
 import { botName, botLook, planSlam, thinkMs, quickMs, pickPersona } from './bots.js';
 import { loadPhysics } from './sim.js';
@@ -257,6 +260,24 @@ function newRoom({ kind = 'friends', visibility = 'private', cap = MAX_PLAYERS }
 
 function send(ws, msg) {
   if (ws && ws.readyState === ws.OPEN) ws.send(JSON.stringify(msg));
+}
+
+// Devices and their coins and xp (Phase 2, 2.01): keys.js, devices.js, progress.js.
+const keys = loadKeys();
+const progress = createProgress({ url: keys.apiUrl, key: keys.apiKey, file: path.join(refs.DATA_DIR, 'progress-queue.json') });
+
+// The device behind this connection, from the token in its hello: a token this server signed keeps
+// its id; anything else gets a new one ({ t: 'device', token } for the browser to keep). Then its
+// coins and xp from the store, when the store is on and answers ({ t: 'profile', coins, xp }).
+function knowDevice(ws, token) {
+  if (ws.device) return;
+  ws.device = deviceId(keys.deviceKey, token);
+  if (!ws.device) {
+    const fresh = newDevice(keys.deviceKey);
+    ws.device = fresh.id;
+    send(ws, { t: 'device', token: fresh.token });
+  }
+  progress?.seen(ws.device).then((p) => { if (p) send(ws, { t: 'profile', coins: p.coins, xp: p.xp }); });
 }
 
 const connectedSeats = (room) => room.seats.filter((s) => room.players[s]?.connected);
@@ -1051,6 +1072,7 @@ function handle(ws, msg) {
   if (msg.t === 'hello') {
     refs.hello(ws, msg);
     if (msg.age !== undefined) metrics.active(ws, msg.age);
+    knowDevice(ws, msg.device);
     return;
   }
 

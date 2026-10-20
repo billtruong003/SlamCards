@@ -41,11 +41,14 @@ const ref = typeof location === 'undefined' ? 'direct' : refFrom(location.search
 if (MARKETING_REFS.includes(ref)) session((s) => s.setItem(REF_KEY, ref));
 let visitSent = false;
 
+import { deviceToken } from './device.js';
+
 // The first message on every new socket. `visit` is true once per tab (a reload is not a new visit).
 export function helloMessage() {
   const visit = !visitSent && !session((s) => s.getItem(VISIT_KEY));
   visitSent = true;
   if (visit) session((s) => s.setItem(VISIT_KEY, '1'));
   const age = device((s) => returningAge(s));
-  return age === null ? { t: 'hello', ref, visit } : { t: 'hello', ref, visit, age };
+  const hello = { t: 'hello', ref, visit, device: deviceToken() };
+  return age === null ? hello : { ...hello, age };
 }

@@ -38,7 +38,7 @@
 </ul>
 
 <h2>Lưu trên máy của bạn</h2>
-<p>Trình duyệt của bạn lưu tên chơi, đồ đã chọn, ngôn ngữ, âm lượng, các bước hướng dẫn đã xem, số trận đã chơi (dùng để giới hạn số lần quảng cáo), ngày đầu tiên và ngày gần nhất bạn vào game (để đếm số người quay lại). Bạn xoá được bất cứ lúc nào bằng cách xoá dữ liệu trang web trong trình duyệt.</p>
+<p>Trình duyệt của bạn lưu tên chơi, đồ đã chọn, ngôn ngữ, âm lượng, các bước hướng dẫn đã xem, số trận đã chơi (dùng để giới hạn số lần quảng cáo), ngày đầu tiên và ngày gần nhất bạn vào game (để đếm số người quay lại), và một mã máy ngẫu nhiên do máy chủ cấp (để giữ tiền và kinh nghiệm trong game cho máy này). Bạn xoá được bất cứ lúc nào bằng cách xoá dữ liệu trang web trong trình duyệt.</p>
 
 <h2>Gửi tới máy chủ của game</h2>
 <ul>
@@ -47,6 +47,7 @@
   <li><b>Đếm nguồn:</b> khi bạn mở game từ một đường link có <code>?ref=</code> (ví dụ từ TikTok hay Facebook), máy chủ chỉ cộng một con số theo ngày cho nguồn đó. Không lưu IP, không lưu tên.</li>
   <li><b>Báo lỗi:</b> khi bạn bấm "Báo lỗi" và gửi, nội dung bạn viết cùng thông tin máy (bản game, trình duyệt, cỡ màn hình, ngôn ngữ, mã phòng, các lỗi gần nhất của trang) được lưu 90 ngày và gửi cho Bill để sửa lỗi. Không kèm tên hay IP.</li>
   <li><b>Báo cáo người chơi:</b> khi bạn báo cáo một người chơi, lý do, vài chữ bạn viết, tên người đó, mã phòng và vài dòng chat gần nhất của họ được lưu 90 ngày và gửi cho Bill. Không kèm tên hay IP của người báo cáo.</li>
+  <li><b>Tiến trình:</b> mã máy, số tiền và kinh nghiệm trong game, cùng sổ ghi các lần được cộng hoặc tiêu (trận nào, mua gì), được lưu trên Cloudflare (D1). Máy không vào game 30 ngày thì bị xoá hết. Không kèm tên hay IP.</li>
   <li><b>Đếm cách chơi:</b> máy chủ cộng các con số theo ngày như số trận, độ dài trận, thời gian chờ ghép, số người xem hướng dẫn, số người quay lại sau bao nhiêu ngày. Chỉ là con số tổng, không gắn với bạn, không lưu IP hay tên.</li>
 </ul>
 
@@ -80,7 +81,7 @@
 </ul>
 
 <h2>Stored on your device</h2>
-<p>Your browser keeps your player name, look, language, volume, which tutorial steps you have seen, how many matches you have played (used to limit how often ads appear), and the days of your first and latest visit (to count how many players come back). Clear the site's data in your browser to remove them.</p>
+<p>Your browser keeps your player name, look, language, volume, which tutorial steps you have seen, how many matches you have played (used to limit how often ads appear), the days of your first and latest visit (to count how many players come back), and a random device code from the server (to keep your in-game coins and experience on this device). Clear the site's data in your browser to remove them.</p>
 
 <h2>Sent to the game server</h2>
 <ul>
@@ -89,6 +90,7 @@
   <li><b>Source counts:</b> when you open the game from a link with <code>?ref=</code> (for example from TikTok or Facebook), the server only adds one to a daily count for that source. No IP address and no name are stored.</li>
   <li><b>Bug reports:</b> when you send one with "Report a bug", what you wrote and your device details (game version, browser, screen size, language, room code, the page's last errors) are kept for 90 days and sent to Bill to fix the bug. No name or IP address.</li>
   <li><b>Player reports:</b> when you report a player, the reason, what you wrote, their name, the room code and their last few chat lines are kept for 90 days and sent to Bill. Not the name or IP address of who reported.</li>
+  <li><b>Progress:</b> the device code, your in-game coins and experience, and a log of what added or spent them (which match, what was bought) are kept on Cloudflare (D1). A device that does not play for 30 days is deleted entirely. No name or IP address.</li>
   <li><b>Play counts:</b> the server adds up daily numbers such as matches played, match length, time waiting for a match, how many players open the tutorial and how many come back after so many days. Totals only, not tied to you, no IP address or name.</li>
 </ul>
 

@@ -127,7 +127,7 @@ Số 19/10: 843/908 cú đập không ra gì (93%); trận 3 người có bot d�
 - [x] ~~**B.07** QA: trận thật với bot ở điện thoại + PC, đo thời gian trận, tỉ lệ ăn bài và tỉ lệ bot tự rớt bài trước/sau; bot vẫn qua bộ kiểm cú đập 1.07 — M~~ *Bill chốt 20/10: giữ lối chơi bot hiện tại (không tự chết, ván dài hơn: giả lập 2p 16→44 cú/ván, 3p 30→60, kết thúc chủ yếu bằng ăn bài).* Xong 20/10: `node qa/bot-qa.mjs` 4 trận (điện thoại + laptop, 2 và 3 người): 2 người 2–2,5 phút, 3 người 6–7 phút, 0 cú bị chặn, bot nói 1–3 câu mỗi trận, chữ hiện đúng.
 
 ### Phase 2 — tiến trình và sưu tầm
-- [ ] **2.01** Cloudflare Worker + D1: mã máy có chữ ký, chỉ server game ghi, sổ tiền, xoá máy không vào quá 30 ngày — L
+- [ ] **2.01** Cloudflare Worker + D1: mã máy có chữ ký, chỉ server game ghi, sổ tiền, xoá máy không vào quá 30 ngày — L · (20/10: code xong, CHỜ DEPLOY Worker) `proto/worker/` (D1 `slam-cards` apac đã tạo, bảng devices + ledger, `ref` chống cộng hai lần, tiền không âm, cron 03:00 VN xoá máy 30 ngày); server game cấp mã máy `id.chữ-ký` (`server/devices.js`), ký mọi request (`src/api-sign.js`), hàng đợi trên đĩa khi Worker sập (`server/progress.js`); khoá ở `<SLAM_DATA>/keys.json`. Trang riêng tư đã ghi.
 - [ ] **2.02** Đăng nhập Google (không bắt buộc), gộp tiến trình, cập nhật chính sách riêng tư — M
 - [ ] **2.03** Tiền + kinh nghiệm sau trận, level; màn kết quả hiện tiền — M
 - [ ] **2.04** Cửa hàng pet: mèo/chó/cánh cụt mở sẵn, 21 con bán; thu pet bị khoá về mèo — M

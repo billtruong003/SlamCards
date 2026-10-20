@@ -1,0 +1,16 @@
+// The progress store (Phase 2, 2.01): devices, coins and xp in D1, written only by the game server.
+// Deploy: npm run deploy (wrangler login once). Schema: migrations/, applied with
+// npx wrangler d1 migrations apply slam-cards --remote. The shared key: npx wrangler secret put API_KEY
+// (the same value as "apiKey" in the game server's <SLAM_DATA>/keys.json).
+{
+  "name": "slam-cards-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "d1_databases": [
+    { "binding": "DB", "database_name": "slam-cards", "database_id": "cc765562-96f6-4b70-a519-d559ee76b833" }
+  ],
+  // devices not seen for 30 days go, once a day at 20:00 UTC (03:00 in Vietnam)
+  "triggers": { "crons": ["0 20 * * *"] },
+  "observability": { "enabled": true }
+}
