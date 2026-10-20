@@ -121,10 +121,10 @@ Số 19/10: 843/908 cú đập không ra gì (93%); trận 3 người có bot d�
 - [ ] **B.01** Đánh nhanh: bot nghĩ 1–3,5 giây theo tính cách (nay 3–12 giây, `thinkMs`); chờ ~8 giây là có bot (nay `TIMING.botAfter` 20 giây); nút "Chơi với máy luôn" ở màn chờ — S
 - [ ] **B.02** 4 tính cách gắn với tên: Nhanh tay / Cáo già / Liều / Gà mới (thời gian nghĩ, tay nghề, đập phẳng hay nghiêng, tầm đập, độ hay nói) — S–M
 - [ ] **B.03** Đo trước: chạy Rapier (cùng bản với client) trên Node, 1 cú đập mô phỏng tốn bao nhiêu ms CPU, có khớp kết quả trình duyệt không — S
-- [ ] **B.04** Bot thắng được thật: thử 20–40 chỗ đập trong đầu, chọn cú ăn tốt nhất; độ khó = chọn cú tốt nhì/ba + rung tay; tự cân (người mới thắng ~60%, chơi lâu bot cứng dần) — M–L
+- [ ] **B.04** Bot thắng được thật: thử 20–40 chỗ đập trong đầu, chọn cú ăn tốt nhất; độ khó = chọn cú tốt nhì/ba + rung tay; tự cân (người mới thắng ~60%, chơi lâu bot cứng dần). **Bill 20/10: bot hay tự làm rớt bài mình** (QA 19/10: bot rớt bài 2/3 ván trong `qa/bot-match.mjs`): loại các cú làm bài mình bay khỏi bàn, nhất là khi bài mình gần mép — M–L
 - [ ] **B.05** Bot chọc người chơi bằng câu nói + sticker theo tình huống, ngẫu nhiên, tự nhiên, không spam. Danh sách câu và luật: `docs/bot-loi-noi.md`. Thêm 5 câu cho cả người chơi (Gà! · Non · Nghe bài trình chưa? · Biết trình Hà Lần không? · Bá khí đấy) vào `PHRASES`, dịch 10 ngôn ngữ — M
 - [ ] **B.06** Đo: ai thắng (bot hay người, theo tính cách), người bỏ trận khi đấu bot, bot nói bao nhiêu câu; hiện trên Lucy (màn Game & Web) — S
-- [ ] **B.07** QA: trận thật với bot ở điện thoại + PC, đo thời gian trận và tỉ lệ ăn bài trước/sau; bot vẫn qua bộ kiểm cú đập 1.07 — M
+- [ ] **B.07** QA: trận thật với bot ở điện thoại + PC, đo thời gian trận, tỉ lệ ăn bài và tỉ lệ bot tự rớt bài trước/sau; bot vẫn qua bộ kiểm cú đập 1.07 — M
 
 ### Phase 2 — tiến trình và sưu tầm
 - [ ] **2.01** Cloudflare Worker + D1: mã máy có chữ ký, chỉ server game ghi, sổ tiền, xoá máy không vào quá 30 ngày — L
