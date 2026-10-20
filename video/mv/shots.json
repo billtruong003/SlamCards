@@ -1,0 +1,735 @@
+{
+ "acts": [
+  {
+   "n": 0,
+   "name": "Mở",
+   "bars": [
+    1,
+    8
+   ],
+   "music": "Intro"
+  },
+  {
+   "n": 1,
+   "name": "Thế giới xám",
+   "bars": [
+    9,
+    16
+   ],
+   "music": "Rap 1a"
+  },
+  {
+   "n": 2,
+   "name": "Ước mơ",
+   "bars": [
+    17,
+    24
+   ],
+   "music": "Rap 1b"
+  },
+  {
+   "n": 3,
+   "name": "Ra quân",
+   "bars": [
+    25,
+    32
+   ],
+   "music": "Điệp khúc 1"
+  },
+  {
+   "n": 4,
+   "name": "Giờ ra chơi",
+   "bars": [
+    33,
+    48
+   ],
+   "music": "Drop 1"
+  },
+  {
+   "n": 5,
+   "name": "Đánh úp",
+   "bars": [
+    49,
+    50
+   ],
+   "music": "Nhạc tắt"
+  },
+  {
+   "n": 6,
+   "name": "Đứng dậy",
+   "bars": [
+    51,
+    66
+   ],
+   "music": "Rap 2"
+  },
+  {
+   "n": 7,
+   "name": "Tái hợp",
+   "bars": [
+    67,
+    74
+   ],
+   "music": "Điệp khúc 2"
+  },
+  {
+   "n": 8,
+   "name": "Đại chiến",
+   "bars": [
+    75,
+    90
+   ],
+   "music": "Drop 2"
+  },
+  {
+   "n": 9,
+   "name": "Cú cuối",
+   "bars": [
+    91,
+    95
+   ],
+   "music": "Breakdown"
+  },
+  {
+   "n": 10,
+   "name": "Dồn",
+   "bars": [
+    96,
+    99
+   ],
+   "music": "Build"
+  },
+  {
+   "n": 11,
+   "name": "Thắng",
+   "bars": [
+    100,
+    109
+   ],
+   "music": "Điệp khúc cuối"
+  },
+  {
+   "n": 12,
+   "name": "Lễ hội",
+   "bars": [
+    110,
+    128
+   ],
+   "music": "Drop cuối"
+  },
+  {
+   "n": 13,
+   "name": "Kết",
+   "bars": [
+    129,
+    129
+   ],
+   "music": "Outro"
+  }
+ ],
+ "shots": [
+  {
+   "id": "0.1",
+   "bar": 1,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Logo studio",
+   "cam": "Đồ hoạ, không camera",
+   "mg": "Logo Bill The Dev bật lên, quầng vàng thở, GIỚI THIỆU; dưới cùng credit nhạc: Super Hero · Cao Bá Hưng x SR x Hoaprox"
+  },
+  {
+   "id": "0.2",
+   "bar": 3,
+   "beats": 8,
+   "lyr": 0,
+   "name": "GIỜ RA CHƠI",
+   "cam": "Dolly ngang sát mặt bàn, chậm",
+   "mg": "Tia nắng volumetric qua cửa sổ, bụi lấp lánh, chữ dọc GIỜ RA CHƠI được nắng quét sáng từng chữ theo phách"
+  },
+  {
+   "id": "0.3",
+   "bar": 5,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Cẩu lên",
+   "cam": "Crane lên nhìn thẳng xuống, xoay nhẹ",
+   "mg": "Vòng sáng toả ra theo phách, dòng '4 đứa · 1 bàn · 15 phút'"
+  },
+  {
+   "id": "0.4",
+   "bar": 7,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Lao vào lá Hổ",
+   "cam": "Push-in tăng tốc (ease-in)",
+   "mg": "Mép lá loé hồng, vệt tốc độ dồn vào tâm, chớp trắng đúng phách đầu ô nhịp 9"
+  },
+  {
+   "id": "1.1",
+   "bar": 9,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Hổ một mình",
+   "cam": "Khung truyện trôi ngang chậm",
+   "mg": "Trang vở xám, một khung truyện nhỏ: Hổ đi; lời rap gõ ra kiểu máy đánh chữ"
+  },
+  {
+   "id": "1.2",
+   "bar": 11,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Mỗi đứa một góc",
+   "cam": "3 khung trượt lên lệch nhau",
+   "mg": "Gấu ăn chán, Gà lắc đầu, Cáo quay lưng; tất cả xám"
+  },
+  {
+   "id": "1.3",
+   "bar": 13,
+   "beats": 8,
+   "lyr": 1,
+   "name": "BAY",
+   "cam": "Khung truyện xoay rồi vỡ viền",
+   "mg": "Câu 'được bay': chữ BAY phóng to xuyên khung, trời xanh và nắng tràn vào, màu quay lại trên Hổ"
+  },
+  {
+   "id": "1.4",
+   "bar": 15,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Ánh mắt",
+   "cam": "Snap zoom vào mắt Hổ",
+   "mg": "Mắt loé sáng, sọc trắng quét ngang kiểu anime → chớp sang Hồi 2"
+  },
+  {
+   "id": "2.1",
+   "bar": 17,
+   "beats": 4,
+   "lyr": 0,
+   "name": "01 HỔ",
+   "cam": "Zoom out chậm",
+   "mg": "Eyecatch: nền hồng phẳng, tia, halftone, tên + biệt danh"
+  },
+  {
+   "id": "2.2",
+   "bar": 18,
+   "beats": 4,
+   "lyr": 0,
+   "name": "02 GẤU TRÚC",
+   "cam": "Zoom out chậm (lật bên)",
+   "mg": "Eyecatch xanh"
+  },
+  {
+   "id": "2.3",
+   "bar": 19,
+   "beats": 4,
+   "lyr": 0,
+   "name": "03 GÀ CON",
+   "cam": "Zoom out chậm",
+   "mg": "Eyecatch vàng"
+  },
+  {
+   "id": "2.4",
+   "bar": 20,
+   "beats": 4,
+   "lyr": 0,
+   "name": "04 CÁO",
+   "cam": "Zoom out chậm (lật bên)",
+   "mg": "Eyecatch lá"
+  },
+  {
+   "id": "2.5",
+   "bar": 21,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Sư Tử xuất hiện",
+   "cam": "Push-in góc thấp",
+   "mg": "Câu 'nhưng sao hôm nay...': đen-đỏ, Sư Tử quay lại, hào quang đỏ, lâu la là bóng đen"
+  },
+  {
+   "id": "2.6",
+   "bar": 23,
+   "beats": 4,
+   "lyr": 0,
+   "name": "VS",
+   "cam": "Hai nửa zoom vào",
+   "mg": "Chia chéo hồng / đen, VS đập vào"
+  },
+  {
+   "id": "2.7",
+   "bar": 24,
+   "beats": 4,
+   "lyr": 0,
+   "name": "Dồn",
+   "cam": "Cắt mỗi phách",
+   "mg": "Dải mắt Hổ / Gấu / Gà mỗi phách, phách 4 tối hẳn"
+  },
+  {
+   "id": "3.1",
+   "bar": 25,
+   "beats": 4,
+   "lyr": 1,
+   "name": "BỐP!",
+   "cam": "Rung, nghiêng",
+   "mg": "Khung đảo màu 2 frame đúng drop, vệt tốc độ, BỐP!"
+  },
+  {
+   "id": "3.2",
+   "bar": 26,
+   "beats": 4,
+   "lyr": 1,
+   "name": "Tên game",
+   "cam": "Chữ đập theo phách",
+   "mg": "Chữ 'superhero': DÉP LÀO / TUỔI THƠ đập xuống, dép bay vào, tia xoay"
+  },
+  {
+   "id": "3.3",
+   "bar": 27,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Giải cứu thế giới",
+   "cam": "Các khung trượt theo phách",
+   "mg": "Trang truyện 4 khung: ăn hình, Gấu chạy, cú đập, Gà ăn mừng; chữ lời đè ngang"
+  },
+  {
+   "id": "3.4",
+   "bar": 29,
+   "beats": 4,
+   "lyr": 0,
+   "name": "Chạy ngang",
+   "cam": "Lia theo",
+   "mg": "4 pet chạy trên nền vàng, vệt gió, mặt đất mực đen"
+  },
+  {
+   "id": "3.5",
+   "bar": 30,
+   "beats": 4,
+   "lyr": 1,
+   "name": "WE ARE SUPERHERO",
+   "cam": "Pet lao về camera",
+   "mg": "Chữ WE ARE SUPERHERO nằm PHÍA SAU 4 pet đang chạy tới"
+  },
+  {
+   "id": "3.6",
+   "bar": 31,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Cả đội",
+   "cam": "Zoom out",
+   "mg": "4 pet nhảy, tia, confetti, ANH HÙNG TRONG CHÚNG TA"
+  },
+  {
+   "id": "4.1",
+   "bar": 33,
+   "beats": 8,
+   "lyr": 0,
+   "name": "ĂN HÌNH!",
+   "cam": "Push-in",
+   "mg": "Vòng toả mỗi phách, stamp ĂN HÌNH!, Hổ bật lên ăn mừng"
+  },
+  {
+   "id": "4.2",
+   "bar": 35,
+   "beats": 8,
+   "lyr": 0,
+   "name": "LỆCH!",
+   "cam": "Nghiêng khung",
+   "mg": "Cú đập trượt, LỆCH!, Gấu lắc đầu, ?!"
+  },
+  {
+   "id": "4.3",
+   "bar": 37,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Bay khỏi bàn",
+   "cam": "Theo lá hình",
+   "mg": "Lá hình xoay bay ra khỏi khung, vệt bóng mờ, Cáo hoảng"
+  },
+  {
+   "id": "4.4",
+   "bar": 39,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Spam sticker",
+   "cam": "Tĩnh",
+   "mg": "Sticker thật của game rơi như mưa, Gà nhảy giữa"
+  },
+  {
+   "id": "4.5",
+   "bar": 41,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Thi nhảy",
+   "cam": "Đổi động tác mỗi 2 phách",
+   "mg": "Gà vs Cáo nhảy, cột equalizer nhảy theo phách"
+  },
+  {
+   "id": "4.6",
+   "bar": 43,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Dép tổ ong xoay",
+   "cam": "Tĩnh",
+   "mg": "Dép xoay để lại vệt, tia xoay"
+  },
+  {
+   "id": "4.7",
+   "bar": 45,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Giải lao",
+   "cam": "Zoom vào",
+   "mg": "Gấu ăn, chữ 'nhóp nhép'"
+  },
+  {
+   "id": "4.8",
+   "bar": 47,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Ăn mừng → tắt",
+   "cam": "Slow-mo nhảy",
+   "mg": "4 pet nhảy lên, confetti chậm; phách cuối tối sầm"
+  },
+  {
+   "id": "5.1",
+   "bar": 49,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Đánh úp",
+   "cam": "Lá đen rơi lại gần",
+   "mg": "Im lặng: lá đen đập xuống, vết nứt đỏ, mắt Sư Tử trong tối"
+  },
+  {
+   "id": "6.1",
+   "bar": 51,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Anh hùng trong bạn",
+   "cam": "Tĩnh, đẩy rất chậm",
+   "mg": "Hổ ngồi buồn trong tối, chữ ANH HÙNG / nằm trong chính bạn"
+  },
+  {
+   "id": "6.2",
+   "bar": 53,
+   "beats": 8,
+   "lyr": 1,
+   "name": "ĐỨNG DẬY!",
+   "cam": "Lá lật 180°",
+   "mg": "Câu 'kiên cường đứng dậy': lá Hổ tự lật ngửa, nền bừng hồng, Hổ bật dậy"
+  },
+  {
+   "id": "6.3",
+   "bar": 55,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Luyện tập",
+   "cam": "3 khung truyện",
+   "mg": "1 đi · 2 chạy · 3 đập thử"
+  },
+  {
+   "id": "6.4",
+   "bar": 57,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Không lùi bước",
+   "cam": "Pet lao về camera",
+   "mg": "Hổ chạy ngược gió, bụi tạt, vệt tốc độ"
+  },
+  {
+   "id": "6.5",
+   "bar": 59,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Dậy đi Gấu!",
+   "cam": "Lá lật",
+   "mg": "Hổ lật lá Gấu ngửa lại, Gấu gật đầu"
+  },
+  {
+   "id": "6.6",
+   "bar": 61,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Đủ bộ",
+   "cam": "Chia đôi",
+   "mg": "Gà và Cáo đứng dậy, Hổ nhảy vào giữa"
+  },
+  {
+   "id": "6.7",
+   "bar": 63,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Giấc mơ anh hùng",
+   "cam": "Trôi ngang, mây trước nhanh hơn mây sau",
+   "mg": "Câu \"đêm qua tôi mơ\": 4 pet lơ lửng tự do giữa mây (không cưỡi dép), mây parallax trước/sau, nắng volumetric, trời gradient"
+  },
+  {
+   "id": "6.8",
+   "bar": 65,
+   "beats": 8,
+   "lyr": 1,
+   "name": "Bao anh hùng",
+   "cam": "4 ô bật lần lượt",
+   "mg": "Lưới 2x2 bốn siêu anh hùng"
+  },
+  {
+   "id": "7.1",
+   "bar": 67,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Tiến về phía Sư Tử",
+   "cam": "Góc thấp sau lưng, tiến chậm",
+   "mg": "Khung cinema, trời đỏ, băng Sư Tử phía xa"
+  },
+  {
+   "id": "7.2",
+   "bar": 69,
+   "beats": 8,
+   "lyr": 0,
+   "name": "4 ĐẤU 4",
+   "cam": "Hai bên áp sát",
+   "mg": "Chia chéo, đường sáng giữa, đảo màu cuối shot"
+  },
+  {
+   "id": "7.3",
+   "bar": 71,
+   "beats": 8,
+   "lyr": 1,
+   "name": "I'M A SUPERHERO",
+   "cam": "Chữ đập theo phách",
+   "mg": "Từng chữ của câu hook đập vào mỗi phách, pet nhảy 4 góc"
+  },
+  {
+   "id": "7.4",
+   "bar": 73,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Xung phong",
+   "cam": "Hai phe lao vào nhau",
+   "mg": "Hồng vs đỏ ép vào giữa, đảo màu khi chạm"
+  },
+  {
+   "id": "8.1",
+   "bar": 75,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Gấu vs Voi",
+   "cam": "Áp sát",
+   "mg": "Chia chéo xanh / đỏ"
+  },
+  {
+   "id": "8.2",
+   "bar": 77,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Gà vs Cua",
+   "cam": "Áp sát",
+   "mg": "Chia chéo vàng / đỏ"
+  },
+  {
+   "id": "8.3",
+   "bar": 79,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Cáo vs Heo",
+   "cam": "Áp sát",
+   "mg": "Chia chéo lá / đỏ"
+  },
+  {
+   "id": "8.4",
+   "bar": 81,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Bốp bốp bốp",
+   "cam": "4 khung zoom lệch nhịp",
+   "mg": "4 cú đập chạy cùng lúc trong 4 khung"
+  },
+  {
+   "id": "8.5",
+   "bar": 83,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Bão hình",
+   "cam": "Xoáy quanh Sư Tử",
+   "mg": "Lá hình bay xoáy, Sư Tử giữa tâm bão"
+  },
+  {
+   "id": "8.6",
+   "bar": 85,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Hổ trúng đòn",
+   "cam": "Hổ bị hất ra",
+   "mg": "Nền đỏ, đảo màu, ÚI!"
+  },
+  {
+   "id": "8.7",
+   "bar": 87,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Nhìn nhau",
+   "cam": "Hai dải mắt trượt ngược nhau",
+   "mg": "Dải trên Hổ, dải dưới Sư Tử"
+  },
+  {
+   "id": "8.8",
+   "bar": 89,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Giơ dép",
+   "cam": "Dép nâng lên",
+   "mg": "Hai bên giơ dép, tia sáng giữa"
+  },
+  {
+   "id": "9.1",
+   "bar": 91,
+   "beats": 12,
+   "lyr": 0,
+   "name": "Bullet time",
+   "cam": "Orbit quanh khoảnh khắc đóng băng",
+   "mg": "Duotone xám + một vệt đỏ, 1 – 1, khung cinema"
+  },
+  {
+   "id": "9.2",
+   "bar": 94,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Tim đập",
+   "cam": "Tĩnh",
+   "mg": "Vòng đỏ đập theo nhịp tim, dải mắt Hổ đen trắng"
+  },
+  {
+   "id": "10.1",
+   "bar": 96,
+   "beats": 16,
+   "lyr": 0,
+   "name": "Mỗi phách một ánh mắt",
+   "cam": "Cắt mỗi phách (16 cú)",
+   "mg": "Mắt từng pet theo màu, Sư Tử đỏ, đếm 1→16"
+  },
+  {
+   "id": "11.1",
+   "bar": 100,
+   "beats": 8,
+   "lyr": 1,
+   "name": "ĂN HÌNH!!!",
+   "cam": "Rung mạnh",
+   "mg": "Cú quyết định: đảo màu, vệt tốc độ, chữ to nhất phim"
+  },
+  {
+   "id": "11.2",
+   "bar": 102,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Sư Tử chịu thua",
+   "cam": "Tĩnh",
+   "mg": "Lắc đầu → gật đầu, nền đổi đỏ sang hồng"
+  },
+  {
+   "id": "11.3",
+   "bar": 104,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Bạn mới",
+   "cam": "Zoom out",
+   "mg": "Hổ và Sư Tử cùng nhảy, confetti"
+  },
+  {
+   "id": "11.4",
+   "bar": 106,
+   "beats": 16,
+   "lyr": 1,
+   "name": "Anh hùng trong chúng ta",
+   "cam": "Zoom out chậm",
+   "mg": "8 pet hai phe chung một hàng, chữ hook"
+  },
+  {
+   "id": "12.1",
+   "bar": 110,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Tiệc",
+   "cam": "Đèn sân khấu quét",
+   "mg": "8 pet nhảy, đèn màu quét theo phách"
+  },
+  {
+   "id": "12.2",
+   "bar": 112,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Mưa hình",
+   "cam": "Push-in trên bàn thật",
+   "mg": "Lá hình rơi như mưa"
+  },
+  {
+   "id": "12.3",
+   "bar": 114,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Điểm danh lại",
+   "cam": "Dải thẻ trôi ngang",
+   "mg": "Nhắc lại các eyecatch hồi 2, có cả Sư Tử"
+  },
+  {
+   "id": "12.4",
+   "bar": 116,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Cả 8 lao tới",
+   "cam": "Pet lao về camera",
+   "mg": "Hai phe chạy chung về camera"
+  },
+  {
+   "id": "12.5",
+   "bar": 118,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Bay lần nữa",
+   "cam": "Tĩnh, mây trôi xuống tạo cảm giác bay lên",
+   "mg": "Gà vỗ cánh bay lên; Hổ, Gấu, Cáo, Sư Tử lần lượt rơi chồng lên đầu Gà; dép xoay vòng bay vào như bị ai ném, đập từng con văng khỏi khung (BỐP!); Gà bay vút lên trời, chớp trắng chuyển cảnh"
+  },
+  {
+   "id": "12.6",
+   "bar": 120,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Về lại bàn",
+   "cam": "Crane xuống",
+   "mg": "Pet nhảy trên 4 lá hình thật, nắng, confetti"
+  },
+  {
+   "id": "12.7",
+   "bar": 122,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Chơi trên web",
+   "cam": "Đẩy lên",
+   "mg": "3 điện thoại với màn hình game thật nổi lên theo phách"
+  },
+  {
+   "id": "12.8",
+   "bar": 124,
+   "beats": 8,
+   "lyr": 0,
+   "name": "Cùng nhau tiến lên",
+   "cam": "Zoom vào chậm",
+   "mg": "Hoàng hôn, hai phe cùng chạy về camera, nắng volumetric, bụi sáng"
+  },
+  {
+   "id": "12.9",
+   "bar": 126,
+   "beats": 12,
+   "lyr": 0,
+   "name": "Tên game",
+   "cam": "Zoom out",
+   "mg": "Cả 8 pet + DÉP LÀO TUỔI THƠ"
+  },
+  {
+   "id": "13.1",
+   "bar": 129,
+   "beats": 0,
+   "lyr": 0,
+   "name": "End card",
+   "cam": "Tĩnh",
+   "mg": "Logo game, Đập hình cùng chúng mình nhé!, link, credit Ý tưởng · Developer · Nhạc: Super Hero – Cao Bá Hưng x SR x Hoaprox, logo studio"
+  }
+ ]
+}

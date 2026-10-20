@@ -1,0 +1,3616 @@
+{
+ "videos": [
+  {
+   "id": "S1-XIU",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 0,
+     "dur": 51,
+     "t_in": 24.180000000000003,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "1"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 51,
+     "dur": 18,
+     "t_in": 25.880000000000003,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "1 · stamp"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 69,
+     "dur": 60,
+     "t_in": 27.830000000000002,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "2"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 129,
+     "dur": 18,
+     "t_in": 29.830000000000002,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "2 · stamp"
+    },
+    {
+     "src": "footage/s-off2.mp4",
+     "from_": 147,
+     "dur": 13,
+     "t_in": 22.04,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "3"
+    },
+    {
+     "src": "footage/s-off2-i2241.mp4",
+     "from_": 160,
+     "dur": 52,
+     "t_in": 0.0799999999999983,
+     "rate": 0.55,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "3 · off the table",
+     "t_reel": 22.49
+    },
+    {
+     "src": "footage/s-off2.mp4",
+     "from_": 212,
+     "dur": 26,
+     "t_in": 23.59,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "3 · stamp"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 238,
+     "dur": 15,
+     "t_in": 72.89,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4"
+    },
+    {
+     "src": "footage/s-main-i1.mp4",
+     "from_": 253,
+     "dur": 57,
+     "t_in": 0.14000000000000057,
+     "rate": 0.3,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4 · slow",
+     "t_reel": 73.39
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 310,
+     "dur": 19,
+     "t_in": 73.96,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4 · land"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 329,
+     "dur": 44,
+     "t_in": 74.58999999999999,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4 · captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 30,
+     "t": "Ăn 1 lá",
+     "x": 90,
+     "y": 150,
+     "size": 130,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 30,
+     "t": "thôi <b>mà…</b>",
+     "x": 420,
+     "y": 1500,
+     "size": 130,
+     "rot": 5,
+     "delay": 7
+    },
+    {
+     "kind": "stamp",
+     "from_": 51,
+     "dur": 18,
+     "t": "XÍU NỮA!",
+     "x": null,
+     "y": 300,
+     "size": 170,
+     "rot": -7,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "chunk",
+     "from_": 51,
+     "dur": 18,
+     "t": "(tay run rồi đó)",
+     "x": 380,
+     "y": 540,
+     "size": 60,
+     "rot": 4,
+     "delay": 4
+    },
+    {
+     "kind": "chunk",
+     "from_": 69,
+     "dur": 26,
+     "t": "lần <b>2</b>",
+     "x": 700,
+     "y": 300,
+     "size": 90,
+     "rot": 6,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 129,
+     "dur": 18,
+     "t": "ỨC GHÊ!",
+     "x": null,
+     "y": 300,
+     "size": 190,
+     "rot": 5,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "vignette",
+     "from_": 129,
+     "dur": 18,
+     "strength": 0.35
+    },
+    {
+     "kind": "chunk",
+     "from_": 147,
+     "dur": 14,
+     "t": "lần <b>3</b>",
+     "x": 700,
+     "y": 300,
+     "size": 90,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 204,
+     "dur": 34,
+     "t": "RA KHỎI",
+     "x": null,
+     "y": 250,
+     "size": 160,
+     "rot": -5,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "stamp",
+     "from_": 208,
+     "dur": 30,
+     "t": "BÀN?!",
+     "x": null,
+     "y": 420,
+     "size": 170,
+     "rot": 4,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "vignette",
+     "from_": 160,
+     "dur": 78,
+     "strength": 0.45
+    },
+    {
+     "kind": "chunk",
+     "from_": 212,
+     "dur": 26,
+     "t": "(thở đi bạn)",
+     "x": 520,
+     "y": 660,
+     "size": 60,
+     "rot": -3,
+     "delay": 4
+    },
+    {
+     "kind": "chunk",
+     "from_": 238,
+     "dur": 60,
+     "t": "lần <b>4</b>…",
+     "x": 90,
+     "y": 1500,
+     "size": 140,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "vignette",
+     "from_": 238,
+     "dur": 72,
+     "strength": 0.5
+    },
+    {
+     "kind": "pulse",
+     "from_": 69,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 95,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 119,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 141,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 161,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 179,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 195,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 209,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 223,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 237,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 251,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 265,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 279,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 293,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 307,
+     "dur": 8
+    },
+    {
+     "kind": "flash",
+     "from_": 310,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 310,
+     "dur": 8,
+     "amp": 20
+    },
+    {
+     "kind": "stamp",
+     "from_": 310,
+     "dur": 63,
+     "t": "ĂN HÌNH!",
+     "x": null,
+     "y": 280,
+     "size": 200,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "paper",
+     "from_": 332,
+     "dur": 41,
+     "t": "Bạn mất mấy lần? 👇",
+     "x": null,
+     "y": 1590,
+     "size": 70,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "end",
+     "from_": 373,
+     "dur": 78,
+     "line": "Đập hình cùng <b>chúng mình</b> nhé!"
+    }
+   ],
+   "lang": "vi",
+   "frames": 451
+  },
+  {
+   "id": "S2-CLIFF",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 0,
+     "dur": 54,
+     "t_in": 64.66,
+     "rate": 0.72,
+     "z": [
+      1.0,
+      1.05
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "last turn · slow aim"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 54,
+     "dur": 8,
+     "t_in": 65.95,
+     "rate": 1.0,
+     "z": [
+      1.05,
+      1.07
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "slam"
+    },
+    {
+     "src": "footage/s-main-i2.mp4",
+     "from_": 62,
+     "dur": 49,
+     "t_in": 0.1599999999999966,
+     "rate": 0.22,
+     "z": [
+      1.07,
+      1.07
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "slowing down",
+     "t_reel": 66.21
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 111,
+     "dur": 100,
+     "t_in": 66.57,
+     "rate": 0.001,
+     "z": [
+      1.07,
+      1.1
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "freeze"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 211,
+     "dur": 66,
+     "t_in": 66.57,
+     "rate": 0.001,
+     "z": [
+      1.1,
+      1.12
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "guess"
+    }
+   ],
+   "over": [
+    {
+     "kind": "paper",
+     "from_": 0,
+     "dur": 54,
+     "t": "Ván <b>quyết định</b>",
+     "x": 70,
+     "y": 150,
+     "size": 84,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "sticky",
+     "from_": 0,
+     "dur": 54,
+     "a": "Bill – Tèo",
+     "b": "1 – 1",
+     "x": 730,
+     "y": 1430,
+     "rot": 5,
+     "delay": 6
+    },
+    {
+     "kind": "count",
+     "from_": 9,
+     "dur": 45,
+     "t": [
+      "3",
+      "2",
+      "1"
+     ],
+     "y": 1450
+    },
+    {
+     "kind": "stamp",
+     "from_": 62,
+     "dur": 49,
+     "t": "BỐP!",
+     "x": null,
+     "y": 1470,
+     "size": 190,
+     "rot": -8,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "shake",
+     "from_": 62,
+     "dur": 8,
+     "amp": 18
+    },
+    {
+     "kind": "dim",
+     "from_": 111,
+     "dur": 100,
+     "strength": 0.45
+    },
+    {
+     "kind": "pause",
+     "from_": 115,
+     "dur": 32
+    },
+    {
+     "kind": "chunk",
+     "from_": 121,
+     "dur": 90,
+     "t": "Ăn hình…",
+     "x": 90,
+     "y": 230,
+     "size": 140,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 121,
+     "dur": 90,
+     "t": "hay <b>ra khỏi bàn?</b>",
+     "x": 70,
+     "y": 1530,
+     "size": 100,
+     "rot": 4,
+     "delay": 12
+    },
+    {
+     "kind": "pulse",
+     "from_": 111,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 129,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 147,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 165,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 183,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 201,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 219,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 237,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 255,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 273,
+     "dur": 8
+    },
+    {
+     "kind": "dim",
+     "from_": 211,
+     "dur": 66,
+     "strength": 0.62
+    },
+    {
+     "kind": "stamp",
+     "from_": 211,
+     "dur": 66,
+     "t": "ĐOÁN ĐI!",
+     "x": null,
+     "y": 640,
+     "size": 190,
+     "rot": -4,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "paper",
+     "from_": 221,
+     "dur": 56,
+     "t": "Phần 2 <b>tối nay</b> 👇",
+     "x": null,
+     "y": 960,
+     "size": 78,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "end",
+     "from_": 277,
+     "dur": 78,
+     "line": "Đập hình cùng <b>chúng mình</b> nhé!"
+    }
+   ],
+   "lang": "vi",
+   "frames": 355
+  },
+  {
+   "id": "S2-P2",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 0,
+     "dur": 30,
+     "t_in": 66.57,
+     "rate": 0.001,
+     "z": [
+      1.1,
+      1.08
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "the frozen frame again"
+    },
+    {
+     "src": "footage/s-main-i2.mp4",
+     "from_": 30,
+     "dur": 22,
+     "t_in": 0.519999999999996,
+     "rate": 0.4,
+     "z": [
+      1.08,
+      1.04
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "on, slowly",
+     "t_reel": 66.57
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 52,
+     "dur": 19,
+     "t_in": 66.86,
+     "rate": 1.0,
+     "z": [
+      1.04,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "lands"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 71,
+     "dur": 60,
+     "t_in": 67.50999999999999,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "dim",
+     "from_": 0,
+     "dur": 30,
+     "strength": 0.4
+    },
+    {
+     "kind": "paper",
+     "from_": 0,
+     "dur": 30,
+     "t": "<b>Phần 2</b> · kết quả",
+     "x": 70,
+     "y": 150,
+     "size": 84,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 30,
+     "t": "Ăn hình… hay <b>ra khỏi bàn?</b>",
+     "x": null,
+     "y": 1590,
+     "size": 76,
+     "rot": 3,
+     "delay": 4
+    },
+    {
+     "kind": "flash",
+     "from_": 52,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 52,
+     "dur": 8,
+     "amp": 18
+    },
+    {
+     "kind": "stamp",
+     "from_": 52,
+     "dur": 79,
+     "t": "ĂN HÌNH!",
+     "x": null,
+     "y": 230,
+     "size": 200,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 64,
+     "dur": 67,
+     "t": "Bill thắng <b>2 – 1</b>",
+     "x": null,
+     "y": 490,
+     "size": 72,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 78,
+     "dur": 53,
+     "t": "Ai đoán <b>đúng?</b> 👇",
+     "x": null,
+     "y": 1660,
+     "size": 80,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "end",
+     "from_": 131,
+     "dur": 78,
+     "line": "Đập hình cùng <b>chúng mình</b> nhé!"
+    }
+   ],
+   "lang": "vi",
+   "frames": 209
+  },
+  {
+   "id": "S3-RECESS",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 118,
+     "dur": 3,
+     "t_in": 58.120000000000005,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "match-cut: the slipper comes down"
+    },
+    {
+     "src": "footage/s-main-i5814.mp4",
+     "from_": 121,
+     "dur": 37,
+     "t_in": 0.0800000000000054,
+     "rate": 0.45,
+     "z": [
+      1.06,
+      1.02
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "slow",
+     "t_reel": 58.220000000000006
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 158,
+     "dur": 22,
+     "t_in": 58.77,
+     "rate": 0.7,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "lands"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 180,
+     "dur": 96,
+     "t_in": 59.290000000000006,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "ruled",
+     "from_": 0,
+     "dur": 118,
+     "push": 0.06
+    },
+    {
+     "kind": "pen",
+     "from_": 0,
+     "dur": 66,
+     "t": "Giờ ra chơi…",
+     "x": 200,
+     "y": 190,
+     "size": 84,
+     "rot": -3,
+     "write": 16
+    },
+    {
+     "kind": "chunk",
+     "from_": 12,
+     "dur": 54,
+     "t": "Dích hình,",
+     "x": 140,
+     "y": 560,
+     "size": 150,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 12,
+     "dur": 54,
+     "t": "đập <b>hình…</b>",
+     "x": 400,
+     "y": 800,
+     "size": 124,
+     "rot": 4,
+     "delay": 14
+    },
+    {
+     "kind": "sticker",
+     "from_": 0,
+     "dur": 66,
+     "src": "media/cut-card-tiger.png",
+     "x": 150,
+     "y": 1060,
+     "w": 330,
+     "rot": -8,
+     "delay": 34
+    },
+    {
+     "kind": "sticker",
+     "from_": 0,
+     "dur": 66,
+     "src": "media/cut-card-panda-back.png",
+     "x": 580,
+     "y": 1110,
+     "w": 300,
+     "rot": 9,
+     "delay": 42
+    },
+    {
+     "kind": "pen",
+     "from_": 34,
+     "dur": 32,
+     "t": "(mất 10 lá 1 buổi 😭)",
+     "x": 200,
+     "y": 1560,
+     "size": 56,
+     "rot": -2,
+     "color": "#e0457b",
+     "write": 18
+    },
+    {
+     "kind": "squash",
+     "from_": 66,
+     "dur": 52,
+     "t": "Bằng <b>dép?</b>",
+     "y": 860,
+     "size": 165,
+     "hit": 30
+    },
+    {
+     "kind": "pen",
+     "from_": 66,
+     "dur": 52,
+     "t": "(dép lào huyền thoại)",
+     "x": 230,
+     "y": 1340,
+     "size": 60,
+     "rot": -4,
+     "write": 20
+    },
+    {
+     "kind": "flash",
+     "from_": 121,
+     "dur": 4
+    },
+    {
+     "kind": "shake",
+     "from_": 121,
+     "dur": 8,
+     "amp": 18
+    },
+    {
+     "kind": "stamp",
+     "from_": 121,
+     "dur": 30,
+     "t": "BỐP!",
+     "x": null,
+     "y": 1520,
+     "size": 190,
+     "rot": -8,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "flash",
+     "from_": 180,
+     "dur": 4
+    },
+    {
+     "kind": "stamp",
+     "from_": 180,
+     "dur": 96,
+     "t": "ĂN HÌNH!",
+     "x": null,
+     "y": 220,
+     "size": 190,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 206,
+     "dur": 70,
+     "t": "15 năm sau…",
+     "x": 110,
+     "y": 470,
+     "size": 92,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 206,
+     "dur": 70,
+     "t": "vẫn <b>ức</b> như hồi đó",
+     "x": 250,
+     "y": 610,
+     "size": 84,
+     "rot": 3,
+     "delay": 14
+    },
+    {
+     "kind": "end",
+     "from_": 276,
+     "dur": 78,
+     "line": "Đập hình cùng <b>chúng mình</b> nhé!"
+    }
+   ],
+   "lang": "vi",
+   "frames": 354
+  },
+  {
+   "id": "S4-DEPS",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 54,
+     "dur": 50,
+     "t_in": 13.09,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.03
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "DÉP LÀO · card"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 104,
+     "dur": 45,
+     "t_in": 13.09,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "DÉP LÀO"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 149,
+     "dur": 14,
+     "t_in": 14.59,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "DÉP LÀO · ĂN!"
+    },
+    {
+     "src": "footage/s-le2.mp4",
+     "from_": 163,
+     "dur": 50,
+     "t_in": 27.970000000000002,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.03
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "DÉP LÊ · card"
+    },
+    {
+     "src": "footage/s-le2.mp4",
+     "from_": 213,
+     "dur": 54,
+     "t_in": 27.970000000000002,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "DÉP LÊ"
+    },
+    {
+     "src": "footage/s-le2.mp4",
+     "from_": 267,
+     "dur": 14,
+     "t_in": 29.77,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "DÉP LÊ · LỆCH!"
+    },
+    {
+     "src": "footage/s-ong2.mp4",
+     "from_": 281,
+     "dur": 50,
+     "t_in": 23.61,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.03
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "TỔ ONG · card"
+    },
+    {
+     "src": "footage/s-ong2.mp4",
+     "from_": 331,
+     "dur": 13,
+     "t_in": 23.61,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "TỔ ONG"
+    },
+    {
+     "src": "footage/s-ong2-i1.mp4",
+     "from_": 344,
+     "dur": 40,
+     "t_in": 0.10999999999999943,
+     "rate": 0.6,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "TỔ ONG · slow",
+     "t_reel": 24.06
+    },
+    {
+     "src": "footage/s-ong2.mp4",
+     "from_": 384,
+     "dur": 14,
+     "t_in": 24.86,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "TỔ ONG · BAY XA!"
+    }
+   ],
+   "over": [
+    {
+     "kind": "graphite",
+     "from_": 0,
+     "dur": 54
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 54,
+     "t": "Dép nào",
+     "x": 130,
+     "y": 230,
+     "size": 150,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 54,
+     "t": "<b>mạnh nhất?</b>",
+     "x": 220,
+     "y": 420,
+     "size": 130,
+     "rot": 4,
+     "delay": 6
+    },
+    {
+     "kind": "cut",
+     "from_": 0,
+     "dur": 54,
+     "src": "media/cut-dep-dep_lao.png",
+     "x": -110,
+     "y": 640,
+     "w": 760,
+     "rot": -24,
+     "delay": 14,
+     "sway": 3
+    },
+    {
+     "kind": "cut",
+     "from_": 0,
+     "dur": 54,
+     "src": "media/cut-dep-dep_le.png",
+     "x": 200,
+     "y": 960,
+     "w": 760,
+     "rot": 6,
+     "delay": 22,
+     "sway": 3
+    },
+    {
+     "kind": "cut",
+     "from_": 0,
+     "dur": 54,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 430,
+     "y": 620,
+     "w": 760,
+     "rot": 24,
+     "delay": 30,
+     "sway": 3
+    },
+    {
+     "kind": "dim",
+     "from_": 54,
+     "dur": 50,
+     "strength": 0.55
+    },
+    {
+     "kind": "stat",
+     "from_": 54,
+     "dur": 50,
+     "name": "DÉP LÀO",
+     "rows": [
+      [
+       "Huyền thoại",
+       5
+      ],
+      [
+       "Độ êm",
+       2
+      ]
+     ],
+     "y": 700,
+     "big": true,
+     "rot": -2,
+     "delay": 0,
+     "img": "media/cut-dep-dep_lao.png"
+    },
+    {
+     "kind": "stamp",
+     "from_": 139,
+     "dur": 24,
+     "t": "ĂN!",
+     "x": null,
+     "y": 260,
+     "size": 170,
+     "rot": -6,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "dim",
+     "from_": 163,
+     "dur": 50,
+     "strength": 0.55
+    },
+    {
+     "kind": "stat",
+     "from_": 163,
+     "dur": 50,
+     "name": "DÉP LÊ",
+     "rows": [
+      [
+       "Sang chảnh",
+       4
+      ],
+      [
+       "Độ êm",
+       4
+      ]
+     ],
+     "y": 700,
+     "big": true,
+     "rot": 2,
+     "delay": 0,
+     "img": "media/cut-dep-dep_le.png"
+    },
+    {
+     "kind": "stamp",
+     "from_": 257,
+     "dur": 24,
+     "t": "LỆCH!",
+     "x": null,
+     "y": 260,
+     "size": 170,
+     "rot": 5,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "dim",
+     "from_": 281,
+     "dur": 50,
+     "strength": 0.55
+    },
+    {
+     "kind": "stat",
+     "from_": 281,
+     "dur": 50,
+     "name": "TỔ ONG",
+     "rows": [
+      [
+       "Thoáng mát",
+       5
+      ],
+      [
+       "Độ ngầu",
+       3
+      ]
+     ],
+     "y": 700,
+     "big": true,
+     "rot": -2,
+     "delay": 0,
+     "img": "media/cut-dep-dep_to_ong.png"
+    },
+    {
+     "kind": "stamp",
+     "from_": 374,
+     "dur": 24,
+     "t": "BAY XA!",
+     "x": null,
+     "y": 260,
+     "size": 170,
+     "rot": -6,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "graphite",
+     "from_": 398,
+     "dur": 66
+    },
+    {
+     "kind": "chunk",
+     "from_": 398,
+     "dur": 66,
+     "t": "Lá bay xa nhất:",
+     "x": 110,
+     "y": 240,
+     "size": 90,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 404,
+     "dur": 60,
+     "t": "TỔ ONG!",
+     "x": null,
+     "y": 380,
+     "size": 190,
+     "rot": -6,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 416,
+     "dur": 48,
+     "t": "dép lào ăn <b>chuẩn</b> nhất",
+     "x": 150,
+     "y": 700,
+     "size": 76,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "cut",
+     "from_": 408,
+     "dur": 56,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 110,
+     "y": 760,
+     "w": 860,
+     "rot": 14,
+     "delay": 0,
+     "sway": 4
+    },
+    {
+     "kind": "pen",
+     "from_": 428,
+     "dur": 36,
+     "t": "(dép nào cũng cùng lực, chỉ khác độ ngầu 😎)",
+     "x": 80,
+     "y": 1520,
+     "size": 44,
+     "rot": -2,
+     "color": "#D7AF83",
+     "write": 16
+    },
+    {
+     "kind": "graphite",
+     "from_": 464,
+     "dur": 56
+    },
+    {
+     "kind": "paper",
+     "from_": 464,
+     "dur": 56,
+     "t": "Team dép nào? 👇",
+     "x": null,
+     "y": 280,
+     "size": 84,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "cut",
+     "from_": 464,
+     "dur": 56,
+     "src": "media/cut-dep-dep_lao.png",
+     "x": -120,
+     "y": 520,
+     "w": 640,
+     "rot": -20,
+     "delay": 6,
+     "sway": 3
+    },
+    {
+     "kind": "chunk",
+     "from_": 464,
+     "dur": 56,
+     "t": "<b>1</b> · lào",
+     "x": 120,
+     "y": 990,
+     "size": 70,
+     "rot": -4,
+     "delay": 10
+    },
+    {
+     "kind": "cut",
+     "from_": 464,
+     "dur": 56,
+     "src": "media/cut-dep-dep_le.png",
+     "x": 220,
+     "y": 900,
+     "w": 640,
+     "rot": 8,
+     "delay": 12,
+     "sway": 3
+    },
+    {
+     "kind": "chunk",
+     "from_": 464,
+     "dur": 56,
+     "t": "<b>2</b> · lê",
+     "x": 480,
+     "y": 1370,
+     "size": 70,
+     "rot": 0,
+     "delay": 16
+    },
+    {
+     "kind": "cut",
+     "from_": 464,
+     "dur": 56,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 520,
+     "y": 520,
+     "w": 640,
+     "rot": 22,
+     "delay": 18,
+     "sway": 3
+    },
+    {
+     "kind": "chunk",
+     "from_": 464,
+     "dur": 56,
+     "t": "<b>3</b> · tổ ong",
+     "x": 690,
+     "y": 990,
+     "size": 70,
+     "rot": 4,
+     "delay": 22
+    },
+    {
+     "kind": "end",
+     "from_": 520,
+     "dur": 78,
+     "line": "Đập hình cùng <b>chúng mình</b> nhé!"
+    }
+   ],
+   "lang": "vi",
+   "frames": 598
+  },
+  {
+   "id": "S5-FRIEND",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/p-match.mp4",
+     "from_": 84,
+     "dur": 48,
+     "t_in": 3.448,
+     "rate": 1.0,
+     "z": [
+      1.35,
+      1.38
+     ],
+     "c": [
+      0.5,
+      0.22
+     ],
+     "name": "invite"
+    },
+    {
+     "src": "footage/p-match.mp4",
+     "from_": 132,
+     "dur": 50,
+     "t_in": 5.103,
+     "rate": 1.0,
+     "z": [
+      1.35,
+      1.38
+     ],
+     "c": [
+      0.5,
+      0.22
+     ],
+     "name": "the friend is in"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 182,
+     "dur": 44,
+     "t_in": 50.65,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "revenge"
+    },
+    {
+     "src": "footage/s-main.mp4",
+     "from_": 226,
+     "dur": 40,
+     "t_in": 52.1,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "revenge · captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "graphite",
+     "from_": 0,
+     "dur": 84
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 84,
+     "t": "15 năm sau…",
+     "x": 110,
+     "y": 230,
+     "size": 110,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "chat",
+     "from_": 10,
+     "dur": 74,
+     "who": "teo",
+     "t": "ê còn nhớ vụ t ăn hình m hông =))",
+     "y": 560
+    },
+    {
+     "kind": "chat",
+     "from_": 44,
+     "dur": 40,
+     "who": "bill",
+     "t": "nhớ chớ. vô đây t trả thù",
+     "y": 1050
+    },
+    {
+     "kind": "shake",
+     "from_": 10,
+     "dur": 8,
+     "amp": 10
+    },
+    {
+     "kind": "tap",
+     "from_": 92,
+     "dur": 16,
+     "x": 540,
+     "y": 621
+    },
+    {
+     "kind": "shade",
+     "from_": 84,
+     "dur": 48,
+     "from": 50
+    },
+    {
+     "kind": "chunk",
+     "from_": 98,
+     "dur": 34,
+     "t": "Gửi <b>link</b>",
+     "x": 140,
+     "y": 1180,
+     "size": 150,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 110,
+     "dur": 22,
+     "t": "khỏi tải app",
+     "x": 440,
+     "y": 1420,
+     "size": 84,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "shade",
+     "from_": 132,
+     "dur": 50,
+     "from": 68
+    },
+    {
+     "kind": "timer",
+     "from_": 132,
+     "dur": 24,
+     "to": 5,
+     "x": 70,
+     "y": 1470,
+     "size": 150,
+     "rot": -4
+    },
+    {
+     "kind": "stamp",
+     "from_": 156,
+     "dur": 26,
+     "t": "00:05",
+     "x": 70,
+     "y": 1470,
+     "size": 160,
+     "rot": -4,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 161,
+     "dur": 21,
+     "t": "là <b>vào bàn</b>",
+     "x": 600,
+     "y": 1520,
+     "size": 86,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 212,
+     "dur": 54,
+     "t": "PHỤC THÙ!",
+     "x": null,
+     "y": 250,
+     "size": 175,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "flash",
+     "from_": 212,
+     "dur": 4
+    },
+    {
+     "kind": "end",
+     "from_": 266,
+     "dur": 78,
+     "line": "Gửi cho <b>đứa bạn cấp 1</b> 👇"
+    }
+   ],
+   "lang": "vi",
+   "frames": 344
+  },
+  {
+   "id": "S1-XIU-EN",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 0,
+     "dur": 51,
+     "t_in": 1.1360000000000001,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "1"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 51,
+     "dur": 18,
+     "t_in": 2.8360000000000003,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "1 · stamp"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 69,
+     "dur": 60,
+     "t_in": 49.626,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "2"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 129,
+     "dur": 18,
+     "t_in": 51.626,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "2 · stamp"
+    },
+    {
+     "src": "footage/s-off2-en.mp4",
+     "from_": 147,
+     "dur": 13,
+     "t_in": 25.31,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "3"
+    },
+    {
+     "src": "footage/s-off2-en-i2568.mp4",
+     "from_": 160,
+     "dur": 52,
+     "t_in": 0.0799999999999983,
+     "rate": 0.55,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "3 · off the table",
+     "t_reel": 25.759999999999998
+    },
+    {
+     "src": "footage/s-off2-en.mp4",
+     "from_": 212,
+     "dur": 26,
+     "t_in": 26.86,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "3 · stamp"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 238,
+     "dur": 15,
+     "t_in": 23.262999999999998,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4"
+    },
+    {
+     "src": "footage/s-main-en-i2368.mp4",
+     "from_": 253,
+     "dur": 57,
+     "t_in": 0.08299999999999841,
+     "rate": 0.3,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4 · slow",
+     "t_reel": 23.762999999999998
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 310,
+     "dur": 19,
+     "t_in": 24.333,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4 · land"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 329,
+     "dur": 44,
+     "t_in": 24.962999999999997,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "4 · captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 30,
+     "t": "Just ONE",
+     "x": 90,
+     "y": 150,
+     "size": 130,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 30,
+     "t": "<b>card…</b>",
+     "x": 420,
+     "y": 1500,
+     "size": 130,
+     "rot": 5,
+     "delay": 7
+    },
+    {
+     "kind": "stamp",
+     "from_": 51,
+     "dur": 18,
+     "t": "SO CLOSE!",
+     "x": null,
+     "y": 300,
+     "size": 170,
+     "rot": -7,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "chunk",
+     "from_": 51,
+     "dur": 18,
+     "t": "(hands shaking)",
+     "x": 380,
+     "y": 540,
+     "size": 60,
+     "rot": 4,
+     "delay": 4
+    },
+    {
+     "kind": "chunk",
+     "from_": 69,
+     "dur": 26,
+     "t": "try <b>2</b>",
+     "x": 700,
+     "y": 300,
+     "size": 90,
+     "rot": 6,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 129,
+     "dur": 18,
+     "t": "ARGH!",
+     "x": null,
+     "y": 300,
+     "size": 190,
+     "rot": 5,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "vignette",
+     "from_": 129,
+     "dur": 18,
+     "strength": 0.35
+    },
+    {
+     "kind": "chunk",
+     "from_": 147,
+     "dur": 14,
+     "t": "try <b>3</b>",
+     "x": 700,
+     "y": 300,
+     "size": 90,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 204,
+     "dur": 34,
+     "t": "OFF THE",
+     "x": null,
+     "y": 250,
+     "size": 160,
+     "rot": -5,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "stamp",
+     "from_": 208,
+     "dur": 30,
+     "t": "TABLE?!",
+     "x": null,
+     "y": 420,
+     "size": 170,
+     "rot": 4,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "vignette",
+     "from_": 160,
+     "dur": 78,
+     "strength": 0.45
+    },
+    {
+     "kind": "chunk",
+     "from_": 212,
+     "dur": 26,
+     "t": "(breathe…)",
+     "x": 520,
+     "y": 660,
+     "size": 60,
+     "rot": -3,
+     "delay": 4
+    },
+    {
+     "kind": "chunk",
+     "from_": 238,
+     "dur": 60,
+     "t": "try <b>4</b>…",
+     "x": 90,
+     "y": 1500,
+     "size": 140,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "vignette",
+     "from_": 238,
+     "dur": 72,
+     "strength": 0.5
+    },
+    {
+     "kind": "pulse",
+     "from_": 69,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 95,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 119,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 141,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 161,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 179,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 195,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 209,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 223,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 237,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 251,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 265,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 279,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 293,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 307,
+     "dur": 8
+    },
+    {
+     "kind": "flash",
+     "from_": 310,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 310,
+     "dur": 8,
+     "amp": 20
+    },
+    {
+     "kind": "stamp",
+     "from_": 310,
+     "dur": 63,
+     "t": "GOT IT!",
+     "x": null,
+     "y": 280,
+     "size": 200,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "paper",
+     "from_": 332,
+     "dur": 41,
+     "t": "How many tries would YOU need? 👇",
+     "x": null,
+     "y": 1590,
+     "size": 56,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "end",
+     "from_": 373,
+     "dur": 78,
+     "line": "Come <b>slap cards</b> with us!"
+    }
+   ],
+   "lang": "en",
+   "frames": 451
+  },
+  {
+   "id": "S2-CLIFF-EN",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 0,
+     "dur": 54,
+     "t_in": 29.773,
+     "rate": 0.72,
+     "z": [
+      1.0,
+      1.05
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "last turn · slow aim"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 54,
+     "dur": 8,
+     "t_in": 31.063,
+     "rate": 1.0,
+     "z": [
+      1.05,
+      1.07
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "slam"
+    },
+    {
+     "src": "footage/s-main-en-i3124.mp4",
+     "from_": 62,
+     "dur": 49,
+     "t_in": 0.08300000000000196,
+     "rate": 0.22,
+     "z": [
+      1.07,
+      1.07
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "slowing down",
+     "t_reel": 31.323
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 111,
+     "dur": 100,
+     "t_in": 31.683,
+     "rate": 0.001,
+     "z": [
+      1.07,
+      1.1
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "freeze"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 211,
+     "dur": 66,
+     "t_in": 31.683,
+     "rate": 0.001,
+     "z": [
+      1.1,
+      1.12
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "guess"
+    }
+   ],
+   "over": [
+    {
+     "kind": "paper",
+     "from_": 0,
+     "dur": 54,
+     "t": "<b>Match</b> point",
+     "x": 70,
+     "y": 150,
+     "size": 84,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "sticky",
+     "from_": 0,
+     "dur": 54,
+     "a": "Bill – Teo",
+     "b": "1 – 1",
+     "x": 730,
+     "y": 1430,
+     "rot": 5,
+     "delay": 6
+    },
+    {
+     "kind": "count",
+     "from_": 9,
+     "dur": 45,
+     "t": [
+      "3",
+      "2",
+      "1"
+     ],
+     "y": 1450
+    },
+    {
+     "kind": "stamp",
+     "from_": 62,
+     "dur": 49,
+     "t": "SLAP!",
+     "x": null,
+     "y": 1470,
+     "size": 190,
+     "rot": -8,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "shake",
+     "from_": 62,
+     "dur": 8,
+     "amp": 18
+    },
+    {
+     "kind": "dim",
+     "from_": 111,
+     "dur": 100,
+     "strength": 0.45
+    },
+    {
+     "kind": "pause",
+     "from_": 115,
+     "dur": 32
+    },
+    {
+     "kind": "chunk",
+     "from_": 121,
+     "dur": 90,
+     "t": "Capture…",
+     "x": 90,
+     "y": 230,
+     "size": 140,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 121,
+     "dur": 90,
+     "t": "or <b>off the table?</b>",
+     "x": 70,
+     "y": 1530,
+     "size": 90,
+     "rot": 4,
+     "delay": 12
+    },
+    {
+     "kind": "pulse",
+     "from_": 111,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 129,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 147,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 165,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 183,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 201,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 219,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 237,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 255,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 273,
+     "dur": 8
+    },
+    {
+     "kind": "dim",
+     "from_": 211,
+     "dur": 66,
+     "strength": 0.62
+    },
+    {
+     "kind": "stamp",
+     "from_": 211,
+     "dur": 66,
+     "t": "GUESS!",
+     "x": null,
+     "y": 640,
+     "size": 190,
+     "rot": -4,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "paper",
+     "from_": 221,
+     "dur": 56,
+     "t": "Part 2 <b>tonight</b> 👇",
+     "x": null,
+     "y": 960,
+     "size": 78,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "end",
+     "from_": 277,
+     "dur": 78,
+     "line": "Come <b>slap cards</b> with us!"
+    }
+   ],
+   "lang": "en",
+   "frames": 355
+  },
+  {
+   "id": "S2-P2-EN",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 0,
+     "dur": 30,
+     "t_in": 31.683,
+     "rate": 0.001,
+     "z": [
+      1.1,
+      1.08
+     ],
+     "c": [
+      0.5,
+      0.36
+     ],
+     "name": "the frozen frame again"
+    },
+    {
+     "src": "footage/s-main-en-i3160.mp4",
+     "from_": 30,
+     "dur": 22,
+     "t_in": 0.08299999999999841,
+     "rate": 0.4,
+     "z": [
+      1.08,
+      1.04
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "on, slowly",
+     "t_reel": 31.683
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 52,
+     "dur": 19,
+     "t_in": 31.973,
+     "rate": 1.0,
+     "z": [
+      1.04,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "lands"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 71,
+     "dur": 60,
+     "t_in": 32.623,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "dim",
+     "from_": 0,
+     "dur": 30,
+     "strength": 0.4
+    },
+    {
+     "kind": "paper",
+     "from_": 0,
+     "dur": 30,
+     "t": "<b>Part 2</b> · the result",
+     "x": 70,
+     "y": 150,
+     "size": 84,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 30,
+     "t": "Capture… or <b>off the table?</b>",
+     "x": null,
+     "y": 1590,
+     "size": 76,
+     "rot": 3,
+     "delay": 4
+    },
+    {
+     "kind": "flash",
+     "from_": 52,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 52,
+     "dur": 8,
+     "amp": 18
+    },
+    {
+     "kind": "stamp",
+     "from_": 52,
+     "dur": 79,
+     "t": "CAPTURED!",
+     "x": null,
+     "y": 230,
+     "size": 175,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 64,
+     "dur": 67,
+     "t": "Bill wins <b>2 – 1</b>",
+     "x": null,
+     "y": 490,
+     "size": 72,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 78,
+     "dur": 53,
+     "t": "Who <b>called it?</b> 👇",
+     "x": null,
+     "y": 1660,
+     "size": 80,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "end",
+     "from_": 131,
+     "dur": 78,
+     "line": "Come <b>slap cards</b> with us!"
+    }
+   ],
+   "lang": "en",
+   "frames": 209
+  },
+  {
+   "id": "S3-RECESS-EN",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 118,
+     "dur": 3,
+     "t_in": 5.269,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "match-cut: the slipper comes down"
+    },
+    {
+     "src": "footage/s-main-en-i529.mp4",
+     "from_": 121,
+     "dur": 37,
+     "t_in": 0.07899999999999974,
+     "rate": 0.45,
+     "z": [
+      1.06,
+      1.02
+     ],
+     "c": [
+      0.5,
+      0.4
+     ],
+     "name": "slow",
+     "t_reel": 5.369
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 158,
+     "dur": 22,
+     "t_in": 5.9190000000000005,
+     "rate": 0.7,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "lands"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 180,
+     "dur": 96,
+     "t_in": 6.439,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "ruled",
+     "from_": 0,
+     "dur": 118,
+     "push": 0.06
+    },
+    {
+     "kind": "pen",
+     "from_": 0,
+     "dur": 66,
+     "t": "Recess…",
+     "x": 200,
+     "y": 190,
+     "size": 84,
+     "rot": -3,
+     "write": 16
+    },
+    {
+     "kind": "chunk",
+     "from_": 12,
+     "dur": 54,
+     "t": "Flip cards,",
+     "x": 140,
+     "y": 560,
+     "size": 140,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 12,
+     "dur": 54,
+     "t": "slap <b>cards…</b>",
+     "x": 280,
+     "y": 800,
+     "size": 112,
+     "rot": 4,
+     "delay": 14
+    },
+    {
+     "kind": "sticker",
+     "from_": 0,
+     "dur": 66,
+     "src": "media/cut-card-tiger.png",
+     "x": 150,
+     "y": 1060,
+     "w": 330,
+     "rot": -8,
+     "delay": 34
+    },
+    {
+     "kind": "sticker",
+     "from_": 0,
+     "dur": 66,
+     "src": "media/cut-card-panda-back.png",
+     "x": 580,
+     "y": 1110,
+     "w": 300,
+     "rot": 9,
+     "delay": 42
+    },
+    {
+     "kind": "pen",
+     "from_": 34,
+     "dur": 32,
+     "t": "(lost 10 cards in one recess 😭)",
+     "x": 120,
+     "y": 1560,
+     "size": 48,
+     "rot": -2,
+     "color": "#e0457b",
+     "write": 18
+    },
+    {
+     "kind": "squash",
+     "from_": 66,
+     "dur": 52,
+     "t": "With a <b>slipper?</b>",
+     "y": 860,
+     "size": 118,
+     "hit": 30
+    },
+    {
+     "kind": "pen",
+     "from_": 66,
+     "dur": 52,
+     "t": "(a Vietnamese schoolyard classic)",
+     "x": 120,
+     "y": 1340,
+     "size": 50,
+     "rot": -4,
+     "write": 20
+    },
+    {
+     "kind": "flash",
+     "from_": 121,
+     "dur": 4
+    },
+    {
+     "kind": "shake",
+     "from_": 121,
+     "dur": 8,
+     "amp": 18
+    },
+    {
+     "kind": "stamp",
+     "from_": 121,
+     "dur": 30,
+     "t": "SLAP!",
+     "x": null,
+     "y": 1520,
+     "size": 190,
+     "rot": -8,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "flash",
+     "from_": 180,
+     "dur": 4
+    },
+    {
+     "kind": "stamp",
+     "from_": 180,
+     "dur": 96,
+     "t": "CAPTURED!",
+     "x": null,
+     "y": 220,
+     "size": 165,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 206,
+     "dur": 70,
+     "t": "15 years later…",
+     "x": 110,
+     "y": 470,
+     "size": 92,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 206,
+     "dur": 70,
+     "t": "still <b>salty</b> about it",
+     "x": 150,
+     "y": 610,
+     "size": 84,
+     "rot": 3,
+     "delay": 14
+    },
+    {
+     "kind": "end",
+     "from_": 276,
+     "dur": 78,
+     "line": "Come <b>slap cards</b> with us!"
+    }
+   ],
+   "lang": "en",
+   "frames": 354
+  },
+  {
+   "id": "S4-DEPS-EN",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 54,
+     "dur": 50,
+     "t_in": 75.91199999999999,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.03
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "FLIP-FLOP · card"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 104,
+     "dur": 45,
+     "t_in": 75.91199999999999,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "FLIP-FLOP"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 149,
+     "dur": 14,
+     "t_in": 77.41199999999999,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "FLIP-FLOP · GOT IT!"
+    },
+    {
+     "src": "footage/s-le2-en.mp4",
+     "from_": 163,
+     "dur": 50,
+     "t_in": 34.642,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.03
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "SLIDE · card"
+    },
+    {
+     "src": "footage/s-le2-en.mp4",
+     "from_": 213,
+     "dur": 54,
+     "t_in": 34.642,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "SLIDE"
+    },
+    {
+     "src": "footage/s-le2-en.mp4",
+     "from_": 267,
+     "dur": 14,
+     "t_in": 36.442,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "SLIDE · MISSED!"
+    },
+    {
+     "src": "footage/s-ong2-en.mp4",
+     "from_": 281,
+     "dur": 50,
+     "t_in": 30.912,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.03
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "HONEYCOMB · card"
+    },
+    {
+     "src": "footage/s-ong2-en.mp4",
+     "from_": 331,
+     "dur": 13,
+     "t_in": 30.912,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "HONEYCOMB"
+    },
+    {
+     "src": "footage/s-ong2-en-i3128.mp4",
+     "from_": 344,
+     "dur": 40,
+     "t_in": 0.08199999999999719,
+     "rate": 0.6,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "HONEYCOMB · slow",
+     "t_reel": 31.362
+    },
+    {
+     "src": "footage/s-ong2-en.mp4",
+     "from_": 384,
+     "dur": 14,
+     "t_in": 32.162,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "HONEYCOMB · SENT IT!"
+    }
+   ],
+   "over": [
+    {
+     "kind": "graphite",
+     "from_": 0,
+     "dur": 54
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 54,
+     "t": "Which slipper",
+     "x": 70,
+     "y": 230,
+     "size": 120,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 54,
+     "t": "<b>hits hardest?</b>",
+     "x": 120,
+     "y": 420,
+     "size": 110,
+     "rot": 4,
+     "delay": 6
+    },
+    {
+     "kind": "cut",
+     "from_": 0,
+     "dur": 54,
+     "src": "media/cut-dep-dep_lao.png",
+     "x": -110,
+     "y": 640,
+     "w": 760,
+     "rot": -24,
+     "delay": 14,
+     "sway": 3
+    },
+    {
+     "kind": "cut",
+     "from_": 0,
+     "dur": 54,
+     "src": "media/cut-dep-dep_le.png",
+     "x": 200,
+     "y": 960,
+     "w": 760,
+     "rot": 6,
+     "delay": 22,
+     "sway": 3
+    },
+    {
+     "kind": "cut",
+     "from_": 0,
+     "dur": 54,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 430,
+     "y": 620,
+     "w": 760,
+     "rot": 24,
+     "delay": 30,
+     "sway": 3
+    },
+    {
+     "kind": "dim",
+     "from_": 54,
+     "dur": 50,
+     "strength": 0.55
+    },
+    {
+     "kind": "stat",
+     "from_": 54,
+     "dur": 50,
+     "name": "FLIP-FLOP",
+     "rows": [
+      [
+       "Legendary",
+       5
+      ],
+      [
+       "Comfort",
+       2
+      ]
+     ],
+     "y": 700,
+     "big": true,
+     "rot": -2,
+     "delay": 0,
+     "img": "media/cut-dep-dep_lao.png"
+    },
+    {
+     "kind": "stamp",
+     "from_": 139,
+     "dur": 24,
+     "t": "GOT IT!",
+     "x": null,
+     "y": 260,
+     "size": 170,
+     "rot": -6,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "dim",
+     "from_": 163,
+     "dur": 50,
+     "strength": 0.55
+    },
+    {
+     "kind": "stat",
+     "from_": 163,
+     "dur": 50,
+     "name": "SLIDE",
+     "rows": [
+      [
+       "Fancy",
+       4
+      ],
+      [
+       "Comfort",
+       4
+      ]
+     ],
+     "y": 700,
+     "big": true,
+     "rot": 2,
+     "delay": 0,
+     "img": "media/cut-dep-dep_le.png"
+    },
+    {
+     "kind": "stamp",
+     "from_": 257,
+     "dur": 24,
+     "t": "MISSED!",
+     "x": null,
+     "y": 260,
+     "size": 170,
+     "rot": 5,
+     "color": "#ff5d8f"
+    },
+    {
+     "kind": "dim",
+     "from_": 281,
+     "dur": 50,
+     "strength": 0.55
+    },
+    {
+     "kind": "stat",
+     "from_": 281,
+     "dur": 50,
+     "name": "HONEYCOMB",
+     "rows": [
+      [
+       "Airflow",
+       5
+      ],
+      [
+       "Swag",
+       3
+      ]
+     ],
+     "y": 700,
+     "big": true,
+     "rot": -2,
+     "delay": 0,
+     "img": "media/cut-dep-dep_to_ong.png"
+    },
+    {
+     "kind": "stamp",
+     "from_": 374,
+     "dur": 24,
+     "t": "SENT IT!",
+     "x": null,
+     "y": 260,
+     "size": 170,
+     "rot": -6,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "graphite",
+     "from_": 398,
+     "dur": 66
+    },
+    {
+     "kind": "chunk",
+     "from_": 398,
+     "dur": 66,
+     "t": "Flew the farthest:",
+     "x": 110,
+     "y": 240,
+     "size": 90,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 404,
+     "dur": 60,
+     "t": "HONEYCOMB!",
+     "x": null,
+     "y": 380,
+     "size": 150,
+     "rot": -6,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 416,
+     "dur": 48,
+     "t": "the flip-flop is the <b>most accurate</b>",
+     "x": 60,
+     "y": 700,
+     "size": 60,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "cut",
+     "from_": 408,
+     "dur": 56,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 110,
+     "y": 760,
+     "w": 860,
+     "rot": 14,
+     "delay": 0,
+     "sway": 4
+    },
+    {
+     "kind": "pen",
+     "from_": 428,
+     "dur": 36,
+     "t": "(same power for all, only the swag differs 😎)",
+     "x": 60,
+     "y": 1520,
+     "size": 40,
+     "rot": -2,
+     "color": "#D7AF83",
+     "write": 16
+    },
+    {
+     "kind": "graphite",
+     "from_": 464,
+     "dur": 56
+    },
+    {
+     "kind": "paper",
+     "from_": 464,
+     "dur": 56,
+     "t": "Which team are you? 👇",
+     "x": null,
+     "y": 280,
+     "size": 70,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "cut",
+     "from_": 464,
+     "dur": 56,
+     "src": "media/cut-dep-dep_lao.png",
+     "x": -120,
+     "y": 520,
+     "w": 640,
+     "rot": -20,
+     "delay": 6,
+     "sway": 3
+    },
+    {
+     "kind": "chunk",
+     "from_": 464,
+     "dur": 56,
+     "t": "<b>1</b> · flip-flop",
+     "x": 40,
+     "y": 990,
+     "size": 60,
+     "rot": -4,
+     "delay": 10
+    },
+    {
+     "kind": "cut",
+     "from_": 464,
+     "dur": 56,
+     "src": "media/cut-dep-dep_le.png",
+     "x": 220,
+     "y": 900,
+     "w": 640,
+     "rot": 8,
+     "delay": 12,
+     "sway": 3
+    },
+    {
+     "kind": "chunk",
+     "from_": 464,
+     "dur": 56,
+     "t": "<b>2</b> · slide",
+     "x": 420,
+     "y": 1370,
+     "size": 60,
+     "rot": 0,
+     "delay": 16
+    },
+    {
+     "kind": "cut",
+     "from_": 464,
+     "dur": 56,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 520,
+     "y": 520,
+     "w": 640,
+     "rot": 22,
+     "delay": 18,
+     "sway": 3
+    },
+    {
+     "kind": "chunk",
+     "from_": 464,
+     "dur": 56,
+     "t": "<b>3</b> · honeycomb",
+     "x": 580,
+     "y": 990,
+     "size": 60,
+     "rot": 4,
+     "delay": 22
+    },
+    {
+     "kind": "end",
+     "from_": 520,
+     "dur": 78,
+     "line": "Come <b>slap cards</b> with us!"
+    }
+   ],
+   "lang": "en",
+   "frames": 598
+  },
+  {
+   "id": "S5-FRIEND-EN",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/p-match-en.mp4",
+     "from_": 84,
+     "dur": 48,
+     "t_in": 3.428,
+     "rate": 1.0,
+     "z": [
+      1.35,
+      1.38
+     ],
+     "c": [
+      0.5,
+      0.22
+     ],
+     "name": "invite"
+    },
+    {
+     "src": "footage/p-match-en.mp4",
+     "from_": 132,
+     "dur": 49,
+     "t_in": 5.086,
+     "rate": 1.0,
+     "z": [
+      1.35,
+      1.38
+     ],
+     "c": [
+      0.5,
+      0.22
+     ],
+     "name": "the friend is in"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 181,
+     "dur": 43,
+     "t_in": 27.391,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "revenge"
+    },
+    {
+     "src": "footage/s-main-en.mp4",
+     "from_": 224,
+     "dur": 40,
+     "t_in": 28.840999999999998,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "revenge · captured"
+    }
+   ],
+   "over": [
+    {
+     "kind": "graphite",
+     "from_": 0,
+     "dur": 84
+    },
+    {
+     "kind": "chunk",
+     "from_": 0,
+     "dur": 84,
+     "t": "15 years later…",
+     "x": 110,
+     "y": 230,
+     "size": 110,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "chat",
+     "from_": 10,
+     "dur": 74,
+     "who": "teo",
+     "t": "remember when i took your card lol",
+     "y": 560
+    },
+    {
+     "kind": "chat",
+     "from_": 44,
+     "dur": 40,
+     "who": "bill",
+     "t": "oh i remember. get in, revenge time",
+     "y": 1050
+    },
+    {
+     "kind": "shake",
+     "from_": 10,
+     "dur": 8,
+     "amp": 10
+    },
+    {
+     "kind": "tap",
+     "from_": 92,
+     "dur": 16,
+     "x": 540,
+     "y": 621
+    },
+    {
+     "kind": "shade",
+     "from_": 84,
+     "dur": 48,
+     "from": 50
+    },
+    {
+     "kind": "chunk",
+     "from_": 98,
+     "dur": 34,
+     "t": "Send a <b>link</b>",
+     "x": 140,
+     "y": 1180,
+     "size": 120,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 110,
+     "dur": 22,
+     "t": "no app to install",
+     "x": 300,
+     "y": 1420,
+     "size": 70,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "shade",
+     "from_": 132,
+     "dur": 49,
+     "from": 68
+    },
+    {
+     "kind": "timer",
+     "from_": 132,
+     "dur": 24,
+     "to": 5,
+     "x": 70,
+     "y": 1470,
+     "size": 150,
+     "rot": -4
+    },
+    {
+     "kind": "stamp",
+     "from_": 156,
+     "dur": 25,
+     "t": "00:05",
+     "x": 70,
+     "y": 1470,
+     "size": 160,
+     "rot": -4,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "chunk",
+     "from_": 161,
+     "dur": 20,
+     "t": "and <b>they're in</b>",
+     "x": 520,
+     "y": 1520,
+     "size": 62,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "stamp",
+     "from_": 211,
+     "dur": 53,
+     "t": "REVENGE!",
+     "x": null,
+     "y": 250,
+     "size": 175,
+     "rot": -5,
+     "color": "#FFC93C"
+    },
+    {
+     "kind": "flash",
+     "from_": 211,
+     "dur": 4
+    },
+    {
+     "kind": "end",
+     "from_": 264,
+     "dur": 78,
+     "line": "Send this to your <b>childhood best friend</b> 👇"
+    }
+   ],
+   "lang": "en",
+   "frames": 342
+  }
+ ]
+}

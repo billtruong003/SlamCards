@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Slam Cards media</title>
+<style>
+@font-face { font-family: Baloo2; src: url(../fonts/Baloo2-Bold.ttf); font-weight: 700; }
+:root { --ink:#2a1418; --cream:#fffbf0; --paper:#f6eedb; --pink:#a34e71; --deep:#974e66; --yel:#ffc93c; --blue:#1c719a; --plum:#3a1d2a; }
+body { margin: 0; background: #888; font-family: Baloo2, sans-serif; }
+.row { display: flex; gap: 40px; padding: 40px; align-items: flex-start; flex-wrap: wrap; }
+.ab { position: relative; overflow: hidden; flex: none; color: var(--ink); }
+.ab img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* type: the game's stamp (cream, ink outline, ink drop shadow) */
+.stamp { font-weight: 700; line-height: .95; color: var(--cream); -webkit-text-stroke: var(--sw, 14px) var(--ink); paint-order: stroke fill; text-shadow: 0 var(--sh, 12px) 0 var(--ink); }
+.stamp .y { color: var(--yel); }
+.cap { font-weight: 700; line-height: 1.05; }
+.phone { position: absolute; box-sizing: border-box; border: 14px solid var(--ink); border-radius: 64px; overflow: hidden; background: var(--ink); box-shadow: 0 30px 60px rgba(42,20,24,.35); }
+.phone img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ribbon { position: absolute; left: -40px; right: -40px; padding: 14px 0; text-align: center; font-weight: 700; color: #fff; background: var(--pink); border-top: 8px solid var(--ink); border-bottom: 8px solid var(--ink); }
+.card-crop { position: absolute; background-repeat: no-repeat; }
+/* --- style A: the schoolyard (cream paper, polka dots, ink) */
+.A { background: var(--paper) radial-gradient(circle, rgba(163,78,113,.10) 18%, transparent 19%) 0 0 / 90px 90px; }
+/* --- style B: the studio shelf (deep plum like the other games' dark navy, ribbons) */
+.B { background: radial-gradient(ellipse at 50% 35%, #5a2c40 0%, var(--plum) 70%); color: var(--cream); }
+/* --- style C: the table (full-bleed gameplay, warm vignette, minimal type) */
+.C { background: #c79559; }
+.C::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 55%, transparent 45%, rgba(42,20,24,.55) 100%); pointer-events: none; }
+.C > * { z-index: 1; }
+.C .stamp, .C .cap { filter: drop-shadow(0 0 30px rgba(42,20,24,.85)); }
+.label { font: 700 28px Baloo2; color: #fff; margin: 0 0 10px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const S = 'src/';
+// crops of the 3840x2160 stills: [x, y, w, h] in source px
+const CARD = [1080, 230, 1580, 1580];            // capture-top: the tiger card face up on the panda card
+const ab = (id, w, h, cls, html) => `<div class="ab ${cls}" id="${id}" style="width:${w}px;height:${h}px">${html}</div>`;
+const SIZE = { 'slam-air.png': [1920, 1080] };
+const crop = (src, [x, y, w, h], box, extra = '') => {
+  const [bx, by, bw, bh] = box; const sx = bw / w, sy = bh / h; const [SW, SH] = SIZE[src] || [3840, 2160];
+  return `<div style="position:absolute;left:${bx}px;top:${by}px;width:${bw}px;height:${bh}px;overflow:hidden;${extra}">
+    <img src="${S}${src}" style="position:absolute;left:${-x * sx}px;top:${-y * sy}px;width:${SW * sx}px;height:${SH * sy}px"></div>`;
+};
+const phone = (src, x, y, w, rot = 0) => `<div class="phone" style="left:${x}px;top:${y}px;width:${w}px;height:${w * 16 / 9}px;transform:rotate(${rot}deg)"><img src="${S}${src}"></div>`;
+const title = (size, vi = true) => `<div class="stamp" style="font-size:${size}px;--sw:${size * .09}px;--sh:${size * .075}px;text-align:center">Dép Lào<br><span class="y">Tuổi Thơ</span></div>`;
+
+const STYLES = { A: 'Sân trường', B: 'Kệ studio', C: 'Mặt bàn' };
+let out = '';
+for (const s of ['A', 'B', 'C']) {
+  const dark = s !== 'A';
+  const capColor = s === 'A' ? 'var(--ink)' : 'var(--cream)';
+  const cardBox = (x, y, w, rot) => crop('capture-top.png', CARD, [x, y, w, w], `border-radius:${w * .12}px;transform:rotate(${rot}deg)` + (s === 'C' ? '' : ''));
+  let row = `<p class="label">Style ${s} · ${STYLES[s]}</p><div class="row">`;
+  // icon 1024: one focal thing, the tiger card won on top of the panda card
+  const iconBg = s === 'C' ? `<img class="bg" src="${S}capture-low.png" style="object-position:55% 50%;filter:blur(6px) brightness(.9)">` : '';
+  row += ab(`${s}-icon`, 1024, 1024, s, iconBg +
+    `<div style="position:absolute;inset:0;background:${s === 'A' ? 'var(--pink)' : s === 'B' ? 'var(--plum)' : 'transparent'}"></div>` +
+    crop('capture-top.png', [1010, 230, 1740, 1740], [62, 62, 900, 900], 'border-radius:120px;' + (s === 'C' ? '' : 'box-shadow:0 20px 0 rgba(42,20,24,.35)')));
+  // cover 1080x1920
+  row += ab(`${s}-cover`, 1080, 1920, s,
+    (s === 'C' ? `<img class="bg" src="${S}capture-top.png" style="object-position:47% 60%;transform:scale(1.15) translateY(260px)">` : '') +
+    `<div style="position:absolute;top:150px;left:0;right:0">${title(190)}</div>` +
+    (s === 'C' ? '' : crop('capture-top.png', [1150, 180, 1560, 1700], [110, 720, 860, 937], `transform:rotate(-5deg);border-radius:60px;box-shadow:0 30px 60px rgba(0,0,0,.35)`)) +
+    `<div class="cap" style="position:absolute;bottom:${s === 'C' ? 170 : 120}px;left:0;right:0;text-align:center;font-size:62px;color:${capColor}">Đập dép. Lật bài.<br><span style="color:${s === 'A' ? 'var(--pink)' : 'var(--yel)'}">Gửi link là chơi.</span></div>`);
+  row += '</div><div class="row">';
+  // feature 1024x500 (store/site banner): title left, card right
+  row += ab(`${s}-feature`, 1024, 500, s,
+    (s === 'C' ? `<img class="bg" src="${S}capture-low.png" style="object-position:70% 50%">` : '') +
+    `<div style="position:absolute;left:${s === 'C' ? 60 : 40}px;top:70px;width:560px">${title(118)}<div class="cap" style="text-align:center;margin-top:22px;font-size:32px;white-space:nowrap;color:${capColor}">Dích hình tuổi thơ, chơi trên web</div></div>` +
+    (s === 'C' ? '' : crop('capture-top.png', [1150, 180, 1560, 1700], [600, 40, 400, 436], 'transform:rotate(6deg);border-radius:30px;box-shadow:0 18px 36px rgba(0,0,0,.3)')));
+  // thumbnail 1280x720: the slam in the air, 2-3 words, nothing in the bottom-right (YouTube's time badge)
+  row += ab(`${s}-thumb`, 1280, 720, s,
+    `<img class="bg" src="${S}slam-air.png" style="object-position:60% 50%;transform:scale(1.25);transform-origin:62% 52%">` +
+    (s === 'B' ? `<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(58,29,42,.92) 0%,rgba(58,29,42,.6) 38%,transparent 60%)"></div>` : '') +
+    (s === 'A' ? `<div style="position:absolute;inset:0;border:22px solid var(--paper)"></div>` : '') +
+    `<div class="stamp" style="position:absolute;left:60px;top:90px;font-size:150px;--sw:15px;--sh:12px;transform:rotate(-4deg)">DÍCH<br><span class="y">HÌNH!</span></div>` +
+    `<div class="stamp" style="position:absolute;left:68px;top:470px;font-size:52px;--sw:6px;--sh:5px">Dép Lào Tuổi Thơ</div>`);
+  row += '</div><div class="row">';
+  // three screenshots 1080x1920 (saved at 720x1280): one buying question each
+  const shots = [
+    ['Đập dép,<br>lật bài', () => (s === 'C' ? `<img class="bg" src="${S}slam-air.png" style="filter:blur(14px) brightness(.8);transform:scale(1.2)">` : '') +
+      crop('slam-air.png', [0, 0, 1920, 1080], [-20, 640, 1120, 630], 'transform:rotate(-4deg);border-radius:48px;border:12px solid var(--ink);box-sizing:border-box;box-shadow:0 30px 60px rgba(0,0,0,.35)') +
+      `<div class="stamp" style="position:absolute;left:0;right:0;top:1440px;text-align:center;font-size:170px;--sw:16px;--sh:13px;transform:rotate(-4deg)"><span class="y">BỐP!</span></div>`],
+    ['Gửi link<br>là vô', () => phone('phone-lobby.png', 70, 560, 560, -4) + phone('phone-chat.png', 470, 720, 540, 5)],
+    ['Ngửa đè úp<br>là ăn', () => (s === 'C'
+      ? crop('capture-top.png', [1300, 120, 1080, 1920], [0, 0, 1080, 1920])
+      : crop('capture-top.png', [1000, 120, 1840, 1840], [60, 560, 960, 960], 'border-radius:60px;border:12px solid var(--ink);box-sizing:border-box') +
+        `<div class="stamp" style="position:absolute;left:0;right:0;top:1560px;text-align:center;font-size:120px;--sw:12px;--sh:10px;transform:rotate(-3deg)"><span class="y">ĂN HÌNH!</span></div>`)],
+  ];
+  shots.forEach(([cap, body], i) => {
+    row += ab(`${s}-shot${i + 1}`, 1080, 1920, s, body() +
+      (s === 'B' ? `<div class="ribbon" style="top:150px;font-size:110px;line-height:1;transform:rotate(-3deg)">${cap.replace('<br>', ' ')}</div>`
+        : `<div class="stamp" style="position:absolute;left:0;right:0;top:${s === 'C' ? 160 : 130}px;text-align:center;font-size:130px;--sw:13px;--sh:11px">${cap}</div>`));
+  });
+  out += row + '</div>';
+}
+document.getElementById('root').innerHTML = out;
+</script>
+</body>
+</html>

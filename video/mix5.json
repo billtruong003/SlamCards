@@ -1,0 +1,1715 @@
+{
+ "fps": 30,
+ "videos": [
+  {
+   "id": "S1-XIU",
+   "frames": 451,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 218,
+     "gain": -15,
+     "fade_in": 1,
+     "fade_out": 3,
+     "duck_at": []
+    },
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 310,
+     "end": 451,
+     "gain": -12,
+     "fade_in": 0.3,
+     "fade_out": 20,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 451,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 14,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 18,
+       "gain": 2
+      },
+      {
+       "id": "meme:pass-huh",
+       "at": 51,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 69,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 85,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 89,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 95,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 119,
+       "gain": -4
+      },
+      {
+       "id": "meme:fall-bruh",
+       "at": 129,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 141,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 156,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 160,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 161,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 179,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 195,
+       "gain": -4
+      },
+      {
+       "id": "meme:fall-oidoioi",
+       "at": 204,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 209,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 223,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 237,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 248,
+       "gain": -11
+      },
+      {
+       "id": "heartbeat",
+       "at": 251,
+       "gain": -4
+      },
+      {
+       "id": "thump",
+       "at": 252,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 265,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 279,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 293,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 307,
+       "gain": -4
+      },
+      {
+       "id": "chime_found",
+       "at": 310,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 310,
+       "gain": 0
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 312,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 332,
+       "gain": -5
+      },
+      {
+       "id": "thump_big",
+       "at": 373,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 399,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S2-CLIFF",
+   "frames": 355,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 355,
+     "gain": -16,
+     "fade_in": 1,
+     "fade_out": 6,
+     "duck_at": [
+      [
+       62,
+       511,
+       -40
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 355,
+     "sfx": [
+      {
+       "id": "tick",
+       "at": 0,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 9,
+       "gain": -2
+      },
+      {
+       "id": "tick",
+       "at": 14,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 24,
+       "gain": -2
+      },
+      {
+       "id": "tick",
+       "at": 28,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 39,
+       "gain": -2
+      },
+      {
+       "id": "tick",
+       "at": 42,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 57,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 61,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 111,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 111,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 129,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 147,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 165,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 183,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 201,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 211,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 219,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 221,
+       "gain": -5
+      },
+      {
+       "id": "heartbeat",
+       "at": 237,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 255,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 273,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 277,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 303,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S2-P2",
+   "frames": 209,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 209,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 20,
+     "duck_at": [
+      [
+       0,
+       30,
+       -40
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 209,
+     "sfx": [
+      {
+       "id": "sticker",
+       "at": 0,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 16,
+       "gain": -3
+      },
+      {
+       "id": "whoosh",
+       "at": 30,
+       "gain": -6
+      },
+      {
+       "id": "chime_found",
+       "at": 52,
+       "gain": -6
+      },
+      {
+       "id": "flip",
+       "at": 52,
+       "gain": -2
+      },
+      {
+       "id": "thump",
+       "at": 52,
+       "gain": -3
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 54,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 64,
+       "gain": -6
+      },
+      {
+       "id": "msg",
+       "at": 78,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 131,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 157,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S3-RECESS",
+   "frames": 354,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "seek": 0.23,
+     "start": 0,
+     "end": 354,
+     "gain": -14,
+     "fade_in": 12,
+     "fade_out": 24,
+     "duck_at": [
+      [
+       92,
+       110,
+       -14
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 354,
+     "sfx": [
+      {
+       "id": "bell",
+       "at": 2,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 12,
+       "gain": -7
+      },
+      {
+       "id": "sticker",
+       "at": 26,
+       "gain": -7
+      },
+      {
+       "id": "sticker",
+       "at": 34,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 42,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 66,
+       "gain": -5
+      },
+      {
+       "id": "whoosh",
+       "at": 86,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 96,
+       "gain": 2
+      },
+      {
+       "id": "whoosh",
+       "at": 118,
+       "gain": -10
+      },
+      {
+       "id": "thump_big",
+       "at": 121,
+       "gain": 2
+      },
+      {
+       "id": "flip",
+       "at": 180,
+       "gain": -3
+      },
+      {
+       "id": "thump",
+       "at": 180,
+       "gain": -2
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 182,
+       "gain": -9
+      },
+      {
+       "id": "sticker",
+       "at": 206,
+       "gain": -7
+      },
+      {
+       "id": "thump_big",
+       "at": 276,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 302,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S4-DEPS",
+   "frames": 598,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 598,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 20,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 598,
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 0,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 6,
+       "gain": -7
+      },
+      {
+       "id": "tap",
+       "at": 14,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 22,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 30,
+       "gain": -4
+      },
+      {
+       "id": "sticker",
+       "at": 54,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 109,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 113,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 139,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 163,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 220,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 224,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 257,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 281,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 340,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 345,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 374,
+       "gain": -3
+      },
+      {
+       "id": "thump",
+       "at": 398,
+       "gain": -4
+      },
+      {
+       "id": "chime_found",
+       "at": 404,
+       "gain": -8
+      },
+      {
+       "id": "thump_big",
+       "at": 404,
+       "gain": -2
+      },
+      {
+       "id": "sticker",
+       "at": 416,
+       "gain": -7
+      },
+      {
+       "id": "sticker",
+       "at": 464,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 470,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 476,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 482,
+       "gain": -4
+      },
+      {
+       "id": "thump_big",
+       "at": 520,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 546,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S5-FRIEND",
+   "frames": 344,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "seek": 0.23,
+     "start": 0,
+     "end": 182,
+     "gain": -14,
+     "fade_in": 6,
+     "fade_out": 3,
+     "duck_at": []
+    },
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 182,
+     "end": 344,
+     "gain": -13,
+     "fade_in": 1,
+     "fade_out": 20,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 344,
+     "sfx": [
+      {
+       "id": "sticker",
+       "at": 0,
+       "gain": -8
+      },
+      {
+       "id": "msg",
+       "at": 10,
+       "gain": -3
+      },
+      {
+       "id": "msg",
+       "at": 44,
+       "gain": -3
+      },
+      {
+       "id": "tap",
+       "at": 98,
+       "gain": -2
+      },
+      {
+       "id": "chime_ready",
+       "at": 106,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 110,
+       "gain": -7
+      },
+      {
+       "id": "tick",
+       "at": 132,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 136,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 140,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 144,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 148,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 152,
+       "gain": -8
+      },
+      {
+       "id": "chime_found",
+       "at": 155,
+       "gain": -5
+      },
+      {
+       "id": "sticker",
+       "at": 161,
+       "gain": -7
+      },
+      {
+       "id": "whoosh",
+       "at": 190,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 194,
+       "gain": 2
+      },
+      {
+       "id": "chime_found",
+       "at": 212,
+       "gain": -7
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 212,
+       "gain": -8
+      },
+      {
+       "id": "thump_big",
+       "at": 266,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 292,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S1-XIU-EN",
+   "frames": 451,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 218,
+     "gain": -15,
+     "fade_in": 1,
+     "fade_out": 3,
+     "duck_at": []
+    },
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 310,
+     "end": 451,
+     "gain": -12,
+     "fade_in": 0.3,
+     "fade_out": 20,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 451,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 14,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 18,
+       "gain": 2
+      },
+      {
+       "id": "meme:pass-huh",
+       "at": 51,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 69,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 85,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 89,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 95,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 119,
+       "gain": -4
+      },
+      {
+       "id": "meme:fall-bruh",
+       "at": 129,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 141,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 155,
+       "gain": -11
+      },
+      {
+       "id": "whoosh",
+       "at": 156,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 160,
+       "gain": 2
+      },
+      {
+       "id": "thump",
+       "at": 160,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 161,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 179,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 195,
+       "gain": -4
+      },
+      {
+       "id": "meme:fall-oidoioi",
+       "at": 204,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 209,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 223,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 237,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 248,
+       "gain": -11
+      },
+      {
+       "id": "heartbeat",
+       "at": 251,
+       "gain": -4
+      },
+      {
+       "id": "thump",
+       "at": 252,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 265,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 279,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 293,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 307,
+       "gain": -4
+      },
+      {
+       "id": "chime_found",
+       "at": 310,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 310,
+       "gain": 0
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 312,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 332,
+       "gain": -5
+      },
+      {
+       "id": "thump_big",
+       "at": 373,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 399,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S2-CLIFF-EN",
+   "frames": 355,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 355,
+     "gain": -16,
+     "fade_in": 1,
+     "fade_out": 6,
+     "duck_at": [
+      [
+       62,
+       511,
+       -40
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 355,
+     "sfx": [
+      {
+       "id": "tick",
+       "at": 0,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 9,
+       "gain": -2
+      },
+      {
+       "id": "tick",
+       "at": 14,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 24,
+       "gain": -2
+      },
+      {
+       "id": "tick",
+       "at": 28,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 39,
+       "gain": -2
+      },
+      {
+       "id": "tick",
+       "at": 42,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 57,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 61,
+       "gain": 2
+      },
+      {
+       "id": "heartbeat",
+       "at": 111,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 111,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 129,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 147,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 165,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 183,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 201,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 211,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 219,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 221,
+       "gain": -5
+      },
+      {
+       "id": "heartbeat",
+       "at": 237,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 255,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 273,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 277,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 303,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S2-P2-EN",
+   "frames": 209,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 209,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 20,
+     "duck_at": [
+      [
+       0,
+       30,
+       -40
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 209,
+     "sfx": [
+      {
+       "id": "sticker",
+       "at": 0,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 16,
+       "gain": -3
+      },
+      {
+       "id": "whoosh",
+       "at": 30,
+       "gain": -6
+      },
+      {
+       "id": "chime_found",
+       "at": 52,
+       "gain": -6
+      },
+      {
+       "id": "flip",
+       "at": 52,
+       "gain": -2
+      },
+      {
+       "id": "thump",
+       "at": 52,
+       "gain": -3
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 54,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 64,
+       "gain": -6
+      },
+      {
+       "id": "msg",
+       "at": 78,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 131,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 157,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S3-RECESS-EN",
+   "frames": 354,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "seek": 0.23,
+     "start": 0,
+     "end": 354,
+     "gain": -14,
+     "fade_in": 12,
+     "fade_out": 24,
+     "duck_at": [
+      [
+       92,
+       110,
+       -14
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 354,
+     "sfx": [
+      {
+       "id": "bell",
+       "at": 2,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 12,
+       "gain": -7
+      },
+      {
+       "id": "sticker",
+       "at": 26,
+       "gain": -7
+      },
+      {
+       "id": "sticker",
+       "at": 34,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 42,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 66,
+       "gain": -5
+      },
+      {
+       "id": "whoosh",
+       "at": 86,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 96,
+       "gain": 2
+      },
+      {
+       "id": "whoosh",
+       "at": 118,
+       "gain": -10
+      },
+      {
+       "id": "thump_big",
+       "at": 121,
+       "gain": 2
+      },
+      {
+       "id": "flip",
+       "at": 180,
+       "gain": -3
+      },
+      {
+       "id": "thump",
+       "at": 180,
+       "gain": -2
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 182,
+       "gain": -9
+      },
+      {
+       "id": "sticker",
+       "at": 206,
+       "gain": -7
+      },
+      {
+       "id": "thump_big",
+       "at": 276,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 302,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S4-DEPS-EN",
+   "frames": 598,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 598,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 20,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 598,
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 0,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 6,
+       "gain": -7
+      },
+      {
+       "id": "tap",
+       "at": 14,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 22,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 30,
+       "gain": -4
+      },
+      {
+       "id": "sticker",
+       "at": 54,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 109,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 113,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 139,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 163,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 220,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 224,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 257,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 281,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 341,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 346,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 374,
+       "gain": -3
+      },
+      {
+       "id": "thump",
+       "at": 398,
+       "gain": -4
+      },
+      {
+       "id": "chime_found",
+       "at": 404,
+       "gain": -8
+      },
+      {
+       "id": "thump_big",
+       "at": 404,
+       "gain": -2
+      },
+      {
+       "id": "sticker",
+       "at": 416,
+       "gain": -7
+      },
+      {
+       "id": "sticker",
+       "at": 464,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 470,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 476,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 482,
+       "gain": -4
+      },
+      {
+       "id": "thump_big",
+       "at": 520,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 546,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "S5-FRIEND-EN",
+   "frames": 342,
+   "lufs": -15,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "seek": 0.23,
+     "start": 0,
+     "end": 181,
+     "gain": -14,
+     "fade_in": 6,
+     "fade_out": 3,
+     "duck_at": []
+    },
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 181,
+     "end": 342,
+     "gain": -13,
+     "fade_in": 1,
+     "fade_out": 20,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 342,
+     "sfx": [
+      {
+       "id": "sticker",
+       "at": 0,
+       "gain": -8
+      },
+      {
+       "id": "msg",
+       "at": 10,
+       "gain": -3
+      },
+      {
+       "id": "msg",
+       "at": 44,
+       "gain": -3
+      },
+      {
+       "id": "tap",
+       "at": 98,
+       "gain": -2
+      },
+      {
+       "id": "chime_ready",
+       "at": 106,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 110,
+       "gain": -7
+      },
+      {
+       "id": "tick",
+       "at": 132,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 136,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 140,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 144,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 148,
+       "gain": -8
+      },
+      {
+       "id": "tick",
+       "at": 152,
+       "gain": -8
+      },
+      {
+       "id": "chime_found",
+       "at": 155,
+       "gain": -5
+      },
+      {
+       "id": "sticker",
+       "at": 161,
+       "gain": -7
+      },
+      {
+       "id": "whoosh",
+       "at": 189,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 193,
+       "gain": 2
+      },
+      {
+       "id": "chime_found",
+       "at": 211,
+       "gain": -7
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 211,
+       "gain": -8
+      },
+      {
+       "id": "thump_big",
+       "at": 264,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 290,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

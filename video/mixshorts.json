@@ -1,0 +1,357 @@
+{
+ "fps": 30,
+ "videos": [
+  {
+   "id": "STRESS",
+   "frames": 343,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 284,
+     "gain": -12,
+     "fade_in": 2,
+     "fade_out": 2,
+     "duck_at": [
+      [
+       212,
+       356,
+       -40
+      ]
+     ]
+    },
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 284,
+     "end": 343,
+     "gain": -9,
+     "fade_in": 1,
+     "fade_out": 14,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 343,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 9,
+       "gain": -6
+      },
+      {
+       "id": "thump",
+       "at": 13,
+       "gain": -1
+      },
+      {
+       "id": "meme:pass-huh",
+       "at": 54,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 70,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 78,
+       "gain": -6
+      },
+      {
+       "id": "thump",
+       "at": 82,
+       "gain": -1
+      },
+      {
+       "id": "heartbeat",
+       "at": 96,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 120,
+       "gain": -4
+      },
+      {
+       "id": "meme:fall-bruh",
+       "at": 126,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 142,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 150,
+       "gain": -6
+      },
+      {
+       "id": "thump",
+       "at": 154,
+       "gain": -1
+      },
+      {
+       "id": "heartbeat",
+       "at": 162,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 180,
+       "gain": -4
+      },
+      {
+       "id": "heartbeat",
+       "at": 196,
+       "gain": -4
+      },
+      {
+       "id": "meme:fall-oidoioi",
+       "at": 196,
+       "gain": -10
+      },
+      {
+       "id": "heartbeat",
+       "at": 210,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 220,
+       "gain": -6
+      },
+      {
+       "id": "thump",
+       "at": 224,
+       "gain": -1
+      },
+      {
+       "id": "heartbeat",
+       "at": 227,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 247,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 267,
+       "gain": -3
+      },
+      {
+       "id": "chime_found",
+       "at": 284,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 284,
+       "gain": 0
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 286,
+       "gain": -8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "CLIFF",
+   "frames": 285,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 0,
+     "end": 285,
+     "gain": -13,
+     "fade_in": 2,
+     "fade_out": 10,
+     "duck_at": [
+      [
+       77,
+       505,
+       -40
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 285,
+     "sfx": [
+      {
+       "id": "tick",
+       "at": 0,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 14,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 28,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 42,
+       "gain": -6
+      },
+      {
+       "id": "tick",
+       "at": 56,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 68,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 72,
+       "gain": 0
+      },
+      {
+       "id": "heartbeat",
+       "at": 105,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 123,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 141,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 159,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 177,
+       "gain": -3
+      },
+      {
+       "id": "heartbeat",
+       "at": 195,
+       "gain": -3
+      },
+      {
+       "id": "sticker",
+       "at": 210,
+       "gain": -3
+      },
+      {
+       "id": "msg",
+       "at": 218,
+       "gain": -6
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "NOSTALGIA",
+   "frames": 407,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "seek": 0.23,
+     "start": 0,
+     "end": 407,
+     "gain": -11,
+     "fade_in": 10,
+     "fade_out": 40,
+     "duck_at": []
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 407,
+     "sfx": [
+      {
+       "id": "bell",
+       "at": 2,
+       "gain": -7
+      },
+      {
+       "id": "sticker",
+       "at": 30,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 44,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 118,
+       "gain": -4
+      },
+      {
+       "id": "thump_big",
+       "at": 138,
+       "gain": 0
+      },
+      {
+       "id": "flip",
+       "at": 180,
+       "gain": -3
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 182,
+       "gain": -9
+      },
+      {
+       "id": "whoosh",
+       "at": 241,
+       "gain": -6
+      },
+      {
+       "id": "thump",
+       "at": 245,
+       "gain": -1
+      },
+      {
+       "id": "sticker",
+       "at": 287,
+       "gain": -4
+      },
+      {
+       "id": "chime_found",
+       "at": 303,
+       "gain": -8
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

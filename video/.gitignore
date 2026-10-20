@@ -1,0 +1,15 @@
+# generated: python sfx.py, audio_mix.py, grade.py; media-render.mjs
+out/
+sfx/
+media/out/
+# media files: stills and cut-outs from qa/capture (media/src), their copies for Remotion (edit/public)
+# and canvas exports (design/*); all can be made again, and together they weigh ~33 MB
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.wav
+*.mp3
+*.mp4
+*.webm
+*.mov

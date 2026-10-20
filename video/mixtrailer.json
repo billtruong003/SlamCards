@@ -1,0 +1,613 @@
+{
+ "fps": 30,
+ "videos": [
+  {
+   "id": "TRAILER",
+   "frames": 1475,
+   "lufs": -14.5,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "seek": 0.23,
+     "start": 136,
+     "end": 564,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 12,
+     "duck_at": [
+      [
+       206,
+       226,
+       -12
+      ]
+     ]
+    },
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 558,
+     "end": 1475,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 30,
+     "duck_at": [
+      [
+       875,
+       892,
+       -30
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 1475,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 7,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 12,
+       "gain": 2
+      },
+      {
+       "id": "flip",
+       "at": 58,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 76,
+       "gain": -10
+      },
+      {
+       "id": "chime_ready",
+       "at": 79,
+       "gain": -8
+      },
+      {
+       "id": "riser",
+       "at": 110,
+       "gain": -16
+      },
+      {
+       "id": "sticker",
+       "at": 136,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 148,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 186,
+       "gain": -5
+      },
+      {
+       "id": "whoosh",
+       "at": 200,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 210,
+       "gain": 2
+      },
+      {
+       "id": "thump_big",
+       "at": 238,
+       "gain": 1
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 240,
+       "gain": -10
+      },
+      {
+       "id": "chime_found",
+       "at": 246,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 328,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 365,
+       "gain": -2
+      },
+      {
+       "id": "sticker",
+       "at": 381,
+       "gain": -6
+      },
+      {
+       "id": "msg",
+       "at": 442,
+       "gain": -3
+      },
+      {
+       "id": "msg",
+       "at": 508,
+       "gain": -3
+      },
+      {
+       "id": "riser",
+       "at": 518,
+       "gain": -12
+      },
+      {
+       "id": "whoosh",
+       "at": 596,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 601,
+       "gain": 2
+      },
+      {
+       "id": "whoosh",
+       "at": 688,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 693,
+       "gain": 2
+      },
+      {
+       "id": "sticker",
+       "at": 717,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 782,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 787,
+       "gain": 2
+      },
+      {
+       "id": "whoosh",
+       "at": 885,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 890,
+       "gain": 2
+      },
+      {
+       "id": "sticker",
+       "at": 1010,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 1078,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 1083,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 1120,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1128,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1136,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1144,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1153,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1161,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1169,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1177,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1185,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1193,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1198,
+       "gain": -5
+      },
+      {
+       "id": "sticker",
+       "at": 1204,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 1214,
+       "gain": -7
+      },
+      {
+       "id": "tap",
+       "at": 1233,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 1252,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 1271,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 1290,
+       "gain": -5
+      },
+      {
+       "id": "thump_big",
+       "at": 1325,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 1351,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "TRAILER-EN",
+   "frames": 1480,
+   "lufs": -14.5,
+   "ceiling": -1.6,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "seek": 0.23,
+     "start": 136,
+     "end": 569,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 12,
+     "duck_at": [
+      [
+       206,
+       226,
+       -12
+      ]
+     ]
+    },
+    {
+     "id": "music:game-loop",
+     "seek": 0.251,
+     "start": 563,
+     "end": 1480,
+     "gain": -14,
+     "fade_in": 1,
+     "fade_out": 30,
+     "duck_at": [
+      [
+       880,
+       897,
+       -30
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "all",
+     "start": 0,
+     "end": 1480,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 7,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 12,
+       "gain": 2
+      },
+      {
+       "id": "flip",
+       "at": 58,
+       "gain": -4
+      },
+      {
+       "id": "whoosh",
+       "at": 76,
+       "gain": -10
+      },
+      {
+       "id": "chime_ready",
+       "at": 79,
+       "gain": -8
+      },
+      {
+       "id": "riser",
+       "at": 110,
+       "gain": -16
+      },
+      {
+       "id": "sticker",
+       "at": 136,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 148,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 186,
+       "gain": -5
+      },
+      {
+       "id": "whoosh",
+       "at": 200,
+       "gain": -6
+      },
+      {
+       "id": "thump_big",
+       "at": 210,
+       "gain": 2
+      },
+      {
+       "id": "thump_big",
+       "at": 238,
+       "gain": 1
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 240,
+       "gain": -10
+      },
+      {
+       "id": "chime_found",
+       "at": 246,
+       "gain": -8
+      },
+      {
+       "id": "sticker",
+       "at": 328,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 365,
+       "gain": -2
+      },
+      {
+       "id": "sticker",
+       "at": 381,
+       "gain": -6
+      },
+      {
+       "id": "msg",
+       "at": 442,
+       "gain": -3
+      },
+      {
+       "id": "msg",
+       "at": 513,
+       "gain": -3
+      },
+      {
+       "id": "riser",
+       "at": 523,
+       "gain": -12
+      },
+      {
+       "id": "whoosh",
+       "at": 601,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 606,
+       "gain": 2
+      },
+      {
+       "id": "whoosh",
+       "at": 693,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 698,
+       "gain": 2
+      },
+      {
+       "id": "sticker",
+       "at": 722,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 787,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 792,
+       "gain": 2
+      },
+      {
+       "id": "whoosh",
+       "at": 890,
+       "gain": -11
+      },
+      {
+       "id": "thump_big",
+       "at": 895,
+       "gain": 2
+      },
+      {
+       "id": "sticker",
+       "at": 1015,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 1083,
+       "gain": -11
+      },
+      {
+       "id": "thump",
+       "at": 1088,
+       "gain": 2
+      },
+      {
+       "id": "tap",
+       "at": 1125,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1133,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1141,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1149,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1158,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1166,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1174,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1182,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1190,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1198,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 1203,
+       "gain": -5
+      },
+      {
+       "id": "sticker",
+       "at": 1209,
+       "gain": -6
+      },
+      {
+       "id": "sticker",
+       "at": 1219,
+       "gain": -7
+      },
+      {
+       "id": "tap",
+       "at": 1238,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 1257,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 1276,
+       "gain": -5
+      },
+      {
+       "id": "tap",
+       "at": 1295,
+       "gain": -5
+      },
+      {
+       "id": "thump_big",
+       "at": 1330,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 1356,
+       "gain": -9
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

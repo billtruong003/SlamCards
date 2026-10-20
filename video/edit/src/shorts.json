@@ -1,0 +1,707 @@
+{
+ "videos": [
+  {
+   "id": "STRESS",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 0,
+     "dur": 54,
+     "t_in": 28.95,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 1"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 54,
+     "dur": 16,
+     "t_in": 30.75,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 1 · XÍU NỮA!"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 70,
+     "dur": 56,
+     "t_in": 9.12,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 2"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 126,
+     "dur": 16,
+     "t_in": 11.0,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 2 · ỨC GHÊ!"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 142,
+     "dur": 54,
+     "t_in": 64.66,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 3"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 196,
+     "dur": 20,
+     "t_in": 66.45,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 3 · ÚP LẠI?!"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 216,
+     "dur": 11,
+     "t_in": 41.33,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 4 · dích"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 227,
+     "dur": 57,
+     "t_in": 41.7,
+     "rate": 0.3,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 4 · quay chậm"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 284,
+     "dur": 19,
+     "t_in": 42.27,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Lần 4 · đáp"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 303,
+     "dur": 40,
+     "t_in": 42.9,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "ĂN HÌNH!"
+    }
+   ],
+   "pages": [],
+   "over": [
+    {
+     "kind": "tally",
+     "from_": 0,
+     "dur": 70,
+     "n": 1
+    },
+    {
+     "kind": "stamp",
+     "from_": 54,
+     "dur": 16,
+     "t": "XÍU NỮA!",
+     "y": 0.24,
+     "size": 190,
+     "tilt": -6,
+     "color": "pink"
+    },
+    {
+     "kind": "vignette",
+     "from_": 54,
+     "dur": 16,
+     "strength": 0.22
+    },
+    {
+     "kind": "tally",
+     "from_": 70,
+     "dur": 72,
+     "n": 2
+    },
+    {
+     "kind": "stamp",
+     "from_": 126,
+     "dur": 16,
+     "t": "ỨC GHÊ!",
+     "y": 0.24,
+     "size": 190,
+     "tilt": -1,
+     "color": "pink"
+    },
+    {
+     "kind": "vignette",
+     "from_": 126,
+     "dur": 16,
+     "strength": 0.32
+    },
+    {
+     "kind": "tally",
+     "from_": 142,
+     "dur": 74,
+     "n": 3
+    },
+    {
+     "kind": "stamp",
+     "from_": 196,
+     "dur": 20,
+     "t": "ÚP LẠI?!",
+     "y": 0.24,
+     "size": 190,
+     "tilt": 4,
+     "color": "pink"
+    },
+    {
+     "kind": "vignette",
+     "from_": 196,
+     "dur": 20,
+     "strength": 0.42000000000000004
+    },
+    {
+     "kind": "label",
+     "from_": 0,
+     "dur": 40,
+     "t": "Ăn 1 lá thôi mà…",
+     "y": 0.09
+    },
+    {
+     "kind": "pulse",
+     "from_": 70,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 96,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 120,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 142,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 162,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 180,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 196,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 210,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 227,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 247,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 267,
+     "dur": 8
+    },
+    {
+     "kind": "tally",
+     "from_": 216,
+     "dur": 68,
+     "n": 4
+    },
+    {
+     "kind": "vignette",
+     "from_": 216,
+     "dur": 68,
+     "strength": 0.32
+    },
+    {
+     "kind": "flash",
+     "from_": 284,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 284,
+     "dur": 8,
+     "amp": 20
+    },
+    {
+     "kind": "stamp",
+     "from_": 284,
+     "dur": 59,
+     "t": "ĂN HÌNH!",
+     "y": 0.24,
+     "size": 200,
+     "tilt": -5,
+     "color": "yellow"
+    },
+    {
+     "kind": "tape",
+     "from_": 298,
+     "dur": 45,
+     "t": "Dép Lào Tuổi Thơ · chơi trên web",
+     "y": 0.9
+    }
+   ],
+   "frames": 343
+  },
+  {
+   "id": "CLIFF",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 0,
+     "dur": 15,
+     "t_in": 11.7,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Bàn: lượt cuối"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 15,
+     "dur": 52,
+     "t_in": 12.2,
+     "rate": 0.72,
+     "z": [
+      1.0,
+      1.06
+     ],
+     "c": [
+      0.5,
+      0.45
+     ],
+     "name": "Ngắm chậm"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 67,
+     "dur": 10,
+     "t_in": 13.44,
+     "rate": 1.0,
+     "z": [
+      1.06,
+      1.08
+     ],
+     "c": [
+      0.5,
+      0.45
+     ],
+     "name": "Dích"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 77,
+     "dur": 28,
+     "t_in": 13.78,
+     "rate": 0.15,
+     "z": [
+      1.08,
+      1.16
+     ],
+     "c": [
+      0.5,
+      0.42
+     ],
+     "name": "Quay chậm dần"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 105,
+     "dur": 105,
+     "t_in": 13.92,
+     "rate": 0.001,
+     "z": [
+      1.16,
+      1.2
+     ],
+     "c": [
+      0.5,
+      0.42
+     ],
+     "name": "Đóng băng"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 210,
+     "dur": 75,
+     "t_in": 13.92,
+     "rate": 0.001,
+     "z": [
+      1.2,
+      1.22
+     ],
+     "c": [
+      0.5,
+      0.42
+     ],
+     "name": "Đoán đi"
+    }
+   ],
+   "pages": [],
+   "over": [
+    {
+     "kind": "label",
+     "from_": 0,
+     "dur": 67,
+     "t": "Ván quyết định · 1 – 1",
+     "y": 0.09
+    },
+    {
+     "kind": "tally",
+     "from_": 0,
+     "dur": 67,
+     "n": 0,
+     "score": true
+    },
+    {
+     "kind": "count",
+     "from_": 22,
+     "dur": 45,
+     "t": [
+      "3",
+      "2",
+      "1"
+     ]
+    },
+    {
+     "kind": "dim",
+     "from_": 105,
+     "dur": 105,
+     "strength": 0.45
+    },
+    {
+     "kind": "pause",
+     "from_": 111,
+     "dur": 34
+    },
+    {
+     "kind": "question",
+     "from_": 115,
+     "dur": 95,
+     "a": "ĂN HÌNH",
+     "b": "hay ÚP LẠI?"
+    },
+    {
+     "kind": "pulse",
+     "from_": 105,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 123,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 141,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 159,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 177,
+     "dur": 8
+    },
+    {
+     "kind": "pulse",
+     "from_": 195,
+     "dur": 8
+    },
+    {
+     "kind": "dim",
+     "from_": 210,
+     "dur": 75,
+     "strength": 0.6
+    },
+    {
+     "kind": "stamp",
+     "from_": 210,
+     "dur": 75,
+     "t": "ĐOÁN ĐI 👇",
+     "y": 0.42,
+     "size": 150,
+     "tilt": -4,
+     "color": "yellow"
+    },
+    {
+     "kind": "label",
+     "from_": 218,
+     "dur": 67,
+     "t": "Phần 2 mai đăng",
+     "y": 0.58
+    },
+    {
+     "kind": "tape",
+     "from_": 224,
+     "dur": 61,
+     "t": "Dép Lào Tuổi Thơ · chơi trên web",
+     "y": 0.9
+    }
+   ],
+   "frames": 285
+  },
+  {
+   "id": "NOSTALGIA",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 138,
+     "dur": 6,
+     "t_in": 88.43,
+     "rate": 1.0,
+     "z": [
+      1.12,
+      1.1
+     ],
+     "c": [
+      0.5,
+      0.45
+     ],
+     "name": "Match-cut: dép chạm"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 144,
+     "dur": 36,
+     "t_in": 88.62,
+     "rate": 0.4,
+     "z": [
+      1.1,
+      1.04
+     ],
+     "c": [
+      0.5,
+      0.45
+     ],
+     "name": "Quay chậm"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 180,
+     "dur": 27,
+     "t_in": 89.1,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Đáp"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 207,
+     "dur": 20,
+     "t_in": 90.0,
+     "rate": 0.001,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Giữ"
+    },
+    {
+     "src": "footage/s-takes.mp4",
+     "from_": 227,
+     "dur": 60,
+     "t_in": 13.0,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.0
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "Vẫn dích"
+    }
+   ],
+   "pages": [
+    {
+     "kind": "intro",
+     "from_": 0,
+     "dur": 112
+    },
+    {
+     "kind": "drop",
+     "from_": 112,
+     "dur": 26
+    },
+    {
+     "kind": "end",
+     "from_": 287,
+     "dur": 120
+    }
+   ],
+   "over": [
+    {
+     "kind": "flash",
+     "from_": 138,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 138,
+     "dur": 7,
+     "amp": 16
+    },
+    {
+     "kind": "stamp",
+     "from_": 180,
+     "dur": 47,
+     "t": "ĂN HÌNH!",
+     "y": 0.26,
+     "size": 190,
+     "tilt": -5,
+     "color": "yellow"
+    },
+    {
+     "kind": "label",
+     "from_": 148,
+     "dur": 79,
+     "t": "15 năm sau…",
+     "y": 0.09
+    },
+    {
+     "kind": "label",
+     "from_": 227,
+     "dur": 60,
+     "t": "…vẫn dích như hồi đó",
+     "y": 0.09
+    },
+    {
+     "kind": "stamp",
+     "from_": 265,
+     "dur": 22,
+     "t": "ĂN!",
+     "y": 0.26,
+     "size": 190,
+     "tilt": 6,
+     "color": "yellow"
+    }
+   ],
+   "frames": 407
+  }
+ ]
+}

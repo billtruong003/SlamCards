@@ -42,7 +42,7 @@ const gate = (material, ref) => Object.assign(material, {
 });
 
 // Outline hull along normals averaged per position, so flat-shaded cube pets keep one closed line.
-function bakeSmoothNormals(geo) {
+export function bakeSmoothNormals(geo) {
   if (geo.attributes.smoothNormal) return geo;
   if (!geo.attributes.normal) geo.computeVertexNormals();
   const pos = geo.attributes.position;
@@ -66,14 +66,25 @@ function bakeSmoothNormals(geo) {
   geo.setAttribute('smoothNormal', new THREE.BufferAttribute(out, 3));
   return geo;
 }
-function outline(width) {
+// Filming (film.js) can switch every outline to a fixed width on screen, `px` pixels of a `res`-tall frame, so a
+// pet seen from up close keeps a thin line instead of the hull growing with it. px = 0: the game's hull, as it was.
+export const filmOutline = { px: { value: 0 }, res: { value: new THREE.Vector2(1920, 1080) } };
+export function outline(width) {
   const m = new THREE.MeshBasicMaterial({ color: 0x2a1418, side: THREE.BackSide });
+  m.userData.outline = true; // film.js can hide every hull (the videos draw their own silhouette line)
   const uniform = { value: width };
   m.onBeforeCompile = (s) => {
     s.uniforms.outlineWidth = uniform;
-    s.vertexShader = `attribute vec3 smoothNormal;\nuniform float outlineWidth;\n${s.vertexShader}`
-      .replace('#include <begin_vertex>', '#include <begin_vertex>\n transformed += normalize(smoothNormal) * outlineWidth;')
-      .replace('#include <project_vertex>', '#include <project_vertex>\n gl_Position.z += 0.0006 * gl_Position.w;');
+    s.uniforms.outlinePx = filmOutline.px;
+    s.uniforms.outlineRes = filmOutline.res;
+    s.vertexShader = `attribute vec3 smoothNormal;\nuniform float outlineWidth;\nuniform float outlinePx;\nuniform vec2 outlineRes;\n${s.vertexShader}`
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\n if (outlinePx <= 0.0) transformed += normalize(smoothNormal) * outlineWidth;')
+      .replace('#include <project_vertex>', `#include <project_vertex>
+ if (outlinePx > 0.0) {
+   vec2 dir = (projectionMatrix * vec4(normalize(normalMatrix * smoothNormal), 0.0)).xy;
+   if (dot(dir, dir) > 1e-8) gl_Position.xy += normalize(dir * outlineRes) / outlineRes * outlinePx * 2.0 * gl_Position.w;
+ }
+ gl_Position.z += 0.0006 * gl_Position.w;`);
   };
   return m;
 }
@@ -174,7 +185,7 @@ function backTexture(look) {
 // ---------- the space behind the window (three layers, after Minions Art's UI background) ----------
 
 export const spaceTime = { value: 0 };
-function spaceMaterial(look) {
+export function spaceMaterial(look) {
   const c = (h) => new THREE.Color(h);
   return new THREE.ShaderMaterial({
     side: THREE.BackSide,
@@ -542,7 +553,8 @@ export function createStencilCard(seat, ref) {
   }
 
   setLook(null);
-  return { mesh, shadow, setRank, update, setLook, setGlow, react, stencilRef: ref };
+  // film.js (the launch videos) reaches into the window: the pet stepping out of its frame
+  return { mesh, shadow, setRank, update, setLook, setGlow, react, stencilRef: ref, get pet() { return pet; }, stageRoot };
 }
 
 // Lowest card first, so a card lying on another draws its window after the one below.

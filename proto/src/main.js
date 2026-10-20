@@ -2221,6 +2221,8 @@ if (new URLSearchParams(location.search).has('debug')) {
     get me() { return me; },
     world,
     renderAssets: (opts) => import('./asset-studio.js').then((m) => m.renderAssets(opts)),
+    // the launch videos' film tricks (film.js): window.__film once loaded
+    film: () => import('./film.js').then((m) => (window.__film ??= m.createFilm(world))),
     meme: showMeme,
     visuals,
     // the tunables, for measuring changes before making them (qa/fall-rate.mjs SLAM_SCALE)

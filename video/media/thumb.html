@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<title>Trailer thumbnails</title>
+<!-- The trailer's YouTube thumbnail, 1280x720 (node qa/capture/media-render.mjs thumb.html → media/out/thumb.png).
+     Built for the click: one action at the size of the frame (the slipper coming down, the tiger card flying), one face
+     that reacts (the panda), two words in the game's stamp letters, the warm table behind. Bottom right kept clear
+     (YouTube puts the duration there). -->
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&family=Nunito:wght@900&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#555;padding:20px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.ab{position:relative;width:1280px;height:720px;overflow:hidden;background:#3a2516}
+.bg{position:absolute;inset:-40px;background:url(../design/trailer/hook-air.jpg) 70% 60%/220% auto;filter:blur(16px) saturate(1.4) brightness(.95)}
+.warm{position:absolute;inset:0;background:radial-gradient(ellipse at 34% 52%,rgba(255,214,120,.55),rgba(255,160,60,.08) 45%,rgba(40,20,10,.72) 100%)}
+.burst{position:absolute;left:70px;top:110px;width:620px;height:580px}
+.lines{position:absolute;left:0;top:0;width:700px;height:420px}
+img{position:absolute;display:block}
+.dep{left:-150px;top:-250px;width:760px;transform:rotate(30deg);filter:drop-shadow(0 30px 24px rgba(0,0,0,.45))}
+.panda-card{left:250px;top:410px;width:300px;transform:rotate(-14deg);filter:drop-shadow(0 18px 18px rgba(0,0,0,.4))}
+.tiger-card{left:200px;top:170px;width:360px;transform:rotate(17deg);filter:drop-shadow(0 26px 26px rgba(0,0,0,.45))}
+.panda{left:640px;top:330px;width:440px;transform:rotate(-8deg);filter:drop-shadow(8px 0 0 #fff) drop-shadow(-8px 0 0 #fff) drop-shadow(0 8px 0 #fff) drop-shadow(0 -8px 0 #fff) drop-shadow(0 18px 20px rgba(0,0,0,.45))}
+.st{position:absolute;font-family:'Baloo 2';font-weight:800;line-height:.9;color:#FFC93C;-webkit-text-stroke:22px #2a1418;paint-order:stroke fill;text-shadow:0 14px 0 #2a1418;white-space:nowrap}
+.mark{position:absolute;font-family:'Baloo 2';font-weight:800;color:#fff;-webkit-text-stroke:10px #2a1418;paint-order:stroke fill}
+.small{transform:scale(.1922);transform-origin:0 0;width:246px;height:138px;overflow:hidden;position:relative}
+.wrap{display:flex;flex-direction:column;gap:12px;color:#fff;font:700 14px Nunito}
+</style></head><body>
+<div class="wrap">
+<div class="ab" id="thumb-trailer">
+  <div class="bg"></div><div class="warm"></div>
+  <!-- the hit: a yellow burst behind the flying card, speed lines behind the slipper -->
+  <svg class="burst" viewBox="0 0 560 520"><polygon fill="#FFC93C" stroke="#2a1418" stroke-width="10" stroke-linejoin="round"
+    points="280,10 318,170 470,60 380,210 550,240 385,300 500,470 320,345 270,515 230,350 60,470 175,300 10,250 180,205 90,60 240,165"/></svg>
+  <svg class="lines" viewBox="0 0 700 420"><g stroke="#fffbf0" stroke-width="18" stroke-linecap="round">
+    <line x1="30" y1="90" x2="170" y2="170"/><line x1="20" y1="200" x2="130" y2="260"/><line x1="150" y1="20" x2="270" y2="100"/></g></svg>
+  <img class="tiger-card" src="../design/trailer/cut-card-tiger.png">
+  <img class="dep" src="../design/trailer/cut-dep-dep_lao.png">
+  <img class="panda" src="../design/trailer/cut-pet-panda.png">
+  <svg style="position:absolute;left:1000px;top:420px;width:110px;height:140px" viewBox="0 0 110 140"><g fill="#8fd3ff" stroke="#2a1418" stroke-width="7" stroke-linejoin="round">
+    <path d="M30 10 C4 58 12 86 32 86 C52 86 58 58 30 10Z"/><path d="M82 50 C66 82 70 102 84 102 C98 102 102 82 82 50Z"/></g></svg>
+  <div class="mark" style="left:700px;top:380px;font-size:120px;transform:rotate(-14deg)">!?</div>
+  <div class="st" style="left:745px;top:58px;font-size:215px;transform:rotate(-6deg)">ĂN</div>
+  <div class="st" style="left:665px;top:225px;font-size:200px;transform:rotate(4deg)">HÌNH!</div>
+
+<div class="ab" id="thumb-trailer-en">
+  <div class="bg"></div><div class="warm"></div>
+  <!-- the hit: a yellow burst behind the flying card, speed lines behind the slipper -->
+  <svg class="burst" viewBox="0 0 560 520"><polygon fill="#FFC93C" stroke="#2a1418" stroke-width="10" stroke-linejoin="round"
+    points="280,10 318,170 470,60 380,210 550,240 385,300 500,470 320,345 270,515 230,350 60,470 175,300 10,250 180,205 90,60 240,165"/></svg>
+  <svg class="lines" viewBox="0 0 700 420"><g stroke="#fffbf0" stroke-width="18" stroke-linecap="round">
+    <line x1="30" y1="90" x2="170" y2="170"/><line x1="20" y1="200" x2="130" y2="260"/><line x1="150" y1="20" x2="270" y2="100"/></g></svg>
+  <img class="tiger-card" src="../design/trailer/cut-card-tiger.png">
+  <img class="dep" src="../design/trailer/cut-dep-dep_lao.png">
+  <img class="panda" src="../design/trailer/cut-pet-panda.png">
+  <svg style="position:absolute;left:1000px;top:420px;width:110px;height:140px" viewBox="0 0 110 140"><g fill="#8fd3ff" stroke="#2a1418" stroke-width="7" stroke-linejoin="round">
+    <path d="M30 10 C4 58 12 86 32 86 C52 86 58 58 30 10Z"/><path d="M82 50 C66 82 70 102 84 102 C98 102 102 82 82 50Z"/></g></svg>
+  <div class="mark" style="left:700px;top:380px;font-size:120px;transform:rotate(-14deg)">!?</div>
+  <div class="st" style="left:640px;top:110px;font-size:200px;transform:rotate(-7deg)">SLAP!</div>
+</div>
+</div>
+</body></html>

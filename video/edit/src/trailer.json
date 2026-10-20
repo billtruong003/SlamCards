@@ -1,0 +1,1234 @@
+{
+ "videos": [
+  {
+   "id": "TRAILER",
+   "W": 1920,
+   "H": 1080,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/d-hook.mp4",
+     "from_": 0,
+     "dur": 8,
+     "t_in": 0.671,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.02
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "hook"
+    },
+    {
+     "src": "footage/d-hook-i86.mp4",
+     "from_": 8,
+     "dur": 48,
+     "t_in": 0.08099999999999996,
+     "rate": 0.5,
+     "z": [
+      1.02,
+      1.1
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "hook · slow",
+     "t_reel": 0.941
+    },
+    {
+     "src": "footage/d-hook.mp4",
+     "from_": 56,
+     "dur": 20,
+     "t_in": 1.741,
+     "rate": 1.0,
+     "z": [
+      1.1,
+      1.14
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "hook · the card settles"
+    },
+    {
+     "src": "footage/d-hook.mp4",
+     "from_": 136,
+     "dur": 50,
+     "t_in": 2.421,
+     "rate": 0.001,
+     "z": [
+      1.1,
+      1.13
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "words",
+     "blur": 20,
+     "dark": 0.4
+    },
+    {
+     "src": "footage/d-hook.mp4",
+     "from_": 186,
+     "dur": 52,
+     "t_in": 2.421,
+     "rate": 0.001,
+     "z": [
+      1.13,
+      1.15
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "squash",
+     "blur": 20,
+     "dark": 0.4
+    },
+    {
+     "src": "footage/d-hook.mp4",
+     "from_": 238,
+     "dur": 78,
+     "t_in": 2.421,
+     "rate": 0.001,
+     "z": [
+      1.15,
+      1.18
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "logo",
+     "blur": 10,
+     "dark": 0.35
+    },
+    {
+     "src": "footage/d-match.mp4",
+     "from_": 316,
+     "dur": 43,
+     "t_in": 2.701,
+     "rate": 0.7,
+     "z": [
+      1.6,
+      1.66
+     ],
+     "c": [
+      0.6,
+      0.35
+     ],
+     "name": "room"
+    },
+    {
+     "src": "footage/d-match.mp4",
+     "from_": 359,
+     "dur": 76,
+     "t_in": 3.701,
+     "rate": 1.0,
+     "z": [
+      1.9,
+      2.0
+     ],
+     "c": [
+      0.42,
+      0.32
+     ],
+     "name": "invite: copy the link"
+    },
+    {
+     "src": "footage/d-match.mp4",
+     "from_": 435,
+     "dur": 123,
+     "t_in": 7.9,
+     "rate": 1.0,
+     "z": [
+      2.4,
+      2.45
+     ],
+     "c": [
+      0.91,
+      0.82
+     ],
+     "name": "the real chat"
+    },
+    {
+     "src": "footage/d-match.mp4",
+     "from_": 558,
+     "dur": 96,
+     "t_in": 20.501,
+     "rate": 1.0,
+     "z": [
+      2.0,
+      2.15
+     ],
+     "c": [
+      0.34,
+      0.45
+     ],
+     "name": "rule 1: slap"
+    },
+    {
+     "src": "footage/d-match.mp4",
+     "from_": 654,
+     "dur": 114,
+     "t_in": 27.635,
+     "rate": 1.0,
+     "z": [
+      1.9,
+      1.7
+     ],
+     "c": [
+      0.42,
+      0.42
+     ],
+     "name": "rule 2: capture"
+    },
+    {
+     "src": "footage/d-match.mp4",
+     "from_": 768,
+     "dur": 78,
+     "t_in": 44.198,
+     "rate": 1.0,
+     "z": [
+      2.0,
+      2.1
+     ],
+     "c": [
+      0.3,
+      0.42
+     ],
+     "name": "the tease"
+    },
+    {
+     "src": "footage/d-match.mp4",
+     "from_": 846,
+     "dur": 134,
+     "t_in": 47.352,
+     "rate": 1.0,
+     "z": [
+      1.7,
+      1.25
+     ],
+     "c": [
+      0.36,
+      0.45
+     ],
+     "name": "easy now: off the table"
+    },
+    {
+     "src": "footage/d-quick.mp4",
+     "from_": 980,
+     "dur": 84,
+     "t_in": 7.299,
+     "rate": 1.0,
+     "z": [
+      1.3,
+      1.36
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "quick match"
+    },
+    {
+     "src": "footage/d-quick.mp4",
+     "from_": 1064,
+     "dur": 54,
+     "t_in": 12.798,
+     "rate": 1.0,
+     "z": [
+      1.35,
+      1.45
+     ],
+     "c": [
+      0.5,
+      0.45
+     ],
+     "name": "four at the table"
+    },
+    {
+     "src": "footage/d-ward2.mp4",
+     "from_": 1118,
+     "dur": 77,
+     "t_in": 1.876,
+     "rate": 1.6,
+     "z": [
+      1.75,
+      1.8
+     ],
+     "c": [
+      0.5,
+      0.47
+     ],
+     "name": "wardrobe: pets"
+    },
+    {
+     "src": "footage/d-ward2.mp4",
+     "from_": 1195,
+     "dur": 130,
+     "t_in": 8.148,
+     "rate": 1.2,
+     "z": [
+      1.75,
+      1.8
+     ],
+     "c": [
+      0.5,
+      0.47
+     ],
+     "name": "wardrobe: the honeycomb slipper"
+    }
+   ],
+   "over": [
+    {
+     "kind": "flash",
+     "from_": 12,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 12,
+     "dur": 8,
+     "amp": 20
+    },
+    {
+     "kind": "ident",
+     "from_": 76,
+     "dur": 60
+    },
+    {
+     "kind": "chunk",
+     "from_": 136,
+     "dur": 50,
+     "t": "Dích hình,",
+     "x": 300,
+     "y": 280,
+     "size": 170,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 136,
+     "dur": 50,
+     "t": "đập <b>hình…</b>",
+     "x": 860,
+     "y": 540,
+     "size": 130,
+     "rot": 4,
+     "delay": 12
+    },
+    {
+     "kind": "squash",
+     "from_": 186,
+     "dur": 52,
+     "t": "Bằng <b>dép?</b>",
+     "y": 330,
+     "size": 230,
+     "hit": 24
+    },
+    {
+     "kind": "logo",
+     "from_": 238,
+     "dur": 78,
+     "cx": 960,
+     "cy": 540,
+     "w": 1300
+    },
+    {
+     "kind": "shake",
+     "from_": 238,
+     "dur": 8,
+     "amp": 14
+    },
+    {
+     "kind": "chunk",
+     "from_": 316,
+     "dur": 43,
+     "t": "Càng đông",
+     "x": 1000,
+     "y": 300,
+     "size": 150,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 316,
+     "dur": 43,
+     "t": "càng <b>vui!</b>",
+     "x": 1260,
+     "y": 540,
+     "size": 100,
+     "rot": 4,
+     "delay": 12
+    },
+    {
+     "kind": "tap",
+     "from_": 359,
+     "dur": 16,
+     "x": 960,
+     "y": 420
+    },
+    {
+     "kind": "chunk",
+     "from_": 369,
+     "dur": 66,
+     "t": "Gửi link",
+     "x": 1330,
+     "y": 330,
+     "size": 130,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 381,
+     "dur": 54,
+     "t": "khỏi <b>cài app</b>",
+     "x": 1360,
+     "y": 560,
+     "size": 80,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "dim",
+     "from_": 435,
+     "dur": 123,
+     "strength": 0.35
+    },
+    {
+     "kind": "chat",
+     "from_": 442,
+     "dur": 116,
+     "who": "teo",
+     "t": "ê còn nhớ vụ t ăn hình m hông =))",
+     "x": 100,
+     "w": 920,
+     "y": 250,
+     "u": 4.4
+    },
+    {
+     "kind": "chat",
+     "from_": 508,
+     "dur": 50,
+     "who": "bill",
+     "t": "nhớ chớ. vô đây t trả thù",
+     "x": 100,
+     "w": 920,
+     "y": 600,
+     "u": 4.4
+    },
+    {
+     "kind": "chunk",
+     "from_": 600,
+     "dur": 54,
+     "t": "Đập hình",
+     "x": 1080,
+     "y": 140,
+     "size": 150,
+     "rot": 5,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 600,
+     "dur": 54,
+     "t": "cho bài <b>di chuyển</b>",
+     "x": 960,
+     "y": 360,
+     "size": 96,
+     "rot": -3,
+     "delay": 10
+    },
+    {
+     "kind": "shake",
+     "from_": 600,
+     "dur": 6,
+     "amp": 10
+    },
+    {
+     "kind": "shake",
+     "from_": 693,
+     "dur": 8,
+     "amp": 14
+    },
+    {
+     "kind": "chunk",
+     "from_": 707,
+     "dur": 61,
+     "t": "<b>Ăn hình</b>",
+     "x": 150,
+     "y": 120,
+     "size": 170,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 707,
+     "dur": 61,
+     "t": "= nằm đè lên bài đối thủ",
+     "x": 150,
+     "y": 380,
+     "size": 70,
+     "rot": 3,
+     "delay": 10
+    },
+    {
+     "kind": "flash",
+     "from_": 890,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 890,
+     "dur": 8,
+     "amp": 22
+    },
+    {
+     "kind": "chunk",
+     "from_": 920,
+     "dur": 60,
+     "t": "Nhẹ tay nhé!",
+     "x": 980,
+     "y": 130,
+     "size": 140,
+     "rot": 6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 920,
+     "dur": 60,
+     "t": "Mạnh tay quá là <b>ra khỏi bàn</b> đấy.",
+     "x": 260,
+     "y": 820,
+     "size": 76,
+     "rot": -3,
+     "delay": 18
+    },
+    {
+     "kind": "chunk",
+     "from_": 980,
+     "dur": 84,
+     "t": "Bạn không có bạn?",
+     "x": 110,
+     "y": 95,
+     "size": 110,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 1010,
+     "dur": 108,
+     "t": "Thử chơi cùng <b>người lạ</b> nhé?",
+     "x": 760,
+     "y": 880,
+     "size": 70,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1118,
+     "dur": 77,
+     "t": "<b>24</b> pet,",
+     "x": 50,
+     "y": 300,
+     "size": 140,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1134,
+     "dur": 61,
+     "t": "đa dạng",
+     "x": 1440,
+     "y": 300,
+     "size": 100,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1140,
+     "dur": 55,
+     "t": "màu custom",
+     "x": 1350,
+     "y": 440,
+     "size": 96,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 1204,
+     "dur": 121,
+     "t": "cho đôi <b>tổ ong</b>",
+     "x": 60,
+     "y": 330,
+     "size": 74,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1214,
+     "dur": 111,
+     "t": "thần <b>sầu?</b>",
+     "x": 50,
+     "y": 520,
+     "size": 100,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "cut",
+     "from_": 1208,
+     "dur": 117,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 1380,
+     "y": 300,
+     "w": 560,
+     "rot": 18,
+     "delay": 0,
+     "sway": 4
+    },
+    {
+     "kind": "end",
+     "from_": 1325,
+     "dur": 150,
+     "line": "Đập hình cùng <b>chúng mình</b> nhé!"
+    }
+   ],
+   "lang": "vi",
+   "frames": 1475
+  },
+  {
+   "id": "TRAILER-EN",
+   "W": 1920,
+   "H": 1080,
+   "fps": 30,
+   "clips": [
+    {
+     "src": "footage/d-hook-en.mp4",
+     "from_": 0,
+     "dur": 8,
+     "t_in": 0.6040000000000001,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.02
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "hook"
+    },
+    {
+     "src": "footage/d-hook-en-i79.mp4",
+     "from_": 8,
+     "dur": 48,
+     "t_in": 0.08399999999999996,
+     "rate": 0.5,
+     "z": [
+      1.02,
+      1.1
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "hook · slow",
+     "t_reel": 0.874
+    },
+    {
+     "src": "footage/d-hook-en.mp4",
+     "from_": 56,
+     "dur": 20,
+     "t_in": 1.674,
+     "rate": 1.0,
+     "z": [
+      1.1,
+      1.14
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "hook · the card settles"
+    },
+    {
+     "src": "footage/d-hook-en.mp4",
+     "from_": 136,
+     "dur": 50,
+     "t_in": 2.354,
+     "rate": 0.001,
+     "z": [
+      1.1,
+      1.13
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "words",
+     "blur": 20,
+     "dark": 0.4
+    },
+    {
+     "src": "footage/d-hook-en.mp4",
+     "from_": 186,
+     "dur": 52,
+     "t_in": 2.354,
+     "rate": 0.001,
+     "z": [
+      1.13,
+      1.15
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "squash",
+     "blur": 20,
+     "dark": 0.4
+    },
+    {
+     "src": "footage/d-hook-en.mp4",
+     "from_": 238,
+     "dur": 78,
+     "t_in": 2.354,
+     "rate": 0.001,
+     "z": [
+      1.15,
+      1.18
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "logo",
+     "blur": 10,
+     "dark": 0.35
+    },
+    {
+     "src": "footage/d-match-en.mp4",
+     "from_": 316,
+     "dur": 43,
+     "t_in": 2.694,
+     "rate": 0.7,
+     "z": [
+      1.6,
+      1.66
+     ],
+     "c": [
+      0.6,
+      0.35
+     ],
+     "name": "room"
+    },
+    {
+     "src": "footage/d-match-en.mp4",
+     "from_": 359,
+     "dur": 76,
+     "t_in": 3.694,
+     "rate": 1.0,
+     "z": [
+      1.9,
+      2.0
+     ],
+     "c": [
+      0.42,
+      0.32
+     ],
+     "name": "invite: copy the link"
+    },
+    {
+     "src": "footage/d-match-en.mp4",
+     "from_": 435,
+     "dur": 128,
+     "t_in": 7.952999999999999,
+     "rate": 1.0,
+     "z": [
+      2.4,
+      2.45
+     ],
+     "c": [
+      0.91,
+      0.82
+     ],
+     "name": "the real chat"
+    },
+    {
+     "src": "footage/d-match-en.mp4",
+     "from_": 563,
+     "dur": 96,
+     "t_in": 20.701,
+     "rate": 1.0,
+     "z": [
+      2.0,
+      2.15
+     ],
+     "c": [
+      0.34,
+      0.45
+     ],
+     "name": "rule 1: slap"
+    },
+    {
+     "src": "footage/d-match-en.mp4",
+     "from_": 659,
+     "dur": 114,
+     "t_in": 27.84,
+     "rate": 1.0,
+     "z": [
+      1.9,
+      1.7
+     ],
+     "c": [
+      0.42,
+      0.42
+     ],
+     "name": "rule 2: capture"
+    },
+    {
+     "src": "footage/d-match-en.mp4",
+     "from_": 773,
+     "dur": 78,
+     "t_in": 44.415,
+     "rate": 1.0,
+     "z": [
+      2.0,
+      2.1
+     ],
+     "c": [
+      0.3,
+      0.42
+     ],
+     "name": "the tease"
+    },
+    {
+     "src": "footage/d-match-en.mp4",
+     "from_": 851,
+     "dur": 134,
+     "t_in": 47.573,
+     "rate": 1.0,
+     "z": [
+      1.7,
+      1.25
+     ],
+     "c": [
+      0.36,
+      0.45
+     ],
+     "name": "easy now: off the table"
+    },
+    {
+     "src": "footage/d-quick-en.mp4",
+     "from_": 985,
+     "dur": 84,
+     "t_in": 7.324000000000001,
+     "rate": 1.0,
+     "z": [
+      1.3,
+      1.36
+     ],
+     "c": [
+      0.5,
+      0.5
+     ],
+     "name": "quick match"
+    },
+    {
+     "src": "footage/d-quick-en.mp4",
+     "from_": 1069,
+     "dur": 54,
+     "t_in": 12.528,
+     "rate": 1.0,
+     "z": [
+      1.35,
+      1.45
+     ],
+     "c": [
+      0.5,
+      0.45
+     ],
+     "name": "four at the table"
+    },
+    {
+     "src": "footage/d-ward2-en.mp4",
+     "from_": 1123,
+     "dur": 77,
+     "t_in": 1.881,
+     "rate": 1.6,
+     "z": [
+      1.75,
+      1.8
+     ],
+     "c": [
+      0.5,
+      0.47
+     ],
+     "name": "wardrobe: pets"
+    },
+    {
+     "src": "footage/d-ward2-en.mp4",
+     "from_": 1200,
+     "dur": 130,
+     "t_in": 8.151,
+     "rate": 1.2,
+     "z": [
+      1.75,
+      1.8
+     ],
+     "c": [
+      0.5,
+      0.47
+     ],
+     "name": "wardrobe: the honeycomb slipper"
+    }
+   ],
+   "over": [
+    {
+     "kind": "flash",
+     "from_": 12,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 12,
+     "dur": 8,
+     "amp": 20
+    },
+    {
+     "kind": "ident",
+     "from_": 76,
+     "dur": 60
+    },
+    {
+     "kind": "chunk",
+     "from_": 136,
+     "dur": 50,
+     "t": "Flip cards,",
+     "x": 300,
+     "y": 280,
+     "size": 170,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 136,
+     "dur": 50,
+     "t": "slap <b>cards…</b>",
+     "x": 860,
+     "y": 540,
+     "size": 130,
+     "rot": 4,
+     "delay": 12
+    },
+    {
+     "kind": "squash",
+     "from_": 186,
+     "dur": 52,
+     "t": "With a <b>slipper?</b>",
+     "y": 330,
+     "size": 200,
+     "hit": 24
+    },
+    {
+     "kind": "logo",
+     "from_": 238,
+     "dur": 78,
+     "cx": 960,
+     "cy": 540,
+     "w": 1300
+    },
+    {
+     "kind": "shake",
+     "from_": 238,
+     "dur": 8,
+     "amp": 14
+    },
+    {
+     "kind": "chunk",
+     "from_": 316,
+     "dur": 43,
+     "t": "The more,",
+     "x": 1000,
+     "y": 300,
+     "size": 150,
+     "rot": -5,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 316,
+     "dur": 43,
+     "t": "the <b>merrier!</b>",
+     "x": 1180,
+     "y": 540,
+     "size": 100,
+     "rot": 4,
+     "delay": 12
+    },
+    {
+     "kind": "tap",
+     "from_": 359,
+     "dur": 16,
+     "x": 960,
+     "y": 420
+    },
+    {
+     "kind": "chunk",
+     "from_": 369,
+     "dur": 66,
+     "t": "Send a link",
+     "x": 1360,
+     "y": 330,
+     "size": 100,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 381,
+     "dur": 54,
+     "t": "no <b>app</b> to install",
+     "x": 1380,
+     "y": 560,
+     "size": 62,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "dim",
+     "from_": 435,
+     "dur": 128,
+     "strength": 0.35
+    },
+    {
+     "kind": "chat",
+     "from_": 442,
+     "dur": 121,
+     "who": "teo",
+     "t": "remember when i took\nyour card lol",
+     "x": 40,
+     "w": 1000,
+     "y": 190,
+     "u": 3.2
+    },
+    {
+     "kind": "chat",
+     "from_": 513,
+     "dur": 50,
+     "who": "bill",
+     "t": "oh i remember.\nget in, revenge time",
+     "x": 40,
+     "w": 1000,
+     "y": 580,
+     "u": 3.2
+    },
+    {
+     "kind": "chunk",
+     "from_": 605,
+     "dur": 54,
+     "t": "Slap the table,",
+     "x": 980,
+     "y": 140,
+     "size": 120,
+     "rot": 5,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 605,
+     "dur": 54,
+     "t": "the <b>cards fly</b>",
+     "x": 960,
+     "y": 360,
+     "size": 96,
+     "rot": -3,
+     "delay": 10
+    },
+    {
+     "kind": "shake",
+     "from_": 605,
+     "dur": 6,
+     "amp": 10
+    },
+    {
+     "kind": "shake",
+     "from_": 698,
+     "dur": 8,
+     "amp": 14
+    },
+    {
+     "kind": "chunk",
+     "from_": 712,
+     "dur": 61,
+     "t": "<b>Capture</b>",
+     "x": 150,
+     "y": 120,
+     "size": 170,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 712,
+     "dur": 61,
+     "t": "= land on top of their card",
+     "x": 150,
+     "y": 380,
+     "size": 70,
+     "rot": 3,
+     "delay": 10
+    },
+    {
+     "kind": "flash",
+     "from_": 895,
+     "dur": 5
+    },
+    {
+     "kind": "shake",
+     "from_": 895,
+     "dur": 8,
+     "amp": 22
+    },
+    {
+     "kind": "chunk",
+     "from_": 925,
+     "dur": 60,
+     "t": "Easy now!",
+     "x": 980,
+     "y": 130,
+     "size": 140,
+     "rot": 6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 925,
+     "dur": 60,
+     "t": "Hit too hard and you're <b>off the table</b>.",
+     "x": 200,
+     "y": 820,
+     "size": 76,
+     "rot": -3,
+     "delay": 18
+    },
+    {
+     "kind": "chunk",
+     "from_": 985,
+     "dur": 84,
+     "t": "No friends?",
+     "x": 110,
+     "y": 120,
+     "size": 110,
+     "rot": -4,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 1015,
+     "dur": 108,
+     "t": "Play with <b>strangers</b>!",
+     "x": 900,
+     "y": 880,
+     "size": 70,
+     "rot": 3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1123,
+     "dur": 77,
+     "t": "<b>24</b> pets,",
+     "x": 50,
+     "y": 300,
+     "size": 120,
+     "rot": -6,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1139,
+     "dur": 61,
+     "t": "custom",
+     "x": 1440,
+     "y": 300,
+     "size": 100,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1145,
+     "dur": 55,
+     "t": "colors",
+     "x": 1420,
+     "y": 440,
+     "size": 96,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "paper",
+     "from_": 1209,
+     "dur": 121,
+     "t": "for your <b>honeycomb</b>",
+     "x": 30,
+     "y": 330,
+     "size": 60,
+     "rot": -3,
+     "delay": 0
+    },
+    {
+     "kind": "chunk",
+     "from_": 1219,
+     "dur": 111,
+     "t": "<b>slippers!</b>",
+     "x": 30,
+     "y": 520,
+     "size": 84,
+     "rot": 4,
+     "delay": 0
+    },
+    {
+     "kind": "cut",
+     "from_": 1213,
+     "dur": 117,
+     "src": "media/cut-dep-dep_to_ong.png",
+     "x": 1380,
+     "y": 300,
+     "w": 560,
+     "rot": 18,
+     "delay": 0,
+     "sway": 4
+    },
+    {
+     "kind": "end",
+     "from_": 1330,
+     "dur": 150,
+     "line": "Come <b>slap cards</b> with us!"
+    }
+   ],
+   "lang": "en",
+   "frames": 1480
+  }
+ ]
+}

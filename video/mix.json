@@ -1,0 +1,645 @@
+{
+ "fps": 30,
+ "videos": [
+  {
+   "id": "SHORT",
+   "frames": 1119,
+   "music": [
+    {
+     "id": "music:game-loop",
+     "start": 55,
+     "end": 1119,
+     "seek": 0.251,
+     "gain": -9,
+     "fade_in": 2,
+     "fade_out": 45,
+     "duck_at": [
+      [
+       685,
+       702,
+       -30
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "01",
+     "start": 0,
+     "end": 55,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 4,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 9,
+       "gain": 0
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 37,
+       "gain": -10
+      }
+     ]
+    },
+    {
+     "id": "02",
+     "start": 55,
+     "end": 166,
+     "sfx": [
+      {
+       "id": "tap",
+       "at": 61,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 150,
+       "gain": -6
+      }
+     ]
+    },
+    {
+     "id": "03",
+     "start": 166,
+     "end": 221,
+     "sfx": [
+      {
+       "id": "msg",
+       "at": 171,
+       "gain": -3
+      }
+     ]
+    },
+    {
+     "id": "04",
+     "start": 221,
+     "end": 304,
+     "sfx": [
+      {
+       "id": "msg",
+       "at": 264,
+       "gain": -3
+      }
+     ]
+    },
+    {
+     "id": "05",
+     "start": 304,
+     "end": 332,
+     "sfx": []
+    },
+    {
+     "id": "06",
+     "start": 332,
+     "end": 387,
+     "sfx": [
+      {
+       "id": "tap",
+       "at": 358,
+       "gain": -2
+      }
+     ]
+    },
+    {
+     "id": "07",
+     "start": 387,
+     "end": 442,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 427,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 432,
+       "gain": -1
+      }
+     ]
+    },
+    {
+     "id": "08",
+     "start": 442,
+     "end": 497,
+     "sfx": [
+      {
+       "id": "chime_react",
+       "at": 449,
+       "gain": -3
+      },
+      {
+       "id": "whoosh",
+       "at": 453,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 458,
+       "gain": -1
+      }
+     ]
+    },
+    {
+     "id": "09",
+     "start": 497,
+     "end": 594,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 544,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 549,
+       "gain": 0
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 569,
+       "gain": -9
+      }
+     ]
+    },
+    {
+     "id": "10",
+     "start": 594,
+     "end": 649,
+     "sfx": [
+      {
+       "id": "chime_react",
+       "at": 601,
+       "gain": -3
+      },
+      {
+       "id": "whoosh",
+       "at": 605,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 610,
+       "gain": -1
+      }
+     ]
+    },
+    {
+     "id": "11",
+     "start": 649,
+     "end": 787,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 695,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 700,
+       "gain": 0
+      },
+      {
+       "id": "meme:fall-bruh",
+       "at": 748,
+       "gain": -8
+      }
+     ]
+    },
+    {
+     "id": "12",
+     "start": 787,
+     "end": 870,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 813,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 818,
+       "gain": -1
+      },
+      {
+       "id": "meme:capture-damage",
+       "at": 847,
+       "gain": -10
+      }
+     ]
+    },
+    {
+     "id": "13",
+     "start": 870,
+     "end": 1008,
+     "sfx": [
+      {
+       "id": "meme:match-lose",
+       "at": 873,
+       "gain": -12
+      }
+     ]
+    },
+    {
+     "id": "14",
+     "start": 1008,
+     "end": 1119,
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 1008,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 1014,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 1040,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 1045,
+       "gain": -1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "LONG",
+   "frames": 1825,
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "start": 81,
+     "end": 570,
+     "seek": 0.23,
+     "gain": -10,
+     "fade_in": 2,
+     "fade_out": 10,
+     "duck_at": []
+    },
+    {
+     "id": "music:game-loop",
+     "start": 565,
+     "end": 1825,
+     "seek": 0.251,
+     "gain": -9,
+     "fade_in": 2,
+     "fade_out": 60,
+     "duck_at": [
+      [
+       1037,
+       1054,
+       -30
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "01",
+     "start": 0,
+     "end": 8,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 5,
+       "gain": -3
+      }
+     ]
+    },
+    {
+     "id": "02",
+     "start": 8,
+     "end": 56,
+     "sfx": [
+      {
+       "id": "thump_big",
+       "at": 10,
+       "gain": 0
+      }
+     ]
+    },
+    {
+     "id": "03",
+     "start": 56,
+     "end": 81,
+     "sfx": [
+      {
+       "id": "meme:capture-boom",
+       "at": 58,
+       "gain": -10
+      }
+     ]
+    },
+    {
+     "id": "04",
+     "start": 81,
+     "end": 180,
+     "sfx": []
+    },
+    {
+     "id": "05",
+     "start": 180,
+     "end": 267,
+     "sfx": []
+    },
+    {
+     "id": "06",
+     "start": 267,
+     "end": 416,
+     "sfx": []
+    },
+    {
+     "id": "07",
+     "start": 416,
+     "end": 565,
+     "sfx": [
+      {
+       "id": "msg",
+       "at": 418,
+       "gain": -3
+      },
+      {
+       "id": "msg",
+       "at": 511,
+       "gain": -3
+      },
+      {
+       "id": "riser",
+       "at": 525,
+       "gain": -12
+      }
+     ]
+    },
+    {
+     "id": "08",
+     "start": 565,
+     "end": 648,
+     "sfx": []
+    },
+    {
+     "id": "09",
+     "start": 648,
+     "end": 759,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 723,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 728,
+       "gain": -1
+      }
+     ]
+    },
+    {
+     "id": "10",
+     "start": 759,
+     "end": 814,
+     "sfx": [
+      {
+       "id": "chime_react",
+       "at": 767,
+       "gain": -3
+      },
+      {
+       "id": "whoosh",
+       "at": 772,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 777,
+       "gain": -1
+      }
+     ]
+    },
+    {
+     "id": "11",
+     "start": 814,
+     "end": 925,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 848,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 853,
+       "gain": 0
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 878,
+       "gain": -9
+      }
+     ]
+    },
+    {
+     "id": "12",
+     "start": 925,
+     "end": 1008,
+     "sfx": [
+      {
+       "id": "chime_react",
+       "at": 935,
+       "gain": -3
+      },
+      {
+       "id": "whoosh",
+       "at": 938,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 943,
+       "gain": -1
+      }
+     ]
+    },
+    {
+     "id": "13",
+     "start": 1008,
+     "end": 1119,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 1047,
+       "gain": -3
+      },
+      {
+       "id": "thump_big",
+       "at": 1052,
+       "gain": 0
+      },
+      {
+       "id": "meme:fall-oidoioi",
+       "at": 1101,
+       "gain": -8
+      }
+     ]
+    },
+    {
+     "id": "14",
+     "start": 1119,
+     "end": 1202,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 1144,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 1149,
+       "gain": -1
+      },
+      {
+       "id": "meme:capture-damage",
+       "at": 1176,
+       "gain": -10
+      }
+     ]
+    },
+    {
+     "id": "15",
+     "start": 1202,
+     "end": 1327,
+     "sfx": [
+      {
+       "id": "meme:match-lose",
+       "at": 1205,
+       "gain": -12
+      }
+     ]
+    },
+    {
+     "id": "16",
+     "start": 1327,
+     "end": 1410,
+     "sfx": []
+    },
+    {
+     "id": "17",
+     "start": 1410,
+     "end": 1493,
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 1423,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 1428,
+       "gain": -1
+      },
+      {
+       "id": "whoosh",
+       "at": 1485,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 1490,
+       "gain": -1
+      }
+     ]
+    },
+    {
+     "id": "18",
+     "start": 1493,
+     "end": 1576,
+     "sfx": [
+      {
+       "id": "tap",
+       "at": 1497,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 1538,
+       "gain": -4
+      }
+     ]
+    },
+    {
+     "id": "19",
+     "start": 1576,
+     "end": 1659,
+     "sfx": [
+      {
+       "id": "tap",
+       "at": 1579,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 1582,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 1613,
+       "gain": -4
+      },
+      {
+       "id": "tap",
+       "at": 1645,
+       "gain": -4
+      }
+     ]
+    },
+    {
+     "id": "20",
+     "start": 1659,
+     "end": 1825,
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 1659,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 1665,
+       "gain": -6
+      },
+      {
+       "id": "whoosh",
+       "at": 1688,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 1693,
+       "gain": -1
+      },
+      {
+       "id": "whoosh",
+       "at": 1766,
+       "gain": -8
+      },
+      {
+       "id": "thump",
+       "at": 1771,
+       "gain": -1
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

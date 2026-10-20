@@ -1,0 +1,869 @@
+{
+ "videos": [
+  {
+   "id": "SHORT",
+   "W": 1080,
+   "H": 1920,
+   "fps": 30,
+   "clips": [
+    {
+     "id": "SHORT-01",
+     "name": "Móc: ăn hình",
+     "src": "footage/p-hook.mp4",
+     "from_": 0,
+     "dur": 55,
+     "t_in": 0.72,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.08
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "SHORT-02",
+     "name": "Rủ: Mời bạn, Tèo vào phòng",
+     "src": "footage/p-match.mp4",
+     "from_": 55,
+     "dur": 111,
+     "t_in": 3.75,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.04
+     ],
+     "c": [
+      0.5,
+      0.35
+     ]
+    },
+    {
+     "id": "SHORT-03",
+     "name": "Chat thật: Tèo khơi chuyện cũ",
+     "src": "footage/p-match.mp4",
+     "from_": 166,
+     "dur": 55,
+     "t_in": 11.98,
+     "rate": 1.0,
+     "z": [
+      1.07,
+      1.08
+     ],
+     "c": [
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "id": "SHORT-04",
+     "name": "Chat thật: Bill gõ trả lời",
+     "src": "footage/p-match.mp4",
+     "from_": 221,
+     "dur": 83,
+     "t_in": 14.05,
+     "rate": 1.0,
+     "z": [
+      1.08,
+      1.09
+     ],
+     "c": [
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "id": "SHORT-05",
+     "name": "Giữ khung cho đọc hết",
+     "src": "footage/p-match.mp4",
+     "from_": 304,
+     "dur": 28,
+     "t_in": 16.78,
+     "rate": 0.05,
+     "z": [
+      1.09,
+      1.09
+     ],
+     "c": [
+      0.5,
+      1.0
+     ]
+    },
+    {
+     "id": "SHORT-06",
+     "name": "Tù xì",
+     "src": "footage/p-match.mp4",
+     "from_": 332,
+     "dur": 55,
+     "t_in": 20.86,
+     "rate": 1.0,
+     "z": [
+      1.5,
+      1.56
+     ],
+     "c": [
+      0.5,
+      0.43
+     ]
+    },
+    {
+     "id": "SHORT-07",
+     "name": "Bill kéo ngắm, dích",
+     "src": "footage/p-match.mp4",
+     "from_": 387,
+     "dur": 55,
+     "t_in": 27.47,
+     "rate": 1.0,
+     "z": [
+      1.9,
+      2.0
+     ],
+     "c": [
+      0.5,
+      0.4
+     ]
+    },
+    {
+     "id": "SHORT-08",
+     "name": "Tèo: Vô lẹ! rồi dích",
+     "src": "footage/p-match.mp4",
+     "from_": 442,
+     "dur": 55,
+     "t_in": 31.64,
+     "rate": 1.0,
+     "z": [
+      1.8,
+      1.9
+     ],
+     "c": [
+      0.5,
+      0.6
+     ]
+    },
+    {
+     "id": "SHORT-09",
+     "name": "Bill ăn hình",
+     "src": "footage/p-match.mp4",
+     "from_": 497,
+     "dur": 97,
+     "t_in": 35.91,
+     "rate": 1.0,
+     "z": [
+      1.95,
+      1.15
+     ],
+     "c": [
+      0.5,
+      0.38
+     ]
+    },
+    {
+     "id": "SHORT-10",
+     "name": "Khoe: Run chưa?",
+     "src": "footage/p-match.mp4",
+     "from_": 594,
+     "dur": 55,
+     "t_in": 55.12,
+     "rate": 1.0,
+     "z": [
+      1.7,
+      1.8
+     ],
+     "c": [
+      0.64,
+      0.37
+     ]
+    },
+    {
+     "id": "SHORT-11",
+     "name": "Quay xe: rớt bàn",
+     "src": "footage/p-match.mp4",
+     "from_": 649,
+     "dur": 138,
+     "t_in": 59.49,
+     "rate": 1.0,
+     "z": [
+      1.75,
+      1.15
+     ],
+     "c": [
+      0.5,
+      0.38
+     ]
+    },
+    {
+     "id": "SHORT-12",
+     "name": "Tèo ăn lại",
+     "src": "footage/p-match.mp4",
+     "from_": 787,
+     "dur": 83,
+     "t_in": 87.37,
+     "rate": 1.0,
+     "z": [
+      1.7,
+      1.15
+     ],
+     "c": [
+      0.5,
+      0.52
+     ]
+    },
+    {
+     "id": "SHORT-13",
+     "name": "Tèo thắng, ván nữa",
+     "src": "footage/p-match.mp4",
+     "from_": 870,
+     "dur": 138,
+     "t_in": 93.2,
+     "rate": 1.0,
+     "z": [
+      1.15,
+      1.2
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "SHORT-14",
+     "name": "Kết",
+     "src": "footage/p-hook.mp4",
+     "from_": 1008,
+     "dur": 111,
+     "t_in": 2.4,
+     "rate": 1.0,
+     "z": [
+      1.1,
+      1.18
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "t": "Hồi đó dích hình\ncó *thua ai* chưa?",
+     "from_": 3,
+     "dur": 52,
+     "y": 0.15,
+     "style": "head",
+     "size": 92,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "ĂN HÌNH!",
+     "from_": 37,
+     "dur": 18,
+     "y": 0.7,
+     "style": "stamp",
+     "size": 190,
+     "hl": true,
+     "tilt": -4
+    },
+    {
+     "t": "Gửi link là vô. *Khỏi cài app*",
+     "from_": 97,
+     "dur": 69,
+     "y": 0.905,
+     "style": "head",
+     "size": 78,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Phục thù\n*15 năm*",
+     "from_": 389,
+     "dur": 53,
+     "y": 0.78,
+     "style": "stamp",
+     "size": 110,
+     "hl": false,
+     "tilt": -3
+    },
+    {
+     "t": "Mạnh tay quá là *ăn hành*",
+     "from_": 724,
+     "dur": 63,
+     "y": 0.9,
+     "style": "head",
+     "size": 86,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Ván nữa. Ván cuối. *Thật.*",
+     "from_": 939,
+     "dur": 69,
+     "y": 0.8,
+     "style": "head",
+     "size": 86,
+     "hl": false,
+     "tilt": 0
+    }
+   ],
+   "chats": [
+    {
+     "who": "teo",
+     "t": "ê còn nhớ vụ t\năn hình m hông =))",
+     "from_": 171,
+     "dur": 161
+    },
+    {
+     "who": "bill",
+     "row": 1,
+     "t": "nhớ chớ. vô đây t trả thù",
+     "from_": 264,
+     "dur": 68
+    }
+   ],
+   "taps": [
+    {
+     "clip": "SHORT-02",
+     "at": 61,
+     "x": 0.5,
+     "y": 0.235
+    },
+    {
+     "clip": "SHORT-06",
+     "at": 358,
+     "x": 0.33,
+     "y": 0.44
+    }
+   ],
+   "flashes": [
+    9,
+    700
+   ],
+   "shakes": [
+    [
+     9,
+     7,
+     22
+    ],
+    [
+     431,
+     5,
+     12
+    ],
+    [
+     549,
+     6,
+     16
+    ],
+    [
+     700,
+     8,
+     24
+    ]
+   ],
+   "splits": [],
+   "ends": [
+    {
+     "from_": 1008,
+     "dur": 111
+    }
+   ],
+   "frames": 1119
+  },
+  {
+   "id": "LONG",
+   "W": 1920,
+   "H": 1080,
+   "fps": 30,
+   "clips": [
+    {
+     "id": "LONG-01",
+     "name": "Móc",
+     "src": "footage/d-hook.mp4",
+     "from_": 0,
+     "dur": 8,
+     "t_in": 0.55,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.04
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "LONG-02",
+     "name": "Móc (quay chậm)",
+     "src": "footage/d-hook.mp4",
+     "from_": 8,
+     "dur": 48,
+     "t_in": 0.82,
+     "rate": 0.5,
+     "z": [
+      1.0,
+      1.1
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "LONG-03",
+     "name": "Móc: lá nằm yên",
+     "src": "footage/d-hook.mp4",
+     "from_": 56,
+     "dur": 25,
+     "t_in": 1.62,
+     "rate": 1.0,
+     "z": [
+      1.1,
+      1.14
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "LONG-04",
+     "name": "Tạo phòng",
+     "src": "footage/d-match.mp4",
+     "from_": 81,
+     "dur": 99,
+     "t_in": 0.35,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.04
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "LONG-05",
+     "name": "Mời bạn: copy link",
+     "src": "footage/d-match.mp4",
+     "from_": 180,
+     "dur": 87,
+     "t_in": 3.7,
+     "rate": 1.0,
+     "z": [
+      1.9,
+      2.0
+     ],
+     "c": [
+      0.42,
+      0.32
+     ]
+    },
+    {
+     "id": "LONG-06",
+     "name": "Chia đôi: Tèo mở link trên đt",
+     "src": "footage/d-match.mp4",
+     "from_": 267,
+     "dur": 149,
+     "t_in": 6.85,
+     "rate": 1.0,
+     "z": [
+      1.0,
+      1.04
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "LONG-07",
+     "name": "Chat thật: Tèo khơi chuyện cũ",
+     "src": "footage/d-match.mp4",
+     "from_": 416,
+     "dur": 149,
+     "t_in": 11.1,
+     "rate": 1.0,
+     "z": [
+      2.4,
+      2.45
+     ],
+     "c": [
+      0.91,
+      0.82
+     ]
+    },
+    {
+     "id": "LONG-08",
+     "name": "Tù xì",
+     "src": "footage/d-match.mp4",
+     "from_": 565,
+     "dur": 83,
+     "t_in": 20.3,
+     "rate": 1.0,
+     "z": [
+      1.6,
+      1.66
+     ],
+     "c": [
+      0.5,
+      0.45
+     ]
+    },
+    {
+     "id": "LONG-09",
+     "name": "Bill rê chuột ngắm, dích",
+     "src": "footage/d-match.mp4",
+     "from_": 648,
+     "dur": 111,
+     "t_in": 23.95,
+     "rate": 1.0,
+     "z": [
+      2.0,
+      2.15
+     ],
+     "c": [
+      0.34,
+      0.45
+     ]
+    },
+    {
+     "id": "LONG-10",
+     "name": "Tèo: Vô lẹ! rồi dích",
+     "src": "footage/d-match.mp4",
+     "from_": 759,
+     "dur": 55,
+     "t_in": 29.36,
+     "rate": 1.0,
+     "z": [
+      2.0,
+      2.1
+     ],
+     "c": [
+      0.7,
+      0.42
+     ]
+    },
+    {
+     "id": "LONG-11",
+     "name": "Bill ăn hình",
+     "src": "footage/d-match.mp4",
+     "from_": 814,
+     "dur": 111,
+     "t_in": 33.2,
+     "rate": 1.0,
+     "z": [
+      1.9,
+      1.25
+     ],
+     "c": [
+      0.42,
+      0.42
+     ]
+    },
+    {
+     "id": "LONG-12",
+     "name": "Khoe: Run chưa?",
+     "src": "footage/d-match.mp4",
+     "from_": 925,
+     "dur": 83,
+     "t_in": 50.29,
+     "rate": 1.0,
+     "z": [
+      2.0,
+      2.1
+     ],
+     "c": [
+      0.3,
+      0.42
+     ]
+    },
+    {
+     "id": "LONG-13",
+     "name": "Quay xe: rớt bàn",
+     "src": "footage/d-match.mp4",
+     "from_": 1008,
+     "dur": 111,
+     "t_in": 54.12,
+     "rate": 1.0,
+     "z": [
+      1.7,
+      1.2
+     ],
+     "c": [
+      0.36,
+      0.45
+     ]
+    },
+    {
+     "id": "LONG-14",
+     "name": "Tèo ăn lại",
+     "src": "footage/d-match.mp4",
+     "from_": 1119,
+     "dur": 83,
+     "t_in": 71.41,
+     "rate": 1.0,
+     "z": [
+      1.8,
+      1.25
+     ],
+     "c": [
+      0.58,
+      0.43
+     ]
+    },
+    {
+     "id": "LONG-15",
+     "name": "Tèo thắng",
+     "src": "footage/d-match.mp4",
+     "from_": 1202,
+     "dur": 125,
+     "t_in": 77.46,
+     "rate": 1.0,
+     "z": [
+      1.5,
+      1.55
+     ],
+     "c": [
+      0.5,
+      0.45
+     ]
+    },
+    {
+     "id": "LONG-16",
+     "name": "Chơi ngay: tìm người lạ",
+     "src": "footage/d-quick.mp4",
+     "from_": 1327,
+     "dur": 83,
+     "t_in": 6.0,
+     "rate": 1.0,
+     "z": [
+      1.3,
+      1.36
+     ],
+     "c": [
+      0.5,
+      0.45
+     ]
+    },
+    {
+     "id": "LONG-17",
+     "name": "Bàn 4 người",
+     "src": "footage/d-quick.mp4",
+     "from_": 1410,
+     "dur": 83,
+     "t_in": 13.2,
+     "rate": 1.0,
+     "z": [
+      1.35,
+      1.45
+     ],
+     "c": [
+      0.5,
+      0.45
+     ]
+    },
+    {
+     "id": "LONG-18",
+     "name": "Tủ đồ: pet",
+     "src": "footage/d-ward.mp4",
+     "from_": 1493,
+     "dur": 83,
+     "t_in": 2.2,
+     "rate": 1.0,
+     "z": [
+      1.6,
+      1.66
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "LONG-19",
+     "name": "Tủ đồ: màu dép",
+     "src": "footage/d-ward.mp4",
+     "from_": 1576,
+     "dur": 83,
+     "t_in": 9.0,
+     "rate": 1.0,
+     "z": [
+      1.6,
+      1.66
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    },
+    {
+     "id": "LONG-20",
+     "name": "Kết",
+     "src": "footage/d-hook.mp4",
+     "from_": 1659,
+     "dur": 166,
+     "t_in": 2.3,
+     "rate": 1.0,
+     "z": [
+      1.12,
+      1.2
+     ],
+     "c": [
+      0.5,
+      0.5
+     ]
+    }
+   ],
+   "texts": [
+    {
+     "t": "ĂN HÌNH!",
+     "from_": 58,
+     "dur": 23,
+     "y": 0.78,
+     "style": "stamp",
+     "size": 170,
+     "hl": true,
+     "tilt": -4
+    },
+    {
+     "t": "15 năm sau…",
+     "from_": 83,
+     "dur": 97,
+     "y": 0.88,
+     "style": "head",
+     "size": 80,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Gửi link là vô. *Khỏi cài app*",
+     "from_": 292,
+     "dur": 124,
+     "y": 0.92,
+     "style": "head",
+     "size": 68,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Rê ngắm, bấm là *dích*",
+     "from_": 652,
+     "dur": 107,
+     "y": 0.88,
+     "style": "head",
+     "size": 76,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Mạnh tay quá là *ăn hành*",
+     "from_": 1077,
+     "dur": 42,
+     "y": 0.88,
+     "style": "head",
+     "size": 80,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Ván nữa. Ván cuối. *Thật.*",
+     "from_": 1257,
+     "dur": 70,
+     "y": 0.88,
+     "style": "head",
+     "size": 80,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Hết bạn? *Dích với người lạ*",
+     "from_": 1329,
+     "dur": 164,
+     "y": 0.88,
+     "style": "head",
+     "size": 78,
+     "hl": false,
+     "tilt": 0
+    },
+    {
+     "t": "Đổi dép *đổi vận*",
+     "from_": 1495,
+     "dur": 164,
+     "y": 0.88,
+     "style": "head",
+     "size": 80,
+     "hl": false,
+     "tilt": 0
+    }
+   ],
+   "chats": [
+    {
+     "who": "teo",
+     "t": "ê còn nhớ vụ t\năn hình m hông =))",
+     "from_": 418,
+     "dur": 147
+    },
+    {
+     "who": "bill",
+     "row": 1,
+     "t": "nhớ chớ. vô đây t trả thù",
+     "from_": 511,
+     "dur": 54
+    }
+   ],
+   "taps": [],
+   "flashes": [
+    10,
+    1052
+   ],
+   "shakes": [
+    [
+     10,
+     7,
+     20
+    ],
+    [
+     853,
+     6,
+     14
+    ],
+    [
+     1052,
+     8,
+     22
+    ]
+   ],
+   "splits": [
+    {
+     "from_": 267,
+     "dur": 149,
+     "left": {
+      "src": "footage/d-match.mp4",
+      "t_in": 6.85
+     },
+     "right": {
+      "src": "footage/d-guest.mp4",
+      "t_in": 0.09999999999999964
+     },
+     "labels": [
+      "Bill · máy tính",
+      "Tèo · điện thoại"
+     ]
+    }
+   ],
+   "ends": [
+    {
+     "from_": 1659,
+     "dur": 166
+    }
+   ],
+   "frames": 1825
+  }
+ ],
+ "covers": {},
+ "live": "billthedevstudio.io.vn/slam-cards"
+}

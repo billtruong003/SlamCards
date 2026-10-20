@@ -1,0 +1,1412 @@
+{
+ "about": "The two launch videos, written in beats (python story.py -> timeline.json, the one source for render.py and audio_mix.py).\n\nStory: two friends from primary school. Tèo once won Bill's best card at \"dích hình\" (the schoolyard game this one comes\nfrom); fifteen years later Tèo brings it up in chat, Bill sends a link, revenge, Bill gets cocky and slams the card off\nthe table, \"one more round\". The rules are never explained in words: the first two seconds show them.\n\nMusic (the game's own loops, Bill: free to use): game-loop.mp3 130 BPM (first kick 0.251 s), menu-loop.mp3 145 BPM\n(first kick 0.230 s). Every cut, slam and stamp sits on a beat of the track playing under it.\nPictures: keys of qa/out/story/<key>.png (real captures from the game, qa/capture-story.mjs + capture-stage.mjs).\nFrames at 30 fps; design pixels 1080x1920 (SHORT) and 1920x1080 (LONG).",
+ "fps": 30,
+ "videos": [
+  {
+   "id": "SHORT",
+   "title": "Dích hình 15 năm sau (dọc 30 giây)",
+   "W": 1080,
+   "H": 1920,
+   "frames": 900,
+   "use": "TikTok, Reels, Shorts. Xem tắt tiếng vẫn hiểu: chữ nằm giữa y 250 và 1350.",
+   "music": [
+    {
+     "id": "music:game-loop",
+     "start": 60,
+     "end": 900,
+     "seek": 0.251,
+     "gain": -9,
+     "fade_in": 2,
+     "fade_out": 40,
+     "duck_at": [
+      [
+       586,
+       602,
+       -30
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "S01",
+     "beat": "Móc",
+     "start": 0,
+     "end": 60,
+     "still": 40,
+     "camera": "Cận sát mặt bàn, góc thấp. Dép rơi vào khung, lá bật, rồi ngửa đè lên lá úp của bạn.",
+     "action": "0,5 giây trước cú đập, va chạm có chớp trắng và rung, lá hổ ngửa đè lá gấu trúc: luật nằm trong 2 giây.",
+     "pics": [
+      {
+       "key": "p-stage-slam-0",
+       "start": 0,
+       "end": 14,
+       "z": [
+        1.0,
+        1.06
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "key": "p-stage-slam-1",
+       "start": 14,
+       "end": 31,
+       "z": [
+        1.22,
+        1.12
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "key": "p-stage-close-capture",
+       "start": 31,
+       "end": 60,
+       "z": [
+        1.0,
+        1.08
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      }
+     ],
+     "texts": [
+      {
+       "t": "Hồi đó dích hình\ncó *thua ai* chưa?",
+       "at": 3,
+       "until": 59,
+       "y": 0.16,
+       "style": "head",
+       "size": 92
+      },
+      {
+       "t": "BỐP!",
+       "at": 14,
+       "until": 30,
+       "y": 0.5,
+       "style": "stamp",
+       "size": 190,
+       "tilt": -6
+      },
+      {
+       "t": "ĂN HÌNH!",
+       "at": 32,
+       "until": 59,
+       "y": 0.76,
+       "style": "stamp",
+       "size": 150,
+       "tilt": 4,
+       "hl": true
+      }
+     ],
+     "shake": [
+      [
+       14,
+       7,
+       22
+      ]
+     ],
+     "flash": [
+      14
+     ],
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 5,
+       "gain": -2
+      },
+      {
+       "id": "thump_big",
+       "at": 14,
+       "gain": 0
+      },
+      {
+       "id": "flip",
+       "at": 30,
+       "gain": -4
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 32,
+       "gain": -11
+      }
+     ]
+    },
+    {
+     "id": "S02",
+     "beat": "Khơi lại",
+     "start": 60,
+     "end": 171,
+     "camera": "Màn hình chat của Bill (quay đt thật), nền là lá bài vừa ăn, mờ.",
+     "action": "Tèo khều chuyện cũ, Bill đáp ngay. Nhạc trận vào đúng phách đầu.",
+     "pics": [
+      {
+       "key": "p-stage-close-capture",
+       "start": 60,
+       "end": 171,
+       "z": [
+        1.08,
+        1.12
+       ],
+       "c": [
+        0.5,
+        0.5
+       ],
+       "blur": 18,
+       "dim": 0.35
+      }
+     ],
+     "chat": {
+      "msgs": [
+       {
+        "who": "teo",
+        "t": "ê còn nhớ vụ t ăn hình m hông =))",
+        "at": 62
+       },
+       {
+        "who": "bill",
+        "t": "nhớ chớ. vô đây t trả thù",
+        "at": 115
+       }
+      ]
+     },
+     "sfx": [
+      {
+       "id": "msg",
+       "at": 62,
+       "gain": -2
+      },
+      {
+       "id": "msg",
+       "at": 115,
+       "gain": -2
+      }
+     ]
+    },
+    {
+     "id": "S03",
+     "beat": "Rủ",
+     "start": 171,
+     "end": 282,
+     "camera": "Quay đt: phòng chờ, ngón tay bấm Mời bạn, bảng chia sẻ của máy trồi lên, chọn Zalo. Cắt sang lúc Tèo vào.",
+     "action": "Không cài app: link mở thẳng vào phòng. Ô của Tèo bật Sẵn sàng đúng phách.",
+     "pics": [
+      {
+       "key": "p-lobby-invite",
+       "start": 171,
+       "end": 240,
+       "z": [
+        1.0,
+        1.05
+       ],
+       "c": [
+        0.5,
+        0.3
+       ]
+      },
+      {
+       "key": "p-lobby-joined",
+       "start": 240,
+       "end": 282,
+       "z": [
+        1.06,
+        1.0
+       ],
+       "c": [
+        0.5,
+        0.3
+       ]
+      }
+     ],
+     "taps": [
+      {
+       "x": 0.5,
+       "y": 0.235,
+       "at": 185
+      },
+      {
+       "x": 0.17,
+       "y": 0.8,
+       "at": 226
+      }
+     ],
+     "share": {
+      "at": 198,
+      "until": 240
+     },
+     "texts": [
+      {
+       "t": "Gửi link là vô.\n*Khỏi cài app*",
+       "at": 241,
+       "until": 282,
+       "y": 0.68,
+       "style": "head",
+       "size": 96
+      }
+     ],
+     "sfx": [
+      {
+       "id": "tap",
+       "at": 185,
+       "gain": 0
+      },
+      {
+       "id": "tap",
+       "at": 226,
+       "gain": 0
+      },
+      {
+       "id": "whoosh",
+       "at": 234,
+       "gain": -10
+      },
+      {
+       "id": "chime_ready",
+       "at": 254,
+       "gain": -2
+      }
+     ]
+    },
+    {
+     "id": "S04",
+     "beat": "Phục thù",
+     "start": 282,
+     "end": 503,
+     "camera": "4 cắt, mỗi cắt 1 nhịp nhạc (4 phách): ngắm, hai cú dích qua lại, Tèo ném sticker thẻ đỏ.",
+     "action": "Căng dần: mỗi cú đập rơi đúng phách 1 của nhịp.",
+     "pics": [
+      {
+       "key": "p-aim",
+       "start": 282,
+       "end": 337,
+       "z": [
+        1.18,
+        1.26
+       ],
+       "c": [
+        0.5,
+        0.42
+       ]
+      },
+      {
+       "key": "p-bop-0",
+       "start": 337,
+       "end": 392,
+       "z": [
+        1.75,
+        1.55
+       ],
+       "c": [
+        0.5,
+        0.42
+       ]
+      },
+      {
+       "key": "p-bop-2",
+       "start": 392,
+       "end": 448,
+       "z": [
+        1.75,
+        1.55
+       ],
+       "c": [
+        0.5,
+        0.42
+       ]
+      },
+      {
+       "key": "p-stickers",
+       "start": 448,
+       "end": 503,
+       "z": [
+        1.5,
+        1.6
+       ],
+       "c": [
+        0.32,
+        0.5
+       ]
+      }
+     ],
+     "texts": [
+      {
+       "t": "Phục thù\n*15 năm*",
+       "at": 283,
+       "until": 336,
+       "y": 0.66,
+       "style": "stamp",
+       "size": 130,
+       "tilt": -3
+      }
+     ],
+     "shake": [
+      [
+       337,
+       6,
+       16
+      ],
+      [
+       392,
+       6,
+       16
+      ]
+     ],
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 330,
+       "gain": -6
+      },
+      {
+       "id": "thump",
+       "at": 337,
+       "gain": 0
+      },
+      {
+       "id": "whoosh",
+       "at": 385,
+       "gain": -6
+      },
+      {
+       "id": "thump",
+       "at": 392,
+       "gain": 0
+      },
+      {
+       "id": "chime_react",
+       "at": 448,
+       "gain": -2
+      }
+     ]
+    },
+    {
+     "id": "S05",
+     "beat": "Khoe",
+     "start": 503,
+     "end": 558,
+     "camera": "Cận bong bóng của Bill trên lá bài.",
+     "action": "Bill tưởng sắp thắng, gửi câu nhanh: Run chưa?",
+     "pics": [
+      {
+       "key": "p-stickers",
+       "start": 503,
+       "end": 558,
+       "z": [
+        1.9,
+        2.05
+       ],
+       "c": [
+        0.62,
+        0.42
+       ]
+      }
+     ],
+     "sfx": [
+      {
+       "id": "chime_react",
+       "at": 503,
+       "gain": 0
+      }
+     ]
+    },
+    {
+     "id": "S06",
+     "beat": "Quay xe",
+     "start": 558,
+     "end": 669,
+     "camera": "Bill ngắm, dích quá tay; cắt sang lá bay khỏi bàn. Nhạc tắt nửa giây trước khi meme bật ra.",
+     "action": "Kiêu là té: cú đập mạnh nhất, im lặng, RỚT BÀN!",
+     "pics": [
+      {
+       "key": "p-aim",
+       "start": 558,
+       "end": 586,
+       "z": [
+        1.2,
+        1.32
+       ],
+       "c": [
+        0.5,
+        0.42
+       ]
+      },
+      {
+       "key": "p-bop-1",
+       "start": 586,
+       "end": 602,
+       "z": [
+        1.4,
+        1.5
+       ],
+       "c": [
+        0.5,
+        0.45
+       ]
+      },
+      {
+       "key": "p-end-fall",
+       "start": 602,
+       "end": 669,
+       "z": [
+        1.12,
+        1.04
+       ],
+       "c": [
+        0.5,
+        0.35
+       ]
+      }
+     ],
+     "texts": [
+      {
+       "t": "Mạnh tay quá\nlà *ăn hành*",
+       "at": 614,
+       "until": 669,
+       "y": 0.76,
+       "style": "head",
+       "size": 104
+      }
+     ],
+     "shake": [
+      [
+       586,
+       8,
+       26
+      ],
+      [
+       602,
+       6,
+       14
+      ]
+     ],
+     "flash": [
+      586
+     ],
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 579,
+       "gain": -2
+      },
+      {
+       "id": "thump_big",
+       "at": 586,
+       "gain": 0
+      },
+      {
+       "id": "meme:fall-oidoioi",
+       "at": 602,
+       "gain": -3
+      },
+      {
+       "id": "chime_out",
+       "at": 614,
+       "gain": -8
+      }
+     ]
+    },
+    {
+     "id": "S07",
+     "beat": "Ván nữa",
+     "start": 669,
+     "end": 780,
+     "camera": "Chat của Tèo đè lên màn rớt bàn; rồi màn hết trận, Bill bấm Tái đấu.",
+     "action": "Tèo chọc lại đúng chuyện cũ. Bill không chịu thua.",
+     "pics": [
+      {
+       "key": "p-end-fall",
+       "start": 669,
+       "end": 711,
+       "z": [
+        1.04,
+        1.06
+       ],
+       "c": [
+        0.5,
+        0.35
+       ],
+       "blur": 14,
+       "dim": 0.3
+      },
+      {
+       "key": "p-match-end",
+       "start": 711,
+       "end": 780,
+       "z": [
+        1.0,
+        1.06
+       ],
+       "c": [
+        0.5,
+        0.55
+       ]
+      }
+     ],
+     "chat": {
+      "msgs": [
+       {
+        "who": "teo",
+        "t": "y chang hồi xưa =))",
+        "at": 670
+       }
+      ],
+      "until": 711
+     },
+     "taps": [
+      {
+       "x": 0.32,
+       "y": 0.585,
+       "at": 752
+      }
+     ],
+     "texts": [
+      {
+       "t": "Ván nữa.\nVán cuối. *Thật.*",
+       "at": 725,
+       "until": 780,
+       "y": 0.76,
+       "style": "head",
+       "size": 104
+      }
+     ],
+     "sfx": [
+      {
+       "id": "msg",
+       "at": 670,
+       "gain": -2
+      },
+      {
+       "id": "meme:pass-huh",
+       "at": 687,
+       "gain": -8
+      },
+      {
+       "id": "tap",
+       "at": 752,
+       "gain": 0
+      }
+     ]
+    },
+    {
+     "id": "S08",
+     "beat": "Kết",
+     "start": 780,
+     "end": 900,
+     "camera": "Khung cuối đè lên gameplay đang chạy (mờ).",
+     "action": "Tên game, chơi free trên web, link, credit ý tưởng.",
+     "pics": [
+      {
+       "key": "p-stage-close-capture",
+       "start": 780,
+       "end": 900,
+       "z": [
+        1.1,
+        1.18
+       ],
+       "c": [
+        0.5,
+        0.5
+       ],
+       "blur": 16,
+       "dim": 0.45
+      }
+     ],
+     "endcard": {
+      "at": 780
+     },
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 780,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 794,
+       "gain": -6
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "LONG",
+   "title": "Dích hình 15 năm sau (ngang 75 giây)",
+   "W": 1920,
+   "H": 1080,
+   "frames": 2250,
+   "use": "YouTube, Facebook. Cả một ván thật; không giọng đọc, chữ và tiếng game kể chuyện.",
+   "music": [
+    {
+     "id": "music:menu-loop",
+     "start": 150,
+     "end": 454,
+     "seek": 0.23,
+     "gain": -10,
+     "fade_in": 2,
+     "fade_out": 14
+    },
+    {
+     "id": "music:game-loop",
+     "start": 448,
+     "end": 2250,
+     "seek": 0.251,
+     "gain": -9,
+     "fade_in": 2,
+     "fade_out": 60,
+     "duck_at": [
+      [
+       1306,
+       1334,
+       -30
+      ]
+     ]
+    }
+   ],
+   "shots": [
+    {
+     "id": "L01",
+     "beat": "Móc",
+     "start": 0,
+     "end": 150,
+     "still": 30,
+     "camera": "Máy tính, cận sát mặt bàn. Cú dích quay chậm: hai lá bay lên quanh chiếc dép, rồi lá hổ ngửa đè lá gấu trúc.",
+     "action": "Chưa có tên game, chưa có chữ: chỉ cú dích đẹp nhất.",
+     "pics": [
+      {
+       "key": "d-stage-slam-0",
+       "start": 0,
+       "end": 20,
+       "z": [
+        1.0,
+        1.05
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "key": "d-stage-slam-1",
+       "start": 20,
+       "end": 76,
+       "z": [
+        1.05,
+        1.16
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "key": "d-stage-close-capture",
+       "start": 76,
+       "end": 150,
+       "z": [
+        1.0,
+        1.1
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      }
+     ],
+     "texts": [
+      {
+       "t": "BỐP!",
+       "at": 20,
+       "until": 44,
+       "y": 0.42,
+       "style": "stamp",
+       "size": 170,
+       "tilt": -6
+      },
+      {
+       "t": "ĂN HÌNH!",
+       "at": 78,
+       "until": 149,
+       "y": 0.8,
+       "style": "stamp",
+       "size": 130,
+       "tilt": 3,
+       "hl": true
+      }
+     ],
+     "shake": [
+      [
+       20,
+       7,
+       20
+      ]
+     ],
+     "flash": [
+      20
+     ],
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 10,
+       "gain": -2
+      },
+      {
+       "id": "thump_big",
+       "at": 20,
+       "gain": 0
+      },
+      {
+       "id": "flip",
+       "at": 74,
+       "gain": -4
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 78,
+       "gain": -11
+      }
+     ]
+    },
+    {
+     "id": "L02",
+     "beat": "Khơi lại + rủ",
+     "start": 150,
+     "end": 448,
+     "camera": "Chat; rồi phòng chờ trên máy tính, bấm Mời bạn; rồi chia đôi: máy tính và đt của Tèo cùng thấy phòng.",
+     "action": "Tèo khều chuyện cũ, Bill gửi link, Tèo vào thẳng phòng từ đt.",
+     "pics": [
+      {
+       "key": "d-stage-close-capture",
+       "start": 150,
+       "end": 249,
+       "z": [
+        1.1,
+        1.14
+       ],
+       "c": [
+        0.5,
+        0.5
+       ],
+       "blur": 20,
+       "dim": 0.35
+      },
+      {
+       "key": "d-lobby-invite",
+       "start": 249,
+       "end": 324,
+       "z": [
+        1.25,
+        1.32
+       ],
+       "c": [
+        0.42,
+        0.42
+       ]
+      }
+     ],
+     "chat": {
+      "msgs": [
+       {
+        "who": "teo",
+        "t": "ê còn nhớ vụ t ăn hình m hông =))",
+        "at": 153
+       },
+       {
+        "who": "bill",
+        "t": "nhớ chớ. vô đây t trả thù",
+        "at": 200
+       }
+      ],
+      "until": 249
+     },
+     "taps": [
+      {
+       "x": 0.42,
+       "y": 0.28,
+       "at": 274
+      }
+     ],
+     "split": {
+      "at": 324,
+      "left": "d-lobby-joined",
+      "right": "p-lobby-joined"
+     },
+     "texts": [
+      {
+       "t": "Gửi link là vô. *Khỏi cài app*",
+       "at": 336,
+       "until": 448,
+       "y": 0.88,
+       "style": "head",
+       "size": 78
+      }
+     ],
+     "sfx": [
+      {
+       "id": "msg",
+       "at": 153,
+       "gain": -2
+      },
+      {
+       "id": "msg",
+       "at": 200,
+       "gain": -2
+      },
+      {
+       "id": "tap",
+       "at": 274,
+       "gain": 0
+      },
+      {
+       "id": "whoosh",
+       "at": 318,
+       "gain": -8
+      },
+      {
+       "id": "chime_ready",
+       "at": 349,
+       "gain": -2
+      },
+      {
+       "id": "riser",
+       "at": 403,
+       "gain": -10
+      }
+     ]
+    },
+    {
+     "id": "L03",
+     "beat": "Vào trận",
+     "start": 448,
+     "end": 725,
+     "camera": "Tù xì, chọn đập trước, rồi lượt đầu: vòng ngắm quanh lá của mình.",
+     "action": "Không giải thích luật: thấy là hiểu.",
+     "pics": [
+      {
+       "key": "d-rps",
+       "start": 448,
+       "end": 531,
+       "z": [
+        1.3,
+        1.36
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "key": "d-choose",
+       "start": 531,
+       "end": 586,
+       "z": [
+        1.3,
+        1.36
+       ],
+       "c": [
+        0.5,
+        0.48
+       ]
+      },
+      {
+       "key": "d-aim",
+       "start": 586,
+       "end": 725,
+       "z": [
+        1.15,
+        1.25
+       ],
+       "c": [
+        0.42,
+        0.45
+       ]
+      }
+     ],
+     "texts": [
+      {
+       "t": "Kéo ngắm, thả tay là *dích*",
+       "at": 600,
+       "until": 725,
+       "y": 0.86,
+       "style": "head",
+       "size": 78
+      }
+     ],
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 448,
+       "gain": -4
+      },
+      {
+       "id": "chime_react",
+       "at": 503,
+       "gain": -6
+      },
+      {
+       "id": "tap",
+       "at": 559,
+       "gain": -2
+      },
+      {
+       "id": "whoosh",
+       "at": 709,
+       "gain": -8
+      }
+     ]
+    },
+    {
+     "id": "L04",
+     "beat": "Phục thù",
+     "start": 725,
+     "end": 1279,
+     "camera": "5 cắt, mỗi cắt 2 nhịp nhạc: dích, ăn hình, sticker qua lại, dích, gió đẩy lá.",
+     "action": "Hai bên ăn qua lại, chọc nhau bằng sticker.",
+     "pics": [
+      {
+       "key": "d-bop-0",
+       "start": 725,
+       "end": 836,
+       "z": [
+        2.1,
+        1.85
+       ],
+       "c": [
+        0.66,
+        0.45
+       ]
+      },
+      {
+       "key": "d-stage-capture",
+       "start": 836,
+       "end": 946,
+       "z": [
+        1.5,
+        1.6
+       ],
+       "c": [
+        0.55,
+        0.42
+       ]
+      },
+      {
+       "key": "d-stickers",
+       "start": 946,
+       "end": 1057,
+       "z": [
+        1.7,
+        1.8
+       ],
+       "c": [
+        0.6,
+        0.42
+       ]
+      },
+      {
+       "key": "d-bop-1",
+       "start": 1057,
+       "end": 1168,
+       "z": [
+        2.1,
+        1.85
+       ],
+       "c": [
+        0.3,
+        0.45
+       ]
+      },
+      {
+       "key": "d-bop-2",
+       "start": 1168,
+       "end": 1279,
+       "z": [
+        2.1,
+        1.85
+       ],
+       "c": [
+        0.3,
+        0.45
+       ]
+      }
+     ],
+     "texts": [
+      {
+       "t": "ĂN!",
+       "at": 837,
+       "until": 891,
+       "y": 0.3,
+       "style": "stamp",
+       "size": 150,
+       "tilt": -5,
+       "hl": true
+      }
+     ],
+     "shake": [
+      [
+       725,
+       6,
+       14
+      ],
+      [
+       1057,
+       6,
+       14
+      ],
+      [
+       1168,
+       6,
+       14
+      ]
+     ],
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 725,
+       "gain": 0
+      },
+      {
+       "id": "flip",
+       "at": 836,
+       "gain": -2
+      },
+      {
+       "id": "meme:capture-boom",
+       "at": 837,
+       "gain": -12
+      },
+      {
+       "id": "chime_react",
+       "at": 946,
+       "gain": -2
+      },
+      {
+       "id": "chime_react",
+       "at": 988,
+       "gain": -2
+      },
+      {
+       "id": "thump",
+       "at": 1057,
+       "gain": 0
+      },
+      {
+       "id": "thump",
+       "at": 1168,
+       "gain": 0
+      }
+     ]
+    },
+    {
+     "id": "L05",
+     "beat": "Quay xe",
+     "start": 1279,
+     "end": 1500,
+     "camera": "Bill ngắm, dích quá tay, im nửa giây, lá rớt bàn.",
+     "action": "Kiêu là té.",
+     "pics": [
+      {
+       "key": "d-aim",
+       "start": 1279,
+       "end": 1306,
+       "z": [
+        1.25,
+        1.4
+       ],
+       "c": [
+        0.42,
+        0.45
+       ]
+      },
+      {
+       "key": "d-bop-1",
+       "start": 1306,
+       "end": 1334,
+       "z": [
+        2.2,
+        2.4
+       ],
+       "c": [
+        0.3,
+        0.45
+       ]
+      },
+      {
+       "key": "d-end-fall",
+       "start": 1334,
+       "end": 1500,
+       "z": [
+        1.75,
+        1.6
+       ],
+       "c": [
+        0.5,
+        0.42
+       ]
+      }
+     ],
+     "texts": [
+      {
+       "t": "Mạnh tay quá là *ăn hành*",
+       "at": 1362,
+       "until": 1500,
+       "y": 0.86,
+       "style": "head",
+       "size": 84
+      }
+     ],
+     "shake": [
+      [
+       1306,
+       8,
+       22
+      ],
+      [
+       1334,
+       6,
+       12
+      ]
+     ],
+     "flash": [
+      1306
+     ],
+     "sfx": [
+      {
+       "id": "whoosh",
+       "at": 1299,
+       "gain": -2
+      },
+      {
+       "id": "thump_big",
+       "at": 1306,
+       "gain": 0
+      },
+      {
+       "id": "meme:fall-oidoioi",
+       "at": 1334,
+       "gain": -3
+      }
+     ]
+    },
+    {
+     "id": "L06",
+     "beat": "Ván nữa + người lạ",
+     "start": 1500,
+     "end": 1805,
+     "camera": "Tèo thắng, chat chọc lại; rồi Chơi ngay · Bất kỳ: ghép 4 người, bàn 4 lá.",
+     "action": "Hết bạn thì dích với người lạ.",
+     "pics": [
+      {
+       "key": "d-match-end",
+       "start": 1500,
+       "end": 1611,
+       "z": [
+        1.6,
+        1.7
+       ],
+       "c": [
+        0.45,
+        0.47
+       ]
+      },
+      {
+       "key": "d-quick-searching",
+       "start": 1611,
+       "end": 1694,
+       "z": [
+        1.1,
+        1.15
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "key": "d-quick-4players",
+       "start": 1694,
+       "end": 1805,
+       "z": [
+        1.15,
+        1.25
+       ],
+       "c": [
+        0.5,
+        0.45
+       ]
+      }
+     ],
+     "chat": {
+      "msgs": [
+       {
+        "who": "teo",
+        "t": "y chang hồi xưa =))",
+        "at": 1514
+       }
+      ],
+      "until": 1611,
+      "side": "right"
+     },
+     "texts": [
+      {
+       "t": "Hết bạn? *Dích với người lạ*",
+       "at": 1625,
+       "until": 1805,
+       "y": 0.86,
+       "style": "head",
+       "size": 80
+      }
+     ],
+     "sfx": [
+      {
+       "id": "meme:match-win",
+       "at": 1500,
+       "gain": -10
+      },
+      {
+       "id": "msg",
+       "at": 1514,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 1694,
+       "gain": -4
+      },
+      {
+       "id": "thump",
+       "at": 1750,
+       "gain": -2
+      }
+     ]
+    },
+    {
+     "id": "L07",
+     "beat": "Tủ đồ",
+     "start": 1805,
+     "end": 2026,
+     "camera": "Tủ đồ: chọn pet, tô màu dép.",
+     "action": "Đổi dép đổi vận, chuẩn bị phục thù tiếp.",
+     "pics": [
+      {
+       "key": "d-ward-pet",
+       "start": 1805,
+       "end": 1916,
+       "z": [
+        1.25,
+        1.32
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      },
+      {
+       "key": "d-ward-dep",
+       "start": 1916,
+       "end": 2026,
+       "z": [
+        1.25,
+        1.32
+       ],
+       "c": [
+        0.5,
+        0.5
+       ]
+      }
+     ],
+     "taps": [
+      {
+       "x": 0.39,
+       "y": 0.58,
+       "at": 1833
+      },
+      {
+       "x": 0.37,
+       "y": 0.45,
+       "at": 1943
+      }
+     ],
+     "texts": [
+      {
+       "t": "Đổi dép *đổi vận*",
+       "at": 1819,
+       "until": 2026,
+       "y": 0.86,
+       "style": "head",
+       "size": 84
+      }
+     ],
+     "sfx": [
+      {
+       "id": "tap",
+       "at": 1833,
+       "gain": 0
+      },
+      {
+       "id": "chime_react",
+       "at": 1860,
+       "gain": -8
+      },
+      {
+       "id": "tap",
+       "at": 1943,
+       "gain": 0
+      },
+      {
+       "id": "chime_react",
+       "at": 1971,
+       "gain": -8
+      }
+     ]
+    },
+    {
+     "id": "L08",
+     "beat": "Kết",
+     "start": 2026,
+     "end": 2250,
+     "camera": "Khung cuối đè lên cú ăn hình (mờ).",
+     "action": "Tên game, chơi free trên web, link, credit ý tưởng.",
+     "pics": [
+      {
+       "key": "d-stage-close-capture",
+       "start": 2026,
+       "end": 2250,
+       "z": [
+        1.1,
+        1.2
+       ],
+       "c": [
+        0.5,
+        0.5
+       ],
+       "blur": 18,
+       "dim": 0.45
+      }
+     ],
+     "endcard": {
+      "at": 2026
+     },
+     "sfx": [
+      {
+       "id": "thump",
+       "at": 2026,
+       "gain": -2
+      },
+      {
+       "id": "chime_found",
+       "at": 2040,
+       "gain": -6
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

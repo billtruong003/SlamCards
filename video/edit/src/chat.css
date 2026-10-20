@@ -1,0 +1,32 @@
+/* The chat lines shown big in the videos: the game's own bubble (social.css .sbub), scaled by --u (one game px).
+   One 3u ink line around body and tail, a soft shadow on the whole message (a hard offset shadow gets cut by the
+   tail and reads as a broken outline), the sender's pet in a ringed avatar, the name on a small pill over the corner.
+   Tèo writes from the left (cream bubble), Bill from the right (the game's own deep pink, white letters).
+   Used as is by the mockup (video/design/chat-modules.html) and by Remotion (Cut.tsx). */
+.vchat { display: flex; flex-direction: column; gap: calc(12 * var(--u)); font-family: Baloo2, 'Baloo 2', sans-serif; }
+.vmsg { display: flex; align-items: flex-end; gap: calc(18 * var(--u)); filter: drop-shadow(0 calc(3 * var(--u)) calc(4 * var(--u)) rgba(42, 20, 24, .28)); }
+.vmsg.bill { flex-direction: row-reverse; }
+.vav { flex: none; box-sizing: border-box; width: calc(42 * var(--u)); height: calc(42 * var(--u)); border-radius: 50%;
+  border: calc(3 * var(--u)) solid #2a1418; background: #1c719a; overflow: hidden; }
+.vmsg.bill .vav { background: #974e66; }
+.vav img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.22) translateY(4%); }
+.vbub { position: relative; box-sizing: border-box; width: max-content; max-width: calc(250 * var(--u)); background: #fffbf0; color: #2a1418;
+  border: calc(3 * var(--u)) solid #2a1418; border-radius: calc(16 * var(--u)); padding: calc(7 * var(--u)) calc(13 * var(--u)) calc(8 * var(--u)); }
+.vmsg.bill .vbub { background: #974e66; color: #fff; }
+.vbub p { margin: 0; font-weight: 700; font-size: calc(17 * var(--u)); line-height: 1.22; white-space: pre-line; }
+/* the tail: from the bubble's bottom corner nearest the avatar (that corner barely rounded, as chat apps do), pointing
+   at the avatar. An SVG: its fill covers the bubble's side border where they join, its 3u stroke continues the outline
+   (CSS triangles gave a thinner slanted line, a tail on a rounded corner gave a bump). */
+.vtail { position: absolute; bottom: calc(-3 * var(--u)); width: calc(15 * var(--u)); height: calc(16 * var(--u)); overflow: visible; }
+.vmsg.teo .vtail { left: calc(-15 * var(--u)); }
+.vmsg.bill .vtail { right: calc(-15 * var(--u)); transform: scaleX(-1); }
+.vmsg.teo .vbub { border-bottom-left-radius: 0; }
+.vmsg.bill .vbub { border-bottom-right-radius: 0; }
+.vtail .f { fill: #fffbf0; }
+.vmsg.bill .vtail .f { fill: #974e66; }
+.vtail .s { fill: none; stroke: #2a1418; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+/* the name pill over the top corner */
+.vwho { position: absolute; top: calc(-11 * var(--u)); font-size: calc(11 * var(--u)); line-height: calc(15 * var(--u)); font-weight: 700;
+  color: #fff; background: #1c719a; border: calc(2 * var(--u)) solid #2a1418; border-radius: 999px; padding: 0 calc(7 * var(--u)); white-space: nowrap; }
+.vmsg.teo .vwho { left: calc(10 * var(--u)); }
+.vmsg.bill .vwho { right: calc(10 * var(--u)); background: #974e66; }

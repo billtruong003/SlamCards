@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Slam Cards media v2</title>
+<style>
+@font-face { font-family: Baloo2; src: url(../fonts/Baloo2-Bold.ttf); font-weight: 700; }
+:root { --ink:#2a1418; --cream:#fffbf0; --pink:#e0457b; --yel:#ffcf3a; --blue:#2f8fd8; --blued:#1c5f94; }
+body { margin: 0; background: #666; font-family: Baloo2, sans-serif; }
+.ab { position: relative; overflow: hidden; flex: none; }
+.ab * { box-sizing: border-box; }
+.abs { position: absolute; }
+img.cut { position: absolute; display: block; }
+.stk { filter: drop-shadow(6px 0 0 #fff) drop-shadow(-6px 0 0 #fff) drop-shadow(0 6px 0 #fff) drop-shadow(0 -6px 0 #fff) drop-shadow(0 14px 18px rgba(0,0,0,.3)); }
+.shade { filter: drop-shadow(0 22px 26px rgba(0,0,0,.4)); }
+.logo { position: absolute; text-align: center; font-weight: 700; line-height: .86; color: var(--cream); -webkit-text-stroke: calc(var(--s) * .1) var(--ink); paint-order: stroke fill;
+  text-shadow: 0 calc(var(--s) * .09) 0 var(--ink); font-size: var(--s); letter-spacing: -.01em; }
+.logo .y { color: var(--yel); display: block; font-size: 1.12em; }
+.cap { position: absolute; left: 0; right: 0; text-align: center; font-weight: 700; line-height: .92; text-transform: uppercase; color: #fff;
+  -webkit-text-stroke: calc(var(--s) * .11) var(--ink); paint-order: stroke fill; text-shadow: 0 calc(var(--s) * .08) 0 var(--ink); font-size: var(--s); }
+.cap .y { color: var(--yel); }
+.frame { position: absolute; overflow: hidden; border: 12px solid var(--ink); border-radius: 36px; background: var(--ink); box-shadow: 0 24px 0 rgba(42,20,24,.35); }
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.P1 { background: radial-gradient(circle at var(--bx, 50%) var(--by, 45%), #ffe27a 0%, #ffb547 18%, #f0567f 46%, #b02c5f 80%); }
+.P1::before { content: ""; position: absolute; inset: -50%; background: repeating-conic-gradient(from 0deg at var(--bx, 50%) var(--by, 45%), rgba(255,255,255,.16) 0 7deg, transparent 7deg 14deg); }
+.halftone { position: absolute; inset: 0; background: radial-gradient(rgba(42,20,24,.16) 22%, transparent 24%) 0 0 / 22px 22px; -webkit-mask: linear-gradient(transparent 55%, #000); }
+.P2 { background: #fdf8ea linear-gradient(transparent 0 58px, rgba(73,130,196,.28) 58px 61px) 0 0 / 100% 61px; }
+.P2::before { content: ""; position: absolute; top: 0; bottom: 0; left: 120px; width: 5px; background: rgba(224,69,123,.5); }
+.tape { position: absolute; width: 190px; height: 58px; background: rgba(255,226,140,.78); box-shadow: 0 2px 4px rgba(0,0,0,.12); }
+.doodle { position: absolute; font-weight: 700; color: var(--blued); opacity: .9; white-space: nowrap; }
+.polaroid { position: absolute; background: #fff; padding: 18px 18px 70px; box-shadow: 0 18px 30px rgba(0,0,0,.25); }
+.polaroid img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.polaroid span { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; font-size: 36px; color: var(--ink); }
+.P3 { background: linear-gradient(118deg, #e0457b 0 50%, #2f8fd8 50% 100%); }
+.P3::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(118deg, rgba(255,255,255,.10) 0 4px, transparent 4px 46px); }
+.vs { position: absolute; width: 230px; height: 230px; border-radius: 50%; background: var(--yel); border: 12px solid var(--ink); display: flex; align-items: center; justify-content: center;
+  font-size: 120px; font-weight: 700; color: var(--ink); box-shadow: 0 14px 0 var(--ink); transform: rotate(-8deg); }
+.label { font: 700 30px Baloo2; color: #fff; margin: 30px 40px 0; }
+.row { display: flex; gap: 40px; padding: 20px 40px; align-items: flex-start; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const S = 'src/';
+const ab = (id, w, h, cls, html, vars = '') => `<div class="ab ${cls}" id="${id}" style="width:${w}px;height:${h}px;${vars}">${cls === 'P1' ? '<div class="halftone"></div>' : ''}${html}</div>`;
+const cut = (f, x, y, w, rot = 0, cls = 'shade') => `<img class="cut ${cls}" src="${S}${f}" style="left:${x}px;top:${y}px;width:${w}px;transform:rotate(${rot}deg)">`;
+const logo = (x, y, w, s, rot = -4) => `<div class="logo" style="left:${x}px;top:${y}px;width:${w}px;--s:${s}px;transform:rotate(${rot}deg)">DÉP LÀO<span class="y">TUỔI THƠ</span></div>`;
+const cap = (t, y, s, rot = 0) => `<div class="cap" style="top:${y}px;--s:${s}px;transform:rotate(${rot}deg)">${t}</div>`;
+const frame = (src, x, y, w, h, rot = 0, pos = '50% 50%') => `<div class="frame" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:rotate(${rot}deg)"><img src="${S}${src}" style="object-position:${pos}"></div>`;
+const impact = (x, y, w, txt, rot = -8) => `<div class="abs" style="left:${x}px;top:${y}px;width:${w}px;height:${w}px;transform:rotate(${rot}deg)">
+  <svg viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible"><polygon points="${Array.from({ length: 24 }, (_, i) => { const r = i % 2 ? 31 : 50; const a = i / 24 * Math.PI * 2; return `${(50 + Math.cos(a) * r).toFixed(1)},${(50 + Math.sin(a) * r).toFixed(1)}`; }).join(' ')}" fill="#fffbf0" stroke="#2a1418" stroke-width="3.5" stroke-linejoin="round"/></svg>
+  <div class="cap" style="top:${w * .36}px;--s:${w * .2}px;color:#ff4f86">${txt}</div></div>`;
+const tape = (x, y, rot) => `<div class="tape" style="left:${x}px;top:${y}px;transform:rotate(${rot}deg)"></div>`;
+const polaroid = (src, x, y, w, h, rot, label, pos = '50% 50%') => `<div class="polaroid" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:rotate(${rot}deg)"><img src="${S}${src}" style="object-position:${pos}"><span>${label}</span></div>`;
+const doodle = (t, x, y, s, rot = 0, c = '') => `<div class="doodle" style="left:${x}px;top:${y}px;font-size:${s}px;transform:rotate(${rot}deg);${c ? 'color:' + c : ''}">${t}</div>`;
+const vs = (x, y) => `<div class="vs" style="left:${x}px;top:${y}px">VS</div>`;
+
+const P = {
+  P1: {
+    name: 'Style 1 · BỐP! (nổ tung, khoảnh khắc thỏa mãn)',
+    icon: () => ab('P1-icon', 1024, 1024, 'P1',
+      cut('cut-card-panda-back.png', 330, 300, 470, 14) + cut('cut-card-tiger.png', 160, 130, 560, -12) +
+      cut('cut-dep-dep_lao.png', 400, 520, 660, -28), '--bx:42%;--by:42%'),
+    cover: () => ab('P1-cover', 1080, 1920, 'P1',
+      logo(40, 120, 1000, 190, -5) +
+      cut('cut-card-panda-back.png', 470, 820, 500, 18) + cut('cut-card-tiger.png', 110, 680, 580, -14) +
+      cut('cut-dep-dep_lao.png', 330, 1140, 800, -24) + impact(30, 1290, 380, 'BỐP!', -10) +
+      cap('Ăn hình <span class="y">bằng dép</span>', 1720, 92, -3), '--bx:45%;--by:55%'),
+    shots: [
+      ['P1-shot1', () => frame('slam-air.png', 60, 470, 960, 1000, -4, '30% 50%') + cut('cut-dep-dep_lao.png', 500, 1200, 620, -30) + impact(-10, 1330, 380, 'BỐP!') +
+        cap('Đập dép<br><span class="y">lật bài</span>', 110, 150, -4)],
+      ['P1-shot2', () => frame('phone-lobby.png', 70, 520, 540, 960, -6, '50% 0%') + frame('phone-chat.png', 500, 640, 520, 940, 5, '50% 100%') +
+        cut('cut-pet-panda.png', 720, 1420, 380, 10) + cut('cut-pet-tiger.png', -30, 1440, 380, -10) +
+        cap('Gửi link<br><span class="y">là vô</span>', 110, 150, -3)],
+      ['P1-shot3', () => cut('cut-card-panda-back.png', 380, 640, 560, 16) + cut('cut-card-tiger.png', 110, 500, 640, -10) +
+        impact(560, 1330, 420, 'ĂN!', 8) + cut('cut-pet-tiger.png', -40, 1360, 520, -8) +
+        cap('Ngửa đè úp<br><span class="y">là ăn hình</span>', 110, 140, -3)],
+    ],
+    feature: () => ab('P1-feature', 1024, 500, 'P1',
+      logo(20, 70, 520, 108, -5) + cut('cut-card-panda-back.png', 650, 60, 230, 18) + cut('cut-card-tiger.png', 520, 30, 270, -14) +
+      cut('cut-dep-dep_lao.png', 640, 240, 400, -24) + impact(880, 10, 140, 'BỐP!'), '--bx:70%;--by:50%'),
+    thumb: () => ab('P1-thumb', 1280, 720, 'P1',
+      cut('cut-card-panda-back.png', 780, 110, 300, 22) + cut('cut-card-tiger.png', 620, 40, 340, -16) + cut('cut-dep-dep_lao.png', 690, 340, 520, -26) +
+      `<div class="cap" style="left:30px;right:auto;width:620px;top:140px;--s:160px;transform:rotate(-5deg)">ĂN<br><span class="y">HÌNH!</span></div>` +
+      impact(450, 440, 210, 'BỐP!', 10), '--bx:62%;--by:45%'),
+  },
+  P2: {
+    name: 'Style 2 · Vở học trò (hoài niệm sân trường)',
+    icon: () => ab('P2-icon', 1024, 1024, 'P2',
+      cut('cut-card-panda-back.png', 360, 290, 450, 12, 'stk') + cut('cut-card-tiger.png', 170, 150, 520, -10, 'stk') + tape(360, 110, -8) +
+      cut('cut-dep-dep_lao.png', 440, 560, 580, -30, 'stk')),
+    cover: () => ab('P2-cover', 1080, 1920, 'P2',
+      doodle('Giờ ra chơi…', 190, 90, 76, -4) + logo(60, 210, 960, 180, -4) +
+      polaroid('capture-top.png', 140, 800, 620, 660, -7, 'ăn hình nè!', '47% 45%') + tape(340, 770, 4) +
+      cut('cut-pet-tiger.png', 650, 1300, 380, 8, 'stk') + cut('cut-dep-dep_lao.png', 50, 1430, 540, -22, 'stk') +
+      doodle('chơi free trên web →', 200, 1800, 60, -3, '#e0457b')),
+    shots: [
+      ['P2-shot1', () => polaroid('slam-air.png', 90, 520, 900, 880, -5, 'BỐP!!!', '30% 50%') + tape(420, 490, 3) + cut('cut-dep-dep_lao.png', 500, 1330, 580, -28, 'stk') +
+        doodle('dép lào<br>huyền thoại', 90, 1560, 64, -6) + cap('Đập dép<br><span class="y">lật bài</span>', 110, 140, -3)],
+      ['P2-shot2', () => polaroid('phone-lobby.png', 60, 520, 520, 880, -6, 'phòng tụi mình', '50% 0%') + polaroid('phone-chat.png', 500, 660, 510, 880, 6, '=))', '50% 100%') +
+        tape(230, 500, -4) + tape(690, 640, 8) + cut('cut-pet-panda.png', 30, 1480, 340, -8, 'stk') +
+        cap('Gửi link<br><span class="y">là vô</span>', 110, 140, -3)],
+      ['P2-shot3', () => cut('cut-card-panda-back.png', 390, 620, 540, 14, 'stk') + cut('cut-card-tiger.png', 130, 500, 620, -9, 'stk') + tape(380, 470, -6) +
+        doodle('ăn rồi nha ✓', 560, 1560, 70, -6, '#e0457b') + cut('cut-pet-tiger.png', 40, 1440, 420, -8, 'stk') +
+        cap('Ngửa đè úp<br><span class="y">là ăn hình</span>', 110, 130, -3)],
+    ],
+    feature: () => ab('P2-feature', 1024, 500, 'P2',
+      logo(30, 70, 520, 104, -4) + doodle('trò sân trường, giờ chơi trên web', 60, 390, 30, -2, '#e0457b') +
+      cut('cut-card-panda-back.png', 680, 70, 220, 14, 'stk') + cut('cut-card-tiger.png', 570, 40, 250, -10, 'stk') + tape(650, 20, -6) + cut('cut-dep-dep_lao.png', 680, 260, 330, -26, 'stk')),
+    thumb: () => ab('P2-thumb', 1280, 720, 'P2',
+      polaroid('slam-air.png', 610, 80, 620, 540, 5, 'BỐP!!!', '30% 50%') + tape(810, 50, -4) +
+      `<div class="cap" style="left:30px;right:auto;width:600px;top:100px;--s:140px;transform:rotate(-5deg)">15 NĂM<br><span class="y">SAU…</span></div>` +
+      doodle('dích hình', 110, 470, 70, -5, '#e0457b') + cut('cut-pet-tiger.png', 340, 450, 240, -8, 'stk')),
+  },
+  P3: {
+    name: 'Style 3 · Đối đầu (Bill vs Tèo, nhịp thi đấu)',
+    icon: () => ab('P3-icon', 1024, 1024, 'P3',
+      cut('cut-pet-tiger.png', 10, 240, 560, -6) + cut('cut-pet-panda.png', 460, 250, 560, 6) + vs(395, 650)),
+    cover: () => ab('P3-cover', 1080, 1920, 'P3',
+      logo(40, 110, 1000, 180, -4) +
+      cut('cut-pet-tiger.png', -60, 680, 640, -6) + cut('cut-pet-panda.png', 500, 800, 640, 6) + vs(420, 1180) +
+      cut('cut-card-tiger.png', 60, 1330, 280, -14) + cut('cut-card-panda-back.png', 740, 1350, 260, 14) +
+      cap('Ai <span class="y">ăn hình</span> ai?', 1770, 96, -3)),
+    shots: [
+      ['P3-shot1', () => frame('slam-air.png', 40, 520, 1000, 900, -4, '35% 50%') + cut('cut-pet-tiger.png', -40, 1320, 420, -8) + cut('cut-dep-dep_lao.png', 500, 1320, 580, -28) +
+        cap('Đập dép<br><span class="y">lật bài</span>', 110, 150, -4)],
+      ['P3-shot2', () => frame('phone-lobby.png', 60, 520, 500, 900, -5, '50% 0%') + frame('phone-chat.png', 520, 620, 500, 900, 5, '50% 100%') + vs(425, 1420) +
+        cut('cut-pet-tiger.png', -30, 1460, 340, -8) + cut('cut-pet-panda.png', 770, 1460, 340, 8) + cap('Rủ bạn<br><span class="y">phục thù</span>', 110, 150, -3)],
+      ['P3-shot3', () => frame('phone-rotban.png', 140, 520, 800, 820, -3, '50% 40%') + cut('cut-pet-panda.png', 640, 1330, 460, 10) + cut('cut-card-tiger.png', -40, 1300, 360, -30) +
+        cap('Mạnh tay<br><span class="y">là rớt bàn</span>', 110, 140, -3)],
+    ],
+    feature: () => ab('P3-feature', 1024, 500, 'P3',
+      cut('cut-pet-tiger.png', 0, 150, 300, -6) + cut('cut-pet-panda.png', 730, 150, 300, 6) + logo(250, 50, 520, 100, -4) + vs(430, 300)),
+    thumb: () => ab('P3-thumb', 1280, 720, 'P3',
+      cut('cut-pet-tiger.png', -20, 220, 470, -6) + cut('cut-pet-panda.png', 830, 220, 470, 6) + vs(525, 380) +
+      `<div class="cap" style="top:40px;--s:140px;transform:rotate(-3deg)">PHỤC THÙ<br><span class="y">15 NĂM</span></div>`),
+  },
+};
+let out = '';
+for (const [k, st] of Object.entries(P)) {
+  out += `<p class="label">${st.name}</p><div class="row">${st.icon()}${st.cover()}`;
+  for (const [id, f] of st.shots) out += ab(id, 1080, 1920, k, f());
+  out += `${st.feature()}${st.thumb()}</div>`;
+}
+document.getElementById('root').innerHTML = out;
+</script>
+</body>
+</html>

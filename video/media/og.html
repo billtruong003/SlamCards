@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Link preview images</title>
+<!-- The link preview (Open Graph) images, 1200x630, in the chosen key art style 2 "vở học trò" (keyart.html P2).
+     node qa/capture/media-render.mjs og.html → media/out/og-vi.png, og-en.png; then copied as JPEG to proto/public/og/.
+     Chats crop the sides on narrow previews, so the name stays left of centre and the card pair fills the right. -->
+<style>
+@font-face { font-family: Baloo2; src: url(../fonts/Baloo2-Bold.ttf); font-weight: 700; }
+:root { --ink:#2a1418; --cream:#fffbf0; --pink:#e0457b; --yel:#ffcf3a; --blued:#1c5f94; }
+body { margin: 0; background: #666; font-family: Baloo2, sans-serif; display: flex; flex-direction: column; gap: 30px; padding: 30px; }
+.ab { position: relative; overflow: hidden; flex: none; width: 1200px; height: 630px; }
+.ab * { box-sizing: border-box; }
+img.cut { position: absolute; display: block; }
+.stk { filter: drop-shadow(6px 0 0 #fff) drop-shadow(-6px 0 0 #fff) drop-shadow(0 6px 0 #fff) drop-shadow(0 -6px 0 #fff) drop-shadow(0 14px 18px rgba(0,0,0,.3)); }
+.logo { position: absolute; text-align: center; font-weight: 700; line-height: .86; color: var(--cream); -webkit-text-stroke: calc(var(--s) * .1) var(--ink); paint-order: stroke fill;
+  text-shadow: 0 calc(var(--s) * .09) 0 var(--ink); font-size: var(--s); letter-spacing: -.01em; }
+.logo .y { color: var(--yel); display: block; font-size: 1.12em; }
+.P2 { background: #fdf8ea linear-gradient(transparent 0 58px, rgba(73,130,196,.28) 58px 61px) 0 0 / 100% 61px; }
+.P2::before { content: ""; position: absolute; top: 0; bottom: 0; left: 96px; width: 5px; background: rgba(224,69,123,.5); }
+.tape { position: absolute; width: 190px; height: 58px; background: rgba(255,226,140,.78); box-shadow: 0 2px 4px rgba(0,0,0,.12); }
+.doodle { position: absolute; font-weight: 700; color: var(--blued); opacity: .9; white-space: nowrap; }
+.chip { position: absolute; font-weight: 700; font-size: 34px; color: var(--cream); background: var(--pink); border: 5px solid var(--ink); border-radius: 18px;
+  padding: 4px 22px 0; box-shadow: 0 7px 0 var(--ink); white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const S = 'src/';
+const cut = (f, x, y, w, rot = 0) => `<img class="cut stk" src="${S}${f}" style="left:${x}px;top:${y}px;width:${w}px;transform:rotate(${rot}deg)">`;
+const tape = (x, y, rot) => `<div class="tape" style="left:${x}px;top:${y}px;transform:rotate(${rot}deg)"></div>`;
+const doodle = (t, x, y, s, rot = 0, c = '') => `<div class="doodle" style="left:${x}px;top:${y}px;font-size:${s}px;transform:rotate(${rot}deg);${c ? 'color:' + c : ''}">${t}</div>`;
+const art = (en) => (en
+  ? cut('cut-card-panda-back.png', 900, 70, 240, 14) + cut('cut-card-tiger-back.png', 780, 50, 250, -8) + tape(840, 30, -6) + cut('cut-pet-tiger.png', 700, 170, 300, -8)
+  : cut('cut-card-panda-back.png', 920, 80, 230, 14) + cut('cut-card-tiger.png', 770, 50, 260, -10) + tape(830, 30, -6)) +
+  cut('cut-dep-dep_lao.png', 830, 330, 360, -26);
+const board = (id, top, bottom, line1, line2, chip, s, en = false) => `<div class="ab P2" id="${id}">
+  ${doodle(top, 140, 52, 44, -3)}
+  <div class="logo" style="left:96px;top:128px;width:600px;--s:${s}px;transform:rotate(-4deg)">${line1}<span class="y">${line2}</span></div>
+  ${doodle(bottom, 140, 440, 36, -2, '#e0457b')}
+  <div class="chip" style="left:140px;top:510px;transform:rotate(-2deg)">${chip}</div>
+  ${art(en)}</div>`;
+document.getElementById('root').innerHTML =
+  board('og-vi', 'Giờ ra chơi…', 'trò sân trường, giờ chơi trên web', 'DÉP LÀO', 'TUỔI THƠ', 'Chơi free · 2–4 đứa · không cần tải', 104) +
+  board('og-en', 'Recess is back…', 'the schoolyard game, now on the web', 'FLIP-FLOP', 'SLAM', 'Free · 2–4 friends · no download', 104, true);
+</script>
+</body>
+</html>

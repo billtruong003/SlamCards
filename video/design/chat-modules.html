@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Chat modules</title>
+<link rel="stylesheet" href="../edit/src/chat.css">
+<style>
+@font-face { font-family: Baloo2; src: url(../fonts/Baloo2-Bold.ttf); font-weight: 700; }
+body { margin: 0; background: #ddd; font-family: Baloo2; }
+.row { display: flex; gap: 40px; padding: 40px; align-items: flex-start; }
+.frame { position: relative; overflow: hidden; flex: none; }
+.frame > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.sheet { background: #f6eedb; padding: 60px; display: flex; flex-direction: column; gap: 60px; width: 1000px; }
+h2 { margin: 0 0 10px; font-size: 28px; color: #2a1418; }
+</style>
+</head>
+<body>
+<div class="row">
+  <!-- module states, isolated, at the portrait video's scale -->
+  <div class="sheet">
+    <div><h2>Tèo · 1 dòng</h2>
+      <div class="vchat" style="--u:3px; width:960px"><div class="vmsg teo"><div class="vav"><img src="panda.png"></div><div class="vbub"><span class="vwho">Tèo</span><p>y chang hồi xưa =))</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div></div></div>
+    <div><h2>Tèo · 2 dòng</h2>
+      <div class="vchat" style="--u:3px; width:960px"><div class="vmsg teo"><div class="vav"><img src="panda.png"></div><div class="vbub"><span class="vwho">Tèo</span><p>ê còn nhớ vụ t
+ăn hình m hông =))</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div></div></div>
+    <div><h2>Bill · trả lời</h2>
+      <div class="vchat" style="--u:3px; width:960px"><div class="vmsg bill"><div class="vav"><img src="tiger.png"></div><div class="vbub"><span class="vwho">Bill</span><p>nhớ chớ. vô đây t trả thù</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div></div></div>
+    <div><h2>Hai tin xếp chồng</h2>
+      <div class="vchat" style="--u:3px; width:960px">
+        <div class="vmsg teo"><div class="vav"><img src="panda.png"></div><div class="vbub"><span class="vwho">Tèo</span><p>ê còn nhớ vụ t
+ăn hình m hông =))</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div>
+        <div class="vmsg bill"><div class="vav"><img src="tiger.png"></div><div class="vbub"><span class="vwho">Bill</span><p>nhớ chớ. vô đây t trả thù</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div>
+      </div></div>
+  </div>
+  <!-- in place: portrait video frame over the real chat sheet -->
+  <div class="frame" style="width:1080px;height:1920px">
+    <img src="bg-phone.jpg">
+    <div class="vchat" style="--u:3px; position:absolute; left:48px; right:48px; top:520px">
+      <div class="vmsg teo"><div class="vav"><img src="panda.png"></div><div class="vbub"><span class="vwho">Tèo</span><p>ê còn nhớ vụ t
+ăn hình m hông =))</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div>
+      <div class="vmsg bill"><div class="vav"><img src="tiger.png"></div><div class="vbub"><span class="vwho">Bill</span><p>nhớ chớ. vô đây t trả thù</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <!-- in place: landscape video frame, beside the desktop chat dock -->
+  <div class="frame" style="width:1920px;height:1080px">
+    <img src="bg-desktop.jpg">
+    <div class="vchat" style="--u:2.6px; position:absolute; left:80px; width:900px; top:180px">
+      <div class="vmsg teo"><div class="vav"><img src="panda.png"></div><div class="vbub"><span class="vwho">Tèo</span><p>ê còn nhớ vụ t
+ăn hình m hông =))</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div>
+      <div class="vmsg bill"><div class="vav"><img src="tiger.png"></div><div class="vbub"><span class="vwho">Bill</span><p>nhớ chớ. vô đây t trả thù</p><svg class="vtail" viewBox="0 0 15 16"><path class="f" d="M15 0 L13.5 0 L1.5 14.5 L15 14.5 Z"/><path class="s" d="M13.5 0 L1.5 14.5 L20 14.5"/></svg></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

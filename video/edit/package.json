@@ -1,0 +1,22 @@
+{
+  "name": "slam-cards-launch-video",
+  "private": true,
+  "description": "The launch videos of Dép Lào Tuổi Thơ, cut from real filmed matches (Remotion). See ../README.md",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "short": "remotion render src/index.ts Short ../out/build/short.mp4 --codec h264 --crf 16",
+    "long": "remotion render src/index.ts Long ../out/build/long.mp4 --codec h264 --crf 16",
+    "s5": "remotion render src/index.ts",
+    "shorts": "remotion render src/index.ts STRESS ../out/build/short_STRESS.mp4 --codec h264 --crf 17 && remotion render src/index.ts CLIFF ../out/build/short_CLIFF.mp4 --codec h264 --crf 17 && remotion render src/index.ts NOSTALGIA ../out/build/short_NOSTALGIA.mp4 --codec h264 --crf 17"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "remotion": "4.0.290",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "typescript": "5.6.3"
+  }
+}
