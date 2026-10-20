@@ -1,11 +1,14 @@
-// Bug reports from players (G6): a few lines of their own plus what their device says (build,
-// browser, screen, language, room, phase, the page's last errors), one JSON line each in
-// <SLAM_DATA>/reports/<Vietnam day>.jsonl. A cron script on the VPS (deploy/report-notify.sh) sends
-// new ones to Bill on Telegram. Nothing about who: no IP, no name, no token.
+// Reports for Bill, one JSON line each in <SLAM_DATA>/reports/<Vietnam day>.jsonl; a cron script on
+// the VPS (deploy/report-notify.sh) sends new ones to him on Telegram.
+// - Bug reports (G6): a few lines from the player plus what their device says (build, browser,
+//   screen, language, room, phase, the page's last errors). Nothing about who sent it.
+// - Player reports (2.12, type 'player'): why, and the reported player's name, room and last chat
+//   lines. Nothing about who reported. Never an IP or a token.
 import fs from 'node:fs';
 import path from 'node:path';
 import { DATA_DIR } from './refs.js';
 import { vnDay } from './daily.js';
+import { REPORT_REASONS } from '../src/catalog.js';
 
 export const REPORTS_DIR = path.join(DATA_DIR, 'reports');
 const TEXT_MAX = 1000;
@@ -40,25 +43,47 @@ function cleanDiag(d) {
   };
 }
 
-// msg: { t: 'report', text, diag }. Returns 'ok', 'empty' (no words), or 'limited'.
-export function saveReport(ws, msg, now = Date.now()) {
-  const text = clean(msg.text, TEXT_MAX, true);
-  if (!text) return 'empty';
+// One more report from this connection, if the limits allow: true, counted; false, refused.
+function admit(ws, now) {
   ws.reports ??= { n: 0, last: 0 };
   const day = vnDay(now);
   if (day !== today) {
     today = day;
     todayCount = 0;
   }
-  if (ws.reports.n >= PER_SOCKET || now - ws.reports.last < GAP_MS || todayCount >= PER_DAY) return 'limited';
+  if (ws.reports.n >= PER_SOCKET || now - ws.reports.last < GAP_MS || todayCount >= PER_DAY) return false;
   ws.reports.n += 1;
   ws.reports.last = now;
   todayCount += 1;
-  const line = JSON.stringify({ at: new Date(now).toISOString(), text, ...cleanDiag(msg.diag) });
+  return true;
+}
+
+function write(report, now) {
   fs.mkdirSync(REPORTS_DIR, { recursive: true });
-  fs.appendFile(path.join(REPORTS_DIR, `${day}.jsonl`), `${line}\n`, (err) => {
+  fs.appendFile(path.join(REPORTS_DIR, `${vnDay(now)}.jsonl`), `${JSON.stringify({ at: new Date(now).toISOString(), ...report })}\n`, (err) => {
     if (err) console.error(`[reports] ${err.message}`);
   });
+}
+
+// A bug report, msg: { t: 'report', text, diag }. Returns 'ok', 'empty' (no words), or 'limited'.
+export function saveReport(ws, msg, now = Date.now()) {
+  const text = clean(msg.text, TEXT_MAX, true);
+  if (!text) return 'empty';
+  if (!admit(ws, now)) return 'limited';
+  write({ text, ...cleanDiag(msg.diag) }, now);
+  return 'ok';
+}
+
+// A player reported by another (2.12): why (REPORT_REASONS), a few words, and what the server knows
+// of them (name, computer player or not, the room, their last chat lines). Returns 'ok', 'bad' (no
+// such reason) or 'limited' (the same limits as bug reports).
+export function savePlayerReport(ws, { reason, note, name, bot, room, kind, chat }, now = Date.now()) {
+  if (!REPORT_REASONS.includes(reason)) return 'bad';
+  if (!admit(ws, now)) return 'limited';
+  write({
+    type: 'player', reason, text: clean(note, 300, true), reported: clean(name, 40), bot: Boolean(bot), room, kind,
+    chat: (chat ?? []).slice(-5).map((line) => clean(line, 120)),
+  }, now);
   return 'ok';
 }
 

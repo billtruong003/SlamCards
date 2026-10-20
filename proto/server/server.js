@@ -12,7 +12,7 @@ import { adsConfig, adsFileClient, withAds, adsTxt } from './ads.js';
 import * as refs from './refs.js';
 import * as metrics from './metrics.js';
 import { startAdmin } from './ops.js';
-import { saveReport, pruneReports } from './reports.js';
+import { saveReport, savePlayerReport, pruneReports } from './reports.js';
 import { createSlamCheck } from './slam-check.js';
 import { botName, botLook, planSlam, thinkMs, quickMs, pickPersona } from './bots.js';
 import { loadPhysics } from './sim.js';
@@ -1191,6 +1191,17 @@ function handle(ws, msg) {
   if (room.players[seat]?.ws !== ws || rooms.get(room.code) !== room) return;
 
   // A sticker or quick phrase (ids from catalog.js), shown over the sender's card. Any room, any phase.
+  // Reporting another player at the table (2.12): what the server knows of them goes with it.
+  if (msg.t === 'reportPlayer') {
+    const target = room.players[msg.seat];
+    const result = !target || msg.seat === seat ? 'bad' : savePlayerReport(ws, {
+      reason: msg.reason, note: msg.note, name: target.name, bot: target.bot, room: room.code, kind: room.kind,
+      chat: (room.chat ?? []).filter((line) => line.seat === msg.seat).map((line) => line.text),
+    });
+    send(ws, { t: 'reportPlayer', result });
+    return;
+  }
+
   if (msg.t === 'react') {
     if (REACTIONS.has(msg.id) && allowed(room.players[seat], 'react')) {
       sendAll(room, { t: 'react', seat, id: msg.id });

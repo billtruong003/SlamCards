@@ -83,3 +83,5 @@ export const SUGGEST = {
   lobby: ['hello', 'hellochat', 'p:comeon', 'p:wait'],
 };
 export const CHAT_MAX = 80;
+// Why one player reports another (2.12, player-menu.js / server reports.js).
+export const REPORT_REASONS = ['rude', 'name', 'spam', 'afk', 'cheat'];

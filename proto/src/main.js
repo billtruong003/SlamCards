@@ -20,6 +20,7 @@ import { helloMessage } from './ref.js';
 import { createAds } from './ads.js';
 import { createDonate } from './donate.js';
 import { createReport } from './report.js';
+import { createPlayerMenu } from './player-menu.js';
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -353,6 +354,7 @@ function onPeek(msg) {
 // Back to a clean menu: no room, no leftover HUD, labels or toasts from the last match.
 function leaveRoom() {
   social.closeAll();
+  playerMenu.closeAll();
   donate.show(null); // back to the menu
   $('ad-lobby').hidden = true;
   $('ad-lobby').innerHTML = '';
@@ -468,14 +470,24 @@ function applyGlows() {
   glowKey = key;
   world.setGlows(namesShown || !me ? {} : Object.fromEntries(seats.map((s) => [s, s === me ? { color: GLOW.mine, thick: true } : { color: GLOW.theirs }])));
 }
-// tapping a player's chip mutes (or unmutes) their stickers and chat
-els.players.addEventListener('click', (e) => {
-  const chip = e.target.closest('.chip');
-  const seat = chip && SEATS.find((s) => chip.classList.contains(s));
-  if (!seat) return;
-  social.toggleMute(seat);
-  hudKey = '';
-  renderHud();
+// tapping another player's chip (or their seat in a lobby) opens their menu: mute or report (2.12)
+const playerMenu = createPlayerMenu({
+  social,
+  send,
+  nameOf,
+  toast: (text) => showToast(text, 2600),
+  onMuteChange: () => {
+    hudKey = '';
+    renderHud();
+  },
+});
+const openPlayerMenu = (el) => {
+  const seat = el && SEATS.find((s) => el.classList.contains(s));
+  if (seat && seat !== me && state?.players[seat]) playerMenu.open(seat, el);
+};
+els.players.addEventListener('click', (e) => openPlayerMenu(e.target.closest('.chip')));
+els.overlay.addEventListener('click', (e) => {
+  if (!e.target.closest('button')) openPlayerMenu(e.target.closest('.lobby-card .slot.seat'));
 });
 els.settings.onclick = () => {
   els.panel.hidden = !els.panel.hidden;
@@ -663,6 +675,8 @@ function onMessage(msg) {
     onServerInfo(msg);
   } else if (msg.t === 'report') {
     report.answered(msg.result);
+  } else if (msg.t === 'reportPlayer') {
+    playerMenu.answered(msg.result);
   } else if (msg.t === 'maintenance') {
     setMaintenance(msg.on);
   } else if (msg.t === 'notice') {

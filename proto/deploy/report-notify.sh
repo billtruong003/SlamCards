@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sends new "Báo lỗi" reports (server/reports.js: data/reports/<day>.jsonl, one report a line) to
+# Sends new "Báo lỗi" and player reports (server/reports.js: data/reports/<day>.jsonl, one report a line) to
 # Bill on Telegram, through lucy-bridge's bot and proxy, the way vps-diskguard does. Every 5
 # minutes by cron (/etc/cron.d/slam-report-notify, written by deploy.sh). Remembers how many lines
 # of each day file it has sent; only complete lines (a report being written now waits for the next
@@ -19,7 +19,14 @@ format() {
   python3 -c '
 import json, sys
 r = json.loads(sys.stdin.read())
-head = "Báo lỗi Dép Lào · " + r.get("at", "")[:16].replace("T", " ") + " UTC"
+at = r.get("at", "")[:16].replace("T", " ") + " UTC"
+if r.get("type") == "player":
+    who = r.get("reported", "") + (" (bot)" if r.get("bot") else "")
+    note = "\n" + r["text"] if r.get("text") else ""
+    chat = "\n\nChat gần nhất:\n" + "\n".join("· " + c for c in r["chat"]) if r.get("chat") else ""
+    print(("Báo cáo người chơi Dép Lào · " + at + "\n\n" + who + " · " + r.get("reason", "") + note + "\n\nphòng " + str(r.get("room", "")) + " · " + str(r.get("kind", "")) + chat)[:3500])
+    sys.exit()
+head = "Báo lỗi Dép Lào · " + at
 where = " · ".join(x for x in [r.get("phase"), "phòng " + r["room"] if r.get("room") else "", r.get("lang"), r.get("screen"), "build " + r["build"] if r.get("build") else ""] if x)
 errors = "\nLỗi trang: " + " | ".join(r["errors"]) if r.get("errors") else ""
 print((head + "\n\n" + r.get("text", "") + "\n\n" + where + "\n" + r.get("ua", "") + errors)[:3500])

@@ -138,7 +138,7 @@ Số 19/10: 843/908 cú đập không ra gì (93%); trận 3 người có bot d�
 - [ ] **2.09** Bảng điểm tuần (thứ Hai 0h VN) và tháng (ngày 1), chỉ tài khoản Google, lọc tên chặt hơn — M
 - [ ] **2.10** Banner đối tác (streamer, Refund Gaming) có thời hạn — M
 - [ ] **2.11** Quà hằng ngày theo giờ server (Bill chốt làm) — S–M
-- [ ] **2.12** Báo cáo / tắt tiếng một người chơi — M
+- [x] **2.12** Báo cáo / tắt tiếng một người chơi — M · (20/10) chạm chip người chơi (hoặc ô của họ ở phòng chờ) → menu "Ẩn chat và sticker" / "Báo cáo người chơi" (5 lý do + vài chữ). Server ghi tên, phòng, 5 dòng chat gần nhất của người bị báo (không ghi người báo), chung giới hạn với Báo lỗi; Telegram gửi Bill như G6.
 - [ ] **2.13** Kiểm tra phát lại vật lý trên server (lấy mẫu, chạy sau trận) cho trận có điểm/bảng xếp hạng: chạy lại cú đập với cùng seed, lệch nhiều thì gắn cờ người chơi — L
 
 ### Để sau (chưa xếp phase)

@@ -132,3 +132,38 @@ test('bug reports: saved with clean device details, empty ones refused, a flood 
     assert.equal(line.name, undefined);
   } finally { srv.stop(); }
 });
+
+// Reporting a player (2.12): why, plus what the server knows of them (name, room, their last chat
+// lines); nothing about who reported. Not oneself, not an empty seat, not a made-up reason.
+test('player reports: saved with the reported player and their chat, bad ones refused', async () => {
+  const data = fs.mkdtempSync(path.join(os.tmpdir(), 'slam-reports-'));
+  const srv = await startServer({}, { SLAM_DATA: data });
+  try {
+    const [a, b] = await lobby(srv.port, 2);
+    b.send({ t: 'chat', text: 'đồ gà' });
+    a.send({ t: 'chat', text: 'gì cơ' });
+    await b.next((m) => m.t === 'chat' && m.seat === a.seat);
+    a.send({ t: 'reportPlayer', seat: a.seat, reason: 'rude' });
+    assert.equal((await a.next((m) => m.t === 'reportPlayer')).result, 'bad', 'not oneself');
+    a.send({ t: 'reportPlayer', seat: 'nobody', reason: 'rude' });
+    assert.equal((await a.next((m) => m.t === 'reportPlayer')).result, 'bad', 'not an empty seat');
+    a.send({ t: 'reportPlayer', seat: b.seat, reason: 'ugly' });
+    assert.equal((await a.next((m) => m.t === 'reportPlayer')).result, 'bad', 'one of the reasons');
+    a.send({ t: 'reportPlayer', seat: b.seat, reason: 'rude', note: 'chửi\u0007 tui' });
+    assert.equal((await a.next((m) => m.t === 'reportPlayer')).result, 'ok');
+    a.send({ t: 'reportPlayer', seat: b.seat, reason: 'spam' });
+    assert.equal((await a.next((m) => m.t === 'reportPlayer')).result, 'limited', 'a minute between two');
+    await sleep(200);
+    const dir = path.join(data, 'reports');
+    const [file] = fs.readdirSync(dir);
+    const line = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8').trim());
+    assert.equal(line.type, 'player');
+    assert.equal(line.reason, 'rude');
+    assert.equal(line.text, 'chửi tui');
+    assert.equal(line.reported, 'P1');
+    assert.equal(line.bot, false);
+    assert.equal(line.room, a.code);
+    assert.deepEqual(line.chat, ['đồ gà'], "only the reported player's lines");
+    assert.ok(!JSON.stringify(line).includes('P0'), 'nothing about who reported');
+  } finally { srv.stop(); }
+});

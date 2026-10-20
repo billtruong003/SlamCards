@@ -2108,6 +2108,54 @@
     "where": "Toast when the bug report is empty",
     "max": 44
   },
+  "playerMenu.mute": {
+    "where": "A player's menu: hide this player's chat and stickers",
+    "max": 26
+  },
+  "playerMenu.unmute": {
+    "where": "A player's menu: show this player's chat and stickers again",
+    "max": 26
+  },
+  "playerMenu.report": {
+    "where": "A player's menu: report this player to Bill",
+    "max": 26
+  },
+  "playerMenu.reportTitle": {
+    "where": "Report a player form title; {name} is the player",
+    "max": 40
+  },
+  "playerMenu.note": {
+    "where": "Report a player form: placeholder of the optional text box",
+    "max": 32
+  },
+  "playerMenu.pickReason": {
+    "where": "Toast when a player report is sent with no reason picked",
+    "max": 40
+  },
+  "playerMenu.thanks": {
+    "where": "Toast after a player report is sent",
+    "max": 40
+  },
+  "playerMenu.reason.rude": {
+    "where": "Report reason: insults in chat",
+    "max": 24
+  },
+  "playerMenu.reason.name": {
+    "where": "Report reason: the player name",
+    "max": 24
+  },
+  "playerMenu.reason.spam": {
+    "where": "Report reason: flooding the chat",
+    "max": 24
+  },
+  "playerMenu.reason.afk": {
+    "where": "Report reason: not playing",
+    "max": 24
+  },
+  "playerMenu.reason.cheat": {
+    "where": "Report reason: cheating",
+    "max": 24
+  },
   "common.close": {
     "where": "Close button of the info, sound and quick-rules panels",
     "max": 8,
