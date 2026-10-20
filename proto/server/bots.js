@@ -9,7 +9,7 @@
 // hand as unsteady as the real one, scores where the cards end, and picks one. How good it is comes
 // from its persona: how far down the list of good slams it may pick, how much it fears knocking a
 // card off the table, how long it thinks.
-import { pointOnCard, judge, isFaceUp, tableFor } from '../src/rules.js';
+import { pointOnCard, judge, isFaceUp } from '../src/rules.js';
 import { TUNE } from '../src/config.js';
 import { PETS, DEP_IDS, defaultDepColors } from '../src/catalog.js';
 import { runSlam } from '../src/physics.js';
@@ -73,13 +73,18 @@ const FINALISTS = 6; // the best of them, tried again
 const MORE = 3; // more hand shakes and spin luck for each finalist
 const EDGE_SAFE = 1.2; // a card closer than this to the table's edge is in danger
 const PASS = -15; // a slap that moves nothing: the next turn is forced into the small ring
+const APPROACH = 20; // worth of closing in on an enemy, whatever the faces (a capture needs it)
+const STRIKING = 2.5; // close enough to capture: no more worth in coming closer
+const RESTLESS = 24; // slams into a round after which a bot plays as boldly as it ever will
 
 // Where the cards ended, from the slammer's side: a capture is the goal, a card off the table the
 // worst (the slammer is out), and in between a card face up near a face-down enemy is good, a face-up
-// enemy near its own face-down card is a threat, and a card near the edge is at risk.
-export function scoreOutcome(cards, seat, alive, persona) {
+// enemy near its own face-down card is a threat, and a card near the edge is at risk. table: the table
+// in play ({ hx, hz }, by the seats at it: it does not shrink when players are out). urge (0..1): how
+// long the round has dragged on; like a kid getting restless, the bot then pushes in and fears less.
+export function scoreOutcome(cards, seat, alive, persona, table, urge = 0) {
   const result = judge(cards, seat, alive);
-  if (result?.reason === 'fall') return -100 * PERSONAS[persona].fallFear;
+  if (result?.reason === 'fall') return -100 * PERSONAS[persona].fallFear * (1 - 0.5 * urge);
   let score = 0;
   for (const c of result?.captures ?? []) score += c.by === seat ? 100 : c.victim === seat ? -120 : 10;
   if (result?.eliminated.includes(seat)) return score;
@@ -90,21 +95,29 @@ export function scoreOutcome(cards, seat, alive, persona) {
     if (other === seat || result?.eliminated.includes(other)) continue;
     const near = Math.max(0, 1 - Math.hypot(cards[other].p[0] - mine.p[0], cards[other].p[2] - mine.p[2]) / TUNE.threatRange);
     const otherUp = isFaceUp(cards[other]);
-    if (up && !otherUp) score += 25 * near;
-    if (!up && otherUp) score -= 30 * near;
+    // a face-down enemy is prey for a face-up card, wherever it lies (closer is better): with every
+    // card face up nobody can capture, and bots used to wait there for dozens of slams
+    if (up && !otherUp) score += 15 + 25 * near;
+    if (!up && otherUp) score -= 30 * (1 - 0.6 * urge) * near;
+    // closing in counts until striking distance; past it, sitting close is worth nothing by itself
+    // (bots used to huddle there, every card face up, and nobody could capture)
+    const d = Math.hypot(cards[other].p[0] - mine.p[0], cards[other].p[2] - mine.p[2]);
+    score += APPROACH * (1 + 2 * urge) * Math.min(1, Math.max(0, (TUNE.threatRange - d) / (TUNE.threatRange - STRIKING)));
   }
-  const { hx, hz } = tableFor(alive.length);
+  const { hx, hz } = table;
   const margin = Math.min(hx - Math.abs(mine.p[0]), hz - Math.abs(mine.p[2]));
   if (margin < EDGE_SAFE) score -= (EDGE_SAFE - margin) * 15;
   return score;
 }
 
-// The aims worth a try. Half aimed with intent, the trick people learn: behind the bot's card, away
-// from an enemy, so the card flies toward it (a capture needs that). The rest all around the card,
+// The aims worth a try. A third aimed with intent, the trick people learn: behind the bot's card,
+// away from an enemy, so the card flies toward it (a capture needs that). A third beside an enemy's
+// card in reach, to flip it face down (prey for a face-up card). The rest all around the bot's card,
 // close (a strong push) and farther (a softer one). All in reach, never on a card.
 function candidates({ cards, alive, seat, forced, persona }, random) {
   const mine = cards[seat].p;
-  const reach = Math.min(forced ? TUNE.forcedRadius : TUNE.reachRadius, 2.4);
+  const fullReach = forced ? TUNE.forcedRadius : TUNE.reachRadius;
+  const reach = Math.min(fullReach, 2.4);
   const onACard = (x, z) => alive.some((s) => pointOnCard(cards[s], x, z, TUNE.cardMargin));
   const enemies = alive.filter((s) => s !== seat)
     .map((s) => cards[s].p)
@@ -116,9 +129,17 @@ function candidates({ cards, alive, seat, forced, persona }, random) {
     const z = mine[2] + Math.sin(angle) * radius;
     if (!onACard(x, z)) out.push({ aim: { x, z }, type: random() < PERSONAS[persona].tilt ? 'tilt' : 'flat' });
   };
-  for (let i = 0; enemies.length && out.length < TRIES / 2 && i < TRIES * 2; i++) {
+  for (let i = 0; enemies.length && out.length < TRIES / 3 && i < TRIES * 2; i++) {
     const [ex, , ez] = enemies[i % enemies.length];
     add(Math.atan2(ez - mine[2], ex - mine[0]) + Math.PI + (random() - 0.5) * 1.1, 0.7 + random() * (reach - 0.7));
+  }
+  for (let i = 0; enemies.length && out.length < (TRIES * 2) / 3 && i < TRIES * 2; i++) {
+    const [ex, , ez] = enemies[i % enemies.length];
+    const angle = random() * Math.PI * 2;
+    const x = ex + Math.cos(angle) * (0.8 + random() * 0.6);
+    const z = ez + Math.sin(angle) * (0.8 + random() * 0.6);
+    const d = Math.hypot(x - mine[0], z - mine[2]);
+    if (d <= fullReach) add(Math.atan2(z - mine[2], x - mine[0]), d);
   }
   for (let i = 0; out.length < TRIES && i < TRIES * 4; i++) add(((i + random()) / TRIES) * Math.PI * 2, 0.7 + random() * (reach - 0.7));
   return out;
@@ -134,9 +155,11 @@ function shaken(aim, random) {
 const breathe = () => new Promise((resolve) => setImmediate(resolve));
 
 // The bot's slam for this turn: { aim, type }, or null when it is boxed in (the caller passes).
-// physics: server/sim.js loadPhysics(). Each aim is tried once, the best few again with more luck
-// (a fair estimate where it matters); yields between tries so other rooms keep moving.
-export async function planSlam({ physics, seats, cards, alive, seat, forced, wind, persona }, random = Math.random) {
+// physics: server/sim.js loadPhysics(). roundSlams: slams so far this round (a long round makes it
+// bolder). Each aim is tried once, the best few again with more luck (a fair estimate where it
+// matters); yields between tries so other rooms keep moving.
+export async function planSlam({ physics, seats, cards, alive, seat, forced, wind, persona, roundSlams = 0 }, random = Math.random) {
+  const urge = Math.min(1, roundSlams / RESTLESS);
   const tries = candidates({ cards, alive, seat, forced, persona }, random);
   if (!tries.length) return null;
   const attempt = (t) => {
@@ -145,7 +168,7 @@ export async function planSlam({ physics, seats, cards, alive, seat, forced, win
     physics.setCards(cards);
     if (!physics.slamEffects(impact, t.type).length) return PASS;
     const { final } = runSlam(physics, { seats, cards, impact, type: t.type, wind, random });
-    return scoreOutcome(final, seat, alive, persona);
+    return scoreOutcome(final, seat, alive, persona, physics.table, urge);
   };
   for (const t of tries) {
     t.total = attempt(t);

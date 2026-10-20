@@ -405,7 +405,6 @@ function startMatch(room) {
   log(room, `match start with ${room.seats.length} players (${room.kind})${room.readers.size ? `, ${room.readers.size} reading the rules` : ''}`);
   room.turnNo = 0;
   if (room.seats.some((s) => isBot(room, s))) metrics.bots.started();
-  botsTalk(room, 'hello');
   startRound(room);
 }
 
@@ -432,6 +431,7 @@ function startRound(room) {
   room.result = null;
   room.event = null;
   room.firstOut = null;
+  room.roundSlams = 0; // slaps this round, passes too: a long round makes the bots bolder (bots.js)
   room.phase = 'roundIntro';
   schedule(room, TIMING.roundIntro, () => afterIntro(room));
   broadcast(room);
@@ -534,6 +534,8 @@ const turnMs = (room) => (room.alive.length >= 3 ? Math.min(TIMING.turn, TIMING.
 function startTurn(room) {
   room.autoSlam = false;
   room.turnNo = (room.turnNo ?? 0) + 1;
+  // hello on the first turn of the match, once the round's title card is gone (it covered it)
+  if (room.round === 1 && room.turnNo === 1) botsTalk(room, 'hello');
   const forced = room.passStreak[room.turn] >= 1;
   log(room, `turn ${room.turn} forced=${forced}`);
   room.phase = 'turn';
@@ -578,6 +580,7 @@ function registerPass(room, impact) {
     return;
   }
   room.passStreak[by] += 1;
+  if (impact) room.roundSlams += 1;
   for (const p of others(room, by)) send(p.ws, { t: 'passed', by, impact, timeout: !impact });
   room.event = { type: impact ? 'pass' : 'timeout', by };
   if (impact) botsSee(room, room.event, by);
@@ -630,6 +633,7 @@ function startSlam(room, impact, type) {
   room.timeouts[by] = room.autoSlam ? (room.timeouts[by] ?? 0) + 1 : 0;
   const watchers = Object.entries(room.players).filter(([s, p]) => s !== sim && p.connected && !p.bot).map(([s]) => s);
   room.slamCount += 1;
+  room.roundSlams += 1;
   room.slam = {
     by, sim, frames: 0, ended: false, result: null, previous: room.cards, waiting: new Set(watchers),
     check: createSlamCheck({ seats: room.seats, start: room.cards, impact }),
@@ -657,7 +661,7 @@ async function botSlam(room, seat) {
   const physics = await loadPhysics();
   const pick = await planSlam({
     physics, seats: room.seats, cards: room.cards, alive: room.alive, seat,
-    forced: room.passStreak[seat] >= 1, wind: room.wind, persona: room.players[seat].persona,
+    forced: room.passStreak[seat] >= 1, wind: room.wind, persona: room.players[seat].persona, roundSlams: room.roundSlams,
   });
   if (!isLive(room) || room.phase !== 'turn' || room.turn !== turn || room.round !== round) return;
   if (pick?.expected >= 60) botsTalk(room, 'decisive', [seat]); // it sees a capture coming

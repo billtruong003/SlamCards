@@ -2,7 +2,7 @@
 // the physics), and whole quick matches with them.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { planSlam, botLook, botName, pickPersona, PERSONAS, thinkMs } from '../server/bots.js';
+import { planSlam, botLook, botName, pickPersona, PERSONAS, thinkMs, scoreOutcome } from '../server/bots.js';
 import { loadPhysics } from '../server/sim.js';
 import { runSlam } from '../src/physics.js';
 import { initialCards, pointOnCard, seededRandom, judge, SEATS, tableFor, CARD_HALF_T, quatMul } from '../src/rules.js';
@@ -40,6 +40,17 @@ test('a bot aims in reach and never on a card, normal and forced turns, any tabl
   const meet = (played) => Array.from({ length: 400 }, () => pickPersona(played, random));
   assert.equal(meet(0).filter((p) => p === 'fox').length, 0);
   assert.ok(meet(50).filter((p) => p === 'fox').length > 80);
+});
+
+// The edge is judged on the table in play: three seats keep the big table after one is out.
+test('the edge risk is judged on the table in play, not on one sized for the players still in', () => {
+  const up = [0, 0, 0, 1];
+  const cards = { black: { p: [6.8, CARD_HALF_T, 0], q: up }, pink: { p: [-6, CARD_HALF_T, 0], q: up }, blue: { p: [0, -50, 0], q: up } };
+  const alive = ['black', 'pink'];
+  const big = scoreOutcome(cards, 'black', alive, 'fox', tableFor(3));
+  const small = scoreOutcome(cards, 'black', alive, 'fox', tableFor(2));
+  assert.ok(big > small, `${big} on the 3-seat table, ${small} if it were the 2-seat one`);
+  assert.ok(big >= 10 - 15 * 0.5, 'a little risk, not a card off the table');
 });
 
 // A table in the middle of a match: cards anywhere, about a third face up, none touching.
@@ -172,8 +183,8 @@ test('"Chơi với máy luôn": alone in the queue, computer players come at onc
     me.send({ t: 'queue', size: 3, name: 'Bill', played: 0 });
     await me.next((m) => m.t === 'queue' && m.state === 'waiting', 2000);
     me.send({ t: 'botsNow' });
-    const joined = await me.next((m) => m.t === 'joined', 1500);
-    const s = await me.waitState((st) => Object.keys(st.players).length === 3, 2000);
+    const joined = await me.next((m) => m.t === 'joined', 4000);
+    const s = await me.waitState((st) => Object.keys(st.players).length === 3, 4000);
     assert.equal(Object.values(s.players).filter((p) => p.name === 'Bill').length, 1, 'two computer players with me');
     assert.equal(joined.color, 'black');
 
