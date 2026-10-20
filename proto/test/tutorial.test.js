@@ -80,3 +80,20 @@ test('the clips are served in parts, with their video type', async () => {
     assert.equal((await httpGet(srv.port, '/tutorial/7-forced.mp4', { Range: `bytes=${size}-` })).status, 416);
   } finally { srv.stop(); }
 });
+
+// A Range asked of the page (made per request, a string before) ended the server process on live,
+// and every match with it (19-20/10). The page is always sent whole; the server keeps answering.
+test('a Range on the page gets the whole page, and the server lives on', async () => {
+  const srv = await startServer();
+  try {
+    for (const at of ['/', '/?room=ABCD', '/no/such/path']) {
+      const res = await httpGet(srv.port, at, { Range: 'bytes=0-99' });
+      assert.equal(res.status, 200, at);
+      assert.equal(res.headers['accept-ranges'], 'none');
+      assert.equal(Number(res.headers['content-length'] ?? res.bytes), res.bytes);
+      assert.match(res.body, /<html/i);
+    }
+    assert.equal((await httpGet(srv.port, '/')).status, 200);
+    assert.equal(srv.exited(), false, 'still running');
+  } finally { srv.stop(); }
+});

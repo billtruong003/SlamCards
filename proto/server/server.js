@@ -113,32 +113,46 @@ const server = http.createServer((req, res) => {
       res.end('not found');
       return;
     }
-    // the page itself carries the link preview tags for this address (meta.js)
-    if (file.endsWith(`${path.sep}index.html`)) data = withAds(withMeta(data.toString('utf8'), query), ADS);
-    const immutable = urlPath.startsWith('/assets/');
-    const media = urlPath.startsWith('/audio/') || urlPath.startsWith('/memes/') || urlPath.startsWith('/tutorial/') || urlPath.endsWith('.png');
-    const headers = {
-      'Content-Type': MIME[path.extname(file)] || 'application/octet-stream',
-      'Cache-Control': immutable ? 'public, max-age=31536000, immutable' : media ? 'public, max-age=86400' : 'no-cache',
-      'Accept-Ranges': 'bytes',
-    };
-    // Videos are fetched in parts: Safari plays none served only whole (the tutorial clips).
-    const range = byteRange(req.headers.range, data.length);
-    if (range === 'bad') {
-      res.writeHead(416, { 'Content-Range': `bytes */${data.length}` });
+    // A request that goes wrong answers 500 on its own: thrown here, it would end the process and
+    // every match in play with it (a Range asked of the page did, 5 times on 19-20/10).
+    try {
+      serveFile(req, res, file, urlPath, query, data);
+    } catch (error) {
+      console.error(`[http] ${urlPath}: ${error.stack ?? error}`);
+      if (!res.headersSent) res.writeHead(500);
       res.end();
-      return;
     }
-    if (range) {
-      const [start, end] = range;
-      res.writeHead(206, { ...headers, 'Content-Range': `bytes ${start}-${end}/${data.length}`, 'Content-Length': end - start + 1 });
-      res.end(data.subarray(start, end + 1));
-      return;
-    }
-    res.writeHead(200, headers);
-    res.end(data);
   });
 });
+
+function serveFile(req, res, file, urlPath, query, data) {
+  // The page itself carries the link preview tags for this address (meta.js): made for each request,
+  // so it is always sent whole; files on disk can be asked for in parts.
+  const page = file.endsWith(`${path.sep}index.html`);
+  if (page) data = Buffer.from(withAds(withMeta(data.toString('utf8'), query), ADS), 'utf8');
+  const immutable = urlPath.startsWith('/assets/');
+  const media = urlPath.startsWith('/audio/') || urlPath.startsWith('/memes/') || urlPath.startsWith('/tutorial/') || urlPath.endsWith('.png');
+  const headers = {
+    'Content-Type': MIME[path.extname(file)] || 'application/octet-stream',
+    'Cache-Control': immutable ? 'public, max-age=31536000, immutable' : media ? 'public, max-age=86400' : 'no-cache',
+    'Accept-Ranges': page ? 'none' : 'bytes',
+  };
+  // Videos are fetched in parts: Safari plays none served only whole (the tutorial clips).
+  const range = page ? null : byteRange(req.headers.range, data.length);
+  if (range === 'bad') {
+    res.writeHead(416, { 'Content-Range': `bytes */${data.length}` });
+    res.end();
+    return;
+  }
+  if (range) {
+    const [start, end] = range;
+    res.writeHead(206, { ...headers, 'Content-Range': `bytes ${start}-${end}/${data.length}`, 'Content-Length': end - start + 1 });
+    res.end(data.subarray(start, end + 1));
+    return;
+  }
+  res.writeHead(200, headers);
+  res.end(data);
+}
 
 const wss = new WebSocketServer({ server, path: '/ws', maxPayload: 2 * 1024 * 1024 });
 const rooms = new Map();
