@@ -1663,6 +1663,18 @@
     "where": "Meme: big stamped word over the table when someone captures (knocks out) another card",
     "max": 12
   },
+  "meme.damage": {
+    "where": "Meme text over a capture (the \"emotional damage\" sound): keep it in English, as the sound",
+    "max": 20
+  },
+  "meme.fbi": {
+    "where": "Meme text on a forced turn (the \"FBI open up\" sound): keep it in English, as the sound",
+    "max": 16
+  },
+  "meme.tbc": {
+    "where": "Meme banner before the deciding round (\"To be continued\" sound): keep it in English, as the sound",
+    "max": 18
+  },
   "meme.trinh1": {
     "where": "Skill-shot meme, line 1; plays with a Vietnamese voice clip (\"what is skill…\")",
     "max": 15,

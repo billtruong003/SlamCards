@@ -5,7 +5,12 @@
 const BASE = 'memes/';
 
 const MEMES = {
-  capture: [{ sound: 'capture-boom.mp3', vfx: 'stamp', text: 'meme.capture', maxMs: 2500 }],
+  // Bill 20/10: the sounds dropped on 14/10 come back (emotional damage, FBI, to be continued),
+  // with words instead of their pictures (those showed real people and others' characters)
+  capture: [
+    { sound: 'capture-boom.mp3', vfx: 'stamp', text: 'meme.capture', maxMs: 2500 },
+    { sound: 'capture-damage.mp3', vfx: 'stamp', text: 'meme.damage', maxMs: 4000 },
+  ],
   skill: [{ sound: 'skill-trinh.mp3', vfx: 'trinh', maxMs: 6000 }],
   fall: [
     { sound: 'fall-bruh.mp3', image: 'fall-bruh.png' },
@@ -17,6 +22,8 @@ const MEMES = {
   pass: [{ sound: 'pass-huh.mp3', image: 'pass-huh.jpg' }],
   timeout: [{ sound: 'timeout-snore.mp3', image: 'timeout-snore.jpg', maxMs: 4000 }],
   firstFlip: [{ sound: 'flip-wow.mp3', image: 'flip-wow.jpg', maxMs: 3500 }],
+  forced: [{ sound: 'forced-fbi.mp3', vfx: 'stamp', text: 'meme.fbi', maxMs: 3500 }],
+  tie: [{ sound: 'tie-tbc.mp3', vfx: 'tbc', maxMs: 6000 }],
 };
 
 import { loadClip, playClip } from './audio.js';
@@ -103,6 +110,9 @@ function render(meme) {
   }
   if (meme.vfx === 'stamp') {
     return `<div class="vfx-stamp"><span>${t(meme.text)}</span></div>`;
+  }
+  if (meme.vfx === 'tbc') {
+    return `<div class="vfx-tbc"><span>${t('meme.tbc')}</span></div>`;
   }
   if (meme.vfx === 'clap') {
     return `<div class="vfx-clap"><span>${t('meme.clap')}</span></div>`;
