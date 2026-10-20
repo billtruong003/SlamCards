@@ -54,8 +54,8 @@ export const TAUNTS = new Set([P('ga'), P('non'), P('trinh'), P('halan'), P('eat
 
 // The line a bot says for `situation`, or null for silence. `bot` keeps its memory: said (recent
 // ids), quietUntil (the turn number before which it rests). crowd: bots at the table; turnNo: the
-// room's turn count.
-export function pickLine(bot, situation, { crowd = 1, turnNo = 0 }, random = Math.random) {
+// room's turn count; players: players in the round (its rest is counted in turns of its own).
+export function pickLine(bot, situation, { crowd = 1, turnNo = 0, players = 2 }, random = Math.random) {
   if (!ANY_TIME.has(situation) && (bot.quietUntil ?? 0) > turnNo) return null;
   if (random() >= (TALK[bot.persona] ?? 0.3) / Math.sqrt(Math.max(1, crowd))) return null;
   const said = bot.said ?? [];
@@ -68,7 +68,7 @@ export function pickLine(bot, situation, { crowd = 1, turnNo = 0 }, random = Mat
   const weighted = pool.flatMap((id) => (favorites.includes(id) ? [id, id, id] : [id]));
   const id = weighted[Math.floor(random() * weighted.length)];
   bot.said = [...said, id].slice(-RECENT);
-  bot.quietUntil = turnNo + 2 + Math.floor(random() * 2); // then a rest of two or three turns
+  bot.quietUntil = turnNo + (2 + Math.floor(random() * 2)) * players; // then a rest of two or three of its turns
   return id;
 }
 

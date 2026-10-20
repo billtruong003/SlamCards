@@ -162,15 +162,18 @@ export async function planSlam({ physics, seats, cards, alive, seat, forced, win
   const urge = Math.min(1, roundSlams / RESTLESS);
   const tries = candidates({ cards, alive, seat, forced, persona }, random);
   if (!tries.length) return null;
+  // one try of an aim: its score, and whether the bot's card ended on an enemy's (a capture)
   const attempt = (t) => {
     const impact = shaken(t.aim, random);
     physics.setup(seats);
     physics.setCards(cards);
     if (!physics.slamEffects(impact, t.type).length) return PASS;
     const { final } = runSlam(physics, { seats, cards, impact, type: t.type, wind, random });
+    if (judge(final, seat, alive)?.captures?.some((c) => c.by === seat)) t.captures += 1;
     return scoreOutcome(final, seat, alive, persona, physics.table, urge);
   };
   for (const t of tries) {
+    t.captures = 0;
     t.total = attempt(t);
     t.runs = 1;
     await breathe();
@@ -189,5 +192,6 @@ export async function planSlam({ physics, seats, cards, alive, seat, forced, win
   const err = PERSONAS[persona].aimError;
   const off = { x: chosen.aim.x + (random() - 0.5) * 2 * err, z: chosen.aim.z + (random() - 0.5) * 2 * err };
   const aim = alive.some((s) => pointOnCard(cards[s], off.x, off.z, TUNE.cardMargin)) ? chosen.aim : off;
-  return { aim, type: chosen.type, expected: chosen.total / chosen.runs };
+  // captureOdds: the share of its tries of this aim that captured (it may say so before slapping)
+  return { aim, type: chosen.type, expected: chosen.total / chosen.runs, captureOdds: chosen.captures / chosen.runs };
 }

@@ -664,7 +664,7 @@ async function botSlam(room, seat) {
     forced: room.passStreak[seat] >= 1, wind: room.wind, persona: room.players[seat].persona, roundSlams: room.roundSlams,
   });
   if (!isLive(room) || room.phase !== 'turn' || room.turn !== turn || room.round !== round) return;
-  if (pick?.expected >= 60) botsTalk(room, 'decisive', [seat]); // it sees a capture coming
+  if (pick?.captureOdds >= 0.5) botsTalk(room, 'decisive', [seat]); // it sees a capture coming
   const aim = pick && cleanImpact(room, seat, pick.aim);
   if (!aim || onACard(room, aim)) {
     const card = room.cards[seat].p;
@@ -681,7 +681,7 @@ function botsTalk(room, situation, seats = room.seats) {
   if (!bots.length) return;
   const seat = bots[crypto.randomInt(bots.length)];
   const crowd = room.seats.filter((s) => isBot(room, s)).length;
-  const id = pickLine(room.players[seat], situation, { crowd, turnNo: room.turnNo ?? 0 });
+  const id = pickLine(room.players[seat], situation, { crowd, turnNo: room.turnNo ?? 0, players: room.alive.length || room.seats.length });
   if (!id) return;
   later(`[${room.code}] talk`, 500 + Math.random() * 1500, () => {
     const bot = room.players[seat];

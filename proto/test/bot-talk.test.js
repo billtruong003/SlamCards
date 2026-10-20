@@ -23,7 +23,7 @@ test('every bot line and sticker can be shown, in every language', () => {
   assert.deepEqual(Object.keys(STICKERS_FOR).sort(), Object.keys(LINES).sort());
 });
 
-test('a bot talks as much as its persona, rests after a line, never repeats one soon', () => {
+test('a bot talks as much as its persona, rests a few of its own turns after a line, never repeats one soon', () => {
   const random = seededRandom(3);
   for (const persona of Object.keys(TALK)) {
     // no rest between tries: how often it speaks at all
@@ -43,6 +43,15 @@ test('a bot talks as much as its persona, rests after a line, never repeats one 
     if (!id) continue;
     if (last !== null) assert.ok(turn - last >= 2, `spoke at ${last} and ${turn}`);
     last = turn;
+  }
+  // at a table of three, the rest is two of its own turns at least: six of the table's
+  const third = { persona: 'quick' };
+  let spoke = null;
+  for (let turn = 0; turn < 3000; turn++) {
+    const id = pickLine(third, 'ate', { crowd: 1, turnNo: turn, players: 3 }, random);
+    if (!id) continue;
+    if (spoke !== null) assert.ok(turn - spoke >= 6, `spoke at ${spoke} and ${turn}`);
+    spoke = turn;
   }
   const resting = { persona: 'quick', quietUntil: 99 };
   let ends = 0;
