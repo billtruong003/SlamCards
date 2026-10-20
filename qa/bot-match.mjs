@@ -1,6 +1,7 @@
 // A lone player in quick match gets a computer opponent (task 1.31) and plays a whole match in a real
 // browser: the bot's slams run on this page with real physics and must pass the server's check.
-//   node qa/bot-match.mjs        (local server on 8098; waits the server's botAfter, 20 s by default)
+// Its talk (B.05) is counted from the socket, and every bubble must show words, never a raw key.
+//   node qa/bot-match.mjs        (local server on 8098; presses "Chơi với máy luôn" after 2 s)
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -22,12 +23,25 @@ await ctx.addInitScript(() => {
 const p = await ctx.newPage();
 const errors = [];
 p.on('pageerror', (e) => errors.push(e.message));
+const talk = []; // the bot's reactions, as the server sent them
+p.on('websocket', (ws) => ws.on('framereceived', ({ payload }) => {
+  try { const m = JSON.parse(payload); if (m.t === 'react') talk.push(m.id); } catch { /* binary */ }
+}));
+// a bubble showing an untranslated key ("bot.ate.yum", "phrase.ga") is a bug
+await p.addInitScript(() => {
+  window.__rawKeys = [];
+  new MutationObserver(() => {
+    for (const el of document.querySelectorAll('.phrase')) if (/^(bot|phrase)\./.test(el.textContent)) window.__rawKeys.push(el.textContent);
+  }).observe(document, { subtree: true, childList: true });
+});
 await p.goto(`${BASE}/?debug`);
 await p.waitForFunction(() => window.slamBooted === true, null, { timeout: 60000 });
 await p.evaluate(() => document.getElementById('intro')?.remove());
 await sleep(400);
 await p.evaluate(() => { document.querySelector('#size [data-size="2"]').click(); document.getElementById('play').click(); });
 const t0 = Date.now();
+await sleep(2000);
+await p.evaluate(() => document.getElementById('queue-bots')?.click()); // B.01: no need to wait
 await p.waitForFunction(() => slamDebug.state && Object.keys(slamDebug.state.players).length === 2, null, { timeout: 40000 });
 const waited = Math.round((Date.now() - t0) / 1000);
 const opponent = await p.evaluate(() => Object.entries(slamDebug.state.players).find(([s]) => s !== slamDebug.me)[1].name);
@@ -64,6 +78,7 @@ while (Date.now() < end) {
 }
 const result = await p.evaluate(() => ({ phase: slamDebug.state.phase, scores: slamDebug.state.scores, story: document.querySelector('.match-story')?.innerText ?? '' }));
 await p.screenshot({ path: path.join(OUT, 'end.png') });
-console.log(JSON.stringify({ ...result, mySlams, botTurns, errors }));
+const rawKeys = await p.evaluate(() => window.__rawKeys);
+console.log(JSON.stringify({ ...result, mySlams, botTurns, talk, rawKeys, errors }));
 await browser.close();
-process.exit(result.phase === 'matchEnd' && botTurns > 0 && !errors.length ? 0 : 1);
+process.exit(result.phase === 'matchEnd' && botTurns > 0 && waited <= 5 && !rawKeys.length && !errors.length ? 0 : 1);

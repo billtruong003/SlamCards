@@ -15,6 +15,7 @@ import { startAdmin } from './ops.js';
 import { createSlamCheck } from './slam-check.js';
 import { botName, botLook, planSlam, thinkMs, quickMs, pickPersona } from './bots.js';
 import { loadPhysics } from './sim.js';
+import { pickLine, TAUNTS } from './bot-talk.js';
 import { STEPS as TUTORIAL } from '../src/tutorial.js';
 import { cleanLook, CARD_COLOR_IDS, SEAT_DEFAULTS, defaultDepColors, REACTIONS, CHAT_MAX } from '../src/catalog.js';
 
@@ -402,6 +403,8 @@ function startMatch(room) {
   room.readers = new Set(room.seats.filter((s) => room.players[s].learner || room.players[s].tutorial > 0));
   room.readUntil = 0;
   log(room, `match start with ${room.seats.length} players (${room.kind})${room.readers.size ? `, ${room.readers.size} reading the rules` : ''}`);
+  room.turnNo = 0;
+  botsTalk(room, 'hello');
   startRound(room);
 }
 
@@ -529,6 +532,7 @@ const turnMs = (room) => (room.alive.length >= 3 ? Math.min(TIMING.turn, TIMING.
 
 function startTurn(room) {
   room.autoSlam = false;
+  room.turnNo = (room.turnNo ?? 0) + 1;
   const forced = room.passStreak[room.turn] >= 1;
   log(room, `turn ${room.turn} forced=${forced}`);
   room.phase = 'turn';
@@ -536,6 +540,11 @@ function startTurn(room) {
   scheduleTurnEnd(room, turnMs(room));
   broadcast(room);
   driveBots(room);
+  // a person still thinking at half their time: a bot may hurry them
+  const { turnNo } = room;
+  if (!isBot(room, room.turn)) later(`[${room.code}] slow`, turnMs(room) * 0.5, () => {
+    if (isLive(room) && room.phase === 'turn' && room.turnNo === turnNo) botsTalk(room, 'slow');
+  });
 }
 
 // A player who is offline gets a short turn, so the table doesn't wait 30 s (40 s when forced)
@@ -570,6 +579,7 @@ function registerPass(room, impact) {
   room.passStreak[by] += 1;
   for (const p of others(room, by)) send(p.ws, { t: 'passed', by, impact, timeout: !impact });
   room.event = { type: impact ? 'pass' : 'timeout', by };
+  if (impact) botsSee(room, room.event, by);
   room.turn = nextAlive(room, by);
   startTurn(room);
 }
@@ -649,6 +659,7 @@ async function botSlam(room, seat) {
     forced: room.passStreak[seat] >= 1, wind: room.wind, persona: room.players[seat].persona,
   });
   if (!isLive(room) || room.phase !== 'turn' || room.turn !== turn || room.round !== round) return;
+  if (pick?.expected >= 60) botsTalk(room, 'decisive', [seat]); // it sees a capture coming
   const aim = pick && cleanImpact(room, seat, pick.aim);
   if (!aim || onACard(room, aim)) {
     const card = room.cards[seat].p;
@@ -656,6 +667,35 @@ async function botSlam(room, seat) {
     return;
   }
   startSlam(room, shakeHand(room, aim), pick.type);
+}
+
+// A computer player says something for `situation` (bot-talk.js): one bot of those given (all of them
+// by default), if it feels like it, after a person's typing delay, like a person's reaction.
+function botsTalk(room, situation, seats = room.seats) {
+  const bots = seats.filter((s) => isBot(room, s));
+  if (!bots.length) return;
+  const seat = bots[crypto.randomInt(bots.length)];
+  const crowd = room.seats.filter((s) => isBot(room, s)).length;
+  const id = pickLine(room.players[seat], situation, { crowd, turnNo: room.turnNo ?? 0 });
+  if (!id) return;
+  later(`[${room.code}] talk`, 500 + Math.random() * 1500, () => {
+    const bot = room.players[seat];
+    if (isLive(room) && bot?.bot && allowed(bot, 'react')) sendAll(room, { t: 'react', seat, id });
+  });
+}
+
+// What just happened at the table, for the bots to talk about: a capture (the bot that ate, the bot
+// that was eaten, or praise for the person who ate), a person's slap that missed or knocked a card off.
+function botsSee(room, event, slammer) {
+  if (event?.type === 'capture') {
+    const c = event.captures?.[0];
+    if (!c) return;
+    if (isBot(room, c.by) && !isBot(room, c.victim)) botsTalk(room, 'ate', [c.by]);
+    else if (!isBot(room, c.by) && isBot(room, c.victim)) botsTalk(room, 'stung', [c.victim]);
+    else if (!isBot(room, c.by)) botsTalk(room, 'praise');
+  } else if ((event?.type === 'fall' || event?.type === 'pass') && !isBot(room, slammer)) {
+    botsTalk(room, 'miss');
+  }
 }
 
 // The computer players' moves, scheduled whenever the game reaches a point where one may act (one
@@ -747,6 +787,7 @@ function finishSlam(room) {
     markOut(room, result.eliminated);
     room.firstOut ??= result.eliminated[0];
     room.event = { type: result.reason, by, eliminated: result.eliminated, captures };
+    botsSee(room, room.event, slam.by);
   }
   if (room.alive.length <= 1) {
     endRound(room, {
@@ -805,6 +846,8 @@ function endMatch(room, winner, reason = 'score') {
   room.result = { ...room.result, matchWinner: winner, matchReason: reason, history: room.history ?? [], ms, slams: room.slamCount ?? 0 };
   broadcast(room);
   driveBots(room);
+  if (isBot(room, winner)) botsTalk(room, 'won', [winner]);
+  else botsTalk(room, 'lost');
   if (room.kind === 'friends') schedule(room, TIMING.backToLobby, () => returnToLobby(room));
 }
 
@@ -1132,7 +1175,10 @@ function handle(ws, msg) {
 
   // A sticker or quick phrase (ids from catalog.js), shown over the sender's card. Any room, any phase.
   if (msg.t === 'react') {
-    if (REACTIONS.has(msg.id) && allowed(room.players[seat], 'react')) sendAll(room, { t: 'react', seat, id: msg.id });
+    if (REACTIONS.has(msg.id) && allowed(room.players[seat], 'react')) {
+      sendAll(room, { t: 'react', seat, id: msg.id });
+      if (TAUNTS.has(msg.id) && !['lobby', 'matchEnd'].includes(room.phase)) botsTalk(room, 'reply');
+    }
     return;
   }
 

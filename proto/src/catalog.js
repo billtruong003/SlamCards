@@ -62,8 +62,12 @@ export const STICKER_TABS = {
 };
 export const STICKERS = [...STICKER_TABS.face, ...STICKER_TABS.cat];
 export const stickerFile = (id) => `stickers/${id}.${GIFS.has(id) ? 'gif' : 'png'}`;
-export const PHRASES = ['eat', 'lucky', 'hurry', 'oops', 'scared', 'wait', 'comeon', 'gg'];
-// What a reaction message may carry: a sticker id, or "p:" + a phrase id.
+// The five after "gg" came with the bots' lines (Bill 20/10, docs/bot-loi-noi.md): people may tease back.
+export const PHRASES = ['eat', 'lucky', 'hurry', 'oops', 'scared', 'wait', 'comeon', 'gg', 'ga', 'non', 'trinh', 'halan', 'bakhi'];
+// Phrases that bring the "trình" meme along (memes.js 'skill', off unless the player turned memes on).
+export const SKILL_PHRASES = new Set(['p:trinh', 'p:halan']);
+// What a reaction message may carry: a sticker id, or "p:" + a phrase id. Computer players also send
+// "b:" + a line of their own (server/bot-talk.js), which people cannot.
 export const REACTIONS = new Set([...STICKERS, ...PHRASES.map((p) => `p:${p}`)]);
 // Suggestions for the moment (the row on top of the picker), by what just happened to me.
 export const SUGGEST = {

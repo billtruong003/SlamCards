@@ -385,6 +385,262 @@
     "max": 8,
     "id": "GG"
   },
+  "phrase.ga": {
+    "where": "Quick phrase: teasing someone who played badly (\"chicken\" in Vietnamese slang)",
+    "max": 28
+  },
+  "phrase.non": {
+    "where": "Quick phrase: \"too green, still a beginner\", a light tease",
+    "max": 28
+  },
+  "phrase.trinh": {
+    "where": "Quick phrase, brag after a good slam: \"heard what skill is?\" (plays the \"trình\" meme sound)",
+    "max": 28
+  },
+  "phrase.halan": {
+    "where": "Quick phrase, a Vietnamese meme brag (\"Hà Lần\", a joke on Holland): \"do you know who you are up against?\" (plays the meme sound)",
+    "max": 28
+  },
+  "phrase.bakhi": {
+    "where": "Quick phrase: praising someone else's great slam (\"what an aura\")",
+    "max": 28
+  },
+  "bot.ate.yum": {
+    "where": "A computer player's line in a bubble (it just took a person's card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.ate.please": {
+    "where": "A computer player's line in a bubble (it just took a person's card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.ate.mine": {
+    "where": "A computer player's line in a bubble (it just took a person's card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.ate.thanks": {
+    "where": "A computer player's line in a bubble (it just took a person's card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.ate.easy": {
+    "where": "A computer player's line in a bubble (it just took a person's card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.ate.letsgo": {
+    "where": "A computer player's line in a bubble (it just took a person's card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.miss.really": {
+    "where": "A computer player's line in a bubble (a person's slap missed or knocked a card off); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.miss.shaky": {
+    "where": "A computer player's line in a bubble (a person's slap missed or knocked a card off); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.miss.practice": {
+    "where": "A computer player's line in a bubble (a person's slap missed or knocked a card off); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.miss.hello": {
+    "where": "A computer player's line in a bubble (a person's slap missed or knocked a card off); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.miss.missed": {
+    "where": "A computer player's line in a bubble (a person's slap missed or knocked a card off); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.miss.whiff": {
+    "where": "A computer player's line in a bubble (a person's slap missed or knocked a card off); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.miss.lol": {
+    "where": "A computer player's line in a bubble (a person's slap missed or knocked a card off); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.slow.asleep": {
+    "where": "A computer player's line in a bubble (a person is taking long on their turn); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.slow.plotting": {
+    "where": "A computer player's line in a bubble (a person is taking long on their turn); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.slow.goon": {
+    "where": "A computer player's line in a bubble (a person is taking long on their turn); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.slow.roots": {
+    "where": "A computer player's line in a bubble (a person is taking long on their turn); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.slow.there": {
+    "where": "A computer player's line in a bubble (a person is taking long on their turn); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.slow.deep": {
+    "where": "A computer player's line in a bubble (a person is taking long on their turn); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.stung.fluke": {
+    "where": "A computer player's line in a bubble (a person just took its card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.stung.payback": {
+    "where": "A computer player's line in a bubble (a person just took its card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.stung.wait": {
+    "where": "A computer player's line in a bubble (a person just took its card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.stung.once": {
+    "where": "A computer player's line in a bubble (a person just took its card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.stung.hmph": {
+    "where": "A computer player's line in a bubble (a person just took its card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.stung.harsh": {
+    "where": "A computer player's line in a bubble (a person just took its card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.stung.noted": {
+    "where": "A computer player's line in a bubble (a person just took its card); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.praise.wow": {
+    "where": "A computer player's line in a bubble (praising a person's great slam); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.praise.skill": {
+    "where": "A computer player's line in a bubble (praising a person's great slam); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.praise.peak": {
+    "where": "A computer player's line in a bubble (praising a person's great slam); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.praise.nice": {
+    "where": "A computer player's line in a bubble (praising a person's great slam); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.praise.respect": {
+    "where": "A computer player's line in a bubble (praising a person's great slam); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.praise.bighand": {
+    "where": "A computer player's line in a bubble (praising a person's great slam); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.praise.slick": {
+    "where": "A computer player's line in a bubble (praising a person's great slam); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.decisive.done": {
+    "where": "A computer player's line in a bubble (just before a slam it expects to win); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.decisive.watch": {
+    "where": "A computer player's line in a bubble (just before a slam it expects to win); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.decisive.breath": {
+    "where": "A computer player's line in a bubble (just before a slam it expects to win); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.decisive.brace": {
+    "where": "A computer player's line in a bubble (just before a slam it expects to win); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.decisive.gone": {
+    "where": "A computer player's line in a bubble (just before a slam it expects to win); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.won.ez": {
+    "where": "A computer player's line in a bubble (it won the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.won.practice": {
+    "where": "A computer player's line in a bubble (it won the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.won.again": {
+    "where": "A computer player's line in a bubble (it won the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.won.fun": {
+    "where": "A computer player's line in a bubble (it won the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.won.bow": {
+    "where": "A computer player's line in a bubble (it won the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.won.gentle": {
+    "where": "A computer player's line in a bubble (it won the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.lost.rematch": {
+    "where": "A computer player's line in a bubble (it lost the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.lost.more": {
+    "where": "A computer player's line in a bubble (it lost the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.lost.notserious": {
+    "where": "A computer player's line in a bubble (it lost the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.lost.revenge": {
+    "where": "A computer player's line in a bubble (it lost the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.lost.great": {
+    "where": "A computer player's line in a bubble (it lost the match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.hello.hi": {
+    "where": "A computer player's line in a bubble (the start of a match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.hello.fair": {
+    "where": "A computer player's line in a bubble (the start of a match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.hello.mine": {
+    "where": "A computer player's line in a bubble (the start of a match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.hello.all": {
+    "where": "A computer player's line in a bubble (the start of a match); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.reply.talky": {
+    "where": "A computer player's line in a bubble (answering a person's tease); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.reply.slam": {
+    "where": "A computer player's line in a bubble (answering a person's tease); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.reply.last": {
+    "where": "A computer player's line in a bubble (answering a person's tease); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.reply.wait": {
+    "where": "A computer player's line in a bubble (answering a person's tease); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.reply.sure": {
+    "where": "A computer player's line in a bubble (answering a person's tease); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
+  "bot.reply.focus": {
+    "where": "A computer player's line in a bubble (answering a person's tease); people never pick it. Light teasing between kids, never rude",
+    "max": 30
+  },
   "social.react": {
     "where": "Button / panel name: stickers and quick phrases",
     "max": 14,

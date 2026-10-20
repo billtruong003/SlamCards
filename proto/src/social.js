@@ -1,4 +1,5 @@
-import { STICKERS, STICKER_TABS, stickerFile, PHRASES, SUGGEST, CHAT_MAX } from './catalog.js';
+import { STICKERS, STICKER_TABS, stickerFile, PHRASES, SUGGEST, CHAT_MAX, SKILL_PHRASES } from './catalog.js';
+import { showMeme } from './memes.js';
 import { t } from './i18n.js';
 import { chime } from './sound.js';
 
@@ -89,10 +90,12 @@ export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, sa
   els.chat.classList.toggle('no-typing', !canType);
   els.stickers.hidden = canType; // without a text box the stickers are always there
   if (!canType) $('react-chat').querySelector('span').textContent = t('social.chatTitle');
-  const label = (id) => (id.startsWith('p:') ? t(`phrase.${id.slice(2)}`) : '');
+  // words, not a sticker: a quick phrase ("p:"), or a computer player's own line ("b:", server/bot-talk.js)
+  const isWords = (id) => id.startsWith('p:') || id.startsWith('b:');
+  const label = (id) => (id.startsWith('p:') ? t(`phrase.${id.slice(2)}`) : id.startsWith('b:') ? t(`bot.${id.slice(2)}`) : '');
   // lazy only in the pickers: a bubble is created at the corner of the screen and must show at once
   const stickerImg = (id, cls = '', lazy = true) => `<img class="${cls}" src="${stickerFile(id)}" alt="" ${lazy ? 'loading="lazy" ' : ''}draggable="false">`;
-  const reactionHtml = (id) => (id.startsWith('p:') ? `<span class="phrase">${esc(label(id))}</span>` : stickerImg(id, '', false));
+  const reactionHtml = (id) => (isWords(id) ? `<span class="phrase">${esc(label(id))}</span>` : stickerImg(id, '', false));
 
   // ---------- sending ----------
   function canSend() {
@@ -266,8 +269,9 @@ export function createSocial({ send, getState, getMe, nameOf, inkOf, cardTop, sa
         tick(seat, esc(msg.text));
       }
     } else {
-      const phrase = msg.id.startsWith('p:') ? msg.id : null;
+      const phrase = isWords(msg.id) ? msg.id : null;
       addLine({ seat, name, ...(phrase ? { phrase } : { sticker: msg.id }) });
+      if (SKILL_PHRASES.has(msg.id) && (seat === getMe() || showOthers)) showMeme('skill');
       if (seat === getMe() || showOthers) bubble(seat, reactionHtml(msg.id));
       if (seat !== getMe() && showOthers) chime('react');
     }
