@@ -41,3 +41,5 @@ ssh "$HOST" 'set -e; rm -rf /tmp/slam-new && mkdir /tmp/slam-new && tar xzf /tmp
   pm2 restart slam-cards --update-env'
 rm /tmp/slam.tgz
 echo "Deployed: https://play.billthedevstudio.com/slam-cards/"
+# tell the IndexNow engines (Bing and others; not Google) the pages are fresh; never fails the deploy
+node deploy/indexnow.mjs || true
