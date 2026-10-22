@@ -67,7 +67,12 @@ const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.mp3': 'audio/mpeg', '.svg': 'image/svg+xml', '.wasm': 'application/wasm', '.ico': 'image/x-icon',
   '.mp4': 'video/mp4', '.webm': 'video/webm',
+  '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8', '.json': 'application/json; charset=utf-8',
 };
+
+// A made-up address: says so, and leads back to the game (links are relative: nginx serves the game
+// under /slam-cards/).
+const NOT_FOUND_PAGE = `<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Không tìm thấy trang · Dép Lào Tuổi Thơ</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f6ecd9;color:#2b2420;font:600 17px/1.5 system-ui,sans-serif;text-align:center;padding:16px}a{display:inline-block;margin-top:12px;padding:12px 20px;border-radius:12px;background:#974e66;color:#fff;text-decoration:none}</style></head><body><main><h1>Không có trang này</h1><p>Page not found.</p><a href="./">Chơi Dép Lào Tuổi Thơ</a></main></body></html>`;
 
 // "Range: bytes=a-b" (or "a-", or "-n" for the last n): the part of a file of `size` bytes it asks
 // for, as [start, end] inclusive; null when there is no such header, 'bad' when it cannot be served.
@@ -109,9 +114,13 @@ const server = http.createServer((req, res) => {
     res.end(body ?? 'not found');
     return;
   }
-  let file = path.join(DIST, urlPath);
+  // The page is at / only (rooms are /?room=CODE); any other address with no file is a 404, so search
+  // engines do not see the page again under every made-up path.
+  let file = urlPath === '/' ? path.join(DIST, 'index.html') : path.join(DIST, urlPath);
   if (!file.startsWith(DIST + path.sep) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
-    file = path.join(DIST, 'index.html');
+    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(NOT_FOUND_PAGE);
+    return;
   }
   fs.readFile(file, (err, data) => {
     if (err) {

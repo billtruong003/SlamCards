@@ -123,3 +123,39 @@ test('refs (server): daily visits and joined per source, one visit per connectio
     for (const key of ['SLAM_DATA', 'SLAM_STATS_KEY', 'SLAM_REFS_SAVE_MS']) delete process.env[key];
   }
 });
+
+// Search engines: one indexed page per language, room links point there and stay out of the index,
+// made-up paths are 404s, robots.txt names the sitemap.
+test('seo: room and tracking links point their canonical at the game page; VideoGame + WebApplication data', () => {
+  const room = withMeta(fs.readFileSync(INDEX, 'utf8'), new URLSearchParams('room=WXYZ&lang=en'));
+  assert.match(room, /<html lang="en">/);
+  assert.ok(room.includes(`<link rel="canonical" href="${PUBLIC_URL}?lang=en">`));
+  assert.doesNotMatch(room, /name="robots"/, 'canonical, not noindex (Google advice for duplicates)');
+  const home = withMeta(fs.readFileSync(INDEX, 'utf8'), new URLSearchParams('ref=tt'));
+  assert.doesNotMatch(home, /name="robots"/, 'the game page itself is indexed');
+  assert.ok(home.includes(`<link rel="canonical" href="${PUBLIC_URL}">`));
+  const data = JSON.parse(home.match(/<script type="application\/ld\+json">(.*?)<\/script>/)[1]);
+  assert.deepEqual(data['@type'], ['VideoGame', 'WebApplication']);
+  assert.equal(data.offers.price, '0');
+  assert.equal(data.aggregateRating, undefined, 'no ratings claimed');
+  assert.equal(data.url, PUBLIC_URL);
+  assert.equal(count(withMeta(home, new URLSearchParams('')), /application\/ld\+json/g), 1, 'rewriting twice keeps one set');
+});
+
+test('seo: made-up paths are 404s; robots.txt and the sitemap are served', { skip: !fs.existsSync(DIST_INDEX) && 'needs npm run build' }, async () => {
+  const srv = await startServer();
+  try {
+    assert.equal((await httpGet(srv.port, '/')).status, 200);
+    assert.equal((await httpGet(srv.port, '/?room=ABCD')).status, 200);
+    const missing = await httpGet(srv.port, '/no/such/page');
+    assert.equal(missing.status, 404);
+    assert.match(missing.body, /href="\.\/"/, 'the 404 leads back to the game');
+    assert.equal((await httpGet(srv.port, '/assets/')).status, 404, 'a folder is not the page');
+    const robots = await httpGet(srv.port, '/robots.txt');
+    assert.equal(robots.status, 200);
+    assert.match(robots.body, /Sitemap: https:\/\/play\.billthedevstudio\.com\/slam-cards\/sitemap\.xml/);
+    const sitemap = await httpGet(srv.port, '/sitemap.xml');
+    assert.equal(sitemap.status, 200);
+    assert.match(sitemap.body, /<loc>https:\/\/play\.billthedevstudio\.com\/slam-cards\/<\/loc>/);
+  } finally { srv.stop(); }
+});

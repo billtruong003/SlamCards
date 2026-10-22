@@ -44,6 +44,9 @@ export function pageMeta(query) {
   const url = PUBLIC_URL + (params.toString() ? `?${params}` : '');
   return {
     lang,
+    // for search engines a room link (and any ?ref=, ?fbclid=...) is the same page as the game's own
+    // address, so its canonical points there (Google advises canonical, not noindex, for duplicates)
+    canonical: LANG_URL[lang],
     title: code ? text.roomTitle(code) : text.title,
     description: code ? text.roomDescription(code) : text.description,
     url,
@@ -52,6 +55,36 @@ export function pageMeta(query) {
     site: text.site,
     locale: text.locale,
   };
+}
+
+// one address per language (the English one becomes its own page, /en/, with hreflang, in SEO task T11)
+const LANG_URL = { vi: PUBLIC_URL, en: `${PUBLIC_URL}?lang=en` };
+// the studio as one entity across its sites (its home page's Organization markup has the same @id)
+const STUDIO_ID = 'https://billthedevstudio.com/#organization';
+
+// What the game is, for search engines (schema.org VideoGame).
+function structuredData(m) {
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    // VideoGame alone shows nothing in results; paired with WebApplication it can earn the software
+    // app rich result once it has real ratings (none are claimed here)
+    '@type': ['VideoGame', 'WebApplication'],
+    name: m.site,
+    alternateName: m.lang === 'vi' ? 'Flip-Flop Slam' : 'Dép Lào Tuổi Thơ',
+    description: TEXT[m.lang].description,
+    url: m.canonical,
+    image: m.image,
+    inLanguage: m.lang,
+    genre: ['Party', 'Casual', 'Multiplayer'],
+    gamePlatform: 'Web browser',
+    applicationCategory: 'GameApplication',
+    operatingSystem: 'Any',
+    playMode: 'MultiPlayer',
+    numberOfPlayers: { '@type': 'QuantitativeValue', minValue: 2, maxValue: 4 },
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    author: { '@id': STUDIO_ID },
+    publisher: { '@type': 'Organization', '@id': STUDIO_ID, name: 'Bill The Dev', url: 'https://billthedevstudio.com/' },
+  }).replace(/</g, '\\u003c');
 }
 
 export function metaTags(m) {
@@ -77,17 +110,22 @@ export function metaTags(m) {
   ];
   return [
     `<title>${escapeAttr(m.title)}</title>`,
-    `<link rel="canonical" href="${escapeAttr(m.url)}">`,
+    `<link rel="canonical" href="${escapeAttr(m.canonical)}">`,
     ...tags.map(([attr, key, value]) => `<meta ${attr}="${key}" content="${escapeAttr(value)}">`),
+    `<script type="application/ld+json">${structuredData(m)}</script>`,
   ].join('\n');
 }
 
-// index.html with its title, canonical link, description and og:/twitter: tags replaced by this page's.
+// index.html with its language, title, canonical and language links, description, og:/twitter: tags
+// and structured data replaced by this page's.
 export function withMeta(html, query) {
+  const meta = pageMeta(query);
   const stripped = html
-    .replace(/[ \t]*<meta\s+(?:name="(?:description|twitter:[^"]*)"|property="og:[^"]*")[^>]*>\r?\n?/g, '')
-    .replace(/[ \t]*<link\s+rel="canonical"[^>]*>\r?\n?/g, '');
-  const head = metaTags(pageMeta(query));
+    .replace(/<html lang="[^"]*">/, `<html lang="${meta.lang}">`)
+    .replace(/[ \t]*<meta\s+(?:name="(?:description|robots|twitter:[^"]*)"|property="og:[^"]*")[^>]*>\r?\n?/g, '')
+    .replace(/[ \t]*<link\s+rel="(?:canonical|alternate)"[^>]*>\r?\n?/g, '')
+    .replace(/[ \t]*<script type="application\/ld\+json">.*?<\/script>\r?\n?/g, '');
+  const head = metaTags(meta);
   return /<title>[^<]*<\/title>/.test(stripped)
     ? stripped.replace(/<title>[^<]*<\/title>/, head)
     : stripped.replace('</head>', `${head}\n</head>`);

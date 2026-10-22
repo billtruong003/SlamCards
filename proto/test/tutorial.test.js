@@ -86,13 +86,15 @@ test('the clips are served in parts, with their video type', async () => {
 test('a Range on the page gets the whole page, and the server lives on', async () => {
   const srv = await startServer();
   try {
-    for (const at of ['/', '/?room=ABCD', '/no/such/path']) {
+    for (const at of ['/', '/?room=ABCD']) {
       const res = await httpGet(srv.port, at, { Range: 'bytes=0-99' });
       assert.equal(res.status, 200, at);
       assert.equal(res.headers['accept-ranges'], 'none');
       assert.equal(Number(res.headers['content-length'] ?? res.bytes), res.bytes);
       assert.match(res.body, /<html/i);
     }
+    // a made-up path is a 404 now (no longer the page), Range or not
+    assert.equal((await httpGet(srv.port, '/no/such/path', { Range: 'bytes=0-99' })).status, 404);
     assert.equal((await httpGet(srv.port, '/')).status, 200);
     assert.equal(srv.exited(), false, 'still running');
   } finally { srv.stop(); }

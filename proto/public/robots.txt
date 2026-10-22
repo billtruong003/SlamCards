@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /slam-cards/ws
+
+Sitemap: https://play.billthedevstudio.com/slam-cards/sitemap.xml
