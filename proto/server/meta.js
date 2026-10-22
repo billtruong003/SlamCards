@@ -59,7 +59,8 @@ export function pageMeta(query) {
   };
 }
 
-// one address per language (the English one becomes its own page, /en/, with hreflang, in SEO task T11)
+// One address per language, each naming the other (hreflang). English is ?lang=en rather than its own
+// path: the client finds its files, socket and room links relative to the page's folder.
 const LANG_URL = { vi: PUBLIC_URL, en: `${PUBLIC_URL}?lang=en` };
 // the studio as one entity across its sites (its home page's Organization markup has the same @id)
 const STUDIO_ID = 'https://billthedevstudio.com/#organization';
@@ -113,6 +114,9 @@ export function metaTags(m) {
   return [
     `<title>${escapeAttr(m.title)}</title>`,
     `<link rel="canonical" href="${escapeAttr(m.canonical)}">`,
+    `<link rel="alternate" hreflang="vi" href="${LANG_URL.vi}">`,
+    `<link rel="alternate" hreflang="en" href="${LANG_URL.en}">`,
+    `<link rel="alternate" hreflang="x-default" href="${LANG_URL.vi}">`,
     ...tags.map(([attr, key, value]) => `<meta ${attr}="${key}" content="${escapeAttr(value)}">`),
     `<script type="application/ld+json">${structuredData(m)}</script>`,
   ].join('\n');

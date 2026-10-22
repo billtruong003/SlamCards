@@ -131,6 +131,9 @@ test('seo: room and tracking links point their canonical at the game page; Video
   assert.match(room, /<html lang="en">/);
   assert.ok(room.includes(`<link rel="canonical" href="${PUBLIC_URL}?lang=en">`));
   assert.doesNotMatch(room, /name="robots"/, 'canonical, not noindex (Google advice for duplicates)');
+  assert.ok(room.includes(`<link rel="alternate" hreflang="vi" href="${PUBLIC_URL}">`), 'hreflang names both languages');
+  assert.ok(room.includes(`<link rel="alternate" hreflang="en" href="${PUBLIC_URL}?lang=en">`));
+  assert.equal(count(room, /rel="alternate"/g), 3, 'vi, en, x-default');
   const home = withMeta(fs.readFileSync(INDEX, 'utf8'), new URLSearchParams('ref=tt'));
   assert.doesNotMatch(home, /name="robots"/, 'the game page itself is indexed');
   assert.ok(home.includes(`<link rel="canonical" href="${PUBLIC_URL}">`));
