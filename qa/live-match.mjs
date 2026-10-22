@@ -1,6 +1,6 @@
 // Two real browsers play a whole match: create → invite link → start → RPS → slams until someone wins
 // → rematch → back to menu. Then a dead invite link and a mistyped code.
-// Local:  node qa/live-match.mjs      Live:  SLAM_BASE=https://billthedevstudio.io.vn/slam-cards node qa/live-match.mjs
+// Local:  node qa/live-match.mjs      Live:  SLAM_BASE=https://play.billthedevstudio.com/slam-cards node qa/live-match.mjs
 // Output: qa/out/match/*.png and a JSON summary on stdout.
 import { chromium } from 'playwright';
 import fs from 'node:fs';

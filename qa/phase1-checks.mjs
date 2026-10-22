@@ -1,7 +1,7 @@
 // Checks for the phase 1 fixes that the device pass doesn't reach: QA-08 (no Web Audio), UX-07
 // (prefilled name), QA-02 (typed code), QA-04 (token cap), UX-03 (alone at match end), UX-09
 // (too-late tap), QA-05 (pointer gone after reload).
-// Local:  node qa/phase1-checks.mjs      Live:  SLAM_BASE=https://billthedevstudio.io.vn/slam-cards node qa/phase1-checks.mjs
+// Local:  node qa/phase1-checks.mjs      Live:  SLAM_BASE=https://play.billthedevstudio.com/slam-cards node qa/phase1-checks.mjs
 import { chromium } from 'playwright';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

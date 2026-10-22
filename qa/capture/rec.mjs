@@ -119,7 +119,7 @@ export async function player(browser, who, opts, { url = `${BASE}/?debug&noftue&
       const el = document.getElementById('link');
       if (el && el.value && !el.value.startsWith('https://billthedevstudio')) {
         el.dataset.real = el.value;
-        el.value = el.value.replace(/^https?:\/\/[^/]+\/(\?|$)/, 'https://billthedevstudio.io.vn/slam-cards/$1');
+        el.value = el.value.replace(/^https?:\/\/[^/]+\/(\?|$)/, 'https://play.billthedevstudio.com/slam-cards/$1');
       }
     }, 50);
     localStorage.setItem('slam-ftue', 'seen');
