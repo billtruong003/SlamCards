@@ -506,6 +506,32 @@ $('lang').onclick = () => {
   els.infoPanel.hidden = true;
 };
 $('close-info').onclick = () => { els.infoPanel.hidden = true; };
+// "About and rules": text the server writes into the page (server/about.js), opened from Info
+// in the page's language (vi, or en for ?lang=); a player reading another language gets the matching
+// one fetched from ?lang= when they open it.
+let about = document.getElementById('about-game');
+if (about) {
+  const wireClose = () => { $('close-about').onclick = () => { about.hidden = true; }; };
+  $('open-about').onclick = async () => {
+    els.infoPanel.hidden = true;
+    const want = lang() === 'vi' ? 'vi' : 'en';
+    if (about.lang !== want) {
+      try {
+        const page = await (await fetch(`./?lang=${want}`)).text();
+        const fresh = new DOMParser().parseFromString(page, 'text/html').getElementById('about-game');
+        if (fresh) {
+          about.replaceWith(fresh);
+          about = fresh;
+          wireClose();
+        }
+      } catch { /* offline: the page's own language */ }
+    }
+    about.hidden = false;
+    about.scrollTop = 0;
+  };
+  wireClose();
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') about.hidden = true; });
+} else $('open-about').hidden = true; // a page served without it (vite dev)
 $('open-report').onclick = () => {
   els.infoPanel.hidden = true;
   report.open();

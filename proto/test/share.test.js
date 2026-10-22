@@ -159,3 +159,19 @@ test('seo: made-up paths are 404s; robots.txt and the sitemap are served', { ski
     assert.match(sitemap.body, /<loc>https:\/\/play\.billthedevstudio\.com\/slam-cards\/<\/loc>/);
   } finally { srv.stop(); }
 });
+
+// SEO T10: the page carries readable text (what the game is, how to play, quick answers) in its HTML,
+// in the page's language, because the game itself is a canvas search engines cannot read.
+test('seo: the served page has the about-and-rules text in its language', async () => {
+  const { aboutWordCount } = await import('../server/about.js');
+  assert.ok(aboutWordCount('vi') > 300 && aboutWordCount('en') > 300);
+  const vi = withMeta(fs.readFileSync(INDEX, 'utf8'), new URLSearchParams(''));
+  assert.match(vi, /<article id="about-game"[^>]*lang="vi"[^>]*hidden>/);
+  assert.match(vi, /bạt dép ăn hình/);
+  assert.match(vi, /Cách chơi/);
+  assert.doesNotMatch(vi, /<!-- about-game:/, 'the marker is replaced');
+  const en = withMeta(fs.readFileSync(INDEX, 'utf8'), new URLSearchParams('lang=en'));
+  assert.match(en, /<article id="about-game"[^>]*lang="en"/);
+  assert.match(en, /How to play/);
+  assert.equal(count(withMeta(vi, new URLSearchParams('')), /id="about-game"/g), 1, 'rewriting twice keeps one');
+});

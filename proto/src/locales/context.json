@@ -2043,6 +2043,10 @@
     "max": 25,
     "id": "J2"
   },
+  "info.about": {
+    "where": "Info panel button that opens the about-the-game and rules text",
+    "max": 30
+  },
   "info.by": {
     "where": "Info panel: \"a game by {name}\". {name} is pre-escaped HTML markup; keep the placeholder.",
     "max": 30,

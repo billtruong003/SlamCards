@@ -3,6 +3,8 @@
 // Vietnamese by default, English for ?lang=<anything else we ship>, and a room invite (?room=ABCD) gets
 // the room in its title. Images: public/og/og-<lang>.jpg, 1200x630 (made by video/media/og.html).
 
+import { aboutHtml } from './about.js';
+
 export const PUBLIC_URL = (process.env.SLAM_PUBLIC_URL || 'https://play.billthedevstudio.com/slam-cards/').replace(/\/?$/, '/');
 const IMAGE_VERSION = 1; // bump when the images change, so sites that cached the old one fetch it again
 
@@ -117,14 +119,15 @@ export function metaTags(m) {
 }
 
 // index.html with its language, title, canonical and language links, description, og:/twitter: tags
-// and structured data replaced by this page's.
+// and structured data replaced by this page's, and the "about and rules" text (about.js) in its place.
 export function withMeta(html, query) {
   const meta = pageMeta(query);
   const stripped = html
     .replace(/<html lang="[^"]*">/, `<html lang="${meta.lang}">`)
     .replace(/[ \t]*<meta\s+(?:name="(?:description|robots|twitter:[^"]*)"|property="og:[^"]*")[^>]*>\r?\n?/g, '')
     .replace(/[ \t]*<link\s+rel="(?:canonical|alternate)"[^>]*>\r?\n?/g, '')
-    .replace(/[ \t]*<script type="application\/ld\+json">.*?<\/script>\r?\n?/g, '');
+    .replace(/[ \t]*<script type="application\/ld\+json">.*?<\/script>\r?\n?/g, '')
+    .replace(/<!-- about-game:[^>]*-->/, aboutHtml(meta.lang));
   const head = metaTags(meta);
   return /<title>[^<]*<\/title>/.test(stripped)
     ? stripped.replace(/<title>[^<]*<\/title>/, head)
