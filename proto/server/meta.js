@@ -3,7 +3,7 @@
 // Vietnamese by default, English for ?lang=<anything else we ship>, and a room invite (?room=ABCD) gets
 // the room in its title. Images: public/og/og-<lang>.jpg, 1200x630 (made by video/media/og.html).
 
-export const PUBLIC_URL = (process.env.SLAM_PUBLIC_URL || 'https://billthedevstudio.io.vn/slam-cards/').replace(/\/?$/, '/');
+export const PUBLIC_URL = (process.env.SLAM_PUBLIC_URL || 'https://play.billthedevstudio.com/slam-cards/').replace(/\/?$/, '/');
 const IMAGE_VERSION = 1; // bump when the images change, so sites that cached the old one fetch it again
 
 const TEXT = {

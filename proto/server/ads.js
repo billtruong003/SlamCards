@@ -28,7 +28,7 @@ export function withAds(html, config) {
 }
 
 // The ads.txt line for AdSense: google.com, pub-…, DIRECT, f08c47fec0942fa0 (Google's fixed TAG id).
-// nginx sends billthedevstudio.io.vn/ads.txt here (proto/deploy/nginx-slam-domain.conf).
+// nginx sends <domain>/ads.txt here (proto/deploy/nginx-slam-domain.conf).
 export function adsTxt(config) {
   return config ? `google.com, ${config.client.replace(/^ca-/, '')}, DIRECT, f08c47fec0942fa0\n` : null;
 }

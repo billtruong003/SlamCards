@@ -6,7 +6,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 # live site name -> file in this folder
-declare -A SITES=([slam-domain]=nginx-slam-domain.conf [slam-cards]=nginx-slam-ip.conf)
+declare -A SITES=([slam-play]=nginx-slam-play.conf [slam-domain]=nginx-slam-domain.conf [slam-cards]=nginx-slam-ip.conf)
 BACKUP="$(mktemp -d)"
 changed=()
 
