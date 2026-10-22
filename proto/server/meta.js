@@ -72,6 +72,7 @@ function structuredData(m) {
     // VideoGame alone shows nothing in results; paired with WebApplication it can earn the software
     // app rich result once it has real ratings (none are claimed here)
     '@type': ['VideoGame', 'WebApplication'],
+    '@id': `${PUBLIC_URL}#game`,
     name: m.site,
     alternateName: m.lang === 'vi' ? 'Flip-Flop Slam' : 'Dép Lào Tuổi Thơ',
     description: TEXT[m.lang].description,

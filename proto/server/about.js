@@ -28,6 +28,7 @@ const TEXT = {
       ['Chơi được mấy người?', 'Từ 2 đến 4 người mỗi phòng. Chọn "Chơi ngay" để ghép với người lạ, hoặc tạo phòng riêng rồi gửi link cho bạn bè.'],
       ['Không có ai chơi thì sao?', 'Chờ một lúc không đủ người thì có máy vào chơi cùng, để bạn không phải đợi.'],
     ],
+    more: 'Đọc thêm: <a href="./dap-hinh-tuoi-tho.html">Đập hình (bạt dép ăn hình) là gì, chơi thế nào?</a>',
     by: 'Game của <a href="' + STUDIO + '">Bill The Dev</a>, studio game một người ở TP. Hồ Chí Minh.',
     privacy: 'Chính sách riêng tư',
     close: 'Đóng',
@@ -53,6 +54,7 @@ const TEXT = {
       ['How many players?', '2 to 4 per room. Use "Play now" to be matched with others, or make a private room and send the link to friends.'],
       ['What if nobody is online?', 'If not enough people turn up after a short wait, computer players join so you never wait long.'],
     ],
+    more: 'More in Vietnamese: <a href="./dap-hinh-tuoi-tho.html">the schoolyard game of đập hình and how it is played</a>',
     by: 'A game by <a href="' + STUDIO + '">Bill The Dev</a>, a one-man game studio in Ho Chi Minh City.',
     privacy: 'Privacy policy',
     close: 'Close',
@@ -68,6 +70,7 @@ ${t.intro.map((p) => `<p>${p}</p>`).join('\n')}
 <ol>${t.how.map((s) => `<li>${s}</li>`).join('')}</ol>
 <h3>${t.faqTitle}</h3>
 <dl>${t.faq.map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl>
+<p>${t.more}</p>
 <p class="muted">${t.by} <a href="./privacy.html">${t.privacy}</a></p>
 <button type="button" class="btn" id="close-about">${t.close}</button>
 </article>`;

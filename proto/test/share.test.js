@@ -160,6 +160,9 @@ test('seo: made-up paths are 404s; robots.txt and the sitemap are served', { ski
     const sitemap = await httpGet(srv.port, '/sitemap.xml');
     assert.equal(sitemap.status, 200);
     assert.match(sitemap.body, /<loc>https:\/\/play\.billthedevstudio\.com\/slam-cards\/<\/loc>/);
+    const article = await httpGet(srv.port, '/dap-hinh-tuoi-tho.html');
+    assert.equal(article.status, 200, 'the đập hình article is served');
+    assert.match(article.body, /application\/ld\+json/);
   } finally { srv.stop(); }
 });
 
