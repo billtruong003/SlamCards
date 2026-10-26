@@ -34,3 +34,4 @@ qa/node_modules/
 
 # Server data (ref counts) written by a local server
 proto/data/
+portal/site/

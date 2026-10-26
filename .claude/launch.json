@@ -44,6 +44,42 @@
         "proto"
       ],
       "port": 8101
+    },
+    {
+      "name": "studio-out",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8121",
+        "--directory",
+        "../Personal-Branding/billthedevstudio-web/out"
+      ],
+      "port": 8121
+    },
+    {
+      "name": "portfolio-out",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8122",
+        "--directory",
+        "../Personal-Branding/BillPortfolio/out"
+      ],
+      "port": 8122
+    },
+    {
+      "name": "portal",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8111",
+        "--directory",
+        "portal/site"
+      ],
+      "port": 8111
     }
   ]
 }

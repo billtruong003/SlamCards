@@ -1,6 +1,6 @@
 # Kế hoạch đăng video · FLIP FLOP SLAM (Dép Lào Tuổi Thơ)
 
-Video nằm ở `video/out/release/`. Link game: https://billthedevstudio.io.vn/slam-cards
+Video nằm ở `video/out/release/`. Link game: https://play.billthedevstudio.com/slam-cards/
 
 ## 1. Hướng đi
 
@@ -75,7 +75,7 @@ Nhớ hồi đó cứ ra chơi là cả đám ôm xấp hình ra sân. Vào lớ
 Giờ tụi m vô web là chơi được liền nha, khỏi tải app. Gửi link cho tụi bạn rồi phục thù đi nào 🩴
 
 🎮 FLIP FLOP SLAM – Dép Lào Tuổi Thơ
-🔗 Chơi ngay: https://billthedevstudio.io.vn/slam-cards
+🔗 Chơi ngay: https://play.billthedevstudio.com/slam-cards/
 
 Ý tưởng: ThuanBui (David)
 Developed by BillTheDev Studio
@@ -93,7 +93,7 @@ Developed by BillTheDev Studio
 Lần 1 lệch, lần 2 lệch, tới lần 3 nó bay khỏi bàn luôn =))) ai chịu nổi
 M thử coi mất mấy lần mới ăn được 💀
 
-🎮 Chơi ngay: https://billthedevstudio.io.vn/slam-cards
+🎮 Chơi ngay: https://play.billthedevstudio.com/slam-cards/
 Developed by BillTheDev Studio
 
 #DichHinh #DepLaoTuoiTho #GameViet #Shorts
@@ -107,7 +107,7 @@ Developed by BillTheDev Studio
 1–1 rồi, còn đúng cú này nữa thôi =)))
 M đoán ăn hay bay khỏi bàn? Tối nay t đăng phần 2 nha 🩴
 
-🎮 Chơi ngay: https://billthedevstudio.io.vn/slam-cards
+🎮 Chơi ngay: https://play.billthedevstudio.com/slam-cards/
 Developed by BillTheDev Studio
 
 #DichHinh #FlipFlopSlam #GameViet #Shorts
@@ -121,7 +121,7 @@ Developed by BillTheDev Studio
 Đây, kết quả cú hồi trưa nè =)))
 Đứa nào đoán trúng giơ tay coi 🙋 Chưa coi phần 1 thì lướt lại kênh nha
 
-🎮 Chơi ngay: https://billthedevstudio.io.vn/slam-cards
+🎮 Chơi ngay: https://play.billthedevstudio.com/slam-cards/
 Developed by BillTheDev Studio
 
 #DichHinh #FlipFlopSlam #GameViet #Shorts
@@ -135,7 +135,7 @@ Developed by BillTheDev Studio
 Ra chơi có 15 phút mà đứa thì ôm về cả xấp, đứa thì mất trắng =)))
 Hồi đó m thuộc phe nào? 🩴
 
-🎮 Chơi ngay: https://billthedevstudio.io.vn/slam-cards
+🎮 Chơi ngay: https://play.billthedevstudio.com/slam-cards/
 Developed by BillTheDev Studio
 
 #DichHinh #TuoiTho #GameViet #Shorts
@@ -149,7 +149,7 @@ Developed by BillTheDev Studio
 Dép lào, dép lê hay dép tổ ong, hồi nhỏ m đập bằng đôi nào? =)))
 Comment 1, 2 hay 3 coi team nào đông nhất 🩴
 
-🎮 Chơi ngay: https://billthedevstudio.io.vn/slam-cards
+🎮 Chơi ngay: https://play.billthedevstudio.com/slam-cards/
 Developed by BillTheDev Studio
 
 #DepLao #DichHinh #GameViet #Shorts
@@ -163,7 +163,7 @@ Developed by BillTheDev Studio
 Món nợ từ hồi cấp 1, 15 năm sau mới có dịp đòi =)))
 Tag ngay đứa hồi đó ăn hết hình của m vô đây 🩴
 
-🎮 Chơi ngay: https://billthedevstudio.io.vn/slam-cards
+🎮 Chơi ngay: https://play.billthedevstudio.com/slam-cards/
 Developed by BillTheDev Studio
 
 #DichHinh #TuoiTho #FlipFlopSlam #Shorts

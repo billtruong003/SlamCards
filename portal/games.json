@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "updated": "2026-10-22",
+  "studio": {
+    "name": "Bill The Dev Studio",
+    "site": "https://billthedevstudio.com",
+    "portal": "https://play.billthedevstudio.com",
+    "email": "truongbill003@gmail.com",
+    "youtube": "https://www.youtube.com/@billthedevgames",
+    "facebook": "https://www.facebook.com/billthedevstudio",
+    "tiktok": "https://www.tiktok.com/@billthedevstudio"
+  },
+  "games": [
+    {
+      "id": "slam-cards",
+      "name": { "vi": "Dép Lào Tuổi Thơ", "en": "Flip Flop Slam" },
+      "platform": "web",
+      "status": "beta",
+      "accent": "#F27AA0",
+      "ground": "#FBF6EC",
+      "players": "2-4",
+      "tagline": { "vi": "Đập dép, lật bài.", "en": "Slap the flip-flop. Flip the card." },
+      "short": {
+        "vi": "Trò đập hình sân trường, giờ chơi online. Đập dép xuống bàn, gió lật bài, cho bài mình đáp ngửa đè lên bài bạn là ăn. Gửi link là vô, không cần tải app.",
+        "en": "The schoolyard card-slapping game from Vietnam, now online. Slam your flip-flop, let the gust flip your card and land it face up on a friend's. Send a link and play in the browser."
+      },
+      "icon": "/img/games/slam-cards/icon.jpg",
+      "feature": "/img/games/slam-cards/feature.jpg",
+      "play": "/slam-cards/",
+      "page": "https://billthedevstudio.com/games/slam-cards/",
+      "privacy": "/slam-cards/privacy.html",
+      "analytics": "slam-cards"
+    },
+    {
+      "id": "meh-merge",
+      "name": { "vi": "Meh Merge", "en": "Meh Merge" },
+      "platform": "android",
+      "status": "testing",
+      "accent": "#FFD23F",
+      "ground": "#2E2552",
+      "tagline": { "vi": "Hai meh gộp thành meh to hơn.", "en": "Two mehs make a bigger meh." },
+      "short": {
+        "vi": "Thả bóng vào lọ. Hai quả giống nhau gộp thành quả to hơn. Nối combo và đừng để lọ đầy.",
+        "en": "Drop balls in a jar. Two the same merge into a bigger one. Chain combos and don't let it fill up."
+      },
+      "icon": "/img/games/meh-merge/icon.png",
+      "feature": "/img/games/meh-merge/feature.jpg",
+      "youtube": "U5scIFVhbkg",
+      "package": "com.billthedev.mehmerge",
+      "storeLive": false,
+      "page": "https://billthedevstudio.com/games/meh-merge/",
+      "privacy": "https://billthedevstudio.com/privacy/meh-merge/"
+    },
+    {
+      "id": "nah-blocks",
+      "name": { "vi": "Nah Blocks", "en": "Nah Blocks" },
+      "platform": "android",
+      "status": "testing",
+      "accent": "#3DDC97",
+      "ground": "#2B2F55",
+      "tagline": { "vi": "Xếp hàng đi. Chúng bảo nah.", "en": "Line 'em up. They say nah." },
+      "short": {
+        "vi": "Kéo khối vào bàn, lấp đầy một hàng để xoá. Mấy khối này có ý kiến riêng đấy.",
+        "en": "Drag blocks onto the board and fill a line to clear it. The blocks have opinions about it."
+      },
+      "icon": "/img/games/nah-blocks/icon.png",
+      "feature": "/img/games/nah-blocks/feature.jpg",
+      "youtube": "iilWXRwL5cQ",
+      "package": "com.billthedev.nahblocks",
+      "storeLive": false,
+      "page": "https://billthedevstudio.com/games/nah-blocks/",
+      "privacy": "https://billthedevstudio.com/privacy/nah-blocks/"
+    },
+    {
+      "id": "bruh-arrows",
+      "name": { "vi": "Bruh Arrows", "en": "Bruh Arrows" },
+      "platform": "android",
+      "status": "testing",
+      "accent": "#FF7A7E",
+      "ground": "#F5F1EA",
+      "tagline": { "vi": "Chạm. Bay. Bruh.", "en": "Tap. Yeet. Bruh." },
+      "short": {
+        "vi": "Chạm mũi tên là nó bay khỏi bàn, nếu đường trống. Tìm đúng thứ tự để dọn sạch.",
+        "en": "Tap an arrow and it flies off the board, if its path is clear. Find the right order and clear them all."
+      },
+      "icon": "/img/games/bruh-arrows/icon.png",
+      "feature": "/img/games/bruh-arrows/feature.jpg",
+      "youtube": "BLJmR8OaI2I",
+      "package": "com.billthedev.bruharrows",
+      "storeLive": false,
+      "page": "https://billthedevstudio.com/games/bruh-arrows/",
+      "privacy": "https://billthedevstudio.com/privacy/bruh-arrows/"
+    }
+  ]
+}

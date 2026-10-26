@@ -197,7 +197,7 @@ L.sfx += [(end, "thump", -2), (end + 6, "chime_found", -6)]
 L.music[-1]["fade_out"] = 60
 long, long_mix = L.done()
 
-json.dump(dict(videos=[short, long], covers={}, live="billthedevstudio.io.vn/slam-cards"),
+json.dump(dict(videos=[short, long], covers={}, live="play.billthedevstudio.com/slam-cards"),
           open(os.path.join(HERE, "edit", "src", "edl.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 json.dump(dict(fps=FPS, videos=[short_mix, long_mix]), open(os.path.join(HERE, "mix.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 for v in (short, long):

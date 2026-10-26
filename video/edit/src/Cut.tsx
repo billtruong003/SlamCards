@@ -199,7 +199,7 @@ const EndCard = () => {
       <div style={{ ...st, fontSize: 170 * u, lineHeight: 0.98, transform: `rotate(-3deg) scale(${pop(0)})` }}>Dép Lào<br />Tuổi Thơ</div>
       <div style={{ ...st, fontSize: 70 * u, WebkitTextStroke: `${7 * u}px ${INK}`, transform: `scale(${pop(6)})` }}>chơi <span style={{ color: YEL }}>free</span> trên web</div>
       <div style={{ fontFamily: FONT, fontSize: 46 * u, color: '#fff', background: PINK, border: `6px solid ${INK}`, boxShadow: `6px 8px 0 ${INK}`, borderRadius: 999,
-        padding: `${10 * u}px ${40 * u}px`, transform: `scale(${pop(10)})` }}>billthedevstudio.io.vn/slam-cards</div>
+        padding: `${10 * u}px ${40 * u}px`, transform: `scale(${pop(10)})` }}>play.billthedevstudio.com/slam-cards</div>
       <div style={{ ...st, fontSize: 42 * u, WebkitTextStroke: `${5 * u}px ${INK}`, textShadow: 'none', opacity: f < 16 ? 0 : 1, lineHeight: 1.35 }}>
         Ý tưởng game: ThuanBui (David)<br />Làm game: BillTheDev
       </div>

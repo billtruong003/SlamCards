@@ -141,7 +141,7 @@ const EndPage = () => {
         k={interpolate(f, [12, 40], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })} />
       <div style={{ position: 'absolute', left: 0, right: 0, top: 1590, display: 'flex', justifyContent: 'center', transform: `scale(${pop(30)})` }}>
         <div style={{ fontFamily: FONT, fontSize: 50, color: '#fff', background: PINK, border: `6px solid ${INK}`, boxShadow: `6px 8px 0 ${INK}`, borderRadius: 999, padding: '10px 40px' }}>
-          billthedevstudio.io.vn/slam-cards
+          play.billthedevstudio.com/slam-cards
         </div>
       </div>
       <Pen t={'Ý tưởng game: ThuanBui (David)'+String.fromCharCode(10)+'Làm game: BillTheDev'} x={300} y={1730} size={44} color={PEN}

@@ -175,7 +175,7 @@ const EndCard = ({ o }: { o: Over }) => {
       <Chunk o={{ kind: 'chunk', from_: 0, dur: 0, t: o.line as string, x: null, y: 590, size: 80, rot: -3, delay: 8 }} />
       <div style={{ position: 'absolute', left: 0, right: 0, top: 735, display: 'flex', justifyContent: 'center', opacity: fade(14) }}>
         <div style={{ fontFamily: NUNITO, fontWeight: 900, fontSize: 44, background: '#e0457b', color: '#fff', padding: '12px 44px', borderRadius: 999,
-          border: `5px solid ${G0}`, boxShadow: `0 8px 0 ${G0}`, transform: `rotate(1.5deg) translateY(${(1 - fade(14)) * 20}px)` }}>billthedevstudio.io.vn/slam-cards</div>
+          border: `5px solid ${G0}`, boxShadow: `0 8px 0 ${G0}`, transform: `rotate(1.5deg) translateY(${(1 - fade(14)) * 20}px)` }}>play.billthedevstudio.com/slam-cards</div>
       </div>
       <div style={{ position: 'absolute', left: 0, right: 0, top: 862, textAlign: 'center', fontFamily: NUNITO, fontWeight: 800, fontSize: 30, color: TXT, opacity: fade(20) }}>
         {en ? 'Game idea' : 'Ý tưởng'}: ThuanBui (David) &nbsp;·&nbsp; Developer: BillTheDev
@@ -190,7 +190,7 @@ const EndCard = ({ o }: { o: Over }) => {
       <Chunk o={{ kind: 'chunk', from_: 0, dur: 0, t: o.line as string, x: null, y: 1080, size: 66, rot: -3, delay: 8 }} />
       <div style={{ position: 'absolute', left: 0, right: 0, top: 1290, display: 'flex', justifyContent: 'center', opacity: fade(14) }}>
         <div style={{ fontFamily: NUNITO, fontWeight: 900, fontSize: 46, background: '#e0457b', color: '#fff', padding: '12px 40px', borderRadius: 999,
-          border: `5px solid ${G0}`, boxShadow: `0 8px 0 ${G0}`, transform: `rotate(1.5deg) translateY(${(1 - fade(14)) * 20}px)` }}>billthedevstudio.io.vn/slam-cards</div>
+          border: `5px solid ${G0}`, boxShadow: `0 8px 0 ${G0}`, transform: `rotate(1.5deg) translateY(${(1 - fade(14)) * 20}px)` }}>play.billthedevstudio.com/slam-cards</div>
       </div>
       <div style={{ position: 'absolute', left: 0, right: 0, top: 1440, textAlign: 'center', fontFamily: NUNITO, fontWeight: 800, fontSize: 36, lineHeight: 1.45, color: TXT, opacity: fade(20) }}>
         {en ? 'Game idea' : 'Ý tưởng'}: ThuanBui (David)<br />Developer: BillTheDev

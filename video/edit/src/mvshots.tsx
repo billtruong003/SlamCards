@@ -604,7 +604,7 @@ export const SHOTS: Record<string, R> = {
         <div style={{ position: 'absolute', left: 960 - 400, top: 285 - 264, transform: `scale(${lerp(1.5, 1, k)}) rotate(${(1 - k) * -8}deg)` }}><Logo w={800} id="mv-arc-end" /></div>
         <Chunk text="Đập hình cùng *chúng mình* nhé!" x={960} y={620} size={80} rot={-3} show={fade(0.15)} />
         <div style={{ position: 'absolute', left: 0, right: 0, top: 735, display: 'flex', justifyContent: 'center', opacity: fade(0.3) }}>
-          <div style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 900, fontSize: 44, background: '#c45f7c', color: '#fff', padding: '12px 44px', borderRadius: 999, border: '5px solid #141210', boxShadow: '0 8px 0 #141210', transform: 'rotate(1.5deg)' }}>billthedevstudio.io.vn/slam-cards</div>
+          <div style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 900, fontSize: 44, background: '#c45f7c', color: '#fff', padding: '12px 44px', borderRadius: 999, border: '5px solid #141210', boxShadow: '0 8px 0 #141210', transform: 'rotate(1.5deg)' }}>play.billthedevstudio.com/slam-cards</div>
         </div>
         <div style={{ position: 'absolute', left: 0, right: 0, top: 862, textAlign: 'center', fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: 26, color: '#F6F3EF', opacity: fade(0.42) }}>Ý tưởng: ThuanBui (David) &nbsp;·&nbsp; Developer: BillTheDev &nbsp;·&nbsp; Nhạc: Super Hero – Cao Bá Hưng x SR x Hoaprox</div>
         <Img src={staticFile('brand/studio-logo-dark.png')} style={{ position: 'absolute', left: 960 - 230, top: 925, width: 460, opacity: fade(0.55) }} />

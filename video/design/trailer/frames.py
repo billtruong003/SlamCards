@@ -106,7 +106,7 @@ F = [
     ('0:54 · Khung kết (duy nhất)', 'Logo game + câu rủ + link + credit + logo studio nhỏ. Giữ 5 giây. Không còn khung studio riêng.',
      frame('0:54', bg('hook-land.jpg', '50% 50%', 1.1, 26, .5) + logo(960, 290, 800) +
            ch('Đập hình cùng <b>chúng mình</b> nhé!', 470, 610, 80, -3) +
-           '<div style="position:absolute;left:0;right:0;top:740px;display:flex;justify-content:center"><div style="font:900 44px Nunito;background:#e0457b;color:#fff;padding:12px 44px;border-radius:999px;border:5px solid #141210;box-shadow:0 8px 0 #141210;transform:rotate(1.5deg)">billthedevstudio.io.vn/slam-cards</div></div>'
+           '<div style="position:absolute;left:0;right:0;top:740px;display:flex;justify-content:center"><div style="font:900 44px Nunito;background:#e0457b;color:#fff;padding:12px 44px;border-radius:999px;border:5px solid #141210;box-shadow:0 8px 0 #141210;transform:rotate(1.5deg)">play.billthedevstudio.com/slam-cards</div></div>'
            '<div style="position:absolute;left:0;right:0;top:868px;text-align:center;font:800 30px Nunito;line-height:1.4;color:#F6F3EF;text-shadow:0 2px 10px rgba(0,0,0,.6)">Ý tưởng: ThuanBui (David) &nbsp;·&nbsp; Developer: BillTheDev</div>'
            f'<img src="{src("studio-logo-dark.png")}" style="position:absolute;left:50%;top:965px;width:440px;margin-left:-220px">')),
 ]

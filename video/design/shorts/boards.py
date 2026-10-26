@@ -42,7 +42,7 @@ VIG = lambda a=.45: f'<div style="position:absolute;inset:0;background:radial-gr
 DIM = lambda a=.5: f'<div style="position:absolute;inset:0;background:rgba(20,18,16,{a})"></div>'
 GRAPH = '<div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,#3a3530,#141210 75%)"></div>'
 END = lambda line: (logo(540, 560, 820) + ch(line, 70, 1010, 68, -3) +
-                    '<div style="position:absolute;left:0;right:0;top:1250px;display:flex;justify-content:center"><div style="font:900 46px Nunito;background:#e0457b;color:#fff;padding:12px 40px;border-radius:999px;border:5px solid #141210;box-shadow:0 8px 0 #141210;transform:rotate(1.5deg)">billthedevstudio.io.vn/slam-cards</div></div>'
+                    '<div style="position:absolute;left:0;right:0;top:1250px;display:flex;justify-content:center"><div style="font:900 46px Nunito;background:#e0457b;color:#fff;padding:12px 40px;border-radius:999px;border:5px solid #141210;box-shadow:0 8px 0 #141210;transform:rotate(1.5deg)">play.billthedevstudio.com/slam-cards</div></div>'
                     '<div style="position:absolute;left:0;right:0;top:1400px;text-align:center;font:800 36px Nunito;line-height:1.45">Ý tưởng: ThuanBui (David)<br>Developer: BillTheDev</div>'
                     f'<img src="{fr.src("studio-logo-dark.png")}" style="position:absolute;left:50%;top:1600px;width:520px;margin-left:-260px">')
 
